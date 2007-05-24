@@ -1,4 +1,4 @@
-/*
+/* Copyright (2007) Schibsted Søk AS
  * AbstractAlternation.java
  *
  *
@@ -9,15 +9,19 @@ package no.schibstedsok.searchportal.query.parser.alt;
 import java.util.LinkedList;
 import java.util.List;
 import no.schibstedsok.searchportal.query.AndClause;
+import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
+import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import org.apache.log4j.Logger;
 
-/**
+/** Base abstraction class for any Alternation implementation.
+ * Contains helper methods that are typically used within the alternation process.
+ *  Some of these methods inturn delegate to visitor implementations found under the finder package.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
@@ -28,10 +32,12 @@ public abstract class AbstractAlternation implements Alternation{
     
     private static final Logger LOG = Logger.getLogger(AbstractAlternation.class);
     
+    private static final String ERR_MULTIPLE_POSSIBLE_PARENTS = "Multiple parents exist with same (or sub) class as ";
+    
     // Attributes ----------------------------------------------------
     
     /**
-     * 
+     * The context to work within.
      */
     protected final Context context;    
     
@@ -55,7 +61,7 @@ public abstract class AbstractAlternation implements Alternation{
     // Protected -----------------------------------------------------
     
 
-    /** will return null instead of a leafClause *
+    /** will return null instead of a leafClause
      * @param clause 
      * @return 
      */
@@ -65,18 +71,18 @@ public abstract class AbstractAlternation implements Alternation{
         return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
     }
 
-    /** return the left child, left or operation. *
+    /** return the left child, left or operation.
      * @param clause 
      * @return 
      */
-    protected Clause leftChild(final DoubleOperatorClause clause) {
+    protected Clause leftChild(final OperationClause clause) {
 
         final Clause c = clause.getFirstClause();
         LOG.trace("leftChild -->" + c);
         return c;
     }
 
-    /** will return null instead of a leafClause *
+    /** will return null instead of a leafClause
      * @param clause 
      * @return 
      */
@@ -86,7 +92,7 @@ public abstract class AbstractAlternation implements Alternation{
         return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
     }
 
-    /** will return right child, leaf or operation. *
+    /** will return right child, leaf or operation.
      * @param clause 
      * @return 
      */
@@ -98,16 +104,28 @@ public abstract class AbstractAlternation implements Alternation{
     }
 
     /** return the parent operation clause of the given child.
-     * And the child must be a descendant of the root. ** @param root 
+     * And the child must be a descendant of the root.
+     * The result will also be assignable from the root argument's class.
+     * If there exists multiple parents all of the required class an IllegalStateException is thrown.
      * @param child 
      * @param root 
      */
     protected <T extends OperationClause> T parent(final T root, final Clause child) {
 
-        return (T) context.getParentFinder().getParent(root, child);
+        final List<OperationClause> parents = context.getParentFinder().getParents(root, child);
+        T result = null;
+        for(OperationClause c : parents){
+            if(root.getClass().isAssignableFrom(c.getClass())){
+                if(null != result){
+                    throw new IllegalStateException(ERR_MULTIPLE_POSSIBLE_PARENTS + root.getClass());
+                }
+                result = (T)c;
+            }
+        }
+        return result;
     }
 
-    /** return all parents operation clauses of the given child. *
+    /** return all parents operation clauses of the given child.
      * @param root 
      * @param child 
      * @return 
@@ -126,22 +144,24 @@ public abstract class AbstractAlternation implements Alternation{
      * @param originalParent 
      * @return 
      */
-    protected DoubleOperatorClause replaceDescendant(
+    protected OperationClause replaceDescendant(
             final DoubleOperatorClause root,
             final DoubleOperatorClause newChild,
             final DoubleOperatorClause originalChild,
             final DoubleOperatorClause originalParent){
 
-        DoubleOperatorClause nC = newChild;
-        DoubleOperatorClause rC = originalChild;
-        DoubleOperatorClause rCParent = originalParent;
+        OperationClause nC = newChild;
+        OperationClause rC = originalChild;
+        OperationClause rCParent = originalParent;
 
         do{
             nC = replaceOperatorClause(nC, rC, rCParent);
-            for(DoubleOperatorClause parent : parents(root, rC)){
+            for(OperationClause parent : context.getParentFinder().getParents(root, rC)){
                 if(rCParent == parent){
                     rC = parent;
-                    rCParent = root == rCParent ? rCParent : parent(root, rCParent);
+                    rCParent = root == rCParent 
+                            ? rCParent 
+                            : context.getParentFinder().getParent(root, rCParent);
                     break;
                 }
             }
@@ -150,26 +170,35 @@ public abstract class AbstractAlternation implements Alternation{
         return nC;
     }
 
-    /**
+    /** Replace the originalChild that exists under the originalParent will the newChild.
      * 
      * @param newChild 
      * @param originalChild 
      * @param originalParent 
      * @return 
      */
-    protected <T extends DoubleOperatorClause> T replaceOperatorClause(
+    protected <T extends OperationClause> T replaceOperatorClause(
             final Clause newChild,
-            final T originalChild,
-            final DoubleOperatorClause originalParent) {
+            final Clause originalChild,
+            final T originalParent) {
+        
+        final Clause leftChild = leftChild(originalParent) == originalChild
+                        ? newChild
+                        : leftChild(originalParent);
+        
+        final Clause rightChild;
+        
+        if(originalParent instanceof DoubleOperatorClause){
+            
+            rightChild = rightChild((DoubleOperatorClause)originalParent) == originalChild
+                            ? newChild
+                            : rightChild((DoubleOperatorClause)originalParent);
+        }else{
+            rightChild = null;
+        }
 
-        return createOperatorClause(
-                    leftChild(originalParent) == originalChild
-                        ? newChild
-                        : leftChild(originalParent),
-                    rightChild(originalParent) == originalChild
-                        ? newChild
-                        : rightChild(originalParent),
-                    (T)originalParent); // XXX last argument needs to be from original branch
+        // XXX last argument needs to be from original branch
+        return createOperatorClause(leftChild, rightChild, originalParent);
     }
 
     /** Create a new operator clause, of type opCls, with the left and right children.
@@ -180,7 +209,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param replacementFor 
      * @return 
      */
-    protected <T extends DoubleOperatorClause> T createOperatorClause(
+    protected <T extends OperationClause> T createOperatorClause(
             final Clause left,
             final Clause right,
             final T replacementFor) {
@@ -200,15 +229,22 @@ public abstract class AbstractAlternation implements Alternation{
         } else if (DefaultOperatorClause.class.isAssignableFrom(replacementFor.getClass())) {
             clause = (T) context.createDefaultOperatorClause(left, right);
 
+        }else if (NotClause.class.isAssignableFrom(replacementFor.getClass())){
+            clause = (T) context.createNotClause(left);
+            
+        }else if (AndNotClause.class.isAssignableFrom(replacementFor.getClass())){
+            clause = (T) context.createAndNotClause(left);
+            
         }
 
         return clause;
     }
 
-    /**
+    /** Create XorClauses required to present all the alternatives in the query tree.
+     * There will be alternatives.size()-1 XorClauses aligned in a right-leaning branch.
      * 
-     * @param alternatives 
-     * @return 
+     * @param alternatives what will be leaves of the right-leaning XorClause branch returned
+     * @return the right-leaning XorClause branch
      */
     protected XorClause createXorClause(final LinkedList<? extends Clause> alternatives){
 
@@ -220,7 +256,7 @@ public abstract class AbstractAlternation implements Alternation{
 
     /** What XorClause.Hint is used for newly created XorClause alternations.
      * 
-     * @return 
+     * @return the XorClause.Hint used during this alternation process.
      */
     protected abstract XorClause.Hint getAlternationHint();
     

@@ -1,4 +1,4 @@
-/*
+/* Copyright (2007) Schibsted Søk AS
  * FullnameAlternation.java
  *
  *
@@ -23,7 +23,8 @@ import no.schibstedsok.searchportal.query.parser.alt.AbstractAlternation;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
-/** SEARCH-597 Forbedringer av proximity på navn
+/** SEARCH-597 Forbedringer av proximity på navn.
+ * The results of this alternation depend on the skin's FULLNAME list.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
@@ -48,6 +49,8 @@ public final class FullnameAlternation extends AbstractAlternation {
         super(cxt);
     }
 
+    /** {@inherit} **/
+    @Override
     public Clause alternate(final Clause clause) {
         
         final PredicateFinder finder = new PredicateFinder();
@@ -116,16 +119,20 @@ public final class FullnameAlternation extends AbstractAlternation {
                 
                 // create fullname phrase clause
                 final PhraseClause fullnamePhrased = context
-                        .createPhraseClause("\"" + givennames.getTerm() + ' ' + surname.getTerm() + "\"", null);
+                        .createPhraseClause('\"' + givennames.getTerm() + ' ' + surname.getTerm() + '\"', null);
                 LOG.debug("fullname phraseClause created " + fullnamePhrased);
                 
                 // create reversed fullname phrase clause
                 final PhraseClause reversedPhrased = context
-                        .createPhraseClause("\"" + surname.getTerm() + ' ' + givennames.getTerm() + "\"", null);
+                        .createPhraseClause('\"' + surname.getTerm() + ' ' + givennames.getTerm() + '\"', null);
                 LOG.debug("reversed phraseClause created " + reversedPhrased);
                 
                 // create the OR emcompassing both fullname versions
-                final OrClause orClause = context.createOrClause(fullnamePhrased, reversedPhrased);
+                final OrClause orPhrasedClause = context.createOrClause(fullnamePhrased, reversedPhrased);
+                LOG.debug("orClause created " + orPhrasedClause);
+                
+                // create the OR emcompassing the fullname versions and the original unphrased fullnames
+                final OrClause orClause = context.createOrClause(orPhrasedClause, doFullname);
                 LOG.debug("orClause created " + orClause);
                 
                 // create xorClause
@@ -136,7 +143,6 @@ public final class FullnameAlternation extends AbstractAlternation {
                 LOG.debug("XorClause created " + xorClause);
                 
                 // replace fullname with the new xorClause
-                
                 final DoubleOperatorClause fullnameParent = result == fullname
                         ? doFullname
                         : (DoubleOperatorClause) context.getParentFinder().getParent(result, fullname);
@@ -158,7 +164,8 @@ public final class FullnameAlternation extends AbstractAlternation {
 
     // Protected -----------------------------------------------------
     
-
+    /** {@inherit} **/
+    @Override
     protected Hint getAlternationHint() {
         return Hint.FULLNAME_ON_LEFT;
     }

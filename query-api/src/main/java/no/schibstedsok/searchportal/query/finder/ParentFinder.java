@@ -144,7 +144,12 @@ public final class ParentFinder extends AbstractReflectionVisitor {
      * @param clause 
      */
     protected void visitImpl(final OperationClause clause) {
+        
         if (!singleMode || parents.size() == 0) {
+            
+            if (clause.getFirstClause() == child){
+                parents.add(clause);
+            }
             
             addVisit(clause.getFirstClause());
             clause.getFirstClause().accept(this);
@@ -157,17 +162,19 @@ public final class ParentFinder extends AbstractReflectionVisitor {
      * @param clause 
      */
     protected void visitImpl(final DoubleOperatorClause clause) {
+        
         if (!singleMode || parents.size() == 0) {
+            
             if (clause.getFirstClause() == child || clause.getSecondClause() == child) {
                 parents.add(clause);
-            }  else  {
-                addVisit(clause.getFirstClause());
-                clause.getFirstClause().accept(this);
-                removeVisit(clause.getFirstClause());
-                addVisit(clause.getSecondClause());
-                clause.getSecondClause().accept(this);
-                removeVisit(clause.getSecondClause());
             }
+            
+            addVisit(clause.getFirstClause());
+            clause.getFirstClause().accept(this);
+            removeVisit(clause.getFirstClause());
+            addVisit(clause.getSecondClause());
+            clause.getSecondClause().accept(this);
+            removeVisit(clause.getSecondClause());
         }
     }
 

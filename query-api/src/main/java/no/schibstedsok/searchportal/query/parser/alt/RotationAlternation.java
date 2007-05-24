@@ -13,19 +13,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.XorClause.Hint;
 import no.schibstedsok.searchportal.query.finder.Counter;
-import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.finder.ForestFinder;
-import no.schibstedsok.searchportal.query.parser.QueryParser;
 import org.apache.log4j.Logger;
 
 /** <b><a href="https://jira.sesam.no/jira/browse/SEARCH-439">SEARCH-439 - Rotation Alternation</a></b>
@@ -141,7 +135,6 @@ public final class RotationAlternation extends AbstractAlternation{
     private static final String INFO_ROTATIONS_RESULT = "RotationAlternation produced ";
     private static final String DEBUG_STARTING_ROTATIONS = "**** STARTING ROTATION ALTERNATION ****";
     private static final String DEBUG_FINISHED_ROTATIONS = "**** FINISHED ROTATION ALTERNATION ****";
-    private static final String DEBUG_ROOT_NOT_OPERATION = "Root is not an OperationClause";
     private static final String DEBUG_FOUND_FORESTS = "Numer of forests found in query ";
     private static final String DEBUG_ORIGINAL_BRANCH_ADD = "Adding to original branch ";
 
@@ -210,7 +203,7 @@ public final class RotationAlternation extends AbstractAlternation{
                         // search in root for all occurances of clause and 'replaceDescendant' on each.
                         final List<DoubleOperatorClause> parents = parents(root, clause);
                         for(DoubleOperatorClause clauseParent : parents){
-                            root = replaceDescendant(root, result, clause, clauseParent);
+                            root = (DoubleOperatorClause)replaceDescendant(root, result, clause, clauseParent);
                         }
                     }
 
@@ -238,7 +231,7 @@ public final class RotationAlternation extends AbstractAlternation{
     
     /** {@inherit} **/
     @Override
-    protected <T extends DoubleOperatorClause> T createOperatorClause(
+    protected <T extends OperationClause> T createOperatorClause(
             final Clause left,
             final Clause right,
             final T replacementFor) {
@@ -248,14 +241,18 @@ public final class RotationAlternation extends AbstractAlternation{
         final T clause = super.createOperatorClause(left, right, replacementFor);
         
         // update our mappings between rotations
-        originalFromNew.put(clause, replacementFor);
-        newFromOriginal.put(replacementFor, clause);
-        beforeRotationFromNew.put(clause, beforeRotationFromOriginal.get(replacementFor));
-
+        if(replacementFor instanceof DoubleOperatorClause && clause instanceof DoubleOperatorClause){
+            final DoubleOperatorClause rf = (DoubleOperatorClause)replacementFor;
+            final DoubleOperatorClause c = (DoubleOperatorClause)clause;
+            originalFromNew.put(c, rf);
+            newFromOriginal.put(rf, c);
+            beforeRotationFromNew.put(c, beforeRotationFromOriginal.get(rf));
+        }
         return clause;
     }    
 
     /** {@inherit} **/
+    @Override
     protected Hint getAlternationHint() {
         return Hint.ROTATION_ALTERNATION;
     }
@@ -346,13 +343,13 @@ public final class RotationAlternation extends AbstractAlternation{
 
         T oC = oIterate;
         do{
-            oC = parent(oForestRoot, oC);
-            LOG.debug(" orpan--> " + nOrphan);
-            LOG.debug(" c--> " + oC);
-            // oC is actually from the original branch.
-            //  But it doesn't matter because the left child is a leaf that's free to re-use.
-            nOrphan = createOperatorClause(leftChild(oC), nOrphan, oC);
-            LOG.debug("  result--> " + nOrphan);
+                oC = parent(oForestRoot, oC);
+                LOG.debug(" orpan--> " + nOrphan);
+                LOG.debug(" c--> " + oC);
+                // oC is actually from the original branch.
+                //  But it doesn't matter because the left child is a leaf that's free to re-use.
+                nOrphan = createOperatorClause(leftChild(oC), nOrphan, oC);
+                LOG.debug("  result--> " + nOrphan);
 
         }while(beforeRotationFromOriginal.get(oC) != rTop); // we have just rotated the rTop clause. getthefuckout.
 
@@ -389,9 +386,6 @@ public final class RotationAlternation extends AbstractAlternation{
         return (T) nOrphan;
     }
 
-    private Map<DoubleOperatorClause, DoubleOperatorClause> getBeforeRotationFromNew() {
-        return beforeRotationFromNew;
-    }
 
     // Inner classes -------------------------------------------------
 
