@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand;
+import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.result.Navigator;
 
 
@@ -18,7 +19,7 @@ import no.schibstedsok.searchportal.result.Navigator;
 public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>{
 
     /** @deprecated will be removed without replacement in future version. **/
-    final AbstractSimpleFastSearchCommand command;
+    final SearchCommand command;
     private Map<String,List<Modifier>> navigators = new HashMap<String,List<Modifier>>();
     private Map<String,Navigator> currentNavigators = new HashMap<String,Navigator>();
 
@@ -27,7 +28,7 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
      * 
      * @param command 
      */
-    public FastSearchResult(final AbstractSimpleFastSearchCommand command) {
+    public FastSearchResult(final SearchCommand command) {
         super();
         this.command = command;
     }
@@ -38,7 +39,7 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
      * @return 
      */
     public Navigator getNavigatedTo(final String navigatorName) {
-        return command.getNavigatedTo(navigatorName);
+        return ((FastSearchCommand)command).getNavigatedTo(navigatorName);
     }
 
     /**
@@ -46,14 +47,14 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
      * @return 
      */
     public Map<String,Navigator> getNavigatedTo() {
-        return command.getNavigatedTo();
+        return ((FastSearchCommand)command).getNavigatedTo();
     }
 
     /**
      * @deprecated will be removed without replacement in future version.
      * @return 
      */
-    public AbstractSimpleFastSearchCommand getSearchCommand() {
+    public SearchCommand getSearchCommand() {
         return command;
     }
     
