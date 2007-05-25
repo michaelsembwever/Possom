@@ -164,15 +164,13 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
 
 
     /**
-     * obj may be null. *
+     * obj may be null. 
      */
     private void addChild(final Object obj) {
 
         if (null != obj) {
 
-            assert null != obj.getClass().getAnnotation(DataObject.class)
-                    || null != obj.getClass().getAnnotation(DataNode.class)
-                    : "my own properties should only be Data(Object|Node)s";
+            assert isDataObjectOrNode(obj) : "my own properties should only be Data(Object|Node)s";
 
             final BeanDataObjectInvocationHandler<?> childsNewHandler
                     = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
@@ -182,21 +180,30 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     }
 
     /**
-     * obj may be null. *
+     * obj may be null. 
      */
     private void removeChild(final Object obj) {
 
         if (null != obj) {
 
-            assert null != obj.getClass().getAnnotation(DataObject.class)
-                    || null != obj.getClass().getAnnotation(DataNode.class)
-                    : "my own properties should only be Data(Object|Node)s";
+            assert isDataObjectOrNode(obj) : "my own properties should only be Data(Object|Node)s";
 
             final BeanDataObjectInvocationHandler<?> childsOldHandler
                     = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
             context.remove(childsOldHandler.getBeanContextChild());
 
         }
+    }
+    
+    private boolean isDataObjectOrNode(final Object obj){
+        
+        boolean dataObjectOrNode = false;
+        final Class[] interfaces = obj.getClass().getInterfaces();
+        for(int i = 0; !dataObjectOrNode && i < interfaces.length; ++i){
+            dataObjectOrNode = null != interfaces[i].getAnnotation(DataObject.class);
+            dataObjectOrNode |= null != interfaces[i].getAnnotation(DataNode.class);
+        }
+        return dataObjectOrNode;
     }
 
     // Inner classes -------------------------------------------------
