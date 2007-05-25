@@ -57,7 +57,7 @@ public interface DataModel extends Serializable{
      * 
      * @param parameters 
      */
-    @AccessAllow(REQUEST_CONSTRUCTION)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setParameters(ParametersDataObject parameters);
 
     // BrowserDataObject ------------------------------------------------------------
@@ -87,7 +87,7 @@ public interface DataModel extends Serializable{
      * 
      * @param user 
      */
-    @AccessAllow(REQUEST_CONSTRUCTION)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setUser(UserDataObject user);
 
     // SiteDataObject ------------------------------------------------------------
@@ -117,7 +117,7 @@ public interface DataModel extends Serializable{
      * 
      * @param query 
      */
-    @AccessAllow({REQUEST_CONSTRUCTION, RUNNING_QUERY_CONSTRUCTION})
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, RUNNING_QUERY_CONSTRUCTION})
     void setQuery(QueryDataObject query);
 
     // SearchDataObject ------------------------------------------------------------
@@ -154,7 +154,7 @@ public interface DataModel extends Serializable{
      * @param key 
      * @param value 
      */
-    @AccessAllow({SEARCH_COMMAND_EXECUTION})
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, SEARCH_COMMAND_EXECUTION})
     void setSearch(final String key, final SearchDataObject value);
     
     // JunkYardDataObject ------------------------------------------------------------
@@ -168,7 +168,7 @@ public interface DataModel extends Serializable{
      * 
      * @param junkYard 
      */
-    @AccessAllow(REQUEST_CONSTRUCTION)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setJunkYard(JunkYardDataObject junkYard);
 
 }

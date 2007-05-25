@@ -11,11 +11,11 @@ package no.schibstedsok.searchportal.datamodel;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
-import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextSupport;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -24,6 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.schibstedsok.searchportal.datamodel.BeanDataModelInvocationHandler.DataModelBeanContextSupport;
+import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
+import no.schibstedsok.searchportal.datamodel.access.AccessDisallow;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
@@ -47,21 +51,20 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     private static final ReentrantReadWriteLock instancesLock = new ReentrantReadWriteLock();
 
     private static final Logger LOG = Logger.getLogger(BeanDataObjectInvocationHandler.class);
+    
+    private static final String ERR_DENIED = "Failure to honour the Access control annotations on ";
 
     // Attributes ----------------------------------------------------
 
-    // Attributes ----------------------------------------------------
 
     private final Class<T> implementOf;
     private final Object support;
     private final boolean immutable;
 
     // properties: the only part of this class that be immutable and reused
-
-    // properties: the only part of this class that be immutable and reused
     protected final List<Property> properties = new ArrayList<Property>();
 
-    private final BeanContextChild contextChild = new BeanContextChildSupport();
+    protected final BeanContext context;
 
     private final Map<Method, InvocationTarget> invocationTargetCache = new HashMap<Method, InvocationTarget>();
     private final Map<Method, Method> supportMethodCache = new HashMap<Method, Method>();
@@ -112,15 +115,24 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     // Constructors --------------------------------------------------
 
 
-    // Constructors --------------------------------------------------
-
     /** Creates a new instance of ProxyBeanDataObject */
     protected BeanDataObjectInvocationHandler(
             final Class<T> cls,
             final Property... properties)
                 throws IntrospectionException {
+        
+        this(cls, new BeanContextSupport(), properties);
+    }
+
+    /** Creates a new instance of ProxyBeanDataObject */
+    protected BeanDataObjectInvocationHandler(
+            final Class<T> cls,
+            final BeanContext context,
+            final Property... properties)
+                throws IntrospectionException {
 
         implementOf = cls;
+        this.context = context;
 
         final List<Property> propertiesLeftToAdd = new ArrayList(Arrays.asList(properties));
 
@@ -171,6 +183,8 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     /** {@inherit} **/
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
+        
+        assureAccessAllowed(method);
 
         final boolean setter = method.getName().startsWith("set");
         final String propertyName = method.getName().replaceFirst("is|get|set", "");
@@ -220,7 +234,8 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         }
 
 
-        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property: " + method.getName());
+        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property: " 
+                + method.getName());
 
     }
 
@@ -232,15 +247,46 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Package protected ---------------------------------------------
 
-    // Package protected ---------------------------------------------
-
     BeanContextChild getBeanContextChild(){
-        return contextChild;
+        return context;
     }
 
     // Protected -----------------------------------------------------
 
-    // Protected -----------------------------------------------------
+    protected final void assureAccessAllowed(final Method method) throws IllegalAccessException{
+        
+        // we need the current ControlLevel
+        BeanContext beanContext = context;
+        while(null != beanContext.getBeanContext()){
+            beanContext = beanContext.getBeanContext();
+        }
+        if(beanContext instanceof DataModelBeanContextSupport){
+            final ControlLevel level = ((DataModelBeanContextSupport)beanContext).getControlLevel();
+            final AccessAllow allow = method.getAnnotation(AccessAllow.class);
+            final AccessDisallow disallow = method.getAnnotation(AccessDisallow.class);
+            
+            LOG.trace("level " + level);
+            LOG.trace("method " + method);
+            LOG.trace("allow " + allow);
+            LOG.trace("disallow " + disallow);
+            
+            boolean allowed = false;
+            boolean disallowed = false;
+            if(null != allow){
+                for(ControlLevel cl : allow.value()){
+                    allowed |= cl == level;
+                }
+            }
+            if(null != disallow){
+                for(ControlLevel cl : disallow.value()){
+                    disallowed |= cl == level;
+                }
+            }
+            if(null != allow && null != disallow && (!allowed || disallowed)){
+                throw new IllegalAccessException(ERR_DENIED + method.getName() + " against " + level);
+            }
+        }
+    }
 
     // Private -------------------------------------------------------
 
@@ -359,7 +405,6 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Inner classes -------------------------------------------------
 
-    // Inner classes -------------------------------------------------
 
     private enum InvocationTarget{
         PROPERTY,

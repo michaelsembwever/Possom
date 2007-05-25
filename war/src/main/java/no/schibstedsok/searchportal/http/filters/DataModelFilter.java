@@ -126,7 +126,7 @@ public final class DataModelFilter implements Filter {
                 chain.doFilter(request, response);
 
             }finally{
-                cleanDataModel(datamodel);
+                cleanDataModel(factory, datamodel);
             }
 
 
@@ -244,8 +244,9 @@ public final class DataModelFilter implements Filter {
     }
 
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
-    private static void cleanDataModel(final DataModel datamodel){
+    private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
 
+        factory.assignControlLevel(datamodel, ControlLevel.DATA_MODEL_CONSTRUCTION);
         for(String key : datamodel.getJunkYard().getValues().keySet()){
             datamodel.getJunkYard().setValue(key, null);
         }
@@ -254,6 +255,7 @@ public final class DataModelFilter implements Filter {
         }
         datamodel.setParameters(null);
         datamodel.setQuery(null);
+        factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
     }
 
     /** A safer way to get parameters for the query string.

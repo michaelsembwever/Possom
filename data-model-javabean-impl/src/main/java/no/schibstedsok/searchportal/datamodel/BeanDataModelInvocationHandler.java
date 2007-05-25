@@ -9,6 +9,7 @@
 package no.schibstedsok.searchportal.datamodel;
 
 import java.beans.IntrospectionException;
+import java.beans.beancontext.BeanContextSupport;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import org.apache.log4j.Logger;
 
@@ -25,9 +26,7 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
     
     
     // Attributes ----------------------------------------------------
-    
-    private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;
-    
+        
     // Static --------------------------------------------------------
     
     
@@ -37,10 +36,9 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
      * @param allProperties 
      * @throws java.beans.IntrospectionException 
      */
-    protected BeanDataModelInvocationHandler(
-            final PropertyInitialisor properties) throws IntrospectionException {
+    protected BeanDataModelInvocationHandler(final PropertyInitialisor properties) throws IntrospectionException {
         
-        super(DataModel.class, properties);
+        super(DataModel.class, new DataModelBeanContextSupport(), properties);
     }
     
     // Public --------------------------------------------------------
@@ -50,8 +48,7 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
     
     void setControlLevel(final ControlLevel controlLevel){
         
-        this.controlLevel = controlLevel;
-        LOG.debug("Incrementing ControlLevel to " + controlLevel);
+        ((DataModelBeanContextSupport)context).setControlLevel(controlLevel);
     }
     
     // Protected -----------------------------------------------------
@@ -60,4 +57,19 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
     
     // Inner classes -------------------------------------------------
     
+    protected static final class DataModelBeanContextSupport extends BeanContextSupport{
+        
+
+        private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;        
+        
+        ControlLevel getControlLevel(){
+            return controlLevel;
+        }
+        
+        void setControlLevel(final ControlLevel controlLevel){
+        
+            this.controlLevel = controlLevel;
+            LOG.debug("Incrementing ControlLevel to " + controlLevel);
+        }
+    }
 }
