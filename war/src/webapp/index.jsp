@@ -8,9 +8,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <%@ page import="no.schibstedsok.searchportal.site.Site"%>
-<% 
+
+<%!
+    String format(String verticalName)  {
+
+        String s = "<tr><td>";
+        s = 
+
+
+
+    }
+%>
+<%
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
     String locale = site.getLocale().toString();
+    String openSearchUrlStandard = "/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT";
+    String openSearchUrlJavascript = "http://sesam.no/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT";    
 %>
 
 <search:velocity template="/pages/index"/>
@@ -26,10 +39,14 @@
         <link href="/css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
-        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT" />  
+        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="<%= openSearchUrlStandard %>%>" />
         <script type="text/javascript" language="JavaScript" src="/javascript/external/prototype.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/callAtIntervals.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/openSearch.js"></script>
+
         <script type="text/javascript" language="JavaScript"><!--
+
             function strep(qtag) {
                 if (window.RegExp && window.encodeURIComponent) {
                     var qlink=qtag.href;
@@ -54,6 +71,30 @@
     </head>
 
     <body>
+
+      <script type="text/javascript" language="javascript">
+            var openSearch = new OpenSearch(10, 10, 100, 30, displayOpenSearchInfo,
+                    '<%= openSearchUrlJavascript %>');
+
+            if (openSearch.browserSupports()) {
+                openSearch.run();
+            }
+            function displayOpenSearchInfo() {
+
+                var browser = navigator.appName;
+                var browserVersion1 = parseFloat(navigator.appVersion);
+                var browserVersion = navigator.appVersion;
+                var browserAgent = navigator.userAgent;
+
+               if (browserAgent.match("Firefox/2") == "Firefox/2") {
+                    document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" style=\"position:absolute; right:20px; padding-top:0px; text-decoration:none; border:none;\"><img src=\"/images/opensearch/opensearchbanner.png\" style=\"border:none;\" /></a>")
+               } else if (browserAgent.match("MSIE 7") == "MSIE 7") {
+                   document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" style=\"position:absolute; right:20px; top:0px; text-decoration:none; border:none;\"><img src=\"/images/opensearch/opensearchbanner.png\" style=\"border:none;\" /></a>")
+              }
+            }
+        </script>
+      
+
         <img src="images/index/logo.png" id="logoIndex" width="215" height="61" alt="Sesamlogo" />
         <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
         <table id="searchbar" cellspacing="0" cellpadding="0">
@@ -86,6 +127,7 @@
                             <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
                             <input type="radio" name="c" value="g" /> Verden
                         </td>
+
                         <td colspan="3">
                             <div id="front_button_layer">
                             <table cellspacing="1" cellpadding="0" id="front_button_table">
