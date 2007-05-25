@@ -9,16 +9,7 @@
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <%@ page import="no.schibstedsok.searchportal.site.Site"%>
 
-<%!
-    String format(String verticalName)  {
 
-        String s = "<tr><td>";
-        s = 
-
-
-
-    }
-%>
 <%
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
     String locale = site.getLocale().toString();
