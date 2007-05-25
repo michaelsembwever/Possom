@@ -10,7 +10,7 @@ package no.schibstedsok.searchportal.datamodel;
 
 import java.beans.IntrospectionException;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
-import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -20,6 +20,8 @@ import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
 public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler<DataModel>{
     
     // Constants -----------------------------------------------------
+    
+    private static final Logger LOG = Logger.getLogger(BeanDataModelInvocationHandler.class);
     
     
     // Attributes ----------------------------------------------------
@@ -46,8 +48,10 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
     
     // Package protected ---------------------------------------------
     
-    void incrementControlLevel(){
-        controlLevel = controlLevel.next();
+    void setControlLevel(final ControlLevel controlLevel){
+        
+        this.controlLevel = controlLevel;
+        LOG.debug("Incrementing ControlLevel to " + controlLevel);
     }
     
     // Protected -----------------------------------------------------

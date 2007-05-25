@@ -33,6 +33,7 @@ import javax.servlet.http.HttpSession;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
@@ -116,6 +117,11 @@ public final class DataModelFilter implements Filter {
 
                 datamodel.setParameters(parametersDO);
                 datamodel.setSite(getSiteDO(request, factory));
+                
+                // DataModel's ControlLevel will be REQUEST_CONSTRUCTION (from getDataModel(..))
+                //  Increment it onwards to VIEW_CONSTRUCTION.
+                // SearchServlet will assign it back to REQUEST_CONSTRUCTION if neccessary.
+                factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
 
                 chain.doFilter(request, response);
 
@@ -152,7 +158,7 @@ public final class DataModelFilter implements Filter {
 
         // DataModel's ControlLevel will be DATA_MODEL_CONSTRUCTION or VIEW_CONSTRUCTION (from the past request)
         //  Increment it onwards to REQUEST_CONSTRUCTION.
-        return factory.incrementControlLevel(datamodel);
+        return factory.assignControlLevel(datamodel, ControlLevel.REQUEST_CONSTRUCTION);
     }
 
     private static DataModel createDataModel(final DataModelFactory factory, final HttpServletRequest request){

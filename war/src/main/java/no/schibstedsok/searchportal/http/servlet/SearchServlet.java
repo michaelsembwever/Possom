@@ -3,38 +3,41 @@
  */
 package no.schibstedsok.searchportal.http.servlet;
 
+
+import java.io.IOException;
 import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.mode.SearchModeFactory;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.run.QueryFactory;
-import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.config.SearchTabFactory;
-import no.schibstedsok.searchportal.security.MD5Generator;
-import org.apache.commons.lang.time.StopWatch;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchModeFactory;
+import no.schibstedsok.searchportal.run.QueryFactory;
+import no.schibstedsok.searchportal.run.RunningQuery;
+import no.schibstedsok.searchportal.security.MD5Generator;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelFactory;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.util.TradeDoubler;
+import no.schibstedsok.searchportal.view.config.SearchTab;
+import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -81,8 +84,6 @@ public final class SearchServlet extends HttpServlet {
 
     // Constructors --------------------------------------------------
 
-    // Constructors --------------------------------------------------
-
     // Public --------------------------------------------------------
 
     /** {@inheritDoc}
@@ -91,8 +92,6 @@ public final class SearchServlet extends HttpServlet {
     public void destroy() {
         super.destroy();
     }
-
-    // Package protected ---------------------------------------------
 
     // Package protected ---------------------------------------------
 
@@ -106,9 +105,9 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletResponse response)
                 throws ServletException, IOException {
 
-        final String url = request.getRequestURI() 
+        final String url = request.getRequestURI()
                 + (null != request.getQueryString() ? '?' + request.getQueryString() : "");
-        
+
         ACCESS_LOG.info("<search-servlet>"
                 + "<real-url>" + StringEscapeUtils.escapeXml(url) + "</real-url>"
                 + "</search-servlet>");
@@ -117,36 +116,46 @@ public final class SearchServlet extends HttpServlet {
         final ParametersDataObject parametersDO = datamodel.getParameters();
         final Site site = datamodel.getSite().getSite();
 
-        // Anything that hasn't gone through the DataModelFilter isn't valid.
-        //  redirects end up bouncing back in from the UrlRewriteFilter without ever reaching the client.
-        if(null != parametersDO && null != site){
+        // BaseContext providing SiteContext and ResourceContext.
+        //  We need it casted as a SiteContext for the ResourceContext code to be happy.
+        final SiteContext genericCxt = new SiteContext(){
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt,
+                    final String resource,
+                    final Properties properties) {
 
-            // BaseContext providing SiteContext and ResourceContext.
-            //  We need it casted as a SiteContext for the ResourceContext code to be happy.
-            final SiteContext genericCxt = new SiteContext(){
-                public PropertiesLoader newPropertiesLoader(
+                return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+            }
+            public DocumentLoader newDocumentLoader(
                         final SiteContext siteCxt,
                         final String resource,
-                        final Properties properties) {
+                        final DocumentBuilder builder) {
 
-                    return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
-                }
-                public DocumentLoader newDocumentLoader(
-                            final SiteContext siteCxt,
-                            final String resource,
-                            final DocumentBuilder builder) {
+                return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
 
-                    return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
-                }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return UrlResourceLoader.newBytecodeLoader(context, className);
+            }
 
-                public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                    return UrlResourceLoader.newBytecodeLoader(context, className);
-                }
+            public Site getSite() {
+                return site;
+            }
+        };
 
-                public Site getSite() {
-                    return site;
-                }
-            };
+        final DataModelFactory dmFactory;
+        try{
+            dmFactory = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, genericCxt));
+
+        }catch(SiteKeyedFactoryInstantiationException skfe){
+            throw new ServletException(skfe);
+        }
+
+        // DataModel's ControlLevel will be VIEW_CONSTRUCTION (safe setting set by DataModelFilter)
+        //  Bring it back to VIEW_CONSTRUCTION.
+        dmFactory.assignControlLevel(datamodel, ControlLevel.REQUEST_CONSTRUCTION);
+
+        try{
 
             if (!isEmptyQuery(datamodel, response, genericCxt)) {
 
@@ -167,7 +176,7 @@ public final class SearchServlet extends HttpServlet {
                 final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
                         ? c.getString()
                         : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
-                 
+
                 LOG.info("searchTabKey:" +searchTabKey);
 
                 final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
@@ -198,10 +207,14 @@ public final class SearchServlet extends HttpServlet {
                     }
                 }
             }
+
+        }finally{
+
+            // DataModel's ControlLevel will be REQUEST_CONSTRUCTION or RUNNING_QUERY_RESULT_HANDLING
+            //  Increment it onwards to VIEW_CONSTRUCTION.
+            dmFactory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
         }
     }
-
-    // Private -------------------------------------------------------
 
     // Private -------------------------------------------------------
 
@@ -375,7 +388,7 @@ public final class SearchServlet extends HttpServlet {
         if ("finn".equalsIgnoreCase(request.getParameter("finn"))) {
 
             final Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
-            final Map<String,ResultList<ResultItem>> res 
+            final Map<String,ResultList<ResultItem>> res
                     = (Map<String,ResultList<ResultItem>>)request.getAttribute("results");
 
             final ResultList<ResultItem> sr = res.get("yellowPages");
@@ -460,6 +473,12 @@ public final class SearchServlet extends HttpServlet {
         if(null == output || !"opensearch".equalsIgnoreCase(output.getString())){
 
             try {
+
+                // DataModel's ControlLevel will be REQUEST_CONSTRUCTION
+                //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
+                DataModelFactory
+                        .valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, genericCxt))
+                        .assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
 
                 final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
 

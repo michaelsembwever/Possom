@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.datamodel;
 
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -140,12 +141,15 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      */
     public abstract <T> T instantiate(final Class<T> cls, DataObject.Property... properties);
     
-    /** Lets the datamodel instance know that it has moved on and is now being accessed by the next level in the 
+    /** Lets the datamodel instance know that it has moved on and is now being accessed by a different level in the 
      * control process stack.
+     * 
+     * <b>This method is only to be used by SESAT classes, not skin implementations!</b>
+     * 
      ** @param datamodel 
      * @return 
      */
-    public abstract DataModel incrementControlLevel(final DataModel datamodel);
+    public abstract DataModel assignControlLevel(final DataModel datamodel, final ControlLevel controlLevel);
 
     // Package protected ---------------------------------------------
 

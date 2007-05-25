@@ -15,7 +15,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataNode;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
@@ -102,12 +102,12 @@ final class DataModelFactoryImpl extends DataModelFactory{
         }
     }
 
-    public DataModel incrementControlLevel(final DataModel datamodel) {
+    public DataModel assignControlLevel(final DataModel datamodel, final ControlLevel controlLevel){
 
         final BeanDataModelInvocationHandler handler 
-                = (BeanDataModelInvocationHandler) java.lang.reflect.Proxy.getInvocationHandler(datamodel);
+                = (BeanDataModelInvocationHandler) Proxy.getInvocationHandler(datamodel);
         
-        handler.incrementControlLevel();
+        handler.setControlLevel(controlLevel);
         
         return datamodel;
     }

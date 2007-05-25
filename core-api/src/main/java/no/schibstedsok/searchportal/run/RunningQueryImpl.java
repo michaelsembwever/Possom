@@ -20,13 +20,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
@@ -229,9 +228,20 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
 
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
-
+                    
         try {
 
+            final DataModelFactory dataModelFactory =  DataModelFactory
+                    .valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, context, new SiteContext(){
+                        public Site getSite(){
+                            return datamodel.getSite().getSite();
+                        }
+                    }));
+
+            // DataModel's ControlLevel will be RUNNING_QUERY_CONSTRUCTION
+            //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
+            dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_CONSTRUCTION);
+            
             final Collection<Callable<ResultList<? extends ResultItem>>> commands 
                     = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
 
@@ -339,6 +349,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             allCancelled = commands.size() > 0;
             boolean hitsToShow = false;
                 
+            
+            // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
+            //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
+            dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
+            
             final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results =
                     SearchCommandExecutorFactory
                     .getController(context.getSearchMode().getExecutor())
@@ -361,6 +376,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for(Callable<ResultList<? extends ResultItem>> command : commands){
                 allCancelled &= ((SearchCommand)command).handleCancellation();
             }
+            
+            // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
+            //  Increment it onwards to RUNNING_QUERY_RESULT_HANDLING.
+            dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_RESULT_HANDLING);
 
             if( !allCancelled ){
 

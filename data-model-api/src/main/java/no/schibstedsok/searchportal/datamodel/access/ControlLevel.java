@@ -15,72 +15,64 @@ package no.schibstedsok.searchportal.datamodel.access;
  */
 public enum ControlLevel {
     /**
-     * 
+     * Default state the DataModel is created in.
      */
     DATA_MODEL_CONSTRUCTION,
     /**
-     * 
+     * The state while in http filters or the search servlet.
      */
     REQUEST_CONSTRUCTION,
     /**
-     * 
+     * The state while the RunningQuery is being constructed.
      */
     RUNNING_QUERY_CONSTRUCTION,
     /**
-     * 
+     * The state while the SearchCommand is being constructed.
      */
     SEARCH_COMMAND_CONSTRUCTION,
     /**
-     * 
-     */
-    SEARCH_COMMAND_QUERY_TRANSFORMATION,
-    /**
-     * 
+     * The state while SearchCommands are being executed.
      */
     SEARCH_COMMAND_EXECUTION,
     /**
-     * 
-     */
-    SEARCH_COMMAND_RESULT_HANDLING,
-    /**
-     * 
+     * The state while RunningQuery result handlers are being processed.
      */
     RUNNING_QUERY_RESULT_HANDLING,
     /**
-     * 
+     * The state while jsps and velocity templates are being executed.
      */
     VIEW_CONSTRUCTION;
     
 
-    /**
-     * 
-     * @return 
-     */
-    public ControlLevel next(){
-        
-        switch(this){
-            case DATA_MODEL_CONSTRUCTION: 
-                return REQUEST_CONSTRUCTION;
-            case REQUEST_CONSTRUCTION: 
-                return RUNNING_QUERY_CONSTRUCTION;
-            case RUNNING_QUERY_CONSTRUCTION: 
-                return SEARCH_COMMAND_CONSTRUCTION;
-            case SEARCH_COMMAND_CONSTRUCTION:
-                return SEARCH_COMMAND_QUERY_TRANSFORMATION;
-            case SEARCH_COMMAND_QUERY_TRANSFORMATION:
-                return SEARCH_COMMAND_EXECUTION;
-            case SEARCH_COMMAND_EXECUTION:
-                return SEARCH_COMMAND_RESULT_HANDLING;
-            case SEARCH_COMMAND_RESULT_HANDLING:
-                return RUNNING_QUERY_RESULT_HANDLING;
-            case RUNNING_QUERY_RESULT_HANDLING:
-                return VIEW_CONSTRUCTION;
-            case VIEW_CONSTRUCTION:
-                // a new request
-                return REQUEST_CONSTRUCTION;
-                
-            default:
-                throw new IllegalStateException("WTF?!");
-        }
-    }
+//    /**
+//     * 
+//     * @return 
+//     */
+//    public ControlLevel next(){
+//        
+//        switch(this){
+//            case DATA_MODEL_CONSTRUCTION: 
+//                return REQUEST_CONSTRUCTION;
+//            case REQUEST_CONSTRUCTION: 
+//                return RUNNING_QUERY_CONSTRUCTION;
+//            case RUNNING_QUERY_CONSTRUCTION: 
+//                return SEARCH_COMMAND_CONSTRUCTION;
+//            case SEARCH_COMMAND_CONSTRUCTION:
+//                return SEARCH_COMMAND_QUERY_TRANSFORMATION;
+//            case SEARCH_COMMAND_QUERY_TRANSFORMATION:
+//                return SEARCH_COMMAND_EXECUTION;
+//            case SEARCH_COMMAND_EXECUTION:
+//                return SEARCH_COMMAND_RESULT_HANDLING;
+//            case SEARCH_COMMAND_RESULT_HANDLING:
+//                return RUNNING_QUERY_RESULT_HANDLING;
+//            case RUNNING_QUERY_RESULT_HANDLING:
+//                return VIEW_CONSTRUCTION;
+//            case VIEW_CONSTRUCTION:
+//                // a new request
+//                return REQUEST_CONSTRUCTION;
+//                
+//            default:
+//                throw new IllegalStateException("WTF?!");
+//        }
+//    }
 }

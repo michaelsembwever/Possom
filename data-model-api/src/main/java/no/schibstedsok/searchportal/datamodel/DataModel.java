@@ -154,7 +154,7 @@ public interface DataModel extends Serializable{
      * @param key 
      * @param value 
      */
-    @AccessAllow({SEARCH_COMMAND_RESULT_HANDLING})
+    @AccessAllow({SEARCH_COMMAND_EXECUTION})
     void setSearch(final String key, final SearchDataObject value);
     
     // JunkYardDataObject ------------------------------------------------------------
