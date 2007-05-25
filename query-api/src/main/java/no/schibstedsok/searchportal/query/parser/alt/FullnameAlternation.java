@@ -50,7 +50,6 @@ public final class FullnameAlternation extends AbstractAlternation {
     }
 
     /** {@inherit} **/
-    @Override
     public Clause alternate(final Clause clause) {
         
         final PredicateFinder finder = new PredicateFinder();
