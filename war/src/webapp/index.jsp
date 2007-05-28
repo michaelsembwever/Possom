@@ -13,7 +13,7 @@
     String format(String verticalName)  {
 
         String s = "<tr><td>";
-        s = 
+        return s;
 
 
 
