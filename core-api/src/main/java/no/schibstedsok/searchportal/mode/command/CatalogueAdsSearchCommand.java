@@ -259,12 +259,12 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         String completeQuery = null;
 
         if (whichQueryToRun == QueryType.GEO) {
-            query = super.getTransformedQuery().replaceAll(" ", "").replace("\"","")
-            + queryGeoString.replaceAll(" ", "");
+            query = originalQuery
+            + queryGeoString.replaceAll("\\W", "");
             
             
         } else {
-            query = super.getTransformedQuery().replaceAll(" ", "").replace("\"","")
+            query = originalQuery
             + DOMESTIC_SEARCH;
             
         }
