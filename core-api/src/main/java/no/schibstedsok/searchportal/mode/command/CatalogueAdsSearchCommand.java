@@ -102,6 +102,11 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             originalQuery = super.getTransformedQuery().replaceAll("\\W", "").toLowerCase();
         }
         
+        LOG.info("CatalogueAdsSearch Debug output");
+        LOG.info("Who: "+originalQuery);
+        LOG.info("Where: "+queryGeoString);
+        LOG.info("Q: "+getQuery().getQueryString());
+        
     }
 
     /**
@@ -157,8 +162,6 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         whichQueryToRun = QueryType.GEO;
         firstQueryResult = (ResultList<ResultItem>) super.execute();
 
-        LOG.info("Found "+firstQueryResult.getHitCount()+" sponsed links");
-
         if (firstQueryResult.getHitCount() < 5) {
 
             // Build the search result to return from this method
@@ -168,7 +171,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             for (ResultItem item : firstQueryResult.getResults()) {
             
                 Pattern p = Pattern.compile("(^|;)"+originalQuery+queryGeoString+"(;|$)");
-
+                
                 int i = 0;
                 boolean found = false;
                 for(; i < 5 ; i++){
@@ -228,7 +231,6 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             } // end for
 
             firstQueryResult.removeResults();
-            LOG.info("Cleared original result.");
 
             for(int i= searchResults.length-1; 0 <= i;  --i){
                 final ResultItem item = searchResults[i];
@@ -239,7 +241,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             }
 
             firstQueryResult.setHitCount(firstQueryResult.getResults().size());
-            
+            LOG.info("Resulting in "+firstQueryResult.getHitCount()+" sponsor links");
         }
 
         return firstQueryResult;
@@ -259,12 +261,12 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         String completeQuery = null;
 
         if (whichQueryToRun == QueryType.GEO) {
-            query = super.getTransformedQuery().replaceAll(" ", "").replace("\"","")
-            + queryGeoString.replaceAll(" ", "");
+            query = originalQuery
+            + queryGeoString.replaceAll("\\W", "");
             
             
         } else {
-            query = super.getTransformedQuery().replaceAll(" ", "").replace("\"","")
+            query = originalQuery
             + DOMESTIC_SEARCH;
             
         }

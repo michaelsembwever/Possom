@@ -412,6 +412,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     protected String getSortBy() {
         String sortBy = super.getSortBy();
         
+        LOG.info("foundKeywordInQuery: "+foundKeywordInQuery);
+        LOG.info("foundCompanyNameInQuery: "+foundCompanyNameInQuery);
+        
         sortBy = foundKeywordInQuery?SORTBY_KEYWORD:foundCompanyNameInQuery?SORTBY_COMPANYNAME:sortBy;
         
         if ("name".equalsIgnoreCase(userSortBy)) {
@@ -475,6 +478,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             
             foundCompanyNameInQuery=true;
         }
+        
+        
+        LOG.info("Known predicates: "+clause.getKnownPredicates());
 
         if(hasNotWordCharacters){
 
