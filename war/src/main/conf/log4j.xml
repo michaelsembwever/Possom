@@ -20,6 +20,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
 
+    <appender name="LOG_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="LOG_APPEND"/>
+    </appender>
+    
     <appender name="ERROR_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.error"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -30,7 +34,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
         </layout>
     </appender>
-
+    
     <appender name="ACCESS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.access"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
@@ -41,6 +45,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern"
                    value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
+    </appender>
+    
+    <appender name="ACCESS_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="ACCESS_APPEND"/>
     </appender>
 
     <appender name="DUMP_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
@@ -65,6 +73,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
                    value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
+    
+    <appender name="SALES_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="SALES_APPEND"/>
+    </appender>
 
     <appender name="MARKETING_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.marketing"/>
@@ -77,6 +89,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
                    value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
+    
+    <appender name="MARKETING_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="MARKETING_APPEND"/>
+    </appender>
 
     <appender name="PRODUCT_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.product"/>
@@ -88,6 +104,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern"
                    value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
+    </appender>
+    
+    <appender name="PRODUCT_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="PRODUCT_APPEND"/>
     </appender>
 
     <appender name="STATISTICS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
@@ -102,6 +122,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
 
+    <appender name="STATISTICS_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="STATISTICS_APPEND"/>
+    </appender>
+    
     <appender name="ANALYSIS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.analysis"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -114,6 +138,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
 
+    <appender name="ANALYSIS_APPEND_ASYNC" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="ANALYSIS_APPEND"/>
+    </appender>
+    
     <appender name="INITIALISATION_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.initialisations"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -127,7 +155,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
 
     <logger name="no.schibstedsok.Access" additivity="false">
         <level value="ALL"/>
-        <appender-ref ref="ACCESS_APPEND"/>
+        <appender-ref ref="ACCESS_APPEND_ASYNC"/>
     </logger>
 
     <logger name="no.schibstedsok.Dump" additivity="false">
@@ -137,27 +165,27 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
 
     <logger name="no.schibstedsok.Sales" additivity="false">
         <level value="ALL"/>
-        <appender-ref ref="SALES_APPEND"/>
+        <appender-ref ref="SALES_APPEND_ASYNC"/>
     </logger>
 
     <logger name="no.schibstedsok.Marketing" additivity="false">
         <level value="ALL"/>
-        <appender-ref ref="MARKETING_APPEND"/>
+        <appender-ref ref="MARKETING_APPEND_ASYNC"/>
     </logger>
 
     <logger name="no.schibstedsok.Statistics" additivity="false">
         <level value="ALL"/>
-        <appender-ref ref="STATISTICS_APPEND"/>
+        <appender-ref ref="STATISTICS_APPEND_ASYNC"/>
     </logger>
 
     <logger name="no.schibstedsok.searchportal.analyzer.Analysis" additivity="false">
         <level value="ALL"/>
-        <appender-ref ref="ANALYSIS_APPEND"/>
+        <appender-ref ref="ANALYSIS_APPEND_ASYNC"/>
     </logger>
 
     <logger name="no.schibstedsok.Product" additivity="false">
         <level value="ALL"/>
-        <appender-ref ref="PRODUCT_APPEND"/>
+        <appender-ref ref="PRODUCT_APPEND_ASYNC"/>
     </logger>
 
     <!-- Loggers involved in core initialisation of the engine -->
@@ -187,19 +215,13 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </logger>
 
     <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
-    <logger name="org.apache">
-        <level value="INFO"/>
-    </logger>
-    <logger name="httpclient.wire">
-        <level value="INFO"/>
-    </logger>
-    <logger name="com.opensymphony.oscache">
-        <level value="INFO"/>
-    </logger>
+    <logger name="org.apache"><level value="INFO"/></logger>
+    <logger name="httpclient.wire"><level value="INFO"/></logger>
+    <logger name="com.opensymphony.oscache"><level value="INFO"/></logger>
 
     <root>
         <level value="@log.level@"/>
         <appender-ref ref="ERROR_APPEND"/>
-        <appender-ref ref="LOG_APPEND"/>
+        <appender-ref ref="LOG_APPEND_ASYNC"/>
     </root>
 </log4j:configuration>
