@@ -34,8 +34,14 @@ public class SlashTrimStringDirective extends Directive {
     public boolean render(InternalContextAdapter internalContextAdapter,
                           Writer writer,
                           Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+        String trimAfter = "/";
 
-        if (node.jjtGetNumChildren() != 1) {
+        if (node.jjtGetNumChildren() == 2) {
+           final Object nodeTwo = node.jjtGetChild(1).value(internalContextAdapter);
+           if(nodeTwo != null) {
+            trimAfter =  nodeTwo.toString();
+           }
+        }else if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - Wrong number of arguments");
             return false;
         }
@@ -48,13 +54,13 @@ public class SlashTrimStringDirective extends Directive {
 
             }
         final String originalString = nodeValue.toString();
-        final int index = originalString.lastIndexOf("/");
+        final int index = originalString.lastIndexOf(trimAfter);
         if(index == -1)
         {
             writer.write(originalString);
         }
         else{
-            writer.write(originalString.substring(index+1,originalString.length()));
+            writer.write(originalString.substring(index+trimAfter.length(),originalString.length()));
         }
         return true;
     }
