@@ -83,7 +83,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
                 getCurrentOffset(1),
                 siteFilter);
 
-        LOG.info("Using " + url);
+        DUMP.info("Using " + url);
 
         final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
 

@@ -86,7 +86,7 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
      */
     protected final Document getXmlResult() throws IOException, SAXException {
         final String url = createRequestURL();
-        LOG.info("Using " + url);
+        DUMP.info("Using " + url);
         return client.getXmlDocument(url);
     }
 

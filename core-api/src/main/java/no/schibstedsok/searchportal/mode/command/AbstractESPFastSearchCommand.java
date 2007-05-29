@@ -214,7 +214,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             modifyQuery(query);
 
-            LOG.info(query);
+            DUMP.info(query);
 
             result = searchView.search(query);
 
