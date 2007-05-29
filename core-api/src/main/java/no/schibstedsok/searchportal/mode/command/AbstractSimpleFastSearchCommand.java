@@ -77,7 +77,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private static final String ERR_FAST_FAILURE = " suffered from a FAST error ";
     private static final String ERR_EXECUTE_FAILURE = "execute() failed";
     private static final String DEBUG_FAST_SEARCH_ENGINE = "Creating Fast Engine to ";
-    private static final String DEBUG_QUERY_DUMP = "QUERY DUMP: ";
     private static final String DEBUG_EXECUTE_QR_URL = "execute() QueryServerURL=";
     private static final String DEBUG_EXECUTE_COLLECTIONS = "execute() Collections=";
     private static final String DEBUG_EXECUTE_QUERY = "execute() Query=";
@@ -422,7 +421,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             }
 
-            LOG.info(DEBUG_QUERY_DUMP + fastQuery);
+            DUMP.info(fastQuery);
 
             final FastSearchResult<? extends ResultItem> searchResult = collectResults(result);
 

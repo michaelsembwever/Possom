@@ -64,6 +64,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
+    protected static final Logger DUMP = Logger.getLogger("no.schibstedsok.searchportal.Dump");
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_TRANSFORMED_QUERY_USED
@@ -76,7 +77,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     // Attributes ----------------------------------------------------
 
     /**
-     * The context to work against. *
+     * The context to work against.
      */
     protected final Context context;
     private transient Query query = null;
