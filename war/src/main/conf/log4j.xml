@@ -162,7 +162,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <appender-ref ref="ACCESS_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.searchportal.Dump" additivity="false">
+    <logger name="no.schibstedsok.searchportal.Dump">
         <level value="ALL"/>
         <appender-ref ref="DUMP_APPEND_ASYNC"/>
     </logger>
