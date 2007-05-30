@@ -13,7 +13,7 @@
     <c:choose>
         <%-- Use any tab layout's custom front page if the query object does not exist --%>
         <c:when test="${DataModel.query.query.blank && !empty tab.layout.front}">
-            <search:velocity template="/fragments/layout/frontpages/${tab.layout.front}"/>
+            <search:velocity template="/pages/${tab.layout.front}"/>
         </c:when>
         <%-- Use any tab layout's custom main page --%>
         <c:when test="${!empty tab.layout.main}">
