@@ -1,4 +1,4 @@
-// Copyright (2007) Schibsted Søk AS
+// Copyright (2007) Schibsted SÃ¸k AS
 package no.schibstedsok.searchportal.view.velocity;
 
 import org.apache.velocity.runtime.directive.Directive;

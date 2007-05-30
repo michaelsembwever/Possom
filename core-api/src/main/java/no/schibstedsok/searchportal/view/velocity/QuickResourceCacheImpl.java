@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted S¿k AS
+/* Copyright (2005-2007) Schibsted SÃ¸k AS
  *
  * Created on May 11, 2007, 8:16:37 PM
  */
