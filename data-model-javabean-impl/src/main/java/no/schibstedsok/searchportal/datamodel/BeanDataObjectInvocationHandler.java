@@ -18,11 +18,12 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.searchportal.datamodel.BeanDataModelInvocationHandler.DataModelBeanContextSupport;
 import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
@@ -62,14 +63,12 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     private final boolean immutable;
 
     // properties: the only part of this class that be immutable and reused
-    protected final List<Property> properties = new ArrayList<Property>();
+    protected final List<Property> properties = new CopyOnWriteArrayList<Property>();
 
     protected final BeanContext context;
 
-    private final Map<Method, InvocationTarget> invocationTargetCache = new HashMap<Method, InvocationTarget>();
-    private final Map<Method, Method> supportMethodCache = new HashMap<Method, Method>();
-
-    //private final ReentrantReadWriteLock invocationTargetCacheLock = new ReentrantReadWriteLock();
+    private final Map<Method,InvocationTarget> invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>();
+    private final Map<Method,Method> supportMethodCache = new ConcurrentHashMap<Method,Method>();
 
     // Static --------------------------------------------------------
 
