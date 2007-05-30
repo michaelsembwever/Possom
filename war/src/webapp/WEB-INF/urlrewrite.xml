@@ -8,7 +8,7 @@
     Description:
         Purpose of the document follows.
 -->
-<urlrewrite>
+<urlrewrite decode-using="null">
     <!-- Global rewrites applicable to every skin (sitesearch and country!) -->
 
     <!-- tomcat puts in the name of the welcome page -->
