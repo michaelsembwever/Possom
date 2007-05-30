@@ -24,17 +24,6 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <appender-ref ref="LOG_APPEND"/>
     </appender>
     
-    <appender name="ERROR_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="@log.directory@/@log.file@.error"/>
-        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
-        <param name="Append" value="true"/>
-        <param name="Threshold" value="ERROR"/>
-        <param name="encoding" value="UTF-8"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
-        </layout>
-    </appender>
-    
     <appender name="ACCESS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.access"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
@@ -225,7 +214,6 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
 
     <root>
         <level value="@log.level@"/>
-        <appender-ref ref="ERROR_APPEND"/>
         <appender-ref ref="LOG_APPEND_ASYNC"/>
     </root>
 </log4j:configuration>
