@@ -218,7 +218,7 @@
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/kart.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a>
+                    <a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a><span class="betaNavbar">beta</span>
                 </div>
             </div>
             <div id="navToggleHide">    
