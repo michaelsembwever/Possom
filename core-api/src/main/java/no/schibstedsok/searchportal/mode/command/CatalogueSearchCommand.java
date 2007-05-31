@@ -79,8 +79,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     /** boolean flags to which get set during visitor pass.
      *  used by getSortBy to determin which rank profile to use.
      */
-    private boolean foundCompanyNameInQuery=false;
-    private boolean foundKeywordInQuery=false;
+    private Boolean whoQueryIsCompanyName = null;
+    private Boolean whoQueryIsKeyword = null;
     
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
@@ -260,7 +260,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     }
 
     /**
-     *  Todo: Javadoc.
      */
     @Override
     protected Query getQuery(){
@@ -269,7 +268,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     }
 
     /**
-     *  Todo: Javadoc.
      */
     @Override
     protected TokenEvaluationEngine getEngine(){
@@ -410,19 +408,19 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected String getSortBy() {
-        String sortBy = super.getSortBy();
         
-        sortBy = foundKeywordInQuery?SORTBY_KEYWORD:foundCompanyNameInQuery?SORTBY_COMPANYNAME:sortBy;
+        final String sortBy;
         
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
         }else if("kw".equalsIgnoreCase(userSortBy)){
             sortBy = SORTBY_KEYWORD;
-        }
-        
-        final ParametersDataObject pdo = datamodel.getParameters();
-        if(GeoSearchUtil.isGeoSearch(pdo)){
+        }else if(GeoSearchUtil.isGeoSearch(datamodel.getParameters())){    
             sortBy="iypgeosortable";
+        }else{
+             sortBy = whoQueryIsKeyword
+                     ? SORTBY_KEYWORD
+                     : whoQueryIsCompanyName ? SORTBY_COMPANYNAME : super.getSortBy();
         }
         return sortBy;
     }
@@ -464,18 +462,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         final boolean hasNotWordCharacters = m.find();
         
-        // check if this is a known keyword.
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)){
-            foundKeywordInQuery=true;
-        }
-        
-        // check if this is a known company name.
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYRANK)
-                || clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)){
-            
-            foundCompanyNameInQuery=true;
-        }
-
+        checkQueryForKeyword(clause);
+        checkQueryForCompanyname(clause);
+  
         if(hasNotWordCharacters){
 
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + transformedTerm + '\"'));
@@ -550,6 +539,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * @param clause the clause to process.
      */
     protected void visitImpl(final PhraseClause clause) {
+       
+        checkQueryForKeyword(clause);
+        checkQueryForCompanyname(clause);
 
         if (!BLANK.equals(getTransformedTerms().get(clause))) {
 
@@ -559,27 +551,49 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      * {@inheritDoc}
-     * Todo: Javadoc
      */
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
+        
+        checkQueryForKeyword(clause);
+        checkQueryForCompanyname(clause);
 
-        appendToQueryRepresentation('(');
+        final int originalLength = getQueryRepresentationLength();
+        
         clause.getFirstClause().accept(this);
-        final int queryRepLength = getQueryRepresentationLength();
-
+        final int firstClauseLength = getQueryRepresentationLength();
 
         clause.getSecondClause().accept(this);
+        final int secondClauseLength = getQueryRepresentationLength();
 
-        final boolean queryRepGrown = queryRepLength > 0 && getQueryRepresentationLength() > queryRepLength;
+        final boolean queryRepGrown = firstClauseLength > 0 && secondClauseLength > firstClauseLength;
 
         if(queryRepGrown && !(clause.getSecondClause() instanceof NotClause)){
             // we know the query representation got longer which means we need to insert the operator
-            insertToQueryRepresentation(queryRepLength, QL_AND);
+            insertToQueryRepresentation(firstClauseLength, QL_AND);
         }
-        appendToQueryRepresentation(')');
+        if(secondClauseLength > originalLength){
+            insertToQueryRepresentation(originalLength, "(");
+            appendToQueryRepresentation(')');
+        }
     }
 
+    private void checkQueryForKeyword(final Clause clause){
+       
+        // check if this is a known keyword.
+        if(null == whoQueryIsKeyword){
+            whoQueryIsKeyword = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD);
+        }
+    }
+   
+    private void checkQueryForCompanyname(final Clause clause){
+    
+        // check if this is a known company name.
+        if(null == whoQueryIsCompanyName){
+            whoQueryIsCompanyName = clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+        }
+    }
+   
     /**
      * Query builder for creating the geographic query.
      *

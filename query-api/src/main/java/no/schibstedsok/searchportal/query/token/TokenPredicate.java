@@ -33,8 +33,8 @@ public enum TokenPredicate implements Predicate {
     EXACT_COMPANYENRICHMENT (Type.FAST),
     COMPANY_KEYWORD (Type.FAST),
     COMPANY_KEYWORD_RESERVED (Type.FAST),
-    COMPANYRANK (Type.FAST),
-    EXACT_COMPANYRANK (Type.FAST),
+//    COMPANYRANK (Type.FAST), // not used!
+//    EXACT_COMPANYRANK (Type.FAST), // not used!
     DISEASE (Type.FAST),
     ENGLISHWORDS (Type.FAST),
     GEOLOCAL (Type.FAST),
