@@ -281,10 +281,18 @@ public final class DataModelFilter implements Filter {
                 break;
             }
         }
-
+        
         if (null != value && null != queryStringValue) {
 
             try {
+
+        LOG.debug("param-plain      " + value);
+        LOG.debug("param-utf8Encode " + URLEncoder.encode(value, "UTF-8"));
+        LOG.debug("param-isoEncode  " + URLEncoder.encode(value, "ISO-8859-1"));
+        LOG.debug("url-plain        " + queryStringValue);
+        LOG.debug("url-utf8Dencode  " + URLDecoder.decode(queryStringValue, "UTF-8"));
+        LOG.debug("url-isoDencode   " + URLDecoder.decode(queryStringValue, "ISO-8859-1"));
+        
                 final String encodedReqValue = URLEncoder.encode(value, "UTF-8")
                         .replaceAll("[+]", "%20")
                         .replaceAll("[*]", "%2A");
