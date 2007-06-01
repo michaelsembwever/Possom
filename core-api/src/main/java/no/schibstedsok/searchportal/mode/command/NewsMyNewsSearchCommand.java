@@ -3,15 +3,12 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.NewsMyNewsCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import org.apache.log4j.Logger;
-
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import org.apache.log4j.Logger;
 
-;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 
