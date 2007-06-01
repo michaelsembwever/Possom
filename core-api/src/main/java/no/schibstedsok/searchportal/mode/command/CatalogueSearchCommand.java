@@ -79,8 +79,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     /** boolean flags to which get set during visitor pass.
      *  used by getSortBy to determin which rank profile to use.
      */
-    private boolean whoQueryIsCompanyName;
-    private boolean whoQueryIsKeyword;
+    private Boolean whoQueryIsCompanyName = null;
+    private Boolean whoQueryIsKeyword = null;
     
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
@@ -418,7 +418,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }else if(GeoSearchUtil.isGeoSearch(datamodel.getParameters())){    
             sortBy="iypgeosortable";
         }else{
-             sortBy = whoQueryIsKeyword
+
+            // must have values, to prevent NPE in infopage.
+            if(whoQueryIsKeyword==null) whoQueryIsKeyword = false;
+            if(whoQueryIsCompanyName==null) whoQueryIsCompanyName = false;
+            
+            sortBy = whoQueryIsKeyword
                      ? SORTBY_KEYWORD
                      : whoQueryIsCompanyName ? SORTBY_COMPANYNAME : super.getSortBy();
         }
@@ -581,7 +586,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private void checkQueryForKeyword(final Clause clause){
        
         // check if this is a known keyword.
-        if(!whoQueryIsKeyword){
+        if(null == whoQueryIsKeyword){
             whoQueryIsKeyword = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD);
         }
     }
@@ -589,7 +594,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private void checkQueryForCompanyname(final Clause clause){
     
         // check if this is a known company name.
-        if(!whoQueryIsCompanyName){
+        if(null == whoQueryIsCompanyName){
             whoQueryIsCompanyName = clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
         }
     }
