@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author
+ * @author Geir H. Pettersen (T-Rank)
  * @version $Id$
  */
 public class NewsEspSearchCommand extends NavigatableESPFastCommand {
@@ -116,17 +116,25 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
             if (medium == null || medium.length() == 0) {
                 medium = config.getDefaultMedium();
             }
-            if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium) && getQueryRepresentationLength() > 0) {
-                insertToQueryRepresentation(0, "and(");
-                appendToQueryRepresentation(',');
-                appendToQueryRepresentation(config.getMediumPrefix());
-                appendToQueryRepresentation(':');
-                appendToQueryRepresentation(medium);
-                appendToQueryRepresentation(')');
-                LOG.debug("Added medium");
-            } else {
-                LOG.debug("Did not add medium on rootclause: medium=" + medium + ", transformedQuery=" + getQueryRepresentationLength());
+            if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium)) {
+                if (getQueryRepresentationLength() > 0) {
+                    insertToQueryRepresentation(0, "and(");
+                    appendToQueryRepresentation(',');
+                    appendToQueryRepresentation(config.getMediumPrefix());
+                    appendToQueryRepresentation(':');
+                    appendToQueryRepresentation(medium);
+                    appendToQueryRepresentation(')');
+                    LOG.debug("Added medium");
+                    return;
+                } else if (getQuery().getQueryString() != null && getQuery().getQueryString().trim().equals("*")) {
+                    appendToQueryRepresentation(config.getMediumPrefix());
+                    appendToQueryRepresentation(':');
+                    appendToQueryRepresentation(medium);
+                    LOG.debug("Added medium");
+                    return;
+                }
             }
+            LOG.debug("Did not add medium on rootclause: medium=" + medium + ", queryLength=" + getQueryRepresentationLength());
         }
     }
 
