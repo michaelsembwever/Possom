@@ -13,13 +13,23 @@ import org.w3c.dom.Element;
 public class MapInfoPageQueryTransformerConfig extends AbstractQueryTransformerConfig{
     private String parameterName = "contentid";
     private String prefix = "recordid";
-   
+    private String filterPrefix = "ywpostnr";
+    private String filterParameterName = "fp";
+            
     public final String getParameterName() {
         return parameterName;
     }
     
     public final String getPrefix() {
         return prefix;
+    }
+    
+    public final String getFilterPrefix() {
+        return filterPrefix;
+    }
+    
+    public final String getFilterParameterName() {
+        return filterParameterName;
     }
     
     @Override
@@ -30,6 +40,14 @@ public class MapInfoPageQueryTransformerConfig extends AbstractQueryTransformerC
         
         if (element.hasAttribute("prefix")) {
             this.prefix = element.getAttribute("prefix");
+        }
+    
+        if (element.hasAttribute("filter-prefix")) {
+            this.filterPrefix = element.getAttribute("filter-prefix");
+        }
+        
+        if (element.hasAttribute("filter-parameter-name")) {
+            this.filterParameterName = element.getAttribute("filter-parameter-name");
         }
         
         return this;
