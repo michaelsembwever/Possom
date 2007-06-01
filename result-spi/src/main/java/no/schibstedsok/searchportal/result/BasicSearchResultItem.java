@@ -169,8 +169,12 @@ public class BasicSearchResultItem implements ResultItem {
             }else{
                 result = true;
                 for(String fieldName : other.getFieldNames()){
-                   result &= other.getObjectField(fieldName).equals(getObjectField(fieldName));
-               }
+                    if (other.getObjectField(fieldName) == null) {
+                        result &= null == getObjectField(fieldName);
+                    } else {
+                        result &= other.getObjectField(fieldName).equals(getObjectField(fieldName));
+                    }
+                }
             }
         }else{
             result = super.equals(obj);
