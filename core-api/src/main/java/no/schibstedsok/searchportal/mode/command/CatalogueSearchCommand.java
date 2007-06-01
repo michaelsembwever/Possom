@@ -79,8 +79,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     /** boolean flags to which get set during visitor pass.
      *  used by getSortBy to determin which rank profile to use.
      */
-    private Boolean whoQueryIsCompanyName = null;
-    private Boolean whoQueryIsKeyword = null;
+    private boolean whoQueryIsCompanyName;
+    private boolean whoQueryIsKeyword;
     
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
@@ -581,7 +581,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private void checkQueryForKeyword(final Clause clause){
        
         // check if this is a known keyword.
-        if(null == whoQueryIsKeyword){
+        if(!whoQueryIsKeyword){
             whoQueryIsKeyword = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD);
         }
     }
@@ -589,7 +589,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private void checkQueryForCompanyname(final Clause clause){
     
         // check if this is a known company name.
-        if(null == whoQueryIsCompanyName){
+        if(!whoQueryIsCompanyName){
             whoQueryIsCompanyName = clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
         }
     }
