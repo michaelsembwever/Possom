@@ -76,7 +76,7 @@ public final class MapDataObjectSupport<V> implements MapDataObject<V>{
 
     public V getValue(final String key){
 
-        return map.get(key);
+        return null != key ? map.get(key) : null;
     }
 
     public void setValue(final String key, final V value){

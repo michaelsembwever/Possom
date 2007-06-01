@@ -101,7 +101,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             return super.invoke(obj, method, args);
 
         } catch (IllegalArgumentException iae) {
-            LOG.debug("property not one of our own", iae);
+            LOG.debug("property not one of our own. " + iae.getMessage());
         }
 
         // try non-(dataObject|dataNode) delegated-properties
