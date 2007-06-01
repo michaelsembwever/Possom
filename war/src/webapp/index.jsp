@@ -202,7 +202,7 @@
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/blogg.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span>
+                    <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
