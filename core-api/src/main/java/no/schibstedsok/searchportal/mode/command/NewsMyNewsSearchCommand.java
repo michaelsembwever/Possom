@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
+;
+
 /**
  * 
  * @author geir
@@ -29,7 +31,8 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
     }
 
     public ResultList<? extends ResultItem> execute() {
-        
+
+        LOG.debug("entering execute()");
         final NewsMyNewsCommandConfig config = getSearchConfiguration();
         String myNews = (String) context.getDataModel().getJunkYard().getValue("myNews");
         LOG.debug("Cookie is: " + myNews);
@@ -58,32 +61,43 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 } else if (type.equals("art")) {
                     commandName = "article" + position;
                 }
+
                 if (commandName != null) {
                     try {
                         LOG.debug("Waiting for " + commandName);
                         collectedResult = getSearchResult(commandName, datamodel);
-                        if (collectedResult != null 
-                                && collectedResult.getResults().size() > 0
-                                && collectedResult.getResults().get(0) instanceof ResultList<?>) {
-                            
-                            ResultList<ResultItem> searchResultItem 
-                                    = (ResultList<ResultItem>) collectedResult.getResults().get(0);
-                            
-                            final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
-                            if (lastSubPos > 1) {
-                                final ResultList<ResultItem> subSearchResults = new BasicSearchResult<ResultItem>();
-                                subSearchResults.setHitCount(collectedResult.getHitCount());
-                                searchResultItem.addResult(subSearchResults);
-                                for (int i = 1; i < lastSubPos; i++) {
-                                    subSearchResults.addResult(collectedResult.getResults().get(i));
+
+
+                        if (collectedResult != null
+                                && collectedResult.getResults().size() > 0) {
+                               // Article 
+                            if(!(collectedResult.getResults().get(0) instanceof ResultList<?>)) {
+                                ResultItem searchResultItem = collectedResult.getResults().get(0);
+                                searchResultItem = searchResultItem.addField("type", type);
+                                mergedResult.addResult(searchResultItem);
+                            } else {
+                                ResultList<ResultItem> searchResultItem
+                                        = (ResultList<ResultItem>) collectedResult.getResults().get(0);
+
+                                final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
+                                if (lastSubPos > 1) {
+                                    final ResultList<ResultItem> subSearchResults = new BasicSearchResult<ResultItem>();
+                                    subSearchResults.setHitCount(collectedResult.getHitCount());
+                                    searchResultItem.addResult(subSearchResults);
+                                    for (int i = 1; i < lastSubPos; i++) {
+                                        subSearchResults.addResult(collectedResult.getResults().get(i));
+                                    }
                                 }
+                                searchResultItem = searchResultItem.addField("type", type);
+                                if (type.equals("sak") || type.equals("person")) {
+                                    searchResultItem = searchResultItem.addField("newsCase", matcher.group(1));
+                                }
+                                mergedResult.addResult(searchResultItem);
+                                LOG.debug("Collected " + searchResultItem.getField("type") + ":" + searchResultItem.getField("title"));
                             }
-                            searchResultItem = searchResultItem.addField("type", type);
-                            if (type.equals("sak") || type.equals("person")) {
-                                searchResultItem = searchResultItem.addField("newsCase", matcher.group(1));
-                            }
-                            mergedResult.addResult(searchResultItem);
-                            LOG.debug("Collected " + searchResultItem.getField("type") + ":" + searchResultItem.getField("title"));
+
+                        } else {
+                            LOG.debug("Command " + commandName + " is empty or wrong type: " + collectedResult);
                         }
                     } catch (InterruptedException e) {
                         LOG.error("Command was interrupted", e);
@@ -103,6 +117,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
             return mergedResult;
         } else {
             
+            LOG.info("Could not find cookie");
             ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
             searchResult.setHitCount(0);
             return searchResult;
