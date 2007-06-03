@@ -48,7 +48,7 @@ public class BasicSearchResultItem implements ResultItem {
      */
     public BasicSearchResultItem addField(final String field, final String value) {
 
-        fields.put(field, value);
+        fields.put(field, StringChopper.chop(value, -1));
         return this;
     }
 
@@ -60,12 +60,7 @@ public class BasicSearchResultItem implements ResultItem {
     public String getField(final String field) {
 
         final String fieldValue = (String) fields.get(field);
-
-        if (fieldValue != null && (fieldValue.equals("  ") || fieldValue.equals(" "))) {
-            return null;
-        } else {
-            return fieldValue;
-        }
+        return fieldValue != null && fieldValue.trim().length() > 0 ? fieldValue : null;
     }
 
     /**
@@ -110,15 +105,10 @@ public class BasicSearchResultItem implements ResultItem {
     public String getField(final String field, final int maxLength) {
         
         final String fieldValue = (String) fields.get(field);
-
-        if (fieldValue != null) {
-            if (fieldValue.equals("  ")) {
-                return null;
-            } else {
-                return StringChopper.chop(fieldValue, maxLength);
-            }
-        }
-        return fieldValue;
+        
+        return fieldValue != null && fieldValue.trim().length() > 0
+                ? StringChopper.chop(fieldValue, maxLength)
+                : null;
     }
 
     /** Returns a defensive copy of the field names existing in this resultItem.

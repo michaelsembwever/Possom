@@ -72,7 +72,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchCommand {
+    public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchCommand {
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
@@ -670,7 +670,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 final ResultItem item = createResultItem(document);
                 searchResult.addResult(item);
             } catch (NullPointerException e) {
-                if (LOG.isDebugEnabled()) LOG.debug("Error finding document " + e);
+                LOG.debug("Error finding document", e);
                 return searchResult;
             }
         }

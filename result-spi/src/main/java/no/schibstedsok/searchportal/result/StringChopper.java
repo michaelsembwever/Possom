@@ -9,11 +9,9 @@
 package no.schibstedsok.searchportal.result;
 
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringEscapeUtils;
 
 /** My favourite dish of ChopSuey.
  * 
@@ -27,96 +25,133 @@ public final class StringChopper {
     private static final Logger LOG = Logger.getLogger(StringChopper.class);
     
     private static final String DEBUG_CHOPSUEY = "Chopped it up to ";
-    private static final String MALFORMED_HTML_ESCAPING = "Malformed HTML. Escaping the entire thing: ";
 
     private static final Pattern openTag = Pattern.compile("<[^<]+>");
     private static final Pattern closeTag = Pattern.compile("</[^<]+>");
     private static final Pattern singleTag = Pattern.compile("<[^<]+/>");
-    private static final Pattern la = Pattern.compile("<");
-    private static final Pattern ra = Pattern.compile(">");
 
     // Attributes ----------------------------------------------------
     
     // Static --------------------------------------------------------
     
     /**
-     * 
+     * null safe.
      * @param s 
      * @param length 
      * @return 
      */
     public static String chop(final String s, final int length) {
         
-        final StringBuilder choppedString = new StringBuilder();
-        
-        
-        if (s.length() <= length){
-            choppedString.append(s);
+        if(null != s){
             
-        } else {
-            
-            // chop the string first
-            choppedString.append(s.substring(0, length));
-                    
-            // if we chopped a tag in half remove the half left over.
-            int laCount = 0, raCount = 0, laOriginalCount = 0, raOriginalCount = 0;
-            for( Matcher m = la.matcher(choppedString); m.find(); ++laCount);
-            for( Matcher m = ra.matcher(choppedString); m.find(); ++raCount);
-            for( Matcher m = la.matcher(s); m.find(); ++laOriginalCount);
-            for( Matcher m = ra.matcher(s); m.find(); ++raOriginalCount);
-            // if we have more left than right arrows AND the original string was balanced
-            if( laCount > raCount && laOriginalCount == raOriginalCount){
-                choppedString.setLength(choppedString.lastIndexOf("<"));
+            final StringBuilder choppedString = new StringBuilder(s);
+
+            int laOriginalCount = 0, raOriginalCount = 0;
+            for(int i = 0; i < choppedString.length(); ++i){ 
+                if( '<' == choppedString.charAt(i) ){ ++laOriginalCount; }
+                else if( '>' == choppedString.charAt(i) ){ ++raOriginalCount; }
             }
-            
-            // append the dot-dot-dot
-            switch( choppedString.length() >0 ? choppedString.charAt( choppedString.length() - 1 ) : ' '){
-                case '.':
-                    if( !choppedString.toString().endsWith("...")){
-                        if( choppedString.toString().endsWith("..")){
-                            choppedString.append('.');
-                        }else {
-                            choppedString.append("..");
-                        }
-                    }
-                    break;
-                default:
-                    final int lastSpace = choppedString.lastIndexOf(" ");
 
-                    if (lastSpace >= 0) {
-                        choppedString.setLength(lastSpace+1);
-                    }
-                    choppedString.append("...");
-                    break;
-	    }
-            
+            // if we have more left than right arrows 
+            while(laOriginalCount > raOriginalCount){
+                choppedString.append('>');
+                ++raOriginalCount;
+            }        
 
-        }
+            if(length >= 0 && choppedString.length() > length){
 
-        // balance opening tags if the chop happened inbetween open and close tags.
-        final LinkedList<String> tags = new LinkedList<String>();
+                // chop the string first
+                choppedString.setLength(length);
 
-        final Matcher matcher = openTag.matcher(choppedString);
-        while( matcher.find() ){
-            if( closeTag.matcher(matcher.group()).find()) {
-                try {
-                    tags.removeFirst();
-                } catch (NoSuchElementException ex) {
-                    LOG.warn(MALFORMED_HTML_ESCAPING + s);
-                    return StringEscapeUtils.escapeHtml(s); 
+                // if we chopped a tag in half remove the half left over.
+                int laCount = 0, raCount = 0;
+                for(int i = 0; i < choppedString.length(); ++i){ 
+                    if( '<' == choppedString.charAt(i) ){ ++laCount; }
+                    else if( '>' == choppedString.charAt(i) ){ ++raCount; }
                 }
-            }else if( !singleTag.matcher(matcher.group()).find() ){
-                tags.addFirst(matcher.group());
-            }
-        }
 
-        for(String tag : tags){
-            choppedString.append(tag.replaceFirst("<","</"));
-        }        
-        
-        LOG.trace(DEBUG_CHOPSUEY + choppedString);
-        
-        return choppedString.toString();
+                // if we have more left than right arrows
+                if( laCount > raCount ){
+                    choppedString.setLength(choppedString.lastIndexOf("<"));
+                }
+
+                // append the dot-dot-dot
+                switch( choppedString.length() >0 ? choppedString.charAt( choppedString.length() - 1 ) : ' '){
+                    case '.':
+                        final String toString = choppedString.toString();
+                        if( !toString.endsWith("...")){
+                            if( toString.endsWith("..")){
+                                choppedString.append('.');
+                            }else {
+                                choppedString.append("..");
+                            }
+                        }
+                        break;
+                    default:
+                        final int lastSpace = choppedString.lastIndexOf(" ");
+
+                        if (lastSpace >= 0) {
+                            choppedString.setLength(lastSpace + 1);
+                        }
+                        choppedString.append("...");
+                        break;
+                }
+
+            }
+
+            if(0 < laOriginalCount){
+                // balance opening tags if the chop happened inbetween open and close tags.
+                //LOG.debug("");LOG.debug("Balancing " + choppedString);
+
+                final LinkedList<String> tags = new LinkedList<String>();
+                final LinkedList<int[]> tagsToRemove = new LinkedList<int[]>();
+
+                final Matcher matcher = openTag.matcher(choppedString);
+
+                while( matcher.find() ){
+                    if( closeTag.matcher(matcher.group()).find()) {
+
+                        if(tags.size() > 0 && matcher.group().equalsIgnoreCase(tags.getFirst().replaceFirst("<", "</"))){
+
+                            //LOG.debug("Found closing tag   " + matcher.group());
+                            tags.removeFirst();
+
+                        }else{
+
+                            // we've found a premature closing tag. remove it.
+                            //LOG.debug("Found unmatched closing tag " + matcher.group());
+                            tagsToRemove.addFirst(new int[]{matcher.start(), matcher.end()});
+                        }
+
+                    }else if( singleTag.matcher(matcher.group()).find() ){
+
+                        //LOG.debug("Ignoring single tag " + matcher.group());
+                    }else{
+
+                        //LOG.debug("Found opening tag  " + matcher.group());
+                        tags.addFirst(matcher.group());
+                    }
+                }
+
+                // remove tags that had no opening
+                for(int[] startEnd : tagsToRemove){
+
+                    //LOG.debug("Removing " + matcher.group());
+                    choppedString.delete(startEnd[0], startEnd[1]);
+                }
+
+                // add tags to balance
+                for(String tag : tags){
+
+                    //LOG.debug("Adding " + tag.replaceFirst("<", "</"));
+                    choppedString.append(tag.replaceFirst("<", "</"));
+                }        
+            }
+            LOG.trace(DEBUG_CHOPSUEY + choppedString);
+
+            return choppedString.toString();
+        }
+        return null;
     }
     
     // Constructors --------------------------------------------------
