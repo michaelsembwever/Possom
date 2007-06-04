@@ -25,7 +25,7 @@
                 The server encountered an unexpected condition which prevented it from fulfilling the request.</p>
         </div>
         <hr/>
-        <c:out var="${error}"/>
+        <c:out value="${error}"/>
     </body>
 </html>    
 </c:if>
