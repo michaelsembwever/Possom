@@ -481,7 +481,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         result.addField(FIELD_TRANSFORMED_QUERY,
                 null != getTransformedQuerySesamSyntax() && getTransformedQuerySesamSyntax().length() > 0
                         ? getTransformedQuerySesamSyntax()
-                        : datamodel.getQuery().getString());
+                        : getQuery().getQueryString());
 
         // Build the context each result handler will need.
         final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
