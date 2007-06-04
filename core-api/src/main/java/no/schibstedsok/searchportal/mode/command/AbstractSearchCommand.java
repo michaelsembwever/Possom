@@ -479,7 +479,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // XXX following is deprecated. use instead datamodel.getSearch(name).getQuery().getString()
         result.addField(FIELD_TRANSFORMED_QUERY,
-                getTransformedQuerySesamSyntax().length() > 0
+                null != getTransformedQuerySesamSyntax() && getTransformedQuerySesamSyntax().length() > 0
                         ? getTransformedQuerySesamSyntax()
                         : datamodel.getQuery().getString());
 
