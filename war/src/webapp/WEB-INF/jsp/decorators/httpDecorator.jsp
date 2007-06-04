@@ -11,7 +11,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <search:velocity template="/fragments/head"/>
+    <search:include include="head-element"/>
 </head>
 
 <body>
