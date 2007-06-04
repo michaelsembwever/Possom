@@ -462,10 +462,13 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(final LeafClause clause) {
 
         final String transformedTerm = getTransformedTerms().get(clause);
-        final Pattern p = Pattern.compile("\\.|\\-");
-        final Matcher m = p.matcher(getTransformedTerms().get(clause));
 
-        final boolean hasNotWordCharacters = m.find();
+        boolean hasNotWordCharacters = false;
+        if(null != transformedTerm){
+            for(char c : transformedTerm.toCharArray()){
+                hasNotWordCharacters |= '.' == c || '-' == c;
+            }
+        }
         
         checkQueryForKeyword(clause);
         checkQueryForCompanyname(clause);
