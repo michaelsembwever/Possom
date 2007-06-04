@@ -66,7 +66,10 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             
         } catch (InvocationTargetException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
-            // IllegalArgumentException are often mean an underlying exception
+            // IllegalArgumentException often mean an underlying exception.
+            //   If the underlying exception has a blank stacktrace it's most likely a sun bug
+            //   when running hotspot compiled methods http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4966410
+            //   The JVM flag -XX:-OmitStackTraceInFastThrow fixes it.
             for (Throwable t = ex; t != null; t = t.getCause()) {
                 LOG.error(t.getMessage(), t);
             }
