@@ -277,7 +277,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         final StringBuilder filter = new StringBuilder();
 
         /* If navigator root command and blankQuery, set default navigator */
-        if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories")) {
+        if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories") && !getParameters().containsKey("allhits")) {
             if (useAllChannels) {
                 filter.append(addChannelCategoryNavigator(false));
             } else {
