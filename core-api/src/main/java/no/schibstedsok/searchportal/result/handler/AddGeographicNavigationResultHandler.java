@@ -16,8 +16,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Adds a navigatable geograpic modifier hirarcy. (Can not use FAST navigators since the have no knowlege
@@ -28,13 +30,12 @@ import java.util.List;
  */
 public class AddGeographicNavigationResultHandler implements ResultHandler {
     private static final Logger LOG = Logger.getLogger(AddGeographicNavigationResultHandler.class);
-    private LinkedHashMap<String, LinkedHashMap<String, List<String>>> geoMap;
+    private LinkedHashMap<String, Geo> geoMap;
 
     private final AddGeographicNavigationResultHandlerConfig config;
-    private static final String COUNTRYREGION_ELEMENT = "countryregion";
-    private static final String COUNTY_ELEMENT = "county";
-    private static final String MUNICIPALITY_ELEMENT = "municipality";
     private static final String NAME_ATTRIBUTE = "name";
+    private static final String GEO_ELEMENT = "geo";
+    private static final String KEY_ATTRIBUTE = "key";
 
 
     public AddGeographicNavigationResultHandler(ResultHandlerConfig config) {
@@ -48,7 +49,7 @@ public class AddGeographicNavigationResultHandler implements ResultHandler {
                     // This could happen more than once, but synchronize overhead would be on every call, so it ok.
                     geoMap = parseGeo(cxt, datamodel);
                 }
-                addGeoNavigators(datamodel, (FastSearchResult) cxt.getSearchResult());
+                addGeoNavigators(datamodel, (FastSearchResult) cxt.getSearchResult(), geoMap);
             } else {
                 LOG.error("Can not use " + AddGeographicNavigationResultHandler.class.getName() + " on a generic searchResult. Must be a " + FastSearchResult.class.getName());
             }
@@ -57,61 +58,39 @@ public class AddGeographicNavigationResultHandler implements ResultHandler {
         }
     }
 
-    private void addGeoNavigators(DataModel datamodel, FastSearchResult searchResult) {
+    private void addGeoNavigators(DataModel datamodel, FastSearchResult searchResult, LinkedHashMap<String, Geo> geoMap) {
         if (geoMap != null && geoMap.size() > 0) {
-            for (String countryRegion : geoMap.keySet()) {
-                searchResult.addModifier(config.getCountryRegionField(), new Modifier(countryRegion, -1, null));
-            }
-            StringDataObject selectedCountryRegion = datamodel.getParameters().getValue(config.getCountryRegionField());
-            if (selectedCountryRegion != null) {
-                LinkedHashMap<String, List<String>> countyMap = geoMap.get(selectedCountryRegion.getString());
-                if (countyMap != null && countyMap.size() > 0) {
-                    for (String county : countyMap.keySet()) {
-                        searchResult.addModifier(config.getCountyField(), new Modifier(county, -1, null));
-                    }
-                    StringDataObject selectedCounty = datamodel.getParameters().getValue(config.getCountyField());
-                    if (selectedCounty != null) {
-                        List<String> municList = countyMap.get(selectedCounty.getString());
-                        if (municList != null && municList.size() > 0) {
-                            for (String munic : municList) {
-                                searchResult.addModifier(config.getMunicipalityField(), new Modifier(munic, -1, null));
-                            }
-                        }
-                    }
+            for (Geo geo : geoMap.values()) {
+                LOG.debug("Adding geoNav: " + geo.getKey() + "=" + geo.getName());
+                searchResult.addModifier(geo.getKey(), new Modifier(geo.getName(), -1, null));
+                StringDataObject selectedSubItem = datamodel.getParameters().getValue(geo.getKey());
+                if (selectedSubItem != null && geo.getName().equals(selectedSubItem.getString())) {
+                    addGeoNavigators(datamodel, searchResult, geo.getSubelements());
                 }
             }
         }
     }
 
-    private LinkedHashMap<String, LinkedHashMap<String, List<String>>> parseGeo(Context cxt, DataModel datamodel) throws ParserConfigurationException {
+    private LinkedHashMap<String, Geo> parseGeo(Context cxt, DataModel datamodel) throws ParserConfigurationException {
         Document doc = getDocument(cxt, datamodel);
         final Element root = doc.getDocumentElement();
         return parseGeo(root);
     }
 
-    private LinkedHashMap<String, LinkedHashMap<String, List<String>>> parseGeo(Element root) {
-        final LinkedHashMap<String, LinkedHashMap<String, List<String>>> geoMap = new LinkedHashMap<String, LinkedHashMap<String, List<String>>>();
-        final List<Element> countryRegionElements = getDirectChildren(root, COUNTRYREGION_ELEMENT);
-        for (Element countryRegionElement : countryRegionElements) {
-            LinkedHashMap<String, List<String>> countyMap = null;
-            final List<Element> countyElements = getDirectChildren(countryRegionElement, COUNTY_ELEMENT);
-            if (countyElements.size() > 0) {
-                countyMap = new LinkedHashMap<String, List<String>>();
-                for (Element countyElement : countyElements) {
-                    ArrayList<String> municapalityList = null;
-                    final List<Element> municipalityElements = getDirectChildren(countryRegionElement, MUNICIPALITY_ELEMENT);
-                    if (municipalityElements.size() > 0) {
-                        municapalityList = new ArrayList<String>();
-                        for (Element municipalityElement : municipalityElements) {
-                            municapalityList.add(municipalityElement.getAttribute(NAME_ATTRIBUTE));
-                        }
-                    }
-                    countyMap.put(countyElement.getAttribute(NAME_ATTRIBUTE), municapalityList);
-                }
+    private LinkedHashMap<String, Geo> parseGeo(Element root) {
+        final List<Element> geoElements = getDirectChildren(root, GEO_ELEMENT);
+        if (geoElements.size() > 0) {
+            final LinkedHashMap<String, Geo> geoList = new LinkedHashMap<String, Geo>();
+            for (Element geoElement : geoElements) {
+                final Geo geo = new Geo();
+                geo.setKey(geoElement.getAttribute(KEY_ATTRIBUTE));
+                geo.setName(geoElement.getAttribute(NAME_ATTRIBUTE));
+                geo.setSubelements(parseGeo(geoElement));
+                geoList.put(geo.getName(), geo);
             }
-            geoMap.put(countryRegionElement.getAttribute(NAME_ATTRIBUTE), countyMap);
+            return geoList;
         }
-        return geoMap;
+        return null;
     }
 
     private List<Element> getDirectChildren(Element element, String elementName) {
@@ -136,5 +115,57 @@ public class AddGeographicNavigationResultHandler implements ResultHandler {
         DocumentLoader documentLoader = cxt.newDocumentLoader(dataModel.getSite(), config.getGeoXml(), builder);
         documentLoader.abut();
         return documentLoader.getDocument();
+    }
+
+    private static class Geo {
+        private String key;
+        private String name;
+        private LinkedHashMap<String, Geo> subelements;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public LinkedHashMap<String, Geo> getSubelements() {
+            return subelements;
+        }
+
+        public void setSubelements(LinkedHashMap<String, Geo> subelements) {
+            this.subelements = subelements;
+        }
+
+
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Geo geo = (Geo) o;
+
+            if (key != null ? !key.equals(geo.key) : geo.key != null) return false;
+            if (name != null ? !name.equals(geo.name) : geo.name != null) return false;
+            if (subelements != null ? !subelements.equals(geo.subelements) : geo.subelements != null) return false;
+
+            return true;
+        }
+
+        public int hashCode() {
+            int result;
+            result = (key != null ? key.hashCode() : 0);
+            result = 31 * result + (name != null ? name.hashCode() : 0);
+            result = 31 * result + (subelements != null ? subelements.hashCode() : 0);
+            return result;
+        }
     }
 }
