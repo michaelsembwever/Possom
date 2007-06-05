@@ -108,6 +108,11 @@ public final class SearchTab {
      * Holds the value of property absoluteOrdering.
      */
     private final boolean absoluteOrdering;
+
+    /**
+     * Holds the value of property displayCss.
+     */
+    private final boolean displayCss;
     
     /**
      * Holds the value of property executeOnBlank.
@@ -174,6 +179,7 @@ public final class SearchTab {
                 final List<String> css,
                 final List<String> javascript,
                 final boolean absoluteOrdering,
+                final boolean displayCss,
                 final boolean executeOnBlank,
                 final Layout layout){
 
@@ -199,11 +205,12 @@ public final class SearchTab {
                 : inherit != null ? inherit.adCommand : null;
         this.adLimit = adLimit >=0 || inherit == null ? adLimit : inherit.adLimit;
         this.adOnTop = adOnTop >=0 || inherit == null ? adOnTop : inherit.adOnTop;
+        this.displayCss = displayCss;
         if(inherit != null){
             // we cannot inherit navigators because there require a live reference to the applicable SearchTabFactory
             // but we do inherit enrichments and css
             this.enrichments.addAll(inherit.enrichments);
-            this.css.addAll(inherit.css);
+            this.css.addAll(inherit.css);            
         }
         this.rssResultName = rssResultName;
         this.css.addAll(css);
@@ -381,6 +388,14 @@ public final class SearchTab {
     }
     
     /**
+     * Getter for property displayCss
+     * @return 
+     */
+    public boolean isDisplayCss() {
+        return displayCss;
+    }    
+    
+    /**
      * Getter for property enrichments.
      * @return Value of property enrichments.
      */
@@ -467,7 +482,9 @@ public final class SearchTab {
         // XXX cache result
         final List<SearchTab> ancestry = new ArrayList<SearchTab>();
         for(SearchTab t = this; t != null; t = t.getInherit()){
-            ancestry.add(t);
+            if (t.displayCss) {
+                ancestry.add(t);
+            }
         }
         Collections.reverse(ancestry);
         return Collections.unmodifiableList(ancestry);

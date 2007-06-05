@@ -243,6 +243,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String[] css = allCss != null ? allCss.split(",") : new String[]{};
                 final String allJavascript = parseString(tabE.getAttribute("javascript"), null);
                 final String[] javascript = allJavascript != null ? allJavascript.split(",") : new String[]{};
+                final boolean displayCss = parseBoolean(tabE.getAttribute("display-css"), true);                
+                
                 // enrichment hints
                 final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
                 final Collection<SearchTab.EnrichmentHint> enrichments = new ArrayList<SearchTab.EnrichmentHint>();
@@ -333,9 +335,10 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null
                             ? inherit.isAbsoluteOrdering()
                             : false),
+                        parseBoolean(tabE.getAttribute("display-css"), true),
                         parseBoolean(tabE.getAttribute("execute-on-blank"), inherit != null
-                            ? inherit.isExecuteOnBlank()
-                            : true),
+                        ? inherit.isExecuteOnBlank()
+                        : true),
                         layout);
 
                 try{
