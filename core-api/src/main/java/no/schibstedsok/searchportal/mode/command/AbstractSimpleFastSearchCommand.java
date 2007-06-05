@@ -419,7 +419,6 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
             } catch (SearchEngineException fe) {
                 
                 LOG.error( getSearchConfiguration().getName() + ERR_FAST_FAILURE + '[' + fe.getErrorCode() + ']', fe);
-                LOG.error( "c=" + datamodel.getParameters().getValue("c").getString() + " query=" + getTransformedQuery() + " isBlank=" + datamodel.getQuery().getQuery().isBlank());
                 return new FastSearchResult(this);
 
             }
