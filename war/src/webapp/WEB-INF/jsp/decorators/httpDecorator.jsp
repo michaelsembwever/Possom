@@ -16,34 +16,34 @@
 
 <body>
 
-<%-- FIXME please remove the following scriptlet code from this jsp --%>
-<% // If velocity debug is turned on, display developer bar .
-    // TODO Move to wanted place or add show/hide function to the developerbar
-    if ("true".equals(System.getProperty("VELOCITY_DEBUG")) && !"true".equals(System.getProperty("VELOCITY_DEVELOPERBAR_HIDDEN"))) {
-        String loadPath = System.getProperty("VELOCITY_DEBUG_TEMPLATE_DIR");
-        if (loadPath == null) {
-            loadPath = "(URLResourceLoader)";
-        }
-%>
-<%
-    boolean VELOCITY_DEBUG_ON = "true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
-    String background = "#DDDDDD";
-    String color = "black";
-    String linkText = VELOCITY_DEBUG_ON ? "Off" : "On";
-%>
+<%-- FIXME please remove the following scriptlet code (on the right) from this jsp --%>
+                                                                                                                        <% // If velocity debug is turned on, display developer bar .
+                                                                                                                            // TODO Move to wanted place or add show/hide function to the developerbar
+                                                                                                                            if ("true".equals(System.getProperty("VELOCITY_DEBUG")) && !"true".equals(System.getProperty("VELOCITY_DEVELOPERBAR_HIDDEN"))) {
+                                                                                                                                String loadPath = System.getProperty("VELOCITY_DEBUG_TEMPLATE_DIR");
+                                                                                                                                if (loadPath == null) {
+                                                                                                                                    loadPath = "(URLResourceLoader)";
+                                                                                                                                }
+                                                                                                                        %>
+                                                                                                                        <%
+                                                                                                                            boolean VELOCITY_DEBUG_ON = "true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
+                                                                                                                            String background = "#DDDDDD";
+                                                                                                                            String color = "black";
+                                                                                                                            String linkText = VELOCITY_DEBUG_ON ? "Off" : "On";
+                                                                                                                        %>
 
-<div width="100%" style="font-size:12px;background-color:<%=background%>;border:1px solid #C0C0C0; color:<%=color%>">
-    DeveloperBar:
-    VelocityDebug: <a style="color: blue" href="/servlet/VelocityDebug?<%= request.getQueryString()%>"><%= linkText %>
-    </a>
-    |
-    TemplatePath:  <%= loadPath %>
-</div>
+                                                                                                                        <div width="100%" style="font-size:12px;background-color:<%=background%>;border:1px solid #C0C0C0; color:<%=color%>">
+                                                                                                                            DeveloperBar:
+                                                                                                                            VelocityDebug: <a style="color: blue" href="/servlet/VelocityDebug?<%= request.getQueryString()%>"><%= linkText %>
+                                                                                                                            </a>
+                                                                                                                            |
+                                                                                                                            TemplatePath:  <%= loadPath %>
+                                                                                                                        </div>
 
 
-<%
-    }
-%>
+                                                                                                                        <%
+                                                                                                                            }
+                                                                                                                        %>
 
 <search:include include="topBar"/>
 <search:include include="header"/>
