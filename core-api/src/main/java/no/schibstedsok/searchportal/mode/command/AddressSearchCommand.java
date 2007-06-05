@@ -45,7 +45,7 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
     public final ResultList<? extends ResultItem> execute() {
         
         if (datamodel.getQuery().getQuery().isBlank()) {
-            LOG.error("Trying to execute blank query: c=" + datamodel.getParameters().getValue("c").getString() + " id=" + context.getSearchConfiguration().getName());
+            LOG.error("Trying to execute blank query: c=" + datamodel.getParameters().getValue("c").getString() + " id=" + context.getSearchConfiguration().getName() + " query:" + getTransformedQuery());
             return new BasicSearchResult<ResultItem>();
         }
         
