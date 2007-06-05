@@ -123,6 +123,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                                         item.addField("source", nextSibling3.getTextContent());
                                     } else if (nextSibling3.getNodeName().equals("IMAGE")) {
                                         item.addField("preview", nextSibling3.getTextContent());
+                                    } else if (nextSibling3.getNodeName().equals("DOMAIN")) {
+                                        item.addField("videoDomain", nextSibling3.getTextContent());
                                     }
                                     nextSibling3 = nextSibling3.getNextSibling();
                                 }
