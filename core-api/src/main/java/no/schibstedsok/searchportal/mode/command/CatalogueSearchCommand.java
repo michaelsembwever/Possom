@@ -512,11 +512,11 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 if( ((OperationClause)longestCkr).getFirstClause() == clause ){
                     final String kwTerm = ckr.getTerm().replaceAll("\\(|\\)", "");
                     
-                    insertToQueryRepresentation(0, "(lemiypcfkeywords:\"^" + kwTerm + "$\") ANY ");
+                    insertToQueryRepresentation(0, "(lemiypcfkeywords:\"^" + kwTerm + "$\")) ANY (");
                 }
                 
                 appendToQueryRepresentation(
-                            "(iypcfnavn:" + transformedTerm + " ANY "
+                            "(iypcfphnavn:" + transformedTerm + " ANY "
                             + "lemiypcfkeywordslow:" + transformedTerm
                             + ')');  
 
