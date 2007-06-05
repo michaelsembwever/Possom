@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+
 import java.util.regex.Pattern;
 
 import no.fast.ds.search.ISearchParameters;
@@ -477,7 +478,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + transformedTerm + '\"'));
 
-        }else if(!BLANK.equals(transformedTerm)) {
+        }else if(!BLANK.equals(transformedTerm) && transformedTerm!=null) {
 
             final Query query = context.getDataModel().getQuery().getQuery();
 
