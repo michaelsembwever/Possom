@@ -31,34 +31,11 @@
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="<%= openSearchUrlStandard %>%>" />
         <script type="text/javascript" language="JavaScript" src="/javascript/external/prototype.js"></script>
-        <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/index.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/callAtIntervals.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/openSearch.js"></script>
     </head>
-
     <body>
-
-      <script type="text/javascript" language="javascript">
-            var openSearch = new OpenSearch(10, 10, 100, 30, displayOpenSearchInfo,
-                    '<%= openSearchUrlJavascript %>');
-
-            if (openSearch.browserSupports()) {
-                openSearch.run();
-            }
-            function displayOpenSearchInfo() {
-
-                var browser = navigator.appName;
-                var browserVersion1 = parseFloat(navigator.appVersion);
-                var browserVersion = navigator.appVersion;
-                var browserAgent = navigator.userAgent;
-
-               if (browserAgent.match("Firefox/2") == "Firefox/2") {
-                    document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" id=\"osFF\"><img src=\"/images/opensearch/opensearchbanner.png\" alt=\"opensearch\" /></a>")
-               } else if (browserAgent.match("MSIE 7") == "MSIE 7") {
-                   document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" id=\"osIE\"><img src=\"/images/opensearch/opensearchbanner.png\" alt=\"Opensearch\" /></a>")
-              }
-            }
-        </script>
         <img src="images/index/logo.png" id="logoIndex" width="215" height="61" alt="Sesamlogo" />
         <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
         <table id="searchbar" cellspacing="0" cellpadding="0">
