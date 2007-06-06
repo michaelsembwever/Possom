@@ -197,7 +197,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private WhoWhereSplit initialiseWhoWhere() {
 
         final CatalogueCommandConfig conf = (CatalogueCommandConfig) context.getSearchConfiguration();
-
+        if(datamodel.getParameters().getValue("who")!=null) LOG.info("datamodel.getParameters().getValue(who) is "+datamodel.getParameters().getValue("who"));
+            else LOG.info("datamodel.getParameters().getValue(who) is NULL");
+            
+        if(datamodel.getParameters().getValue("q")!=null) LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
+            else LOG.info("datamodel.getParameters().getValue(q) is NULL");
+        
         String whoParameter 
                 = datamodel.getParameters().getValue("who")!=null ? 
                     datamodel.getParameters().getValue("who").getString() : datamodel.getQuery().getString();
@@ -232,8 +237,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 splitQuery = ww;
             }
 
-            LOG.debug(DEBUG_SEARCHING_1 + splitQuery.getWho());
-            LOG.debug(DEBUG_SEARCHING_2 + splitQuery.getWhere());
         }
 
         return splitQuery;
@@ -329,13 +332,16 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         result.addResults(nyResultListe);
 
         // add the who and where fields (preferred over using them out of the junkyard)
-        result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
+        // WHY!? When displaying the infopage, getTransformedQuerySesamSyntax returns NULL.
+        // hmm. getQuery().getQueryString() always return the plain text search string for the query.
+        //result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
+        
+        result.addField(PARAMETER_NAME_WHAT, getQuery().getQueryString());
         result.addField(PARAMETER_NAME_WHERE, whereString);
         
-        // XXX deprecated approach
-        getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
-        getParameters().put(PARAMETER_NAME_WHERE, whereString);
-
+        LOG.debug(DEBUG_SEARCHING_1 + getQuery().getQueryString());
+        LOG.debug(DEBUG_SEARCHING_2 + whereString);
+               
         result.addField("sortBy",getSortBy());
         return result;
     }
