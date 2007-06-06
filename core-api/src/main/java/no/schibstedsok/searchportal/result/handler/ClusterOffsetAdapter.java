@@ -37,6 +37,7 @@ public class ClusterOffsetAdapter implements ResultHandler {
         } else {
             if (LOG.isDebugEnabled()) {
                 LOG.error("Can only adapt FastSearchResults");
+
             }
         }
     }
