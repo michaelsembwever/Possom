@@ -53,8 +53,14 @@ public class SlashTrimStringDirective extends Directive {
                 return true;
 
             }
-        final String originalString = nodeValue.toString();
-        final int index = originalString.lastIndexOf(trimAfter);
+        String originalString = nodeValue.toString();
+        int index = originalString.lastIndexOf(trimAfter);
+         // trim away trailing separator if it exists
+        if(index == originalString.length() -1)
+        {
+           originalString = originalString.substring(0,originalString.length() -1);
+           index = originalString.lastIndexOf(trimAfter);
+        }
         if(index == -1)
         {
             writer.write(originalString);
