@@ -9,21 +9,11 @@
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <%@ page import="no.schibstedsok.searchportal.site.Site"%>
 
-<%!
-    String format(String verticalName)  {
-
-        String s = "<tr><td>";
-        return s;
-
-
-
-    }
-%>
 <%
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
     String locale = site.getLocale().toString();
     String openSearchUrlStandard = "/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT";
-    String openSearchUrlJavascript = "http://sesam.no/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT";    
+    String openSearchUrlJavascript = "http://sesam.no/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT";    
 %>
 
 <search:velocity template="/pages/index"/>
@@ -44,30 +34,6 @@
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/callAtIntervals.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/openSearch.js"></script>
-
-        <script type="text/javascript" language="JavaScript"><!--
-
-            function strep(qtag) {
-                if (window.RegExp && window.encodeURIComponent) {
-                    var qlink=qtag.href;
-                    var qenc=encodeURIComponent(document.forms[0].q.value);
-                    if(qlink.indexOf("q=")!=-1){
-                        qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
-                    }else{
-                            qtag.href=qlink+"&q="+qenc;
-                    }
-                }
-                return 1;
-            }
-
-            function check() {
-                if(document.forms[0].q.value == ""){
-                        document.forms[0].q.focus();
-                        return false;
-                }
-            }
-            // -->
-        </script>
     </head>
 
     <body>
@@ -87,14 +53,12 @@
                 var browserAgent = navigator.userAgent;
 
                if (browserAgent.match("Firefox/2") == "Firefox/2") {
-                    document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" style=\"position:absolute; right:20px; padding-top:0px; text-decoration:none; border:none;\"><img src=\"/images/opensearch/opensearchbanner.png\" style=\"border:none;\" /></a>")
+                    document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" id=\"osFF\"><img src=\"/images/opensearch/opensearchbanner.png\" alt=\"opensearch\" /></a>")
                } else if (browserAgent.match("MSIE 7") == "MSIE 7") {
-                   document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" style=\"position:absolute; right:20px; top:0px; text-decoration:none; border:none;\"><img src=\"/images/opensearch/opensearchbanner.png\" style=\"border:none;\" /></a>")
+                   document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" id=\"osIE\"><img src=\"/images/opensearch/opensearchbanner.png\" alt=\"Opensearch\" /></a>")
               }
             }
         </script>
-      
-
         <img src="images/index/logo.png" id="logoIndex" width="215" height="61" alt="Sesamlogo" />
         <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
         <table id="searchbar" cellspacing="0" cellpadding="0">
