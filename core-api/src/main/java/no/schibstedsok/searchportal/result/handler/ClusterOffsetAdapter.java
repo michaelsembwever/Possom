@@ -35,7 +35,9 @@ public class ClusterOffsetAdapter implements ResultHandler {
                 searchResult.addField(config.getOffsetResultField(), Integer.toString(offsetInt));
             }
         } else {
-            LOG.error("Can only adapt FastSearchResults");
+            if (LOG.isDebugEnabled()) {
+                LOG.error("Can only adapt FastSearchResults");
+            }
         }
     }
 }
