@@ -70,20 +70,26 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
      */
     public String getQueryFilter(final JunkYardDataObject parameters) {
         StringBuilder filter = new StringBuilder();
+        int paramAddCount = 0;
         for (String paramField : config.getParamFields()) {
             String paramValue = (String) parameters.getValue(paramField);
             LOG.debug("Adding param from datamodel: " + paramField + "=" + paramValue);
             if (paramValue != null) {
+                if (paramAddCount > 0) {
+                    filter.append(" and ");
+                }
                 filter.append(paramField).append(':');
                 filter.append("equals(");
                 filter.append('\"').append(paramValue).append("\")");
-                filter.append(" and ");
+                paramAddCount++;
             }
         }
         String clusterId = (String) parameters.getValue(config.getClusterIdField());
         if (clusterId != null) {
+            filter.append(" and ");
             filter.append(config.getClusterField()).append(":").append('\"').append(clusterId).append("\" ");
-        } else {
+        } else if (config.isClusterFilter()) {
+            filter.append(" and ");
             filter.append(config.getClusterField()).append(":range(1,max) ");
             if (config.getMaxAgeInDays() > 0) {
                 Calendar calendar = Calendar.getInstance();
@@ -92,6 +98,7 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
                 filter.append("and ").append(config.getTimestampField()).append(':');
                 filter.append("range(").append(sdf.format(calendar.getTime())).append(",max)");
             }
+
         }
         return filter.toString();
     }

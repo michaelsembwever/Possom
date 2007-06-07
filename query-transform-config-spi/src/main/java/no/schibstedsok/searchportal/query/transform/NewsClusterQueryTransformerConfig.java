@@ -20,12 +20,15 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
     private static final String CLUSTER_ID_FIELD = "cluster-id-field";
     private static final String TIMESTAMP_FIELD = "timestamp-field";
     private static final String MAX_AGE_IN_DAYS = "max-age-in-days";
+    private static final String CLUSTER_FILTER = "cluster-filter";
 
     private String[] paramFields;
     private String timestampField;
     private String clusterField;
     private String clusterIdField = "clusterId";
     private int maxAgeInDays = 0;
+    private boolean clusterFilter = true;
+
 
     /**
      * @return
@@ -44,6 +47,14 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
 
     public String getClusterIdField() {
         return clusterIdField;
+    }
+
+    public boolean isClusterFilter() {
+        return clusterFilter;
+    }
+
+    public void setClusterFilter(boolean clusterFilter) {
+        this.clusterFilter = clusterFilter;
     }
 
     /**
@@ -68,6 +79,13 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
         if (maxAge != null && maxAge.length() > 0) {
             maxAgeInDays = Integer.parseInt(maxAge);
         }
+        final String clusterFilterString = element.getAttribute(CLUSTER_FILTER);
+        if (clusterFilterString != null && clusterFilterString.equalsIgnoreCase("false")) {
+            clusterFilter = false;
+        } else {
+            clusterFilter = true;
+        }
+
         return this;
     }
 
