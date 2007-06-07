@@ -66,10 +66,10 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         } catch (UnsupportedEncodingException e) {
             LOG.error(e);
         }
-        final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "standard";
-        String biasDate = "100";
-        if (sortByString.equals("datetime")) {
-            biasDate = "0";
+        final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "datetime";
+        String biasDate = "0";
+        if (sortByString.equals("standard")) {
+            biasDate = "100";
         }
         return "/partnerapi/user/?uid=7d51d9&Anylanguage=true&Adultfilter=true&BiasDate="+biasDate+"&Start="+getCurrentOffset(1)+"&text="+query;
     }
@@ -99,7 +99,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                             } else if (nextSibling2.getNodeName().equals("autn:title")) {
                                 item.addField("title", nextSibling2.getTextContent());
                             } else if (nextSibling2.getNodeName().equals("autn:summary")) {
-                                item.addField("summary", nextSibling2.getTextContent());
+                                item.addField("summary", nextSibling2.getTextContent().replaceAll(" Date.*html", "..."));
                             } else if (nextSibling2.getNodeName().equals("autn:date")) {
                                 // age function  ?
                                 long videoDate = new Date(Long.parseLong(nextSibling2.getTextContent())*1000).getTime();
