@@ -43,8 +43,10 @@ public interface ResultItem extends Serializable{
      * There is no guarantee that this instance is altered.
      * This allows implementations to be immutable if they choose to be.
      * 
+     * Use addObjectField to add a non-html string into the result.
+     *  
      * @param name 
-     * @param value 
+     * @param value html formatted string. html to display must be escaped.
      * @return 
      */
     ResultItem addField(String name, String value);

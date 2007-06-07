@@ -39,7 +39,6 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     // Attributes ----------------------------------------------------
 
     private final BeanDataObjectInvocationHandler<T> dataObject;
-    private final BeanContext context = new BeanContextSupport();
 
     // Static --------------------------------------------------------
 
@@ -51,14 +50,24 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
 
     // Constructors --------------------------------------------------
 
+    /** Creates a new instance of ProxyBeanDataObject */
+    private BeanDataNodeInvocationHandler(
+            final Class<T> cls,
+            final PropertyInitialisor properties)
+                throws IntrospectionException {
+        
+        this(cls, new BeanContextSupport(), properties);
+    }
+    
     /**
      * Creates a new instance of ProxyBeanDataObject
      */
     protected BeanDataNodeInvocationHandler(
             final Class<T> cls,
+            final BeanContext context,
             final PropertyInitialisor properties) throws IntrospectionException {
 
-        super(cls, properties.properties);
+        super(cls, context, properties.properties);
 
         // make context to contextChild bindings
         for (PropertyDescriptor property : properties.childPropertyDescriptors) {
@@ -85,12 +94,14 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     @Override
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
 
+        assureAccessAllowed(method);
+        
         // try our dataObject|dataNode delegated-properties
         try {
             return super.invoke(obj, method, args);
 
         } catch (IllegalArgumentException iae) {
-            LOG.debug("property not one of our own", iae);
+            LOG.debug("property not one of our own. " + iae.getMessage());
         }
 
         // try non-(dataObject|dataNode) delegated-properties

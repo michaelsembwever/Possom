@@ -418,6 +418,10 @@ public final class SiteLocatorFilter implements Filter {
         request.setAttribute("startTime", START_TIME);
         MDC.put(Site.NAME_KEY, site.getName());
         MDC.put("UNIQUE_ID", getRequestId(request));
+        
+        /* Setting default encoding */
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
     }
 
     private void doAfterProcessing(final ServletRequest request, final ServletResponse response)

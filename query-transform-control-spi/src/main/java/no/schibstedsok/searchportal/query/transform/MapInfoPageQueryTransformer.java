@@ -37,4 +37,15 @@ public class MapInfoPageQueryTransformer extends AbstractQueryTransformer {
         
         return originalQuery; 
     }
+    
+    public String getFilter() {
+        Map<String,StringDataObject> requestParameters = getContext().getDataModel().getParameters().getValues();
+       
+        if(requestParameters != null && requestParameters.containsKey(config.getParameterName()) &&
+                requestParameters.containsKey(config.getFilterParameterName())){
+            return "+" + config.getFilterPrefix() + ":'" + requestParameters.get(config.getFilterParameterName()).getString() + "'";
+        }
+        
+        return "";
+    }
 }

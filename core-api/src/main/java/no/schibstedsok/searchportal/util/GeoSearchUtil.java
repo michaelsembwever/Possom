@@ -162,7 +162,7 @@ public class GeoSearchUtil {
             final int minX = Integer.parseInt((String) pdo.getValue(MIN_X).getString());
             final int maxX = Integer.parseInt((String) pdo.getValue(MAX_X).getString());
             
-            double restrictedRadius =  ((maxX - minX) / 2) / 1000;
+            double restrictedRadius =  ((maxX - minX) / 2) / 1000.0;
             return Double.toString(restrictedRadius);
         }
         throw new IllegalArgumentException("Given requestParameter object must contain parameters: minX,maxX,minY,maxY");

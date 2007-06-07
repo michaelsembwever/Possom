@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+
 import java.util.regex.Pattern;
 
 import no.fast.ds.search.ISearchParameters;
@@ -79,8 +80,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     /** boolean flags to which get set during visitor pass.
      *  used by getSortBy to determin which rank profile to use.
      */
-    private boolean foundCompanyNameInQuery=false;
-    private boolean foundKeywordInQuery=false;
+    private Boolean whoQueryIsCompanyName = null;
+    private Boolean whoQueryIsKeyword = null;
     
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
@@ -196,7 +197,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private WhoWhereSplit initialiseWhoWhere() {
 
         final CatalogueCommandConfig conf = (CatalogueCommandConfig) context.getSearchConfiguration();
-
+        if(datamodel.getParameters().getValue("who")!=null) LOG.info("datamodel.getParameters().getValue(who) is "+datamodel.getParameters().getValue("who"));
+            else LOG.info("datamodel.getParameters().getValue(who) is NULL");
+            
+        if(datamodel.getParameters().getValue("q")!=null) LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
+            else LOG.info("datamodel.getParameters().getValue(q) is NULL");
+        
         String whoParameter 
                 = datamodel.getParameters().getValue("who")!=null ? 
                     datamodel.getParameters().getValue("who").getString() : datamodel.getQuery().getString();
@@ -231,8 +237,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 splitQuery = ww;
             }
 
-            LOG.debug(DEBUG_SEARCHING_1 + splitQuery.getWho());
-            LOG.debug(DEBUG_SEARCHING_2 + splitQuery.getWhere());
         }
 
         return splitQuery;
@@ -260,7 +264,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     }
 
     /**
-     *  Todo: Javadoc.
      */
     @Override
     protected Query getQuery(){
@@ -269,7 +272,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     }
 
     /**
-     *  Todo: Javadoc.
      */
     @Override
     protected TokenEvaluationEngine getEngine(){
@@ -330,13 +332,16 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         result.addResults(nyResultListe);
 
         // add the who and where fields (preferred over using them out of the junkyard)
-        result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
+        // WHY!? When displaying the infopage, getTransformedQuerySesamSyntax returns NULL.
+        // hmm. getQuery().getQueryString() always return the plain text search string for the query.
+        //result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
+        
+        result.addField(PARAMETER_NAME_WHAT, getQuery().getQueryString());
         result.addField(PARAMETER_NAME_WHERE, whereString);
         
-        // XXX deprecated approach
-        getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
-        getParameters().put(PARAMETER_NAME_WHERE, whereString);
-
+        LOG.debug(DEBUG_SEARCHING_1 + getQuery().getQueryString());
+        LOG.debug(DEBUG_SEARCHING_2 + whereString);
+               
         result.addField("sortBy",getSortBy());
         return result;
     }
@@ -410,22 +415,24 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected String getSortBy() {
-        String sortBy = super.getSortBy();
         
-        LOG.info("foundKeywordInQuery: "+foundKeywordInQuery);
-        LOG.info("foundCompanyNameInQuery: "+foundCompanyNameInQuery);
-        
-        sortBy = foundKeywordInQuery?SORTBY_KEYWORD:foundCompanyNameInQuery?SORTBY_COMPANYNAME:sortBy;
+        final String sortBy;
         
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
         }else if("kw".equalsIgnoreCase(userSortBy)){
             sortBy = SORTBY_KEYWORD;
-        }
-        
-        final ParametersDataObject pdo = datamodel.getParameters();
-        if(GeoSearchUtil.isGeoSearch(pdo)){
+        }else if(GeoSearchUtil.isGeoSearch(datamodel.getParameters())){    
             sortBy="iypgeosortable";
+        }else{
+
+            // must have values, to prevent NPE in infopage.
+            if(whoQueryIsKeyword==null) whoQueryIsKeyword = false;
+            if(whoQueryIsCompanyName==null) whoQueryIsCompanyName = false;
+            
+            sortBy = whoQueryIsKeyword
+                     ? SORTBY_KEYWORD
+                     : whoQueryIsCompanyName ? SORTBY_COMPANYNAME : super.getSortBy();
         }
         return sortBy;
     }
@@ -462,31 +469,22 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(final LeafClause clause) {
 
         final String transformedTerm = getTransformedTerms().get(clause);
-        final Pattern p = Pattern.compile("\\.|\\-");
-        final Matcher m = p.matcher(getTransformedTerms().get(clause));
 
-        final boolean hasNotWordCharacters = m.find();
-        
-        // check if this is a known keyword.
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)){
-            foundKeywordInQuery=true;
+        boolean hasNotWordCharacters = false;
+        if(null != transformedTerm){
+            for(char c : transformedTerm.toCharArray()){
+                hasNotWordCharacters |= '.' == c || '-' == c;
+            }
         }
         
-        // check if this is a known company name.
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYRANK)
-                || clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)){
-            
-            foundCompanyNameInQuery=true;
-        }
-        
-        
-        LOG.info("Known predicates: "+clause.getKnownPredicates());
-
+        checkQueryForKeyword(clause);
+        checkQueryForCompanyname(clause);
+  
         if(hasNotWordCharacters){
 
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + transformedTerm + '\"'));
 
-        }else if(!BLANK.equals(transformedTerm)) {
+        }else if(!BLANK.equals(transformedTerm) && transformedTerm!=null) {
 
             final Query query = context.getDataModel().getQuery().getQuery();
 
@@ -521,11 +519,11 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 if( ((OperationClause)longestCkr).getFirstClause() == clause ){
                     final String kwTerm = ckr.getTerm().replaceAll("\\(|\\)", "");
                     
-                    insertToQueryRepresentation(0, "(lemiypcfkeywords:\"^" + kwTerm + "$\") ANY ");
+                    insertToQueryRepresentation(0, "(lemiypcfkeywords:\"^" + kwTerm + "$\")) ANY (");
                 }
                 
                 appendToQueryRepresentation(
-                            "(iypcfnavn:" + transformedTerm + " ANY "
+                            "(iypcfphnavn:" + transformedTerm + " ANY "
                             + "lemiypcfkeywordslow:" + transformedTerm
                             + ')');  
 
@@ -556,6 +554,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * @param clause the clause to process.
      */
     protected void visitImpl(final PhraseClause clause) {
+       
+        checkQueryForKeyword(clause);
+        checkQueryForCompanyname(clause);
 
         if (!BLANK.equals(getTransformedTerms().get(clause))) {
 
@@ -565,27 +566,49 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      * {@inheritDoc}
-     * Todo: Javadoc
      */
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
+        
+        checkQueryForKeyword(clause);
+        checkQueryForCompanyname(clause);
 
-        appendToQueryRepresentation('(');
+        final int originalLength = getQueryRepresentationLength();
+        
         clause.getFirstClause().accept(this);
-        final int queryRepLength = getQueryRepresentationLength();
-
+        final int firstClauseLength = getQueryRepresentationLength();
 
         clause.getSecondClause().accept(this);
+        final int secondClauseLength = getQueryRepresentationLength();
 
-        final boolean queryRepGrown = queryRepLength > 0 && getQueryRepresentationLength() > queryRepLength;
+        final boolean queryRepGrown = firstClauseLength > 0 && secondClauseLength > firstClauseLength;
 
         if(queryRepGrown && !(clause.getSecondClause() instanceof NotClause)){
             // we know the query representation got longer which means we need to insert the operator
-            insertToQueryRepresentation(queryRepLength, QL_AND);
+            insertToQueryRepresentation(firstClauseLength, QL_AND);
         }
-        appendToQueryRepresentation(')');
+        if(secondClauseLength > originalLength){
+            insertToQueryRepresentation(originalLength, "(");
+            appendToQueryRepresentation(')');
+        }
     }
 
+    private void checkQueryForKeyword(final Clause clause){
+       
+        // check if this is a known keyword.
+        if(null == whoQueryIsKeyword){
+            whoQueryIsKeyword = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD);
+        }
+    }
+   
+    private void checkQueryForCompanyname(final Clause clause){
+    
+        // check if this is a known company name.
+        if(null == whoQueryIsCompanyName){
+            whoQueryIsCompanyName = clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+        }
+    }
+   
     /**
      * Query builder for creating the geographic query.
      *

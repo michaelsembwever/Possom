@@ -9,12 +9,10 @@
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <%@ page import="no.schibstedsok.searchportal.site.Site"%>
 
-
 <%
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
     String locale = site.getLocale().toString();
     String openSearchUrlStandard = "/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT";
-    String openSearchUrlJavascript = "http://sesam.no/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT";    
 %>
 
 <search:velocity template="/pages/index"/>
@@ -32,60 +30,11 @@
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="<%= openSearchUrlStandard %>%>" />
         <script type="text/javascript" language="JavaScript" src="/javascript/external/prototype.js"></script>
-        <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/index.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/callAtIntervals.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/openSearch.js"></script>
-
-        <script type="text/javascript" language="JavaScript"><!--
-
-            function strep(qtag) {
-                if (window.RegExp && window.encodeURIComponent) {
-                    var qlink=qtag.href;
-                    var qenc=encodeURIComponent(document.forms[0].q.value);
-                    if(qlink.indexOf("q=")!=-1){
-                        qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
-                    }else{
-                            qtag.href=qlink+"&q="+qenc;
-                    }
-                }
-                return 1;
-            }
-
-            function check() {
-                if(document.forms[0].q.value == ""){
-                        document.forms[0].q.focus();
-                        return false;
-                }
-            }
-            // -->
-        </script>
     </head>
-
     <body>
-
-      <script type="text/javascript" language="javascript">
-            var openSearch = new OpenSearch(10, 10, 100, 30, displayOpenSearchInfo,
-                    '<%= openSearchUrlJavascript %>');
-
-            if (openSearch.browserSupports()) {
-                openSearch.run();
-            }
-            function displayOpenSearchInfo() {
-
-                var browser = navigator.appName;
-                var browserVersion1 = parseFloat(navigator.appVersion);
-                var browserVersion = navigator.appVersion;
-                var browserAgent = navigator.userAgent;
-
-               if (browserAgent.match("Firefox/2") == "Firefox/2") {
-                    document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" style=\"position:absolute; right:20px; padding-top:0px; text-decoration:none; border:none;\"><img src=\"/images/opensearch/opensearchbanner.png\" style=\"border:none;\" /></a>")
-               } else if (browserAgent.match("MSIE 7") == "MSIE 7") {
-                   document.write("<a href=\"#\" title=\"Sesam.se\" onclick=\"openSearch.logSelection('frontpage', ''); openSearch.add(); this.style.display='none'\" style=\"position:absolute; right:20px; top:0px; text-decoration:none; border:none;\"><img src=\"/images/opensearch/opensearchbanner.png\" style=\"border:none;\" /></a>")
-              }
-            }
-        </script>
-      
-
         <img src="images/index/logo.png" id="logoIndex" width="215" height="61" alt="Sesamlogo" />
         <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
         <table id="searchbar" cellspacing="0" cellpadding="0">
@@ -193,7 +142,7 @@
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/blogg.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span>
+                    <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
@@ -209,7 +158,7 @@
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/kart.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a>
+                    <a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a><span class="betaNavbar">beta</span>
                 </div>
             </div>
             <div id="navToggleHide">    

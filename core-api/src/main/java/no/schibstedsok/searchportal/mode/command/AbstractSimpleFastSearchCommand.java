@@ -60,6 +60,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.WeightedSuggestion;
@@ -70,14 +72,13 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchCommand {
+    public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchCommand {
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
     private static final String ERR_FAST_FAILURE = " suffered from a FAST error ";
     private static final String ERR_EXECUTE_FAILURE = "execute() failed";
     private static final String DEBUG_FAST_SEARCH_ENGINE = "Creating Fast Engine to ";
-    private static final String DEBUG_QUERY_DUMP = "QUERY DUMP: ";
     private static final String DEBUG_EXECUTE_QR_URL = "execute() QueryServerURL=";
     private static final String DEBUG_EXECUTE_COLLECTIONS = "execute() Collections=";
     private static final String DEBUG_EXECUTE_QUERY = "execute() Query=";
@@ -91,7 +92,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private final String queryServerUrl;
 
     // Static --------------------------------------------------------
-    private static final Map<String, IFastSearchEngine> SEARCH_ENGINES = new HashMap<String, IFastSearchEngine>();
+    private static final Map<String, IFastSearchEngine> SEARCH_ENGINES = new ConcurrentHashMap<String, IFastSearchEngine>();
     private static transient IFastSearchEngineFactory engineFactory;
 
     static {
@@ -416,13 +417,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 return new FastSearchResult(this);
 
             } catch (SearchEngineException fe) {
-
+                
                 LOG.error( getSearchConfiguration().getName() + ERR_FAST_FAILURE + '[' + fe.getErrorCode() + ']', fe);
                 return new FastSearchResult(this);
 
             }
 
-            LOG.info(DEBUG_QUERY_DUMP + fastQuery);
+            DUMP.info(fastQuery);
 
             final FastSearchResult<? extends ResultItem> searchResult = collectResults(result);
 
@@ -566,18 +567,18 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
      * TODO comment me. *
      */
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
+        try {
+            if (!SEARCH_ENGINES.containsKey(queryServerUrl)) {
+                LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getSearchConfiguration().getQueryServerUrl() + "-->" + queryServerUrl);
 
-        // XXX There is no synchronisation around this static map.
-        //   Not critical as any clashing threads will just override the values,
-        //    and the cost of the occasional double-up creation probably doesn't compare
-        //    to the synchronisation overhead.
-        if (!SEARCH_ENGINES.containsKey(queryServerUrl)) {
-            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getSearchConfiguration().getQueryServerUrl() + "-->" + queryServerUrl);
-
-            final IFastSearchEngine engine = engineFactory.createSearchEngine(queryServerUrl);
-            SEARCH_ENGINES.put(queryServerUrl, engine);
+                final IFastSearchEngine engine = engineFactory.createSearchEngine(queryServerUrl);
+                SEARCH_ENGINES.put(queryServerUrl, engine);
+            }
+            return SEARCH_ENGINES.get(queryServerUrl);
+        } catch (MalformedURLException e) {
+            LOG.error("Malformed URL is: " + queryServerUrl);
+            throw(e);
         }
-        return (IFastSearchEngine) SEARCH_ENGINES.get(queryServerUrl);
     }
 
     protected String getSortBy() {
@@ -669,7 +670,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 final ResultItem item = createResultItem(document);
                 searchResult.addResult(item);
             } catch (NullPointerException e) {
-                if (LOG.isDebugEnabled()) LOG.debug("Error finding document " + e);
+                LOG.debug("Error finding document", e);
                 return searchResult;
             }
         }

@@ -37,35 +37,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @DataObject
 public final class MapDataObjectSupport<V> implements MapDataObject<V>{
 
-    private final Map<String,V> map = new ConcurrentHashMap();
-        /*= new HashMap<String,V>(){
-
-        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-        @Override
-        public V get(final Object key){
-
-            try{
-                lock.readLock().lock();
-                return super.get(key);
-
-            }finally{
-                lock.readLock().unlock();
-            }
-        }
+    private final Map<String,V> map = new ConcurrentHashMap<String,V>(){
 
         @Override
         public V put(final String key, final V value){
 
-            try{
-                lock.writeLock().lock();
-                return super.put(key, value);
-
-            }finally{
-                lock.writeLock().unlock();
-            }
+            return null == value
+                ? super.remove(key)
+                : super.put(key, value);
         }
-    };*/
+    };
 
     public MapDataObjectSupport(final Map<String,V> map){
         
@@ -76,21 +57,17 @@ public final class MapDataObjectSupport<V> implements MapDataObject<V>{
 
     public V getValue(final String key){
 
-        return map.get(key);
+        return null != key ? map.get(key) : null;
     }
 
     public void setValue(final String key, final V value){
 
-        if(null == value){
-            map.remove(key);
-        }else{
-            map.put(key, value);
-        }
+        map.put(key, value);
     }
 
     public Map<String, V> getValues() {
 
-        //return Collections.unmodifiableMap(map);
+        //XXX return Collections.unmodifiableMap(map);
         return map;
     }
 

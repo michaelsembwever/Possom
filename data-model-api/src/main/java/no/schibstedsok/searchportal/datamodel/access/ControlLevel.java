@@ -16,6 +16,7 @@ package no.schibstedsok.searchportal.datamodel.access;
 public enum ControlLevel {
     /**
      * Default state the DataModel is created in.
+     * Also used when the DataModel is being cleaned at the end of each request.
      */
     DATA_MODEL_CONSTRUCTION,
     /**

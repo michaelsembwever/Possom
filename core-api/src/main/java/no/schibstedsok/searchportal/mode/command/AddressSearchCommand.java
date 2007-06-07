@@ -13,6 +13,7 @@ import java.util.List;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.util.GeoSearchUtil;
@@ -42,6 +43,11 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
      * @see no.schibstedsok.searchportal.mode.command.AbstractSearchCommand#execute()
      */
     public final ResultList<? extends ResultItem> execute() {
+        
+        if (datamodel.getQuery().getQuery().isBlank()) {
+            LOG.error("Trying to execute blank query: c=" + datamodel.getParameters().getValue("c").getString() + " id=" + context.getSearchConfiguration().getName() + " query:" + getTransformedQuery());
+            return new BasicSearchResult<ResultItem>();
+        }
         
         final ResultList<ResultItem> sr = (ResultList<ResultItem>) super.execute();
         List<ResultItem> itemsToRemove = new ArrayList<ResultItem>();

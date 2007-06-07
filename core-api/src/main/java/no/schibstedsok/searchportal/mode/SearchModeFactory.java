@@ -415,12 +415,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
-            LOG.info("findClass " + className);
+            LOG.debug("findClass " + className);
 
             String classNameFQ = "no.schibstedsok.searchportal.mode.config."+ className+ "Config";
             final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ);
 
-            LOG.info("Found class " + clazz.getName());
+            LOG.debug("Found class " + clazz.getName());
             return clazz;
         }
     }
@@ -440,14 +440,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
-            LOG.info("findClass " + className);
+            LOG.debug("findClass " + className);
 
             String classNameFQ = "no.schibstedsok.searchportal.query.transform."
                             + className
                             + "QueryTransformerConfig";
             final Class<QueryTransformerConfig> clazz = loadClass(context, classNameFQ);
 
-            LOG.info("Found class " + clazz.getName());
+            LOG.debug("Found class " + clazz.getName());
             return clazz;
         }
     }
@@ -468,7 +468,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
-            LOG.info("findClass " + className);
+            LOG.debug("findClass " + className);
 
             String classNameFQ = "no.schibstedsok.searchportal.result.handler."
                     + className
@@ -476,7 +476,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             
             final Class<ResultHandlerConfig> clazz = loadClass(context, classNameFQ);
 
-            LOG.info("Found class " + clazz.getName());
+            LOG.debug("Found class " + clazz.getName());
             return clazz;
         }
     }
@@ -499,7 +499,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         protected C construct(final Element element, final Context context) {
 
             final String xmlName = element.getTagName();
-            LOG.info(INFO_CONSTRUCT + xmlName);
+            LOG.debug(INFO_CONSTRUCT + xmlName);
 
             try {
                 return findClass(xmlName, context).newInstance();

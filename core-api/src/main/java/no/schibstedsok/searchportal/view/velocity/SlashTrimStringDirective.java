@@ -1,4 +1,4 @@
-// Copyright (2007) Schibsted Søk AS
+// Copyright (2007) Schibsted SÃ¸k AS
 package no.schibstedsok.searchportal.view.velocity;
 
 import org.apache.velocity.runtime.directive.Directive;
@@ -34,8 +34,14 @@ public class SlashTrimStringDirective extends Directive {
     public boolean render(InternalContextAdapter internalContextAdapter,
                           Writer writer,
                           Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+        String trimAfter = "/";
 
-        if (node.jjtGetNumChildren() != 1) {
+        if (node.jjtGetNumChildren() == 2) {
+           final Object nodeTwo = node.jjtGetChild(1).value(internalContextAdapter);
+           if(nodeTwo != null) {
+            trimAfter =  nodeTwo.toString();
+           }
+        }else if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - Wrong number of arguments");
             return false;
         }
@@ -47,14 +53,20 @@ public class SlashTrimStringDirective extends Directive {
                 return true;
 
             }
-        final String originalString = nodeValue.toString();
-        final int index = originalString.lastIndexOf("/");
+        String originalString = nodeValue.toString();
+        int index = originalString.lastIndexOf(trimAfter);
+         // trim away trailing separator if it exists
+        if(index == originalString.length() -1)
+        {
+           originalString = originalString.substring(0,originalString.length() -1);
+           index = originalString.lastIndexOf(trimAfter);
+        }
         if(index == -1)
         {
             writer.write(originalString);
         }
         else{
-            writer.write(originalString.substring(index+1,originalString.length()));
+            writer.write(originalString.substring(index+trimAfter.length(),originalString.length()));
         }
         return true;
     }

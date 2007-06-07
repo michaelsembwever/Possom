@@ -148,6 +148,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 sortBy = "-frontpagename -contentprofile -docdatetime";
             } else if ("datetime".equals(userSortBy)) {
                 sortBy = "-frontpagename -docdatetime";
+            } else if ("standard_nettby".equals(userSortBy)) {
+                sortBy = "-contentprofile -publishedtime";
+            } else if ("datetime_nettby".equals(userSortBy)) {
+                sortBy = "-publishedtime";
             }
         }
 
@@ -214,7 +218,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             modifyQuery(query);
 
-            LOG.info(query);
+            DUMP.info(query);
 
             result = searchView.search(query);
 

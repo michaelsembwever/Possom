@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted S¿k AS
+/* Copyright (2005-2007) Schibsted SÃ¸k AS
  *
  * Created on May 11, 2007, 10:15:37 PM
  */
@@ -135,7 +135,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
                     LOG.info(MessageFormat.format(CHECKED_MODIFICATION, key, stopWatch.toSplitString()));
                 }
                 if (modified) {
-                    LOG.info(MessageFormat.format(LOADED_VELOCITY_RESOURCE, key, stopWatch.toString()));
+                    LOG.debug(MessageFormat.format(LOADED_VELOCITY_RESOURCE, key, stopWatch.toString()));
                 }
             }
         }
