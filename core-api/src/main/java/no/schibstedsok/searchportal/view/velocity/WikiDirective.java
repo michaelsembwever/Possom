@@ -70,7 +70,15 @@ public class WikiDirective extends Directive {
         }
 
         final String s = node.jjtGetChild(0).value(context).toString();
-        final String wap = s.replace("no.wikipedia.org/wiki", "no.wapedia.org");
+        final String wap;
+        if(s.contains("no.wikipedia.org/wiki"))
+        {	
+        	wap = s.replace("no.wikipedia.org/wiki", "no.wapedia.org");
+        }
+        else
+        {
+        	wap = s.replace("sv.wikipedia.org/wiki", "sv.wapedia.org");
+        }
         
         String cut = wap.substring(0, wap.lastIndexOf("/")+1);
         String wikiword = URLEncoder.encode(s.substring(s.lastIndexOf("/")+1), "UTF-8");
