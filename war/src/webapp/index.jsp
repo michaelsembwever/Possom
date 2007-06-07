@@ -31,6 +31,7 @@
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="<%= openSearchUrlStandard %>%>" />
         <script type="text/javascript" language="JavaScript" src="/javascript/external/prototype.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/index.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/callAtIntervals.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/openSearch.js"></script>
