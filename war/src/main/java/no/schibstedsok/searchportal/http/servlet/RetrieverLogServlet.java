@@ -10,7 +10,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
@@ -44,11 +43,13 @@ public final class RetrieverLogServlet extends HttpServlet {
         final DataModel datamodel = (DataModel) req.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
 
-        final String paper = parametersDO.getValue("paper").getXmlEscaped();
+        final StringDataObject paper = parametersDO.getValue("paper");
 
         // news statistics is treated as before until Bernt is ready to adapt to new format
         if (paper != null) {
-            LOG.info("<retriever-info name=\"papiraviser - " + paper + "\"/><!-- use boomerang instead -->");
+            LOG.info("<retriever-info name=\"papiraviser - " 
+                    + paper.getXmlEscaped() 
+                    + "\"/><!-- use boomerang instead -->");
         } else {
             LOG.info(
                     "<view-info>"
