@@ -78,7 +78,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     // Static --------------------------------------------------------
 
     /**
-     * TODO comment me. *
+     *
      * @param cxt 
      * @return 
      */
@@ -151,7 +151,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     // Public --------------------------------------------------------
 
     /**
-     * TODO comment me. *
+     *
      * @param id 
      * @return 
      */
@@ -405,7 +405,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final SearchConfiguration inherit,
                 final Context context) {
 
-            return construct(element, context).readSearchConfiguration(element, inherit);
+            final SearchConfiguration sc = construct(element, context);
+            
+            assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass()) 
+                    : "Can only inherit from same or superclass configuration. " 
+                    + element.getAttribute("id") + '(' + sc.getClass().getSimpleName() + ')'
+                    + " trying to inherit from " + inherit.getName() + '(' + inherit.getClass().getSimpleName() + ')';
+            
+            return sc.readSearchConfiguration(element, inherit);
         }
 
         @SuppressWarnings("unchecked")
