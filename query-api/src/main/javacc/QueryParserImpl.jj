@@ -61,6 +61,7 @@ PARSER_END(QueryParserImpl)
     | < [ "\u007b"-"\u00bf" ] >
     | < [ "\u00d7" ] >
     | < [ "\u00f7" ] >
+    | < [ "\u2010"-"\u2015" ] >
 }
 
 /* These are the the above skip characters */
@@ -69,6 +70,7 @@ PARSER_END(QueryParserImpl)
 /* . / */
 /* ; < = > ? @ */
 /* [ \ ] ^ _ ` */
+/* ‐ ‑ ‒ – — ― */
 
 <DEFAULT,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <URL: "http://"<WORD>("/"<WORD>)*> }
@@ -101,25 +103,34 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <#PHONE_MIDDLE: ((" ")*<PHONE_SYMBOL>(" ")*)|(" ")+>
     | <#PHONE_SYMBOL: (".")|("-")|("/")>
     | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
-    | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")|("+")>
+    | <#WORD_SYMBOL_MIDDLE: (".")|<HYPON>|("_")|("+")>
     | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
             " ", "!", 
             "\u0023"-"\u0040",
             "\u005b"-"\u0060",
             "\u007b"-"\u00bf",
             "\u00d7",
-            "\u00f7"
+            "\u00f7",
+            "\u2010"-"\u2015"
+        ]>
+    | <#HYPON: // Different types of hypons, http://www.cs.tut.fi/~jkorpela/dashes.html
+        [
+            "-",
+            "\u2010"-"\u2015",
+            "\u207b",
+            "\u208b",
+            "\u2212"
         ]>
     | <#LETTER:
-    /** UNICODE Characters **/
         [
             "\u0041"-"\u005a",
             "\u0061"-"\u007a",
             "\u00c0"-"\u00d6",
             "\u00d8"-"\u00f6",
-            "\u00f8"-"\uffff"
+            "\u00f8"-"\u200f",
+            "\u2016"-"\uffff"
         ]>
-    | < #DIGIT:                      // unicode digits
+    | <#DIGIT:
           [
            "\u0030"-"\u0039",
            "\u0660"-"\u0669",
