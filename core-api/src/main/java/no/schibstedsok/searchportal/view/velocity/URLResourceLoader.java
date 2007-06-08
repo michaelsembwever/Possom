@@ -3,6 +3,7 @@ package no.schibstedsok.searchportal.view.velocity;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.io.InputStream;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
@@ -35,9 +36,8 @@ import org.apache.commons.collections.ExtendedProperties;
 public class URLResourceLoader extends ResourceLoader {
     
     public interface Context{
-        boolean doesUrlExist(final String url, final String hostHeader);
-        String getURL(final String resource);
-        String getHostHeader(final String resource);
+        boolean doesUrlExist(final URL url);
+        URL getURL(final String resource, final Site site);
     }
 
     // Constants -----------------------------------------------------
@@ -60,7 +60,7 @@ public class URLResourceLoader extends ResourceLoader {
     // Static --------------------------------------------------------
     
     private static Context context = new DefaultContext();
-    
+
     // Allows the tests to switch the Velocity ResourceLoader over to a file based one.
     static void setContext(final Context context){
         URLResourceLoader.context = context;
@@ -113,31 +113,17 @@ public class URLResourceLoader extends ResourceLoader {
     /** {@inheritDoc}
      */
     public long getLastModified(Resource resource){
-
         try{
+            final URL url = findUrl(resource.getName(), site);
+            final HTTPClient client = HTTPClient.instance(url, "localhost");
 
-            final String url = findUrl(resource.getName(), site);
-            final URL u = new URL(url);
-
-            if( LOG.isTraceEnabled() ){
-                LOG.trace(DEBUG_FULL_URL_IS + u);
-                LOG.trace(DEBUG_HOST_HEADER_IS + context.getHostHeader(url));
-            }
-
-            final HTTPClient client = HTTPClient.instance(
-                    u.getProtocol() + "://" + u.getHost(), 
-                    u.getPort(), 
-                    context.getHostHeader(url));
-
-            return client.getLastModified(u.getPath());
-
+            return client.getLastModified("");
         }catch( ResourceNotFoundException e ){
             LOG.error( ERR_RESOURCE_NOT_FOUND + resource.getName() );
         }catch( IOException e ){
             LOG.error( ERR_RESOURCE_NOT_FOUND + resource.getName() );
         }
         return 0;
-
     }
 
     
@@ -147,7 +133,7 @@ public class URLResourceLoader extends ResourceLoader {
 
     // Private -------------------------------------------------------
     
-    private static String findUrl(final String url, final Site currentSite) throws ResourceNotFoundException{
+    private static URL findUrl(final String url, final Site currentSite) throws ResourceNotFoundException{
 
         try{
             LOG.trace(DEBUG_LOOKING_FOR + url );
@@ -159,11 +145,13 @@ public class URLResourceLoader extends ResourceLoader {
         }
     }
 
-    private static String findUrlImpl(final String url, final Site currentSite)
+    private static URL findUrlImpl(final String url, final Site currentSite)
             throws IOException, ResourceNotFoundException {
 
-        if (context.doesUrlExist(context.getURL(url),context.getHostHeader(url))) {
-            return url;
+        final URL u = context.getURL(url, currentSite);
+
+        if (context.doesUrlExist(u)) {
+            return u;
         } else {
             final Site parent = currentSite.getParent();
 
@@ -189,24 +177,11 @@ public class URLResourceLoader extends ResourceLoader {
     }
 
 
-    private static InputStream getStream(final String url) throws IOException{
+    private static InputStream getStream(final URL url) throws IOException{
 
-        LOG.trace(DEBUG_EXISTS + url);
-        final URL u = new URL(context.getURL(url));
-        
-        if( LOG.isTraceEnabled() ){
-            LOG.trace(DEBUG_FULL_URL_IS + u);
-            LOG.trace(DEBUG_HOST_HEADER_IS + context.getHostHeader(url));
-        }
-        
-        final HTTPClient client = HTTPClient.instance(
-                u.getProtocol() + "://" +u.getHost(), 
-                u.getPort(), 
-                context.getHostHeader(url));
-        
+        final HTTPClient client = HTTPClient.instance(url, "localhost");
         try{
-            return client.getBufferedStream(u.getPath());
-            
+            return client.getBufferedStream("");
         }catch(IOException ioe){
             throw client.interceptIOException(ioe);
         }
@@ -214,19 +189,18 @@ public class URLResourceLoader extends ResourceLoader {
     
     
     // Inner classes -------------------------------------------------
-    
+
     private static final class DefaultContext implements Context{
-        
-        public boolean doesUrlExist(final String url, final String hostHeader) {
-            return UrlResourceLoader.doesUrlExist(url, hostHeader);
+        public boolean doesUrlExist(final URL url) {
+            return UrlResourceLoader.doesUrlExist(url);
         }
 
-        public String getURL(final String resource) {
-            return UrlResourceLoader.getURL(resource);
-        }
-
-        public String getHostHeader(final String resource) {
-            return UrlResourceLoader.getHostHeader(resource);
+        public URL getURL(final String resource, final Site site) {
+            try {
+                return new URL(resource);
+            } catch (MalformedURLException e) {
+                throw new ResourceNotFoundException(e); 
+            }
         }
     }
 }

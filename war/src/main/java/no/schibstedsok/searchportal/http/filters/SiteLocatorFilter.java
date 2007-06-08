@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.text.MessageFormat;
+import java.net.URL;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -36,6 +37,7 @@ import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.http.HTTPClient;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -374,7 +376,7 @@ public final class SiteLocatorFilter implements Filter {
         }
     }
 
-    private String recursivelyFindResource(final String resource, final Site site) {
+    private String recursivelyFindResource(final String resource, final Site site) throws IOException {
 
         // Problem with this approach is that skins can be updated without the server restarting (& updating START_TIME)
         // TODO an alternative approach would be to collect the lastModified timestamp of the resource and use it.
@@ -384,7 +386,9 @@ public final class SiteLocatorFilter implements Filter {
 
         final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
-        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url), UrlResourceLoader.getHostHeader(url))) {
+        final URL u = HTTPClient.getURL(new URL(url), "localhost");
+
+        if (UrlResourceLoader.doesUrlExist(u)) {
             // return a relative url to ensure it can survice through an out-of-cluster server.
             return '/' + site.getConfigContext() + '/' + datedResource;
         } else if (site.getParent() != null) {
