@@ -23,6 +23,7 @@ import static org.testng.AssertJUnit.*;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: UrlResourcesSiteConfigurationtest.java 3359 2006-08-03 08:13:22Z mickw $
  */
+@Test(groups = {"requires-tomcat"})
 public final class UrlResourcesSiteConfigurationtest extends SiteTestCase {
 
     private static final String FAIL_CONFIG_NOT_RUNNING =
