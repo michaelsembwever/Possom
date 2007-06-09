@@ -12,6 +12,8 @@ import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
+import no.schibstedsok.searchportal.site.config.Spi;
+import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;
 import no.schibstedsok.searchportal.site.config.*;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -26,6 +28,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -79,8 +82,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /**
      * TODO comment me. *
-     * @param cxt 
-     * @return 
+     * @param cxt
+     * @return
      */
     public static SearchModeFactory valueOf(final Context cxt) {
 
@@ -152,8 +155,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /**
      * TODO comment me. *
-     * @param id 
-     * @return 
+     * @param id
+     * @return
      */
     public SearchMode getMode(final String id) {
 
@@ -237,7 +240,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     if(searchConfigurationFactory.supported(commandE.getTagName(), context)){
 
-                        final SearchConfiguration sc 
+                        final SearchConfiguration sc
                                 = searchConfigurationFactory.parseSearchConfiguration(context, commandE, mode);
 
                         modesCommands.put(sc.getName(), sc);
@@ -292,9 +295,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final class SearchCommandFactory extends AbstractFactory<SearchConfiguration> {
 
         SearchCommandFactory() {
-            
+
         }
-        
+
         SearchConfiguration parseSearchConfiguration(
                 final Context cxt,
                 final Element commandE,
@@ -306,7 +309,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchConfiguration inherit = findParent(parentName, mode);
 
             if (!"".equals(parentName) && inherit == null) {
-                
+
                 throw new IllegalArgumentException(
                         MessageFormat.format(ERR_PARENT_COMMAND_NOT_FOUND, parentName, id, mode.getId()));
             }
@@ -314,7 +317,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             LOG.info(INFO_PARSING_CONFIGURATION + commandE.getLocalName() + " " + id);
 
             try {
-            
+
                 final SearchConfiguration sc = parseSearchConfigurationImpl(commandE, inherit, cxt);
 
                 // query transformers
@@ -418,7 +421,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             LOG.debug("findClass " + className);
 
             String classNameFQ = "no.schibstedsok.searchportal.mode.config."+ className+ "Config";
-            final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ);
+            final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
 
             LOG.debug("Found class " + clazz.getName());
             return clazz;
@@ -442,12 +445,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.debug("findClass " + className);
 
-            String classNameFQ = "no.schibstedsok.searchportal.query.transform."
-                            + className
-                            + "QueryTransformerConfig";
-            final Class<QueryTransformerConfig> clazz = loadClass(context, classNameFQ);
+            final String classNameFQ = "no.schibstedsok.searchportal.query.transform."
+                    + className
+                    + "QueryTransformerConfig";
+            final Class<QueryTransformerConfig> clazz = loadClass(context, classNameFQ, Spi.QUERY_TRANSFORM_CONFIG);
 
             LOG.debug("Found class " + clazz.getName());
+
             return clazz;
         }
     }
@@ -473,10 +477,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             String classNameFQ = "no.schibstedsok.searchportal.result.handler."
                     + className
                     + "ResultHandlerConfig";
-            
-            final Class<ResultHandlerConfig> clazz = loadClass(context, classNameFQ);
 
-            LOG.debug("Found class " + clazz.getName());
+            final Class<ResultHandlerConfig> clazz = loadClass(context, classNameFQ, Spi.RESULT_HANDLER_CONFIG);
+            LOG.info("Found class " + clazz.getName());
             return clazz;
         }
     }
@@ -516,10 +519,34 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         protected abstract Class<C> findClass(final String xmlName, final Context context) throws ClassNotFoundException;
 
         @SuppressWarnings("unchecked")
-        protected Class<C> loadClass(final Context context, String classNameFQ) throws ClassNotFoundException {
-            SiteClassLoaderFactory.Context c = new SiteClassLoaderFactory.Context() {
-                public BytecodeLoader newBytecodeLoader(SiteContext siteCxt, String className) {
-                    return context.newBytecodeLoader(siteCxt, className);
+        protected Class<C> loadClass(final Context context, final String classNameFQ, final Spi spi) throws ClassNotFoundException {
+            final SiteClassLoaderFactory.Context c = new SiteClassLoaderFactory.Context() {
+                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                    return context.newBytecodeLoader(site, name, jar);
+                }
+
+                public Site getSite() {
+                    return context.getSite();
+                }
+
+                public Spi getSpi() {
+                    return spi;
+                }
+            };
+
+            final ClassLoader classLoader = SiteClassLoaderFactory.valueOf(c).getClassLoader();
+
+            return (Class<C>) classLoader.loadClass(classNameFQ);
+        }
+
+        private SiteConfiguration getSiteConfiguration(final Context context) {
+            SiteConfiguration.Context scContext = new SiteConfiguration.Context() {
+                public PropertiesLoader newPropertiesLoader(
+                        final SiteContext siteCxt,
+                        final String resource,
+                        final Properties properties)
+                {
+                    return context.newPropertiesLoader(siteCxt, resource, properties);
                 }
 
                 public Site getSite() {
@@ -527,9 +554,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
             };
 
-            ClassLoader classLoader = SiteClassLoaderFactory.valueOf(c).getClassLoader();
-
-            return (Class<C>) classLoader.loadClass(classNameFQ);
+            return SiteConfiguration.valueOf(scContext);
         }
     }
 }

@@ -20,6 +20,9 @@ import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -120,6 +123,18 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         final Collection<Callable<ResultList<? extends ResultItem>>> commands 
                 = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
 
+        final SearchCommandFactory.Context commandFactoryContext = new SearchCommandFactory.Context() {
+            public Site getSite() {
+                return rqCxt.getDataModel().getSite().getSite();
+            }
+
+            public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                return rqCxt.newBytecodeLoader(site, name, jar);
+            }
+        };
+
+        final SearchCommandFactory commandFactory = new SearchCommandFactory(commandFactoryContext);
+
         for(SearchConfiguration conf : rqCxt.getSearchMode().getSearchConfigurations()){
             
 
@@ -127,7 +142,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
             final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getName());
 
-            final SearchCommand cmd = SearchCommandFactory.getController(cxt);
+            final SearchCommand cmd = commandFactory.getController(cxt);
 
             commands.add(cmd);
         }

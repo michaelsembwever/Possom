@@ -53,8 +53,8 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
 
             return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
         }
-        public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-            return UrlResourceLoader.newBytecodeLoader(context, className);
+        public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
+            return UrlResourceLoader.newBytecodeLoader(context, className, jar);
         }
         
         public DataModel getDataModel(){

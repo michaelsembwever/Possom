@@ -92,8 +92,8 @@ public final class DateFormatHandlerTest extends SiteTestCase {
 
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-            public BytecodeLoader newBytecodeLoader(final SiteContext context, final String className) {
-                return FileResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                return FileResourceLoader.newBytecodeLoader(site, name, jar);
             }            
         };
         cxt.getSearchResult().addResult(createItem("2006-04-27T10:11:12Z"));

@@ -42,6 +42,8 @@ import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -425,7 +427,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("newscountry")
                     && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn") && (!getSearchConfiguration().getName().equals("whitePages") || ((getTransformedQuery().trim().length() > 0) || getSearchConfiguration().isAlwaysRun()));
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
@@ -879,9 +881,21 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 }
             };
 
+            final QueryTransformerFactory.Context qtfContext = new QueryTransformerFactory.Context() {
+                public Site getSite() {
+                    return context.getDataModel().getSite().getSite();
+                }
+
+                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                    return context.newBytecodeLoader(site, name, jar);
+                }
+            };
+
+            final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory(qtfContext);
+
             for (QueryTransformerConfig transformerConfig : transformers) {
 
-                final QueryTransformer transformer = QueryTransformerFactory.getController(transformerConfig);
+                final QueryTransformer transformer = queryTransformerFactory.getController(transformerConfig);
 
                 final boolean ttq = touchedTransformedQuery;
 

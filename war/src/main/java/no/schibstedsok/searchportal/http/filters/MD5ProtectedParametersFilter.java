@@ -22,15 +22,15 @@ import org.apache.log4j.Logger;
  */
 public final class MD5ProtectedParametersFilter implements Filter {
 
-    private Map protectedParameters;
+    private Map<String, Boolean> protectedParameters;
     private MD5Generator digestGenerator;
 
     private static final Logger LOG = Logger.getLogger(MD5ProtectedParametersFilter.class);
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void init(final FilterConfig filterConfig) throws ServletException {
 
-        protectedParameters = new HashMap();
+        protectedParameters = new HashMap<String, Boolean>();
 
         final String secret = filterConfig.getInitParameter("secret");
         final String parameters = filterConfig.getInitParameter("protectedParameters");
@@ -38,16 +38,15 @@ public final class MD5ProtectedParametersFilter implements Filter {
         final Boolean t = Boolean.TRUE;
 
         final String[] p = parameters.split(",");
-        for (int i = 0; i < p.length; i++) {
-            final String parameter = p[i];
+        for (final String parameter : p) {
             LOG.info("Adding " + parameter + " as protected parameter");
-            protectedParameters.put(parameter,  t);
+            protectedParameters.put(parameter, t);
         }
 
         digestGenerator = new MD5Generator(secret);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void doFilter(
             final ServletRequest servletRequest,
             final ServletResponse servletResponse,
@@ -68,9 +67,11 @@ public final class MD5ProtectedParametersFilter implements Filter {
                     LOG.trace(parameterName + " is protected");
                 }
 
-                final String md5_parameter = servletRequest.getParameter(parameterName + "_x");
+                final String md5Parameter = servletRequest.getParameter(parameterName + "_x");
 
-                if (md5_parameter == null || !digestGenerator.validate(servletRequest.getParameter(parameterName), md5_parameter)) {
+                if (md5Parameter == null
+                        || !digestGenerator.validate(servletRequest.getParameter(parameterName), md5Parameter))
+                {
                     final HttpServletResponse response = (HttpServletResponse) servletResponse;
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     return;
@@ -82,7 +83,7 @@ public final class MD5ProtectedParametersFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void destroy() {
     }
 

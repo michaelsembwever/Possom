@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +52,7 @@ import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Level;
@@ -109,8 +109,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /**
      * Create a new Running Query instance.
      *
-     * @param cxt 
-     * @param query 
+     * @param cxt
+     * @param query
      */
     public RunningQueryImpl(
             final Context cxt,
@@ -228,7 +228,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
 
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
-                    
+
         try {
 
             final DataModelFactory dataModelFactory =  DataModelFactory
@@ -241,11 +241,24 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // DataModel's ControlLevel will be RUNNING_QUERY_CONSTRUCTION
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_CONSTRUCTION);
-            
-            final Collection<Callable<ResultList<? extends ResultItem>>> commands 
+
+            final Collection<Callable<ResultList<? extends ResultItem>>> commands
                     = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
 
             final boolean isRss = parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).equals("rss");
+
+            final SearchCommandFactory.Context scfContext = new SearchCommandFactory.Context() {
+                public Site getSite() {
+                    return context.getDataModel().getSite().getSite();
+                }
+
+                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                    return context.newBytecodeLoader(site, name, jar);
+                }
+            };
+
+            final SearchCommandFactory searchCommandFactory = new SearchCommandFactory(scfContext);
+
 
             for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations()) {
 
@@ -325,16 +338,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 scores.put(config.getName(), score);
 
                                 if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
-                                    commands.add(SearchCommandFactory.getController(searchCmdCxt));
+                                    commands.add(searchCommandFactory.getController(searchCmdCxt));
                                 }
 
                             } else if (config.isAlwaysRun()) {
-                                commands.add(SearchCommandFactory.getController(searchCmdCxt));
+                                commands.add(searchCommandFactory.getController(searchCmdCxt));
                             }
 
                         } else {
 
-                            commands.add(SearchCommandFactory.getController(searchCmdCxt));
+                            commands.add(searchCommandFactory.getController(searchCmdCxt));
                         }
                     }
                 }catch(RuntimeException re){
@@ -348,12 +361,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // mark state that we're about to execute the sub threads
             allCancelled = commands.size() > 0;
             boolean hitsToShow = false;
-                
-            
+
+
             // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
-            
+
             final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results =
                     SearchCommandExecutorFactory
                     .getController(context.getSearchMode().getExecutor())
@@ -366,7 +379,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
                 try{
                     task.get(TIMEOUT - (System.currentTimeMillis() - invokedAt), TimeUnit.MILLISECONDS);
-                    
+
                 }catch(TimeoutException te){
                     LOG.error(ERR_COMMAND_TIMEOUT + task);
                 }
@@ -376,7 +389,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for(Callable<ResultList<? extends ResultItem>> command : commands){
                 allCancelled &= ((SearchCommand)command).handleCancellation();
             }
-            
+
             // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
             //  Increment it onwards to RUNNING_QUERY_RESULT_HANDLING.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_RESULT_HANDLING);
@@ -394,7 +407,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if (searchResult != null) {
 
                                 // Information we need about and for the enrichment
-                                final SearchConfiguration config 
+                                final SearchConfiguration config
                                         = ((SearchCommand)results.get(task)).getSearchConfiguration();
 
                                 final String name = config.getName();

@@ -75,9 +75,9 @@ public class FileResourceLoader extends AbstractResourceLoader {
      * @param resource the class to load bytecode for.
      * @return a bytecode loader for resource.
      */
-    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource) {
+    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource, final String jar) {
         final BytecodeLoader bcLoader = new FileResourceLoader(siteCxt);
-        bcLoader.initBytecodeLoader(resource);
+        bcLoader.initBytecodeLoader(resource, jar);
         return bcLoader;
     }
 
@@ -88,19 +88,16 @@ public class FileResourceLoader extends AbstractResourceLoader {
     }
 
     public boolean urlExists(final URL url) {
-        
+
         try {
             return new File(url.toURI()).exists();
         }catch (URISyntaxException ex) {
             LOG.error(ex.getMessage(), ex);
         }
-
         return false;
     }
-    
-    protected final String getProjectName(final String siteName){
-        
-        LOG.info("getProjectName(" + siteName + ')');
+
+     protected final String getProjectName(final String siteName){
         // Very hacky.
         String projectName = siteName.replaceAll("localhost", "sesam");
         if( projectName.indexOf(':') > 0 ){
@@ -113,14 +110,13 @@ public class FileResourceLoader extends AbstractResourceLoader {
         if( "catalogue".equals(projectName)){
             projectName = "katalog.sesam.no";
         }
-        LOG.info("result: " + projectName);
         return projectName;
     }
 
-    protected URL getResource(final Site site) {
-        
+    protected final URL getResource(final Site site) {
+         
         LOG.debug("getResource(" + site + ')');
-        
+
         try{
             final String base = System.getProperty("basedir") // test jvm sets this property
                     + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
@@ -130,11 +126,10 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
             URI uri = new URI("file://"
                     + base
-                    + (warFolder.exists() && warFolder.isDirectory() ? "/war/target/classes/" : "/target/classes/")
+                    + (warFolder.exists() && warFolder.isDirectory() ? "/war/target/" : "/target/") + getResourceDirectory()
                     + getResource()).normalize();
 
             return uri.toURL();
-         
         }catch (URISyntaxException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         } catch (MalformedURLException ex) {
@@ -142,8 +137,16 @@ public class FileResourceLoader extends AbstractResourceLoader {
         }
     }
 
+    private String getResourceDirectory() {
+        if (getResource().contains("jar!")) {
+            return "lib/";
+        } else {
+            return "classes/";
+        }
+    }
+
     protected String getUrlFor(final String resource) {
-        
+
 //        LOG.debug("getUrlFor(" + resource + ')');
 //        final String result = "file://"
 //                + System.getProperty("basedir") // test jvm sets this property
@@ -151,11 +154,6 @@ public class FileResourceLoader extends AbstractResourceLoader {
 //                + resource;
 //        LOG.debug("result: " + result);
         return resource;
-    }
-
-    protected String getHostHeaderFor(final String resource) {
-        
-        return "localhost";
     }
 
     protected InputStream getInputStreamFor(URL url) {
@@ -176,7 +174,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
             // the latter is only for development purposes when dtds have't been published to production yet
             if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
-                
+
                 final String dtd = System.getProperty("basedir") // test jvm sets this property
                     + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
                     + "search-portal/war/src/webapp/dtds/" +
@@ -185,11 +183,11 @@ public class FileResourceLoader extends AbstractResourceLoader {
                 LOG.info(INFO_LOADING_DTD + dtd);
                 try{
                     return new InputSource(new FileInputStream(dtd));
-                    
+
                 }catch (FileNotFoundException ex) {
                     throw new ResourceLoadException(ex.getMessage(), ex);
                 }
-                
+
             } else {
                 // use the default behaviour
                 return null;

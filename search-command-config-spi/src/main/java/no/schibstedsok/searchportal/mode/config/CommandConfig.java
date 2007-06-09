@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;

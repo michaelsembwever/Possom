@@ -70,7 +70,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
         private boolean modified = false;
 
         /**
-         * Creates a new resource loader. The supplied <tt>oldResource</tt> will not be refreshed but a new one
+         * Creates a new resource loader. The supplied <tt>oldResource</tt> will not be refreshed but a new one will
          * replace it in the cache. This should be safe with regards to the rest of velocity since the default cache
          * implementation is backed by a LRUMap discarding resources at will.
          *
@@ -115,8 +115,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
                 } else {
                     return oldResource;
                 }
-            } // Exception behaviour from default implementation.
-            catch (ResourceNotFoundException rnfe) {
+            } catch (ResourceNotFoundException rnfe) {
                 log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
                 throw rnfe;
             } catch (ParseErrorException pee) {

@@ -1,13 +1,15 @@
 package no.schibstedsok.searchportal.site.config;
 
+
 import no.schibstedsok.searchportal.site.SiteContext;
+import org.apache.log4j.Logger;
 
 /**
-  * Class loader using the resource loading framework to find classes.
- *
  * @author magnuse
  */
-public final class ResourceClassLoader extends ClassLoader {
+public abstract class ResourceClassLoader extends ClassLoader {
+
+    private static final Logger LOG = Logger.getLogger(ResourceClassLoader.class);
 
     /**  Context needed by this class. */
     public interface Context extends BytecodeContext, SiteContext {}
@@ -15,15 +17,26 @@ public final class ResourceClassLoader extends ClassLoader {
     private final Context context;
 
     /**
-     * Creates a new class loader.
+     * Creates a new resource class loader for a site.
      *
      * @param context the context.
-     * @param parentClassLoader the parent class loader. This classloader is asked for classes before this classloader.
      */
-    public ResourceClassLoader(final Context context, final ClassLoader parentClassLoader) {
-        super(parentClassLoader);
+    public ResourceClassLoader(final Context context) {
         this.context = context;
     }
+
+    public ResourceClassLoader(final Context context, final ClassLoader parent) {
+        super(parent);
+        this.context = context;
+    }
+
+    /**
+     * Returns the jar file the class must be contained in. If null, all jar-files and classes available to the class
+     * loader of the resource servlet are searched.
+     *
+     * @return the name of the jar file.
+     */
+    protected abstract String getJarName();
 
     /**
      * Finds classes using a {@link BytecodeLoader}.
@@ -33,7 +46,8 @@ public final class ResourceClassLoader extends ClassLoader {
      * @throws ClassNotFoundException if the class cannot be found in this class loader.
      */
     protected Class<?> findClass(final String className) throws ClassNotFoundException {
-        final BytecodeLoader loader = context.newBytecodeLoader(context, className);
+
+        final BytecodeLoader loader = context.newBytecodeLoader(context, className, getJarName());
         loader.abut();
 
         final byte[] bytecode = loader.getBytecode();

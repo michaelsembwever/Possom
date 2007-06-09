@@ -134,8 +134,8 @@ public final class SearchServlet extends HttpServlet {
                 return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
 
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                return UrlResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className, final String jar) {
+                return UrlResourceLoader.newBytecodeLoader(context, className, jar);
             }
 
             public Site getSite() {

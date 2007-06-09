@@ -466,8 +466,8 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public BytecodeLoader newBytecodeLoader(final SiteContext context, final String className) {
-                return FileResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                return FileResourceLoader.newBytecodeLoader(site, name, jar);
             }
             public String getQueryString() {
                 return datamodel.getQuery().getString();

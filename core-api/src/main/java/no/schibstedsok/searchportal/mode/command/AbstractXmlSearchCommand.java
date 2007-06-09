@@ -48,10 +48,7 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
         final String host = siteConf.getProperty(conf.getHost());
         final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
 
-        client = null != conf.getHostHeader() && conf.getHostHeader().length() >0
-                ? HTTPClient.instance(host, port, conf.getHostHeader())
-                : HTTPClient.instance(host, port);
-
+        client = HTTPClient.instance(host, port, conf.getHostHeader());
     }
 
     // Public --------------------------------------------------------

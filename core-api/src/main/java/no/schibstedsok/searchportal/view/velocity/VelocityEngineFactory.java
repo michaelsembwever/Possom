@@ -201,8 +201,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
                 return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                return UrlResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                return UrlResourceLoader.newBytecodeLoader(site, name, jar);
             }
 
         });

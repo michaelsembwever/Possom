@@ -84,6 +84,9 @@ abstract class AbstractResourceLoader
     /** Bytecode **/
     private byte[] bytecode;
 
+    /** Name of jar to load classes from **/
+    protected String jarFileName;
+
     private static final String ERR_MUST_USE_PROPS_INITIALISER = "Must use properties initialiser to use this method!";
     private static final String ERR_MUST_USE_XSTREAM_INITIALISER = "Must use xstream initialiser to use this method!";
     private static final String ERR_MUST_USE_BYTECODE_INITIALISER = "Must use bytecode initialiser to use this method";
@@ -176,11 +179,14 @@ abstract class AbstractResourceLoader
 
     /** {@inheritDoc}
      */
-    public void initBytecodeLoader(String className) {
+    public void initBytecodeLoader(String className, String jarFileName) {
         resourceType = Resource.BYTECODE;
+        this.jarFileName = jarFileName;
         preInit(className);
         postInit();
     }
+
+
 
     private void preInit(final String resource){
         
@@ -191,6 +197,12 @@ abstract class AbstractResourceLoader
         if (resourceType == Resource.BYTECODE) {
             // Convert package structure to path.
             this.resource = resource.replace(".", "/") + ".class";
+
+            if (jarFileName != null) {
+                // Construct the path portion of a JarUrl.
+                this.resource = jarFileName + "!/" + this.resource;
+            }
+
         } else {
             this.resource = resource;
         }

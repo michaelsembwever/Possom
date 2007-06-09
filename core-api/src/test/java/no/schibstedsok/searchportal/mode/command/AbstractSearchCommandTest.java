@@ -97,8 +97,8 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
 
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                return FileResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
+                return FileResourceLoader.newBytecodeLoader(context, className, jar);
             }
         };
     }

@@ -156,8 +156,8 @@ public final class SearchTabFactoryTest extends SiteTestCase {
                         ? getTestingSite()
                         : Site.valueOf(siteConstructorContext, getTestingSite().getName(), locale);
             }
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                return FileResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
+                return FileResourceLoader.newBytecodeLoader(context, className, jar);
             }
 
         };

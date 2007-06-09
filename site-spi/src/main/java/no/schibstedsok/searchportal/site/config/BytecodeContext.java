@@ -10,11 +10,13 @@ import no.schibstedsok.searchportal.site.SiteContext;
  */
 public interface BytecodeContext extends BaseContext {
     /**
-     * Returns a loader for the site and class.
+     * Returns a loader for the site and class. If a jarFileName is supplied only that jar file will be used to find the
+     * class.
      *
      * @param siteContext the site to load bytecode for
      * @param className the class to load.
      * @return byte code for class.
+     * @param jarFileName optional jar file to restrict loader to.
      */
-    public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className);
+    public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName);
 }

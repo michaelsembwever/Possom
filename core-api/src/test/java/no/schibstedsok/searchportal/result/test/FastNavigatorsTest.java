@@ -23,6 +23,7 @@ import no.schibstedsok.searchportal.fast.searchengine.test.MockupFastSearchEngin
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
@@ -477,7 +478,22 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
         // Nothing navigated
 
-        FastSearchCommand command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil") );
+        final SearchCommand.Context testContext = createTestSearchCommandContext("bil");
+
+        final SearchCommandFactory.Context c = new SearchCommandFactory.Context() {
+
+            public Site getSite() {
+                return testContext.getDataModel().getSite().getSite();
+            }
+
+            public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                return testContext.newBytecodeLoader(site, name, jar);
+            }
+        };
+
+        final SearchCommandFactory searchCommandFactory = new SearchCommandFactory(c);
+
+        FastSearchCommand command = (FastSearchCommand) searchCommandFactory.getController(testContext);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         command.call();
@@ -496,7 +512,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywfylke", navigatedValue);
 
         
-        command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil"));
+        command = (FastSearchCommand) searchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
         List links = command.getNavigatorBackLinks("geographic");
@@ -517,7 +533,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywkommune", navigatedValue2);
 
         
-        command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil"));
+        command = (FastSearchCommand) searchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -540,7 +556,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywbydel", navigatedValue3);
 
         
-        command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil"));
+        command = (FastSearchCommand) searchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -580,8 +596,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                return FileResourceLoader.newBytecodeLoader(context, className);
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
+                return FileResourceLoader.newBytecodeLoader(context, className, jar);
             }
 
             public DataModel getDataModel(){

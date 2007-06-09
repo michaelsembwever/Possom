@@ -85,21 +85,21 @@ public class UrlResourceLoader extends AbstractResourceLoader {
      * @param resource the class to load bytecode for.
      * @return a bytecode loader for resource.
      */
-    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource) {
+    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource, final String jar) {
         final BytecodeLoader bcLoader = new UrlResourceLoader(siteCxt);
-        bcLoader.initBytecodeLoader(resource);
+        bcLoader.initBytecodeLoader(resource, jar);
         return bcLoader;
     }
 
     public static boolean doesUrlExist(final URL url){
 
         boolean success = false;
-        
+
         try{
             success = (Boolean)PRESENCE_CACHE.getFromCache(url.toString(), REFRESH_PERIOD);
-            
+
         }catch(NeedsRefreshException nre){
-           
+
             boolean updatedCache = false;
             try {
 
@@ -107,7 +107,6 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
                 success = HTTPClient.instance(url, "localhost").exists("");
                 PRESENCE_CACHE.putInCache(url.toString(), success);
-
                 updatedCache = true;
 
             } catch (NullPointerException e) {
@@ -120,8 +119,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
                 LOG.warn(url.toString(), e);
 
             }  finally  {
-                
-                if(!updatedCache){ 
+                if(!updatedCache){
                     PRESENCE_CACHE.cancelUpdate(url.toString());
                 }
             }
@@ -162,13 +160,26 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return getURL(getResource(), site);
     }
 
+    private static String getResourceDirectory(final String resource) {
+        if (resource.contains("jar!")) {
+            return "lib/";
+        } else if (resource.endsWith(".class")) {
+            return "classes/";
+        } else {
+            return "conf/";
+        }
+    }
+
     public static URL getURL(final String resource, final Site site) {
+
+        final String jarScheme = resource.contains("jar!") ? "jar:" : "";
+
         try {
-            return new URL("http://"
-                        + site.getName()
-                        + site.getConfigContext()
-                        + (resource.endsWith(".class") ? "classes/" : "conf/")
-                        + resource);
+            return new URL(jarScheme + "http://"
+                    + site.getName()
+                    + site.getConfigContext()
+                    + getResourceDirectory(resource)
+                    + resource);
         } catch (MalformedURLException ex) {
             throw new ResourceLoadException(ex.getMessage());
         }

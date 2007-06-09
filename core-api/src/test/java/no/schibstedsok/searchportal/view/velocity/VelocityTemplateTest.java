@@ -137,18 +137,7 @@ public final class VelocityTemplateTest extends DataModelTestCase{
         }
 
         public boolean doesUrlExist(final URL url) {
-            LOG.info("XYZ Checking existence of " + url);
-
-            boolean exists = urlExists(url);
-
-            if (exists) {
-                LOG.info("XYZ exists " + url);
-            } else {
-                LOG.info("XYZ NOT exists " + url);
-            }
-
-
-            return exists;
+            return urlExists(url);
         }
 
         public URL getURL(final String resource, final Site site) {

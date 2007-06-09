@@ -10,9 +10,14 @@ package no.schibstedsok.searchportal.mode;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
+
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
+import no.schibstedsok.searchportal.site.config.*;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.Site;
 
 
 /** This factory creates the appropriate command for a given SearchConfiguration.
@@ -22,31 +27,57 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
  */
 public final class SearchCommandFactory {
 
-    private SearchCommandFactory() {  }
+    public interface Context extends SiteContext, BytecodeContext {}
 
-    
-    /** Create the appropriate command given the configuration inside the context.
-     * 
-     * @param cxt 
-     * @return 
+    private final Context context;
+
+    /**
+     *
+     * @param context
      */
-    public static SearchCommand getController(final SearchCommand.Context cxt){
-        
+    public SearchCommandFactory(final Context context) {
+        this.context = context;
+    }
+
+
+    /** Create the appropriate command given the configuration inside the context.
+     *
+     * @param cxt
+     * @return
+     */
+    public SearchCommand getController(final SearchCommand.Context cxt){
+
         final SearchConfiguration config = cxt.getSearchConfiguration();
-        
-        final String name = "no.schibstedsok.searchportal.mode.command." 
+
+        final String controllerName = "no.schibstedsok.searchportal.mode.command."
                 + config.getClass().getAnnotation(Controller.class).value();
-        
+
         try{
-            
-            final Class<? extends SearchCommand> cls 
-                    = (Class<? extends SearchCommand>)config.getClass().getClassLoader().loadClass(name);
-            
-            final Constructor<? extends SearchCommand> constructor 
+
+            final SiteClassLoaderFactory.Context classContext = new SiteClassLoaderFactory.Context() {
+                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
+                    return context.newBytecodeLoader(site, name, jar);
+                }
+
+                public Site getSite() {
+                    return context.getSite();
+                }
+
+                public Spi getSpi() {
+                    return Spi.SEARCH_COMMAND_CONTROL;
+                }
+            };
+
+            final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.valueOf(classContext);
+
+            final Class<? extends SearchCommand> cls
+                    = (Class<? extends SearchCommand>) loaderFactory.getClassLoader().loadClass(controllerName);
+
+            final Constructor<? extends SearchCommand> constructor
                     = cls.getConstructor(SearchCommand.Context.class);
 
             return constructor.newInstance(cxt);
-            
+
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         } catch (NoSuchMethodException ex) {
@@ -58,5 +89,5 @@ public final class SearchCommandFactory {
         } catch (IllegalAccessException ex) {
             throw new IllegalArgumentException(ex);
         }
-    }    
+    }
 }
