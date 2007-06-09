@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -107,11 +106,13 @@ abstract class AbstractResourceLoader
         context = cxt;
     }
     
-    public abstract boolean urlExists(URL url);
+    public abstract boolean urlExists(String url);
     
-    protected abstract URL getResource(final Site site);
+    protected abstract String getResource(final Site site);
     
-    protected abstract InputStream getInputStreamFor(final URL resource);
+    protected abstract String getUrlFor(final String resource);
+    
+    protected abstract InputStream getInputStreamFor(final String resource);
 
     /** Get the SiteContext.
      *@return the SiteContext.
@@ -274,13 +275,13 @@ abstract class AbstractResourceLoader
         }
     }
 
-    private boolean loadEmptyResource(final URL url) {
+    private boolean loadEmptyResource(final String resource) {
         
         LOG.debug("Loading empty resource for " + resource);
 
         switch(resourceType){
             case PROPERTIES:
-                props.put(context.getSite().getName(), url);
+                props.put(context.getSite().getName(), getUrlFor(resource));
                 break;
 
             case DOM_DOCUMENT:
@@ -297,13 +298,13 @@ abstract class AbstractResourceLoader
     }
     
     
-    private boolean loadResource(final URL url) {
+    private boolean loadResource(final String resource) {
 
         boolean success = false;
 
-        if(urlExists(url)){
+        if(urlExists(resource)){
             
-            final InputStream is = getInputStreamFor(url);
+            final InputStream is = getInputStreamFor(resource);
 
             try {
 
@@ -316,7 +317,7 @@ abstract class AbstractResourceLoader
                         final Properties newProps = new Properties();
                         newProps.load(is);
                         
-                        props.put(context.getSite().getName(), url);
+                        props.put(context.getSite().getName(), getUrlFor(resource));
                         
                         for(Object p : newProps.keySet()){
                             
@@ -342,28 +343,28 @@ abstract class AbstractResourceLoader
                         break;
                 }
 
-                LOG.info(readResourceDebug(url));
+                LOG.info(readResourceDebug(resource));
                 success = true;
 
             } catch (NullPointerException e) {
-                LOG.warn(readResourceDebug(url), e);
+                LOG.warn(readResourceDebug(resource), e);
 
             } catch (IOException e) {
-                LOG.warn(readResourceDebug(url), e);
+                LOG.warn(readResourceDebug(resource), e);
                 
             } catch (SAXParseException e) {
                 throw new ResourceLoadException(
-                        readResourceDebug(url) + " at " + e.getLineNumber() + ":" + e.getColumnNumber(), e);
+                        readResourceDebug(resource) + " at " + e.getLineNumber() + ":" + e.getColumnNumber(), e);
                 
             } catch (SAXException e) {
-                throw new ResourceLoadException(readResourceDebug(url), e);
+                throw new ResourceLoadException(readResourceDebug(resource), e);
                 
             }finally{
                 if( null != is ){
                     try{
                         is.close();
                     }catch(IOException ioe){
-                        LOG.warn(readResourceDebug(url), ioe);
+                        LOG.warn(readResourceDebug(resource), ioe);
                     }
                 }
             }
@@ -371,7 +372,7 @@ abstract class AbstractResourceLoader
         return success;
     }
     
-    protected String readResourceDebug(final URL url){
+    protected String readResourceDebug(final String resource){
         
         return "Read Configuration from " + resource;
     }

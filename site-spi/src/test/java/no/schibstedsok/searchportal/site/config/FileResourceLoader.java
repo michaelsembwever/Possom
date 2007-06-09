@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -87,12 +86,19 @@ public class FileResourceLoader extends AbstractResourceLoader {
         super(cxt);
     }
 
-    public boolean urlExists(final URL url) {
+    public boolean urlExists(final String url) {
         
         try {
-            return new File(url.toURI()).exists();
+            final URL u = new URL(getUrlFor(url));
+
+            return new File(u.toURI()).exists();
+            
         }catch (URISyntaxException ex) {
             LOG.error(ex.getMessage(), ex);
+            
+        }catch (MalformedURLException ex) {
+            LOG.error(ex.getMessage(), ex);
+            
         }
 
         return false;
@@ -106,10 +112,9 @@ public class FileResourceLoader extends AbstractResourceLoader {
         if( projectName.indexOf(':') > 0 ){
             projectName = projectName.substring(0, projectName.indexOf(':'));
         }
-        if( projectName.endsWith("sesam/") && !"generic.sesam/".equals(projectName) ){
-            projectName = projectName.substring(0, projectName.length() - 1) + ".no/";
+        if( projectName.endsWith("sesam") && !"generic.sesam".equals(projectName) ){
+            projectName = projectName + ".no";
         }
-
         if( "catalogue".equals(projectName)){
             projectName = "katalog.sesam.no";
         }
@@ -117,7 +122,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return projectName;
     }
 
-    protected URL getResource(final Site site) {
+    protected String getResource(final Site site) {
         
         LOG.debug("getResource(" + site + ')');
         
@@ -128,18 +133,17 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
             final File warFolder = new File(base + "/war");
 
-            URI uri = new URI("file://"
-                    + base
+            final String result = new URI("file://"
+                    + base 
                     + (warFolder.exists() && warFolder.isDirectory() ? "/war/target/classes/" : "/target/classes/")
-                    + getResource()).normalize();
+                    + getResource()).normalize().toString();
 
-            return uri.toURL();
+            LOG.debug("result: " + result);
+            return result;
          
         }catch (URISyntaxException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
-        } catch (MalformedURLException ex) {
-            throw new ResourceLoadException(ex.getMessage(), ex);
-        }
+        } 
     }
 
     protected String getUrlFor(final String resource) {
@@ -158,11 +162,12 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return "localhost";
     }
 
-    protected InputStream getInputStreamFor(URL url) {
+    protected InputStream getInputStreamFor(String resource) {
+
         try {
-            return url.openConnection().getInputStream();
-        } catch (IOException e) {
-            throw new ResourceLoadException(e.getMessage(), e);
+            return new FileInputStream(resource.replaceFirst("file:", ""));
+        }catch (FileNotFoundException ex) {
+            throw new ResourceLoadException(ex.getMessage(), ex);
         }
     }
 

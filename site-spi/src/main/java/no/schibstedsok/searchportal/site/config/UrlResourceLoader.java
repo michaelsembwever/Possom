@@ -13,9 +13,9 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.http.HTTPClient;
@@ -32,9 +32,9 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
     // Constants -----------------------------------------------------
 
-    private static final GeneralCacheAdministrator PRESENCE_CACHE = new GeneralCacheAdministrator();
+    private static final GeneralCacheAdministrator PRESENCE_CACHE = new GeneralCacheAdministrator();  
     private static final int REFRESH_PERIOD = 60; // one minute
-
+    
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
@@ -91,38 +91,50 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return bcLoader;
     }
 
-    public static boolean doesUrlExist(final URL url){
+    public static boolean doesUrlExist(final String url, final String hostHeader){
 
         boolean success = false;
         
         try{
-            success = (Boolean)PRESENCE_CACHE.getFromCache(url.toString(), REFRESH_PERIOD);
+            success = (Boolean)PRESENCE_CACHE.getFromCache(url, REFRESH_PERIOD);
             
         }catch(NeedsRefreshException nre){
            
             boolean updatedCache = false;
+            HttpURLConnection con = null;
             try {
 
-                LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + url + " is " + success);
+                final URL u = new URL(url);
 
-                success = HTTPClient.instance(url, "localhost").exists("");
-                PRESENCE_CACHE.putInCache(url.toString(), success);
-
+                con = (HttpURLConnection) u.openConnection();
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("HEAD");
+                con.addRequestProperty("host", hostHeader);
+                con.setConnectTimeout(1000);
+                con.setReadTimeout(1000);
+                
+                success = HttpURLConnection.HTTP_OK == con.getResponseCode();
+                PRESENCE_CACHE.putInCache(url, success);
                 updatedCache = true;
 
+                LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
+
             } catch (NullPointerException e) {
-                LOG.debug(url.toString(), e);
+                LOG.debug( '[' + hostHeader + "] " + url, e);
 
             } catch (SocketTimeoutException ste) {
-                LOG.debug(url.toString() + '\n' + ste);
+                LOG.debug( '[' + hostHeader + "] " + url + '\n' + ste);
 
             } catch (IOException e) {
-                LOG.warn(url.toString(), e);
+                LOG.warn( '[' + hostHeader + "] " + url, e);
 
             }  finally  {
                 
                 if(!updatedCache){ 
-                    PRESENCE_CACHE.cancelUpdate(url.toString());
+                    PRESENCE_CACHE.cancelUpdate(url);
+                }
+                if (con != null) {
+                    con.disconnect();
                 }
             }
         }
@@ -130,9 +142,21 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return success;
     }
 
+    public static String getURL(final String resource){
+
+        return "http://localhost"+
+                resource.substring(resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
+    }
+
+    public static String getHostHeader(final String resource){
+
+        return resource.substring(7,resource.indexOf('/',8));
+    }
+
+
     // Constructors --------------------------------------------------
 
-    /**
+    /** {@inheritDoc}
      */
     protected UrlResourceLoader(final SiteContext cxt) {
         super(cxt);
@@ -143,9 +167,9 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
 
     @Override
-    public final boolean urlExists(final URL url) {
+    public final boolean urlExists(final String url) {
 
-        return doesUrlExist(url);
+        return doesUrlExist(getUrlFor(url), getHostHeaderFor(url));
     }
 
 
@@ -158,44 +182,46 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     // Protected -----------------------------------------------------
 
     @Override
-    protected final URL getResource(final Site site) {
-        return getURL(getResource(), site);
+    protected final String getResource(final Site site) {
+
+        return "http://"
+                + site.getName()
+                + site.getConfigContext()
+                + (getResource().endsWith(".class") ? "classes/" : "conf/")
+                + getResource();
     }
 
-    public static URL getURL(final String resource, final Site site) {
-        try {
-            return new URL("http://"
-                        + site.getName()
-                        + site.getConfigContext()
-                        + (resource.endsWith(".class") ? "classes/" : "conf/")
-                        + resource);
-        } catch (MalformedURLException ex) {
-            throw new ResourceLoadException(ex.getMessage());
-        }
+    protected final String getHostHeaderFor(final String resource){
+
+        return getHostHeader(resource);
     }
 
     @Override
-    protected final InputStream getInputStreamFor(final URL url) {
+    protected String getUrlFor(final String resource){
+
+        return getURL(resource);
+    }
+
+    @Override
+    protected final InputStream getInputStreamFor(String resource) {
 
         HTTPClient client = null;
         try {
-            client = HTTPClient.instance(url, "localhost");
-            return client.getBufferedStream("");
+            final URL u = new URL(getUrlFor(resource));
+            client = HTTPClient.instance(u.getHost(), u.getPort(), getHostHeaderFor(resource));
+            
+            return client.getBufferedStream(u.getPath());
 
         }catch (IOException ex) {
-            throw new ResourceLoadException(ex.getMessage(), client.interceptIOException(ex));
+            throw new ResourceLoadException(ex.getMessage(), null != client ? client.interceptIOException(ex) : ex);
         }
 
 
     }
 
-    public static String getHostHeader(final String resource){
-        return resource.substring(7,resource.indexOf('/',8));
-    }
+    protected final String readResourceDebug(final String resource){
 
-    protected final String readResourceDebug(final URL url){
-
-        return "Read Configuration from " + url;
+        return "Read Configuration from " + getUrlFor(resource) + " [" + getHostHeaderFor(resource) + ']';
     }
 
     // Private -------------------------------------------------------

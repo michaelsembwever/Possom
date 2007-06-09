@@ -12,10 +12,13 @@ import java.util.Locale;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.Site.Context;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 

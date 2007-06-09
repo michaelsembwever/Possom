@@ -19,7 +19,7 @@
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.err"/>
         <param name="encoding" value="UTF-8"/>
-        <param name="Threshold" value="DEBUG"/>
+        <param name="Threshold" value="INFO"/>
 
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} (%F:%M)-%m%n"/>

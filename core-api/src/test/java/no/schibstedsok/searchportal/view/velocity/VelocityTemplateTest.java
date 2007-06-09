@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -136,27 +134,18 @@ public final class VelocityTemplateTest extends DataModelTestCase{
             });
         }
 
-        public boolean doesUrlExist(final URL url) {
-            LOG.info("XYZ Checking existence of " + url);
-
-            boolean exists = urlExists(url);
-
-            if (exists) {
-                LOG.info("XYZ exists " + url);
-            } else {
-                LOG.info("XYZ NOT exists " + url);
-            }
-
-
-            return exists;
+        public boolean doesUrlExist(final String url, final String hostHeader) {
+            return urlExists(url);
         }
 
-        public URL getURL(final String resource, final Site site) {
+        public String getURL(final String resource) {
+
             LOG.trace("getURL(" + resource + ')');
 
             try{
 
-                final String siteFolder = site.getConfigContext();
+                String siteFolder = resource.substring(resource.indexOf("//") + 2);
+                siteFolder = siteFolder.substring(0, siteFolder.indexOf('/'));
 
                 final String base = System.getProperty("basedir") // test jvm sets this property
                         + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
@@ -171,13 +160,15 @@ public final class VelocityTemplateTest extends DataModelTestCase{
                 return new URI("file://"
                         + base
                         + (wf.exists() && wf.isDirectory() ? "/war/src/main/templates/" : "/src/main/templates/")
-                        + rsc).normalize().toURL();
+                        + rsc).normalize().toString();
 
             }catch (URISyntaxException ex) {
                 throw new ResourceLoadException(ex.getMessage(), ex);
-            } catch (final MalformedURLException ex) {
-                throw new ResourceLoadException(ex.getMessage(), ex);
             }
+        }
+
+        public String getHostHeader(final String resource) {
+            return "";
         }
     }
 }
