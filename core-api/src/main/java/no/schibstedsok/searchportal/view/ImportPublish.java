@@ -61,10 +61,10 @@ public final class ImportPublish {
         } catch (NeedsRefreshException nre) {
         
             boolean updatedCache = false;
-            final HTTPClient client = HTTPClient.instance(u.getHost(), u.getPort(), hostHeader);
+            final HTTPClient client = HTTPClient.instance(hostHeader, u);
             
             try{
-                final BufferedReader reader = client.getBufferedReader(u.getPath());
+                final BufferedReader reader = client.getBufferedReader("");
                 final StringBuilder builder = new StringBuilder();
           
                 for(String line = reader.readLine(); line != null; line = reader.readLine()){
