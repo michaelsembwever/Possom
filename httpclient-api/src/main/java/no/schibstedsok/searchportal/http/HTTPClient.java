@@ -407,7 +407,23 @@ public final class HTTPClient {
         }
 
         protected URLConnection openConnection(final URL u) throws IOException {
-            final URL url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
+
+            URL url;
+
+            if ("jar".equals(u.getProtocol())) {
+                // Doesn't work with jar urls?
+                // url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
+
+                final URL containedURL = new URL(u.getFile());
+
+                url = new URL(
+                        "jar:" 
+                        + containedURL.toString().replace("://" + containedURL.getHost(), "://" + physicalHost));
+            } else {
+                url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
+
+            }
+
 
             final URLConnection connection = url.openConnection();
 
@@ -428,7 +444,7 @@ public final class HTTPClient {
         private final String hostHeader;
 
         public HostHeaderStreamHandler(final String hostHeader) {
-            this.hostHeader = hostHeader;
+            this.hostHeader = hostHeader != null ? hostHeader : "";
         }
 
         protected URLConnection openConnection(final URL u) throws IOException {
