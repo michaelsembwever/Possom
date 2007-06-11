@@ -8,8 +8,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -21,7 +21,7 @@ import no.schibstedsok.searchportal.result.ResultList;
  */
 public class StaticSearchCommand extends AbstractSearchCommand {
 
-    private static final ResultItem DUMMYITEM = new BasicSearchResultItem();
+    private static final ResultItem DUMMYITEM = new BasicResultItem();
 
     public StaticSearchCommand(final Context cxt) {
 
@@ -30,7 +30,7 @@ public class StaticSearchCommand extends AbstractSearchCommand {
 
     public ResultList<? extends ResultItem> execute() {
         
-        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+        final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         result.addResult(DUMMYITEM);
         result.setHitCount(1);
         return result;

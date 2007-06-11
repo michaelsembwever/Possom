@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.WeightedSuggestion;
@@ -55,7 +55,7 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
         
         final ResultList<? extends ResultItem> originalResult = super.execute();
         final Map<String, List<WeightedSuggestion>> suggestions
-                = ((BasicSearchResult)originalResult).getSpellingSuggestionsMap();
+                = ((BasicResultList)originalResult).getSpellingSuggestionsMap();
         
         // Rerun command?
         // TODO Consider moving the isCorrectionEnabled() call after the

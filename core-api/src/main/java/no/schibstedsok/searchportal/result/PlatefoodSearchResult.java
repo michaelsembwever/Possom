@@ -8,7 +8,7 @@
 
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 
 /**
@@ -17,7 +17,7 @@ import no.schibstedsok.searchportal.mode.command.SearchCommand;
  * @author SSTHKJER
  * @version $Id$
  */
-public final class PlatefoodSearchResult<T extends ResultItem> extends BasicSearchResult<T> {
+public final class PlatefoodSearchResult<T extends ResultItem> extends BasicResultList<T> {
     
     private boolean ppcTopListQuery = false;
 

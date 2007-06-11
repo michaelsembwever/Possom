@@ -16,8 +16,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -54,7 +54,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
 
         int totalHitCount = 0;
 
-        ResultList<ResultItem> blended = new BasicSearchResult<ResultItem>();
+        ResultList<ResultItem> blended = new BasicResultList<ResultItem>();
 
         fakeResultsToReturn = true;
 
@@ -114,8 +114,8 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
 
         public int compare(final Object o1 , final Object o2) {
 
-            final BasicSearchResultItem i1 = (BasicSearchResultItem) o1;
-            final BasicSearchResultItem i2 = (BasicSearchResultItem) o2;
+            final BasicResultItem i1 = (BasicResultItem) o1;
+            final BasicResultItem i2 = (BasicResultItem) o2;
 
             try {
                 Date d1 = df.parse(i1.getField("docdatetime"));

@@ -4,8 +4,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.mode.config.PictureCommandConfig;
 import no.schibstedsok.searchportal.query.NotClause;
 import org.apache.log4j.Logger;
@@ -85,7 +85,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         DUMP.info("Using " + url);
 
-        final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
+        final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
         if (port > 0){
 
@@ -102,7 +102,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
                     final Element picture = (Element) list.item(i);
 
-                    final BasicSearchResultItem item = new BasicSearchResultItem();
+                    final BasicResultItem item = new BasicResultItem();
 
                     for (final Map.Entry<String,String> entry : psConfig.getResultFields().entrySet()) {
 

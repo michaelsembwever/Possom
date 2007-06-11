@@ -37,7 +37,7 @@ import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -314,7 +314,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         for (Iterator iter = result.getResults().listIterator(); iter.hasNext();) {
 
-            final BasicSearchResultItem basicResultItem = (BasicSearchResultItem) iter.next();
+            final BasicResultItem basicResultItem = (BasicResultItem) iter.next();
 
             final CatalogueSearchResultItem resultItem = new CatalogueSearchResultItem();
 
@@ -327,7 +327,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             nyResultListe.add(resultItem);
         }
 
-        // clear the old BasicSearchResult, and add our new CatalogueSearchResult to be used instead.
+        // clear the old BasicResultList, and add our new CatalogueSearchResult to be used instead.
         result.removeResults();
         result.addResults(nyResultListe);
 

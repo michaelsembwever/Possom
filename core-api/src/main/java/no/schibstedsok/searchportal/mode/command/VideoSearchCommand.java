@@ -15,8 +15,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -76,7 +76,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
 
     public ResultList<? extends ResultItem> execute() {
 
-        final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
+        final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
         searchResult.setHitCount(0);
         try {
             final Document doc = this.getXmlResult();
@@ -91,7 +91,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                 long now = new Date().getTime();
                 while(nextSibling != null ) {
                     if (nextSibling.getNodeName().equals("autn:hit")) {
-                        final BasicSearchResultItem item = new BasicSearchResultItem();
+                        final BasicResultItem item = new BasicResultItem();
                         Node nextSibling2 = nextSibling.getFirstChild();
                         while(nextSibling2 != null ) {
                             if (nextSibling2.getNodeName().equals("autn:reference")) {

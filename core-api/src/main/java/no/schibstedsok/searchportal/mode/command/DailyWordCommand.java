@@ -18,8 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
@@ -83,14 +83,14 @@ public final class DailyWordCommand extends AbstractSearchCommand {
 
     public ResultList<? extends ResultItem> execute() {
 
-        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+        final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
 
         result.setHitCount(0);
 
         if (WORDS.containsKey(datamodel.getQuery().getString().toLowerCase())) {
             final DailyWord word = WORDS.get(datamodel.getQuery().getString().toLowerCase());
             if (word.isActive(new Date())) {
-                ResultItem item = new BasicSearchResultItem();
+                ResultItem item = new BasicResultItem();
                 item = item.addField(FIELD_WORD, word.getWord());
                 item = item.addField(FIELD_CODE, word.getCode());
                 result.addResult(item);

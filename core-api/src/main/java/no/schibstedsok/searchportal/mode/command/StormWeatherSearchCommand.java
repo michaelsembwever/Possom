@@ -12,8 +12,8 @@ import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.mode.config.StormweatherCommandConfig;
 import no.schibstedsok.searchportal.http.HTTPClient;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.util.GeoSearchUtil;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -83,7 +83,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
             for (ResultItem result : fastResult.getResults()) {
 
-                final ResultList<ResultItem> forecasts = new BasicSearchResult<ResultItem>(result);
+                final ResultList<ResultItem> forecasts = new BasicResultList<ResultItem>(result);
 
                 // based on latitude, longitude, get the current forecast
                 if(result.getField("lat") != null && result.getField("long") != null){
@@ -119,7 +119,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
     private ResultItem getCurrentForecast(final String la, final String lo, final String altitude) {
 
-        BasicSearchResultItem e = null;
+        BasicResultItem e = null;
 
         final String cacheKey = la + "#" +lo + "#" + altitude;
         boolean updated = false; //cache flag used for eviction/update deadlock.
@@ -127,7 +127,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         try {
 
             // Get from the cache
-            e = (BasicSearchResultItem) ADMIN.getFromCache(cacheKey, EVICTIONPERIOD_WEATHER_CACHE);
+            e = (BasicResultItem) ADMIN.getFromCache(cacheKey, EVICTIONPERIOD_WEATHER_CACHE);
 
         } catch (NeedsRefreshException nre) {
 
@@ -170,7 +170,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
             } catch (Exception ex) {
 
                 // We have the outdated content for fail-over. May become stale!
-                e = (BasicSearchResultItem) nre.getCacheContent();
+                e = (BasicResultItem) nre.getCacheContent();
                 LOG.error("Cache update exception, forecasts may become stale! " + ex.getMessage());
             } finally{
                 if (!updated) {
@@ -191,7 +191,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
 
     /**
-     * Query the service for a weatherforecast and transform response into BasicSearchResult.
+     * Query the service for a weatherforecast and transform response into BasicResultList.
      *
      * @param la
      * @param lo
@@ -210,7 +210,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
             if(nl != null && nl.getLength() > 0) {
                 for(int i = 0 ; i < nl.getLength();i++) {
                     final Element el = (Element)nl.item(i);
-                    final BasicSearchResultItem e1 = getItem(el);
+                    final BasicResultItem e1 = getItem(el);
                     result.addResult(e1);
                 }
             }
@@ -262,9 +262,9 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
       * @param element
       * @return
       */
-     private BasicSearchResultItem getItem(final Element element) {
+     private BasicResultItem getItem(final Element element) {
 
-         final BasicSearchResultItem e = new BasicSearchResultItem();
+         final BasicResultItem e = new BasicResultItem();
          for (final Iterator iter = getSearchConfiguration().getElementValues().iterator(); iter.hasNext();) {
              final String field = (String) iter.next();
              e.addField(field, getTextValue(element, field));

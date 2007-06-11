@@ -20,7 +20,7 @@ import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -284,7 +284,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
             final ResultList<ResultItem> searchResult,
             final IDocumentSummary document) {
 
-        ResultList<ResultItem> newResult = new BasicSearchResult<ResultItem>();
+        ResultList<ResultItem> newResult = new BasicResultList<ResultItem>();
 
         for (final Map.Entry<String, String> entry : config.getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());

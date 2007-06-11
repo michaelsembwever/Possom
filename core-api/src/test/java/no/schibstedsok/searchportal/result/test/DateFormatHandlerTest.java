@@ -7,8 +7,8 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -48,7 +48,7 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     private ResultHandler.Context getResultHandlerContext() throws SiteKeyedFactoryInstantiationException{
 
         final MockupSearchCommand command = new MockupSearchCommand();
-        final BasicSearchResult<ResultItem> bsr = new BasicSearchResult<ResultItem>();
+        final BasicResultList<ResultItem> bsr = new BasicResultList<ResultItem>();
         final ResultHandler.Context cxt = new ResultHandler.Context() {
 
             public ResultList<ResultItem> getSearchResult() {
@@ -100,9 +100,9 @@ public final class DateFormatHandlerTest extends SiteTestCase {
         return cxt;
     }
 
-    private BasicSearchResultItem createItem(String time) {
+    private BasicResultItem createItem(String time) {
 
-        final BasicSearchResultItem bsri = new BasicSearchResultItem();
+        final BasicResultItem bsri = new BasicResultItem();
         bsri.addField(SOURCE_FIELD, time);
         return bsri;
     }
@@ -123,7 +123,7 @@ public final class DateFormatHandlerTest extends SiteTestCase {
         rh.handleResult(resultHandlerContext, null);
 
         assertEquals(1, resultHandlerContext.getSearchResult().getResults().size());
-        BasicSearchResultItem bsri = (BasicSearchResultItem) resultHandlerContext.getSearchResult().getResults().get(0);
+        BasicResultItem bsri = (BasicResultItem) resultHandlerContext.getSearchResult().getResults().get(0);
 
         assertEquals("2006", bsri.getField(Fields.YEAR.name()));
         assertEquals("04", bsri.getField(Fields.MONTH.name()));
@@ -148,7 +148,7 @@ public final class DateFormatHandlerTest extends SiteTestCase {
         final DateFormatHandler rh = new DateFormatHandler(config);        
 
         assertEquals(1, resultHandlerContext.getSearchResult().getResults().size());
-        BasicSearchResultItem bsri = (BasicSearchResultItem) resultHandlerContext.getSearchResult().getResults().get(0);
+        BasicResultItem bsri = (BasicResultItem) resultHandlerContext.getSearchResult().getResults().get(0);
         assertEquals("2006", bsri.getField(FIELD_PREFIX + Fields.YEAR.name()));
         assertEquals("04", bsri.getField(FIELD_PREFIX + Fields.MONTH.name()));
         assertEquals("27", bsri.getField(FIELD_PREFIX + Fields.DAY.name()));

@@ -1,6 +1,6 @@
 package no.schibstedsok.searchportal.result;
 
-public class BlogSearchResultItem extends BasicSearchResultItem { // Extend BasicSearchResultItem
+public class BlogSearchResultItem extends BasicResultItem { // Extend BasicResultItem
 	
 	/* Path to blogtipsicon */
 	private String blogTipsIcon;

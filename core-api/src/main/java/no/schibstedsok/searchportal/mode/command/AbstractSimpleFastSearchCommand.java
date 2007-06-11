@@ -35,7 +35,7 @@ import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -679,7 +679,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
     private ResultItem createResultItem(final IDocumentSummary document) {
 
-        ResultItem item = new BasicSearchResultItem();
+        ResultItem item = new BasicResultItem();
 
         for (final Map.Entry<String, String> entry : getSearchConfiguration().getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());

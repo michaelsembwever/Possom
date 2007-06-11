@@ -1,8 +1,8 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.mode.config.YahooMediaCommandConfig;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -138,7 +138,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         try {
 
             final Document doc = getXmlResult();
-            final ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
+            final ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
             if (doc != null) {
 
@@ -167,7 +167,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult<ResultItem>();
+            return new BasicResultList<ResultItem>();
 
         } catch (final IOException e) {
             throw new InfrastructureException(e);
@@ -255,7 +255,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     }
 
     private ResultItem createResultItem(final Element listing) {
-        final BasicSearchResultItem item = new BasicSearchResultItem();
+        final BasicResultItem item = new BasicResultItem();
 
         for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
 

@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.WeightedSuggestion;
@@ -54,7 +54,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
         final ResultList<ResultItem> result = cxt.getSearchResult();
         
         final Map<String,List<WeightedSuggestion>> weightedSuggestionsMap
-                = ((BasicSearchResult)result).getSpellingSuggestionsMap();
+                = ((BasicResultList)result).getSpellingSuggestionsMap();
         
         if (LOG.isDebugEnabled()) {
             LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(weightedSuggestionsMap));

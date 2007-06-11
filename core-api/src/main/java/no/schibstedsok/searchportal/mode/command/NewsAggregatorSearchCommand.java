@@ -5,7 +5,7 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.ResultItem;
@@ -330,10 +330,10 @@ public final class NewsAggregatorSearchCommand extends ClusteringESPFastCommand 
                     final Map<String, ResultList<ResultItem>> collapseMap
                             = new HashMap<String, ResultList<ResultItem>>();
 
-                    final ResultList<ResultItem> tmpSearchResult = new BasicSearchResult<ResultItem>();
+                    final ResultList<ResultItem> tmpSearchResult = new BasicResultList<ResultItem>();
                     // Collecting all results from xml. (This must be done if we want correct collpsing funtionality
                     for (Element entry : entryList) {
-                        final ResultList<ResultItem> searchResultItem = new BasicSearchResult<ResultItem>();
+                        final ResultList<ResultItem> searchResultItem = new BasicResultList<ResultItem>();
                         handleEntry(entry, searchResultItem);
                         addResult(config, searchResultItem, tmpSearchResult, collapseMap, true);
                     }
@@ -368,7 +368,7 @@ public final class NewsAggregatorSearchCommand extends ClusteringESPFastCommand 
                 final ResultList<ResultItem> searchResult) {
 
             if (cluster != null) {
-                ResultList<ResultItem> clusterResult = new BasicSearchResult<ResultItem>();
+                ResultList<ResultItem> clusterResult = new BasicResultList<ResultItem>();
                 clusterResult = clusterResult.addField(
                         "size",
                         Integer.toString(Integer.parseInt(cluster.getAttribute(ATTRIBUTE_FULL_COUNT)) - 1));
@@ -386,7 +386,7 @@ public final class NewsAggregatorSearchCommand extends ClusteringESPFastCommand 
                             // First element is main result
                             clusterResult = (ResultList<ResultItem>) handleEntry(nestedEntry, clusterResult);
                         } else {
-                            ResultList<ResultItem> nestedResultItem = new BasicSearchResult<ResultItem>();
+                            ResultList<ResultItem> nestedResultItem = new BasicResultList<ResultItem>();
                             nestedResultItem = (ResultList<ResultItem>) handleEntry(nestedEntry, nestedResultItem);
                             addResult(config, nestedResultItem, clusterResult);
                         }

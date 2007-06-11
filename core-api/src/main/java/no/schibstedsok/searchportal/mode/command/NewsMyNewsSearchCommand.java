@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.NewsMyNewsCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
@@ -34,7 +34,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
         String myNews = (String) context.getDataModel().getJunkYard().getValue("myNews");
         LOG.debug("Cookie is: " + myNews);
         if (myNews != null && myNews.length() > 0) {
-            final ResultList<ResultItem> mergedResult = new BasicSearchResult<ResultItem>();
+            final ResultList<ResultItem> mergedResult = new BasicResultList<ResultItem>();
             Matcher matcher = cookiePattern.matcher(myNews);
             int position = 0;
             int offset = getOffset();
@@ -78,7 +78,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
 
                                 final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
                                 if (lastSubPos > 1) {
-                                    final ResultList<ResultItem> subSearchResults = new BasicSearchResult<ResultItem>();
+                                    final ResultList<ResultItem> subSearchResults = new BasicResultList<ResultItem>();
                                     subSearchResults.setHitCount(collectedResult.getHitCount());
                                     searchResultItem.addResult(subSearchResults);
                                     for (int i = 1; i < lastSubPos; i++) {
@@ -115,7 +115,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
         } else {
             
             LOG.info("Could not find cookie");
-            ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
+            ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
             searchResult.setHitCount(0);
             return searchResult;
         }

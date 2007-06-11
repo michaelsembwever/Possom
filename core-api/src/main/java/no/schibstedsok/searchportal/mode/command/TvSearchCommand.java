@@ -5,7 +5,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.TvsearchCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
@@ -64,7 +64,7 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
         ResultList<ResultItem> sr = null;
 
         if ("day".equals(sortByString)) {
-            sr = new BasicSearchResult<ResultItem>();
+            sr = new BasicResultList<ResultItem>();
             int totalHits = 0;
             for (int i = 0; i < 7; i++) {
                 setAdditionalFilter(" +sgeneric7nav:" + i);

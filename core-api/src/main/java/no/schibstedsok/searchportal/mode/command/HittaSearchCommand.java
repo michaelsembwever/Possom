@@ -23,7 +23,7 @@ import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.Application;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.Suggestion;
@@ -151,7 +151,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     // Inner classes -------------------------------------------------
 
-    private static final class WebServiceSearchResult extends BasicSearchResult<ResultItem>{
+    private static final class WebServiceSearchResult extends BasicResultList<ResultItem>{
 
         private static final String ERR_NOT_SUPPORTED = "Not part of this implementation";
 

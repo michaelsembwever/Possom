@@ -13,8 +13,8 @@ import no.schibstedsok.searchportal.mode.config.OverturePpcCommandConfig;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.OvertureSearchResult;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -73,7 +73,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
                 for (int i = 0; i < list.getLength(); ++i) {
                     final Element listing = (Element) list.item(i);
-                    final BasicSearchResultItem item = createItem(listing);
+                    final BasicResultItem item = createItem(listing);
                     searchResult.addResult(item);
                 }
                 final NodeList resultSetList = elem.getElementsByTagName("ResultSet");
@@ -88,7 +88,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult<ResultItem>();
+            return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {
             throw new InfrastructureException(e);
@@ -153,8 +153,8 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** TODO comment me. **/
-    protected BasicSearchResultItem createItem(final Element ppcListing) {
-        final BasicSearchResultItem item = new BasicSearchResultItem();
+    protected BasicResultItem createItem(final Element ppcListing) {
+        final BasicResultItem item = new BasicResultItem();
         final NodeList click = ppcListing.getElementsByTagName("ClickUrl");
 
         item.addField("title", ppcListing.getAttribute("title"));

@@ -32,7 +32,7 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerFactory;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -235,7 +235,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         } catch (RuntimeException rte) {
             LOG.error(ERROR_RUNTIME, rte);
-            return new BasicSearchResult<ResultItem>();
+            return new BasicResultList<ResultItem>();
 
         } finally {
             // restore thread name
@@ -258,7 +258,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 thread.interrupt();
                 thread = null;
             }
-            performResultHandling(new BasicSearchResult());
+            performResultHandling(new BasicResultList());
         }
         return !completed;
     }
@@ -451,7 +451,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final ResultList<? extends ResultItem> result = executeQuery
                     ? execute()
-                    : new BasicSearchResult<ResultItem>();
+                    : new BasicResultList<ResultItem>();
 
             hitCount = result.getHitCount();
 

@@ -31,8 +31,8 @@ import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -226,7 +226,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + ' ' + ex.getCause());
-            return new BasicSearchResult<ResultItem>();
+            return new BasicResultList<ResultItem>();
 
         } catch (IOException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -486,7 +486,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     private ResultItem createResultItem(final IDocumentSummary document) {
 
-        ResultItem item = new BasicSearchResultItem();
+        ResultItem item = new BasicResultItem();
 
         for (final Map.Entry<String, String> entry : cfg.getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());

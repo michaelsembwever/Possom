@@ -18,7 +18,7 @@ import no.schibstedsok.searchportal.result.StringChopper;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public class BasicSearchResultItem implements ResultItem {
+public class BasicResultItem implements ResultItem {
     
     private static final String URL_KEY = "url";
     private static final String TITLE_KEY = "title";
@@ -28,12 +28,12 @@ public class BasicSearchResultItem implements ResultItem {
     /**
      * 
      */
-    public BasicSearchResultItem(){}
+    public BasicResultItem(){}
     
     /**
      * 
      */
-    protected BasicSearchResultItem(final String title, final String url){
+    protected BasicResultItem(final String title, final String url){
         
         fields.put(TITLE_KEY, StringChopper.chop(title, -1));
         fields.put(URL_KEY, StringChopper.chop(url, -1));
@@ -43,7 +43,7 @@ public class BasicSearchResultItem implements ResultItem {
      * 
      * @param copy 
      */
-    public BasicSearchResultItem(final ResultItem copy){
+    public BasicResultItem(final ResultItem copy){
         
        for(String fieldName : copy.getFieldNames()){
            fields.put(fieldName, copy.getObjectField(fieldName));
@@ -56,7 +56,7 @@ public class BasicSearchResultItem implements ResultItem {
      * @param value 
      * @return 
      */
-    public BasicSearchResultItem addField(final String field, final String value) {
+    public BasicResultItem addField(final String field, final String value) {
 
         fields.put(field, StringChopper.chop(value, -1));
         return this;
@@ -89,7 +89,7 @@ public class BasicSearchResultItem implements ResultItem {
      * @param value 
      * @return 
      */
-    public BasicSearchResultItem addObjectField(final String field, final Serializable value) {
+    public BasicResultItem addObjectField(final String field, final Serializable value) {
         
         fields.put(field, value);
         return this;
@@ -146,7 +146,7 @@ public class BasicSearchResultItem implements ResultItem {
      * @param value 
      * @return 
      */
-    public BasicSearchResultItem addToMultivaluedField(final String field, final String value) {
+    public BasicResultItem addToMultivaluedField(final String field, final String value) {
         
         if (! fields.containsKey(field)) {
             fields.put(field, new ArrayList<String>());

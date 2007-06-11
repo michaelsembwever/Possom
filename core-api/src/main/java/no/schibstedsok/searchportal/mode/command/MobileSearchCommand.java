@@ -30,8 +30,8 @@ import no.fast.personalization.api.ExplicitUserGroupPersonalizationFactory;
 import no.fast.personalization.api.IPersonalizationSpecification;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.MobileCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +130,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
             final IQueryResult result = mResult.getResult();
 
-            final ResultList<ResultItem> searchResult = new BasicSearchResult();
+            final ResultList<ResultItem> searchResult = new BasicResultList();
 
             if( null != result ){
 
@@ -179,7 +179,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
     private ResultItem createResultItem(final IDocumentSummary document) {
         
-        ResultItem item = new BasicSearchResultItem();
+        ResultItem item = new BasicResultItem();
 
         for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
 

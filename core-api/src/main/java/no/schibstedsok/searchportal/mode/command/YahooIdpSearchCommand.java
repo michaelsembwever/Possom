@@ -21,8 +21,8 @@ import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -76,7 +76,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         
         try {
             
-            final ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
+            final ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
                 
             if(getTransformedQuery().trim().length() > 0 
                     || getAdditionalFilter().trim().length() > 0 
@@ -96,7 +96,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
                     for (int i = 0; i < list.getLength(); ++i) {
                         final Element listing = (Element) list.item(i);
-                        final BasicSearchResultItem item = createItem(listing);
+                        final BasicResultItem item = createItem(listing);
                         // HACK to certain hide domains
                         final String hideDomain = getSearchConfiguration().getHideDomain();
                         final String host = new URL(item.getField("clickurl")).getHost().replaceAll("/$","");
@@ -122,7 +122,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult<ResultItem>();
+            return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {
             throw new InfrastructureException(e);
@@ -185,9 +185,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** TODO comment me. **/
-    protected BasicSearchResultItem createItem(final Element result) {
+    protected BasicResultItem createItem(final Element result) {
         
-        final BasicSearchResultItem item = new BasicSearchResultItem();
+        final BasicResultItem item = new BasicResultItem();
 
         for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
 

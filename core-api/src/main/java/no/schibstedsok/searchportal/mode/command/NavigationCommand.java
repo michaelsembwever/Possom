@@ -3,7 +3,7 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.mode.config.NavigationCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.ResultItem;
@@ -54,7 +54,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
         return (NavigationCommandConfig) super.getSearchConfiguration();
     }
 
-    public static class ExtendedNavigationSearchResult extends BasicSearchResult<ResultItem> {
+    public static class ExtendedNavigationSearchResult extends BasicResultList<ResultItem> {
 
         private final ExtendedNavigation extendedNavigation;
 

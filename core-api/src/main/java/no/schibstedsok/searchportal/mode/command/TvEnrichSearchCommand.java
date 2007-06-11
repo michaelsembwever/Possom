@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.TvenrichCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -23,7 +23,7 @@ public final class TvEnrichSearchCommand extends StaticSearchCommand {
     public ResultList<? extends ResultItem> execute() {
         int hitCount = 0;
 
-        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+        final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         TvenrichCommandConfig tesc = (TvenrichCommandConfig) this.getSearchConfiguration();
         if (tesc.getWaitOn() != null) {
             final String waitOn = tesc.getWaitOn();
@@ -37,7 +37,7 @@ public final class TvEnrichSearchCommand extends StaticSearchCommand {
                 }
             } catch (Exception e) {
                 LOG.error(e);
-                return new BasicSearchResult<ResultItem>();
+                return new BasicResultList<ResultItem>();
             }
         }
 

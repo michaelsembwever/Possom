@@ -10,7 +10,7 @@ import no.schibstedsok.searchportal.result.ProductResult;
  * @author <a href="mailto:lars.johansson@conduct.no">Lars Johansson</a>
  * @version <tt>$Id$</tt>
  */
-public final class CatalogueSearchResultItem extends BasicSearchResultItem {
+public final class CatalogueSearchResultItem extends BasicResultItem {
 
 	/**
 	 * TODO: javadoc.

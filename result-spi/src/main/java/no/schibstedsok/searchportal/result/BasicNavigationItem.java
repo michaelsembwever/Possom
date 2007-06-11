@@ -12,7 +12,7 @@ package no.schibstedsok.searchportal.result;
  * @author mick
  * @version $Id$
  */
-public class BasicNavigationItem extends BasicSearchResult<NavigationItem> implements NavigationItem{
+public class BasicNavigationItem extends BasicResultList<NavigationItem> implements NavigationItem{
 
     private boolean selected = false;
 

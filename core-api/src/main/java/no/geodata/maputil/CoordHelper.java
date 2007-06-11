@@ -8,7 +8,7 @@
 
 package no.geodata.maputil;
 
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import java.util.*;
 import no.schibstedsok.searchportal.result.ResultItem;
 import org.apache.log4j.Logger;
@@ -139,7 +139,7 @@ public final class CoordHelper {
      *
      * @return MapEnvelope
      */
-    public MapEnvelope getEnvelope(final BasicSearchResultItem item) {
+    public MapEnvelope getEnvelope(final BasicResultItem item) {
         MapPoint mp = new MapPoint();
         try  {
             mp.x = Double.parseDouble(item.getField("xcoord"));

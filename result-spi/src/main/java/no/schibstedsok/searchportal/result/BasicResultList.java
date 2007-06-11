@@ -21,9 +21,9 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultItem implements ResultList<T> {
+public class BasicResultList<T extends ResultItem> extends BasicResultItem implements ResultList<T> {
 
-    private static final Logger LOG = Logger.getLogger(BasicSearchResult.class);
+    private static final Logger LOG = Logger.getLogger(BasicResultList.class);
 
     private int hitCount = -1;
     
@@ -39,9 +39,9 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     /** Plain constructor.
      * 
      */
-    public BasicSearchResult(){}
+    public BasicResultList(){}
     
-    protected BasicSearchResult(final String title, final String url, final int hitCount){
+    protected BasicResultList(final String title, final String url, final int hitCount){
         super(title, url);
         this.hitCount = hitCount;
     }
@@ -51,7 +51,7 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
      *
      * ** @param copy 
      */
-    public BasicSearchResult(final ResultItem copy){
+    public BasicResultList(final ResultItem copy){
         super(copy);
     }
 
@@ -143,21 +143,21 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
 
     /** {@inheritDoc} **/
     @Override
-    public BasicSearchResult<T> addField(final String field, final String value) {
+    public BasicResultList<T> addField(final String field, final String value) {
         
         super.addField(field, value);
         return this;
     }
 
     @Override
-    public BasicSearchResult<T> addObjectField(final String field, final Serializable value) {
+    public BasicResultList<T> addObjectField(final String field, final Serializable value) {
         
         super.addObjectField(field, value);
         return this;
     }    
 
     @Override
-    public BasicSearchResult<T> addToMultivaluedField(final String field, final String value) {
+    public BasicResultList<T> addToMultivaluedField(final String field, final String value) {
         
         super.addToMultivaluedField(field, value);
         return this;

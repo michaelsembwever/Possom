@@ -17,8 +17,8 @@ import java.net.URLEncoder;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.PlatefoodPpcCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.PlatefoodSearchResult;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -91,7 +91,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
 
                 for (int i = 0; i < result; ++i) {
                     final Element listing = (Element) list.item(i);
-                    final BasicSearchResultItem item = createItem(listing);
+                    final BasicResultItem item = createItem(listing);
                     searchResult.addResult(item);
                 }
                 searchResult.setHitCount(result);
@@ -102,7 +102,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult<ResultItem>();
+            return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {
             throw new InfrastructureException(e);
@@ -161,8 +161,8 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
 
     /**
      **/
-    protected BasicSearchResultItem createItem(final Element ppcListing) {
-        final BasicSearchResultItem item = new BasicSearchResultItem();
+    protected BasicResultItem createItem(final Element ppcListing) {
+        final BasicResultItem item = new BasicResultItem();
         final NodeList clickUrl = ppcListing.getElementsByTagName("chan:trackURL");
         final NodeList displayUrl = ppcListing.getElementsByTagName("chan:displayURL");
         final NodeList title = ppcListing.getElementsByTagName("chan:title");

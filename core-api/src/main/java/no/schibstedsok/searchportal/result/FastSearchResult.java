@@ -1,7 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ import no.schibstedsok.searchportal.result.Navigator;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>{
+public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
 
     /** @deprecated will be removed without replacement in future version. **/
     final SearchCommand command;

@@ -12,7 +12,7 @@ import se.hitta.www.HittaService.HittaServiceSoap;
 import no.schibstedsok.searchportal.mode.config.HittamapCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -41,7 +41,7 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
 //		final boolean isGEOLOCAL = engine.evaluateQuery(
 //				TokenPredicate.GEOLOCAL, getQuery());
 
-		final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+		final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
 		if (isGEOGLOBAL) {
 			try {
 				HittaServiceLocator locator = new HittaServiceLocator();

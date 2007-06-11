@@ -4,8 +4,8 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.searchportal.query.token.JepTokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import org.apache.log4j.Logger;
 import java.text.NumberFormat;
 import no.schibstedsok.searchportal.result.ResultItem;
@@ -38,7 +38,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
         final NumberFormat f = NumberFormat.getInstance();
 
-        final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
+        final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
         try{
             final Complex result = ((JepTokenEvaluator)getEngine()
@@ -59,7 +59,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
                     }
                 }
 
-                ResultItem item = new BasicSearchResultItem();
+                ResultItem item = new BasicResultItem();
 
                 final String r = getQuery().getQueryString() + " = " + s;
 

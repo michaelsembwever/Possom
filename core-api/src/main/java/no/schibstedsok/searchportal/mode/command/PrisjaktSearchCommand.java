@@ -3,8 +3,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.InfrastructureException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -73,7 +73,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         final boolean isHousehold = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, getQuery());
         final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, getQuery());
 
-        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+        final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
 
         if (isChain || isService || isElectronics || isHousehold || isMusic) {
             final PrisjaktLocator service = new PrisjaktLocator();
@@ -157,7 +157,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         
         for (final Produkt product : products) {
             
-            ResultItem item = new BasicSearchResultItem();
+            ResultItem item = new BasicResultItem();
             item = item.addField("productName", product.getProduktnamn());
             final int lPris = product.getLagstaPris();
             final String cf = nummerAvskFormat(lPris);
@@ -182,7 +182,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         
         for (final Kategori katag : kategorier) {
             
-            ResultItem item = new BasicSearchResultItem();
+            ResultItem item = new BasicResultItem();
             item = item.addField("numberofProducts", Integer.toString(katag.getAntalProdukter()));
             item = item.addField("categorieURL", katag.getUrl());
             item = item.addField("categorieName", katag.getKategorinamn());
@@ -194,7 +194,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         
         for (final Butik store : stores) {
             
-            ResultItem item = new BasicSearchResultItem();
+            ResultItem item = new BasicResultItem();
             item = item.addField("numberofProducts", Integer.toString(store.getAntalProdukter()));
             item = item.addField("storeURL", store.getUrl());
             item = item.addField("storeName", store.getButiksnamn());

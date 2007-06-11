@@ -4,7 +4,7 @@ package no.schibstedsok.searchportal.result.handler;
 
 import java.text.NumberFormat;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
@@ -50,7 +50,7 @@ public final class NumberOperationHandler implements ResultHandler {
 
         for(ResultItem i : result.getResults()){
 
-            final BasicSearchResultItem item = (BasicSearchResultItem) i;
+            final BasicResultItem item = (BasicResultItem) i;
             for(String field : config.getFields()){
                 final String value = (String) item.getField(field);
                 parser.addVariable(field, value != null && value.length()>0 ? Double.parseDouble(value) : 0D);

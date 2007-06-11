@@ -7,8 +7,8 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
@@ -33,7 +33,7 @@ public final class StockSearchCommand extends AbstractSearchCommand {
 
     public ResultList<? extends ResultItem> execute() {
 
-        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+        final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         final String q = getTransformedQuery();
         LOG.info("transformed query is " + q);
 
@@ -42,7 +42,7 @@ public final class StockSearchCommand extends AbstractSearchCommand {
         // for now we are only interested in complete matches. and the SynonymQT only deals with stock-tickers.
         if( SynonymQueryTransformer.isSynonym( q )){
 
-            ResultItem item = new BasicSearchResultItem();
+            ResultItem item = new BasicResultItem();
 
 
             final String tickerCode = SynonymQueryTransformer.isTicker(q)
