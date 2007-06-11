@@ -602,11 +602,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
         sources.removeAll(toRemove);
 
-        if (getSearchTab().getAbsoluteOrdering()) {
+        if (getSearchTab().isAbsoluteOrdering()) {
             Collections.sort(sources, Modifier.getHintPriorityComparator());
         } else {
             Collections.sort(sources);
         }
+    }
+    
+    private void performNavigationHandling(){
+        
     }
 
     /** Used by the constructor. **/

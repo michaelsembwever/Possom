@@ -15,6 +15,8 @@ package no.schibstedsok.searchportal.result;
 public class BasicNavigationItem extends BasicResultList<NavigationItem> implements NavigationItem{
 
     private boolean selected = false;
+    
+    public BasicNavigationItem(){}
 
     /**
      * @param title

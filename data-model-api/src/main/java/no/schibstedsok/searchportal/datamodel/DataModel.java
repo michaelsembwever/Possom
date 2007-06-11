@@ -15,6 +15,7 @@ import no.schibstedsok.searchportal.datamodel.generic.DataNode;
 import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
 import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
+import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
@@ -132,12 +133,6 @@ public interface DataModel extends Serializable{
      */
     Map<String,SearchDataObject> getSearches();
     
-//    /**
-//     * 
-//     * @param searches 
-//     */
-//    void setSearches(Map<String,SearchDataObject> searches);
-
     /**
      * 
      * @param key 
@@ -156,6 +151,20 @@ public interface DataModel extends Serializable{
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, SEARCH_COMMAND_EXECUTION})
     void setSearch(final String key, final SearchDataObject value);
+    
+    // NavigationDataObject ------------------------------------------------------------
+    
+    /**
+     * 
+     * @return 
+     */
+    NavigationDataObject getNavigation();
+
+    /** 
+     * @param value 
+     */
+    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    void setNavigation(final NavigationDataObject value);
     
     // JunkYardDataObject ------------------------------------------------------------
 

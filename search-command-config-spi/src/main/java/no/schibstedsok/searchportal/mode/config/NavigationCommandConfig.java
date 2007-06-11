@@ -28,8 +28,10 @@ import java.util.Set;
  * @author Geir H. Pettersen(T-Rank)
  */
 @Controller("NavigationCommand")
-public class NavigationCommandConfig extends CommandConfig {
+public final class NavigationCommandConfig extends CommandConfig {
+    
     private static final Logger LOG = Logger.getLogger(NavigationCommandConfig.class);
+    
     private ExtendedNavigationConfig extendedNavigationConfig;
     private static final String NAVIGATION_ELEMENT = "navigation";
     private static final String NAV_ELEMENT = "nav";
@@ -37,7 +39,7 @@ public class NavigationCommandConfig extends CommandConfig {
     public NavigationCommandConfig() {
     }
 
-    public NavigationCommandConfig(SearchConfiguration sc) {
+    public NavigationCommandConfig(final SearchConfiguration sc) {
         if (sc instanceof NavigationCommandConfig) {
             extendedNavigationConfig = ((NavigationCommandConfig) sc).getExtendedNavigationConfig();
         }
@@ -47,16 +49,17 @@ public class NavigationCommandConfig extends CommandConfig {
         return extendedNavigationConfig;
     }
 
-    public void setExtendedNavigationConfig(ExtendedNavigationConfig extendedNavigationConfig) {
+    public void setExtendedNavigationConfig(final ExtendedNavigationConfig extendedNavigationConfig) {
         this.extendedNavigationConfig = extendedNavigationConfig;
     }
 
-    private static List<Element> getDirectChildren(Element element, String elementName) {
-        ArrayList<Element> children = new ArrayList<Element>();
+    private static List<Element> getDirectChildren(final Element element, final String elementName) {
+        
+        final List<Element> children = new ArrayList<Element>();
         if (element != null) {
-            NodeList childNodes = element.getChildNodes();
+            final NodeList childNodes = element.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
-                Node childNode = childNodes.item(i);
+                final Node childNode = childNodes.item(i);
                 if (childNode instanceof Element && childNode.getNodeName().equals(elementName)) {
                     children.add((Element) childNode);
                 }
@@ -68,13 +71,14 @@ public class NavigationCommandConfig extends CommandConfig {
 
     @Override
     public CommandConfig readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+        
         super.readSearchConfiguration(element, inherit);
-        List<Element> navigationElements = getDirectChildren(element, NAVIGATION_ELEMENT);
-        HashMap<String, Nav> navMap = new HashMap<String, Nav>();
-        HashMap<String, Navigation> navigationMap = new HashMap<String, Navigation>();
-        List<Navigation> navigationList = new ArrayList<Navigation>(navigationElements.size());
+        final List<Element> navigationElements = getDirectChildren(element, NAVIGATION_ELEMENT);
+        final Map<String, Nav> navMap = new HashMap<String, Nav>();
+        final Map<String, Navigation> navigationMap = new HashMap<String, Navigation>();
+        final List<Navigation> navigationList = new ArrayList<Navigation>(navigationElements.size());
         for (Element navigationElement : navigationElements) {
-            Navigation navigation = new Navigation(navigationElement, navMap);
+            final Navigation navigation = new Navigation(navigationElement, navMap);
             navigationList.add(navigation);
             if (navigation.getId() != null) {
                 navigationMap.put(navigation.getId(), navigation);
@@ -88,21 +92,26 @@ public class NavigationCommandConfig extends CommandConfig {
      * Clients may want to access this config to get info on available navigations.
      */
     public static class ExtendedNavigationConfig {
-        private HashMap<String, Nav> navMap;
-        private HashMap<String, Navigation> navigationMap;
-        private List<Navigation> navigationList;
+        
+        private final Map<String, Nav> navMap;
+        private final Map<String, Navigation> navigationMap;
+        private final List<Navigation> navigationList;
 
-        public ExtendedNavigationConfig(HashMap<String, Nav> navMap, HashMap<String, Navigation> navigationMap, List<Navigation> navigationList) {
+        public ExtendedNavigationConfig(
+                final Map<String, Nav> navMap, 
+                final Map<String, Navigation> navigationMap, 
+                final List<Navigation> navigationList) {
+            
             this.navigationMap = navigationMap;
             this.navMap = navMap;
             this.navigationList = navigationList;
         }
 
-        public HashMap<String, Nav> getNavMap() {
+        public Map<String, Nav> getNavMap() {
             return navMap;
         }
 
-        public HashMap<String, Navigation> getNavigationMap() {
+        public Map<String, Navigation> getNavigationMap() {
             return navigationMap;
         }
 
@@ -112,19 +121,21 @@ public class NavigationCommandConfig extends CommandConfig {
     }
 
     public static class Navigation {
+        
         private String id;
         private String commandName;
         private String tab;
         private boolean out = false;
         private List<Nav> navList;
-        private HashMap<String, Nav> navMap;
+        private Map<String, Nav> navMap;
         private Set<String> resetNavSet;
         private static final String RESET_NAV_ELEMENT = "reset-nav";
 
         public Navigation() {
         }
 
-        public Navigation(Element navigationElement, HashMap<String, Nav> navMap) {
+        public Navigation(final Element navigationElement, final Map<String, Nav> navMap) {
+            
             AbstractDocumentFactory.fillBeanProperty(this, null, "id", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "commandName", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "tab", ParseType.String, navigationElement, null);
@@ -154,7 +165,7 @@ public class NavigationCommandConfig extends CommandConfig {
             }
         }
 
-        private void addReset(Nav nav) {
+        private void addReset(final Nav nav) {
             if (nav != null) {
                 resetNavSet.add(nav.getField());
                 if (nav.getChildNavs() != null) {
@@ -165,7 +176,7 @@ public class NavigationCommandConfig extends CommandConfig {
             }
         }
 
-        private void updateNavMap(Nav nav, HashMap<String, Nav> navMap) {
+        private void updateNavMap(final Nav nav, final Map<String, Nav> navMap) {
             navMap.put(nav.getId(), nav);
             if (nav.getChildNavs() != null && nav.getChildNavs().size() > 0) {
                 for (Nav subNav : nav.getChildNavs()) {
@@ -178,11 +189,11 @@ public class NavigationCommandConfig extends CommandConfig {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(final String id) {
             this.id = id;
         }
 
-        public HashMap<String, Nav> getNavMap() {
+        public Map<String, Nav> getNavMap() {
             return navMap;
         }
 
@@ -194,7 +205,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return resetNavSet;
         }
 
-        public void setNavList(List<Nav> navList) {
+        public void setNavList(final List<Nav> navList) {
             this.navList = navList;
         }
 
@@ -202,7 +213,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return tab;
         }
 
-        public void setTab(String tab) {
+        public void setTab(final String tab) {
             this.tab = tab;
         }
 
@@ -210,7 +221,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return commandName;
         }
 
-        public void setCommandName(String commandName) {
+        public void setCommandName(final String commandName) {
             this.commandName = commandName;
         }
 
@@ -218,10 +229,11 @@ public class NavigationCommandConfig extends CommandConfig {
             return out;
         }
 
-        public void setOut(boolean out) {
+        public void setOut(final boolean out) {
             this.out = out;
         }
 
+        @Override
         public String toString() {
             return "\nNavigation{" +
                     "commandName='" + commandName + '\'' +
@@ -234,6 +246,7 @@ public class NavigationCommandConfig extends CommandConfig {
     }
 
     public static class Nav {
+        
         private static final String OPTION_ELEMENT = "option";
         private static final String STATIC_PARAMETER_ELEMENT = "static-parameter";
         private String id;
@@ -246,20 +259,46 @@ public class NavigationCommandConfig extends CommandConfig {
         private List<Option> options;
         private Map<String, String> staticParameters;
         private List<Nav> childNavs;
-        private Navigation navigation;
-        private Nav parentNav;
+        private final Navigation navigation;
+        private final Nav parentNav;
         private boolean excludeQuery = false;
 
-        private Nav(Nav parentNav, Navigation navigation, Element navElement) {
+        private Nav(final Nav parentNav, final Navigation navigation, final Element navElement) {
+            
             this.navigation = navigation;
             this.parentNav = parentNav;
-            AbstractDocumentFactory.fillBeanProperty(this, null, "commandName", ParseType.String, navElement, navigation.getCommandName());
-            AbstractDocumentFactory.fillBeanProperty(this, null, "id", ParseType.String, navElement, null);
-            AbstractDocumentFactory.fillBeanProperty(this, null, "field", ParseType.String, navElement, id);
-            AbstractDocumentFactory.fillBeanProperty(this, null, "tab", ParseType.String, navElement, navigation.getTab());
-            AbstractDocumentFactory.fillBeanProperty(this, null, "out", ParseType.Boolean, navElement, Boolean.toString(navigation.isOut()));
-            AbstractDocumentFactory.fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navElement, "false");
-            AbstractDocumentFactory.fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, navElement, "true");
+            
+            AbstractDocumentFactory.fillBeanProperty(
+                    this, 
+                    null, 
+                    "commandName", 
+                    ParseType.String, 
+                    navElement, 
+                    navigation.getCommandName());
+            
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "id", ParseType.String, navElement, null);
+            
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "field", ParseType.String, navElement, id);
+            
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "tab", ParseType.String, navElement, navigation.getTab());
+            
+            AbstractDocumentFactory.fillBeanProperty(
+                    this, 
+                    null, 
+                    "out", 
+                    ParseType.Boolean, 
+                    navElement, 
+                    Boolean.toString(navigation.isOut()));
+            
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navElement, "false");
+            
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, navElement, "true");
+            
 
             final List<Element> childNavElements = getDirectChildren(navElement, NAV_ELEMENT);
             if (childNavElements.size() > 0) {
@@ -284,7 +323,7 @@ public class NavigationCommandConfig extends CommandConfig {
             }
         }
 
-        private Nav(Navigation navigation, Element navElement) {
+        private Nav(final Navigation navigation, final Element navElement) {
             this(null, navigation, navElement);
         }
 
@@ -304,7 +343,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return realNavigator;
         }
 
-        public void setRealNavigator(boolean realNavigator) {
+        public void setRealNavigator(final boolean realNavigator) {
             this.realNavigator = realNavigator;
         }
 
@@ -312,7 +351,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return options;
         }
 
-        public void setOptions(List<Option> options) {
+        public void setOptions(final List<Option> options) {
             this.options = options;
         }
 
@@ -320,11 +359,11 @@ public class NavigationCommandConfig extends CommandConfig {
             return staticParameters;
         }
 
-        public void setStaticParameters(Map<String, String> staticParameters) {
+        public void setStaticParameters(final Map<String, String> staticParameters) {
             this.staticParameters = staticParameters;
         }
 
-        public void setExcludeQuery(boolean excludeQuery) {
+        public void setExcludeQuery(final boolean excludeQuery) {
             this.excludeQuery = excludeQuery;
         }
 
@@ -336,7 +375,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(final String id) {
             this.id = id;
         }
 
@@ -344,7 +383,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return tab;
         }
 
-        public void setTab(String tab) {
+        public void setTab(final String tab) {
             this.tab = tab;
         }
 
@@ -352,7 +391,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return out;
         }
 
-        public void setOut(boolean out) {
+        public void setOut(final boolean out) {
             this.out = out;
         }
 
@@ -360,7 +399,7 @@ public class NavigationCommandConfig extends CommandConfig {
             return commandName;
         }
 
-        public void setCommandName(String commandName) {
+        public void setCommandName(final String commandName) {
             this.commandName = commandName;
         }
 
@@ -368,11 +407,11 @@ public class NavigationCommandConfig extends CommandConfig {
             return field;
         }
 
-        public void setField(String field) {
+        public void setField(final String field) {
             this.field = field;
         }
 
-
+        @Override
         public String toString() {
             return "Nav{" +
                     "id='" + id + '\'' +

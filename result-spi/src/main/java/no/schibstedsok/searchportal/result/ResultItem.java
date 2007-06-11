@@ -31,6 +31,21 @@ public interface ResultItem extends Serializable{
      * @return 
      */
     ResultItem setUrl(String url);
+    
+    /** The title this result item represents.
+     * 
+     * @return 
+     */
+    String getTitle();
+    
+    /** Sets the title to the returned instance which is otherwise equal to this.
+     * There is no guarantee that this instance is altered.
+     * This allows implementations to be immutable if they choose to be.
+     * 
+     * @param url 
+     * @return 
+     */
+    ResultItem setTitle(String title);    
 
     /**
      * 

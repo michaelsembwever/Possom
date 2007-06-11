@@ -4,8 +4,10 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.mode.config.NavigationCommandConfig;
 import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicNavigationItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
@@ -13,11 +15,9 @@ import org.apache.log4j.Logger;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -115,24 +115,39 @@ public final class NavigationCommand extends AbstractSearchCommand {
          * @param name the id of the navigator to get.
          * @return a list with extended navigators
          */
-        public NavigatorList getNavigators(String name) {
+        public NavigationItem getNavigators(final String name) {
+            
             NavigationCommandConfig.Nav navEntry = extendedNavigationConfig.getNavMap().get(name);
             try {
                 if (navEntry != null) {
                     boolean selectionDone = false;
                     StringDataObject selectedValue = context.getDataModel().getParameters().getValue(name);
-                    NavigatorList extendedNavigators = new NavigatorList(new ArrayList<ExtendedNavigator>());
+                    final NavigationItem extendedNavigators = new BasicNavigationItem();
                     FastSearchResult fsr = null;
+                    
                     if (navEntry.getCommandName() != null) {
-                        ResultList<? extends ResultItem> searchResult = getSearchResult(navEntry.getCommandName(), context.getDataModel());
+                        final ResultList<? extends ResultItem> searchResult 
+                                = getSearchResult(navEntry.getCommandName(), context.getDataModel());
+                        
                         if (searchResult instanceof FastSearchResult) {
                             fsr = (FastSearchResult) searchResult;
-                            List<Modifier> modifiers = fsr.getModifiers(navEntry.isRealNavigator() ? navEntry.getField() : name);
+                            final List<Modifier> modifiers = fsr.getModifiers(navEntry.isRealNavigator() 
+                                    ? navEntry.getField() 
+                                    : name);
+                            
                             if (modifiers != null && modifiers.size() > 0) {
                                 for (Modifier modifier : modifiers) {
-                                    final String navigatorName = modifier.getNavigator() == null ? null : modifier.getNavigator().getName();
-                                    final String urlFragment = getUrlFragment(navEntry, modifier.getName(), navigatorName);
-                                    final ExtendedNavigator navigator = new ExtendedNavigator(modifier.getName(), urlFragment, modifier.getCount());
+                                    
+                                    final String navigatorName = modifier.getNavigator() == null 
+                                            ? null 
+                                            : modifier.getNavigator().getName();
+                                    
+                                    final String urlFragment 
+                                            = getUrlFragment(navEntry, modifier.getName(), navigatorName);
+                                    
+                                    final NavigationItem navigator 
+                                            = new BasicNavigationItem(modifier.getName(), urlFragment, modifier.getCount());
+                                    
                                     if (!selectionDone) {
                                         selectedValue = context.getDataModel().getParameters().getValue(navEntry.getField());
                                         if (selectedValue != null && selectedValue.getString().equals(modifier.getName())) {
@@ -140,7 +155,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
                                             selectionDone = true;
                                         }
                                     }
-                                    extendedNavigators.add(navigator);
+                                    extendedNavigators.addResult(navigator);
                                 }
                             }
                         }
@@ -159,20 +174,22 @@ public final class NavigationCommand extends AbstractSearchCommand {
         private void getOptionNavigators(
                 final NavigationCommandConfig.Nav navEntry,
                 final FastSearchResult fsr,
-                final List<ExtendedNavigator> extendedNavigators,
+                final NavigationItem extendedNavigators,
                 StringDataObject selectedValue) {
 
             // Only used by getNavigators. Mainly to split code.
-            if (extendedNavigators.size() > 0 && navEntry.getOptions().size() > 0) {
+            if (extendedNavigators.getResults().size() > 0 && navEntry.getOptions().size() > 0) {
+                
+                final List<NavigationItem> toRemove = new ArrayList<NavigationItem>();
+                
                 // Navigators already collected. Options is override
-                Iterator<ExtendedNavigator> it = extendedNavigators.iterator();
-                while (it.hasNext()) {
+                for (NavigationItem navigator : extendedNavigators.getResults()) {
                     boolean match = false;
-                    ExtendedNavigator navigator = it.next();
+                    
                     // Double loop to find match in two lists. Not nice, but it works.
                     for (NavigationCommandConfig.Option option : navEntry.getOptions()) {
-                        String value = option.getValue();
-                        if (navigator.name.equals(value)) {
+                        final String value = option.getValue();
+                        if (navigator.getTitle().equals(value)) {
                             match = true;
                             if (selectedValue == null && option.isDefaultSelect()) {
                                 navigator.setSelected(true);
@@ -184,12 +201,19 @@ public final class NavigationCommand extends AbstractSearchCommand {
                         }
                     }
                     if (!match) {
-                        it.remove();
+                        toRemove.add(navigator);
                     }
                 }
+                for(NavigationItem item : toRemove){
+                    extendedNavigators.removeResult(item);
+                }
+                
             } else {
-                final StringDataObject optionSelectedValue = context.getDataModel().getParameters().getValue(navEntry.getField());
+                final StringDataObject optionSelectedValue 
+                        = context.getDataModel().getParameters().getValue(navEntry.getField());
+                
                 for (NavigationCommandConfig.Option option : navEntry.getOptions()) {
+                    
                     String value = option.getValue();
                     if (option.getValueRef() != null && fsr != null) {
                         String tmp = fsr.getField(option.getValueRef());
@@ -198,8 +222,10 @@ public final class NavigationCommand extends AbstractSearchCommand {
                         }
                     }
                     if (value != null) {
-                        ExtendedNavigator navigator = new ExtendedNavigator(option.getDisplayName(), getUrlFragment(navEntry, value), -1);
-                        extendedNavigators.add(navigator);
+                        final NavigationItem navigator 
+                                = new BasicNavigationItem(option.getDisplayName(), getUrlFragment(navEntry, value), -1);
+                        
+                        extendedNavigators.addResult(navigator);
                         if (optionSelectedValue == null && option.isDefaultSelect()) {
                             navigator.setSelected(true);
                         } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
@@ -348,204 +374,4 @@ public final class NavigationCommand extends AbstractSearchCommand {
         }
     }
 
-    public static class NavigatorList implements List<ExtendedNavigator> {
-        private List<ExtendedNavigator> proxiedList;
-        private boolean dirty = true;
-        private ExtendedNavigator selectedItem;
-
-        public NavigatorList(List<ExtendedNavigator> proxiedList) {
-            this.proxiedList = proxiedList;
-        }
-
-        public ExtendedNavigator getChildSelected() {
-            findSelection();
-            return selectedItem;
-        }
-
-        private void findSelection() {
-            if (dirty) {
-                selectedItem = null;
-                for (ExtendedNavigator extendedNavigator : proxiedList) {
-                    if (extendedNavigator.isSelected()) {
-                        selectedItem = extendedNavigator;
-                        break;
-                    }
-                }
-            }
-            dirty = false;
-        }
-
-        public boolean isChildSelected() {
-            findSelection();
-            return selectedItem != null;
-        }
-
-        public int size() {
-            return proxiedList.size();
-        }
-
-        public boolean isEmpty() {
-            return proxiedList.isEmpty();
-        }
-
-        public boolean contains(Object o) {
-            return proxiedList.contains(o);
-        }
-
-        public Iterator<ExtendedNavigator> iterator() {
-            dirty = true;
-            return proxiedList.iterator();
-        }
-
-        public Object[] toArray() {
-            return proxiedList.toArray();
-        }
-
-        public <T> T[] toArray(T[] a) {
-            return proxiedList.toArray(a);
-        }
-
-        public boolean add(ExtendedNavigator t) {
-            dirty = true;
-            return proxiedList.add(t);
-        }
-
-        public boolean remove(Object o) {
-            return proxiedList.remove(o);
-        }
-
-        public boolean containsAll(Collection<?> c) {
-            return proxiedList.containsAll(c);
-        }
-
-        public boolean addAll(Collection<? extends ExtendedNavigator> c) {
-            dirty = true;
-            return proxiedList.addAll(c);
-        }
-
-        public boolean addAll(int index, Collection<? extends ExtendedNavigator> c) {
-            dirty = true;
-            return proxiedList.addAll(index, c);
-        }
-
-        public boolean removeAll(Collection<?> c) {
-            dirty = true;
-            return proxiedList.removeAll(c);
-        }
-
-        public boolean retainAll(Collection<?> c) {
-            dirty = true;
-            return proxiedList.retainAll(c);
-        }
-
-        public void clear() {
-            dirty = true;
-            proxiedList.clear();
-        }
-
-        public ExtendedNavigator get(int index) {
-            return proxiedList.get(index);
-        }
-
-        public ExtendedNavigator set(int index, ExtendedNavigator element) {
-            dirty = true;
-            return proxiedList.set(index, element);
-        }
-
-        public void add(int index, ExtendedNavigator element) {
-            dirty = true;
-            proxiedList.add(index, element);
-        }
-
-        public ExtendedNavigator remove(int index) {
-            dirty = true;
-            return proxiedList.remove(index);
-        }
-
-        public int indexOf(Object o) {
-            return proxiedList.indexOf(o);
-        }
-
-        public int lastIndexOf(Object o) {
-            return proxiedList.lastIndexOf(o);
-        }
-
-        public ListIterator<ExtendedNavigator> listIterator() {
-            dirty = true;
-            return proxiedList.listIterator();
-        }
-
-        public ListIterator<ExtendedNavigator> listIterator(int index) {
-            dirty = true;
-            return proxiedList.listIterator(index);
-        }
-
-        public List<ExtendedNavigator> subList(int fromIndex, int toIndex) {
-            return proxiedList.subList(fromIndex, toIndex);
-        }
-    }
-
-    /**
-     * This is the interface class to velocity.
-     */
-    public static final class ExtendedNavigator {
-
-        private String name;
-        private String urlFragment;
-        private int count;
-        private boolean selected = false;
-
-        /**
-         * @param displayName
-         * @param urlFragment
-         * @param count
-         */
-        public ExtendedNavigator(final String displayName, final String urlFragment, final int count) {
-            this.name = displayName;
-            this.urlFragment = urlFragment;
-            this.count = count;
-        }
-
-        /**
-         * @param selected
-         */
-        public void setSelected(final boolean selected) {
-            this.selected = selected;
-        }
-
-        /**
-         * @return
-         */
-        public boolean isSelected() {
-            return selected;
-        }
-
-        /**
-         * @return
-         */
-        public String getTitle() {
-            return name;
-        }
-
-        /**
-         * @param name
-         */
-        public void setTitle(final String name) {
-            this.name = name;
-        }
-
-        /**
-         * @return
-         */
-        public String getUrl() {
-            return urlFragment;
-        }
-
-        /**
-         * @return
-         */
-        public int getHitCount() {
-            return count;
-        }
-    }
 }

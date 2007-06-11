@@ -11,6 +11,7 @@ import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
 import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.result.PagingDisplayHelper;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -23,8 +24,9 @@ import no.schibstedsok.searchportal.result.ResultList;
 @DataObject
 public interface SearchDataObject {
     
-//    SearchConfiguration getConfiguration();
-//    void setConfiguration(SearchConfiguration configuration);
+    SearchConfiguration getConfiguration();
+    
+    void setConfiguration(SearchConfiguration configuration);
     
     /**
      * 

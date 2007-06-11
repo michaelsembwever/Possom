@@ -814,6 +814,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected static ResultList<? extends ResultItem> getSearchResult(
             final String id,
             final DataModel datamodel) throws InterruptedException {
+        
         synchronized (datamodel.getSearches()) {
             while (null == datamodel.getSearch(id)) {
                 // next line releases the monitor so it is possible to call this method from different threads
