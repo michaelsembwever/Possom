@@ -436,6 +436,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nif") && getTransformedQuery().trim().length() > 0;
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nib") && getTransformedQuery().trim().length() > 0;
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nir") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapwcoords") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapycoords") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= this instanceof NewsMyNewsSearchCommand;
