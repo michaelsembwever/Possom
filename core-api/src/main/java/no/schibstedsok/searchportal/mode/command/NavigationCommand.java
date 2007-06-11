@@ -179,7 +179,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
                                 selectedValue = new StringDataObjectSupport("dummy");
                             }
                             if (option.getDisplayName() != null) {
-                                navigator.setName(option.getDisplayName());
+                                navigator.setTitle(option.getDisplayName());
                             }
                         }
                     }
@@ -357,7 +357,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
             this.proxiedList = proxiedList;
         }
 
-        public ExtendedNavigator getSelected() {
+        public ExtendedNavigator getChildSelected() {
             findSelection();
             return selectedItem;
         }
@@ -375,7 +375,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
             dirty = false;
         }
 
-        public boolean hasSelection() {
+        public boolean isChildSelected() {
             findSelection();
             return selectedItem != null;
         }
@@ -523,28 +523,28 @@ public final class NavigationCommand extends AbstractSearchCommand {
         /**
          * @return
          */
-        public String getName() {
+        public String getTitle() {
             return name;
         }
 
         /**
          * @param name
          */
-        public void setName(final String name) {
+        public void setTitle(final String name) {
             this.name = name;
         }
 
         /**
          * @return
          */
-        public String getUrlFragment() {
+        public String getUrl() {
             return urlFragment;
         }
 
         /**
          * @return
          */
-        public int getCount() {
+        public int getHitCount() {
             return count;
         }
     }

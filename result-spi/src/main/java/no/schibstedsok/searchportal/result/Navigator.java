@@ -4,6 +4,7 @@ package no.schibstedsok.searchportal.result;
 import java.io.Serializable;
 
 /**
+ * @deprecated Geir's navigation model is the replacement.
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision: 3361 $</tt>
  */
@@ -31,7 +32,7 @@ public final class Navigator implements Serializable {
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public Navigator(final String name, final String field, final String displayName, final Sort sort) {
         this.name = name;
@@ -41,69 +42,69 @@ public final class Navigator implements Serializable {
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public Navigator() {
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public Navigator getChildNavigator() {
         return childNavigator;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public void setChildNavigator(final Navigator childNavigator) {
         this.childNavigator = childNavigator;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public String getName() {
         return name;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public void setName(final String name) {
         this.name = name;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public String toString() {
         return name;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public String getField() {
         return field;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public void setField(final String field) {
         this.field = field;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public String getDisplayName() {
         return displayName;
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;

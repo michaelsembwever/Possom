@@ -21,6 +21,7 @@ import no.schibstedsok.searchportal.result.StringChopper;
 public class BasicSearchResultItem implements ResultItem {
     
     private static final String URL_KEY = "url";
+    private static final String TITLE_KEY = "title";
 
     private final HashMap<String,Serializable> fields = new HashMap<String,Serializable>();
     
@@ -28,6 +29,15 @@ public class BasicSearchResultItem implements ResultItem {
      * 
      */
     public BasicSearchResultItem(){}
+    
+    /**
+     * 
+     */
+    protected BasicSearchResultItem(final String title, final String url){
+        
+        fields.put(TITLE_KEY, StringChopper.chop(title, -1));
+        fields.put(URL_KEY, StringChopper.chop(url, -1));
+    }
     
     /**
      * 
@@ -192,6 +202,16 @@ public class BasicSearchResultItem implements ResultItem {
     public ResultItem setUrl(final String url) {
 
         return addField(URL_KEY, url);
+    }
+
+    public String getTitle() {
+
+        return getField(TITLE_KEY);
+    }
+
+    public ResultItem setTitle(final String title) {
+
+        return addField(TITLE_KEY, title);
     }
 
 }

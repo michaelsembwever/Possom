@@ -26,8 +26,12 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     private static final Logger LOG = Logger.getLogger(BasicSearchResult.class);
 
     private int hitCount = -1;
+    
     private final List<T> results = new ArrayList<T>();
-    private final Map<String,List<WeightedSuggestion>> spellingSuggestions = new HashMap<String,List<WeightedSuggestion>>();
+    
+    private final Map<String,List<WeightedSuggestion>> spellingSuggestions 
+            = new HashMap<String,List<WeightedSuggestion>>();
+    
     private final List<Suggestion> querySuggestions = new ArrayList<Suggestion>();
 
     private final List<WeightedSuggestion> relevantQueries = new ArrayList<WeightedSuggestion>(); 
@@ -36,6 +40,11 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
      * 
      */
     public BasicSearchResult(){}
+    
+    protected BasicSearchResult(final String title, final String url, final int hitCount){
+        super(title, url);
+        this.hitCount = hitCount;
+    }
     
     /** Copy constructor. 
      * Does not copy results, spellingSuggestions, querySuggestions, or relevantQueries.
