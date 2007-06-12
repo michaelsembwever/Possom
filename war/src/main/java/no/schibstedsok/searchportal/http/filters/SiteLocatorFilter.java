@@ -464,7 +464,9 @@ public final class SiteLocatorFilter implements Filter {
             sesamUser = getCookieValue(req, "SesamUser");
 
             String uid = getRequestId(request);
+
             if(!debuggMap.containsValue(uid)){
+                ACCESS_LOG.info("adding uniqe uid:" +uid);
                 debuggMap.put(uid,null);
             }else {
                 ACCESS_LOG.error("Same UNIQUE_ID found twise: " +uid);
