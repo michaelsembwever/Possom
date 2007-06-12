@@ -10,13 +10,7 @@ package no.schibstedsok.searchportal.http.filters;
 
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.text.MessageFormat;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -70,6 +64,7 @@ public final class SiteLocatorFilter implements Filter {
     
     private static final String UNKNOWN = "unknown";
 
+    private static HashMap debuggMap = new HashMap(); 
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
             Collections.unmodifiableCollection(Arrays.asList(new String[]{
@@ -467,7 +462,15 @@ public final class SiteLocatorFilter implements Filter {
             userAgent = req.getHeader("User-Agent");
             sesamId = getCookieValue(req, "SesamID");
             sesamUser = getCookieValue(req, "SesamUser");
-            
+
+            String uid = getRequestId(request);
+            if(!debuggMap.containsValue(uid)){
+                debuggMap.put(uid,null);
+            }else {
+                ACCESS_LOG.error("Same UNIQUE_ID found twise: " +uid);
+                Thread.dumpStack();
+
+            }
         }else{
             
             for( Enumeration<String> en = request.getParameterNames(); en.hasMoreElements(); ){
