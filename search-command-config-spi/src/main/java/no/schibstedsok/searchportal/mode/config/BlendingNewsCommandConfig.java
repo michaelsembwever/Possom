@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 @Controller("BlendingNewsSearchCommand")
-public final class BlendingNewsCommandConfig extends FastCommandConfig {
+public final class BlendingNewsCommandConfig extends  NewsCommandConfig {
 
     private List<String> filtersToBlend;
     private int documentsPerFilter;
