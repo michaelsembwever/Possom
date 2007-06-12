@@ -466,8 +466,8 @@ public final class SiteLocatorFilter implements Filter {
             String uid = getRequestId(request);
 
             if(!debuggMap.containsValue(uid)){
-                ACCESS_LOG.info("adding uniqe uid:" +uid);
-                debuggMap.put(uid,null);
+                ACCESS_LOG.info("adding UNIQUE_ID uid:" +uid);
+                debuggMap.put(uid,uid);
             }else {
                 ACCESS_LOG.error("Same UNIQUE_ID found twise: " +uid);
                 Thread.dumpStack();
