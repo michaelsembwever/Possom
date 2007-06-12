@@ -51,6 +51,15 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
         return null != getChildSelectedImpl();
     }
 
+    public NavigationItem getChildByTitle(String title) {
+        for (NavigationItem navigationItem : getResults()) {
+            if (navigationItem.getTitle().equals(title)) {
+                return navigationItem;
+            }
+        }
+        return null;
+    }
+
     private NavigationItem getChildSelectedImpl() {
         
         // XXX Geir's original work had a dirty flag here to cache this result.
