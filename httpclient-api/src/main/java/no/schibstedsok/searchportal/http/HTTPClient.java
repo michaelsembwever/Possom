@@ -453,7 +453,7 @@ public final class HTTPClient {
             final URL url = new URL(u.getProtocol(), u.getHost(), u.getPort(), u.getFile());
             final URLConnection connection = url.openConnection();
 
-            if (! u.getHost().equals(hostHeader)) {
+            if (! "".equals(hostHeader) && u.getHost().equals(hostHeader)) {
                 connection.addRequestProperty("host", hostHeader);
             }
 
