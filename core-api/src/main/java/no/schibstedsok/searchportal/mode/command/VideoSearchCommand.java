@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.text.Format;
 import java.util.Date;
 
 import no.schibstedsok.searchportal.result.BasicResultList;
@@ -33,6 +34,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(VideoSearchCommand.class);
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    final SimpleDateFormat timeFormatter = new SimpleDateFormat("m:ss");
 
     // http://usp1.blinkx.com/partnerapi/user/?uid=7d51d9&text=pixies
 
@@ -71,7 +73,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         if (sortByString.equals("standard")) {
             biasDate = "100";
         }
-        return "/partnerapi/user/?uid=7d51d9&Anylanguage=true&Adultfilter=true&BiasDate="+biasDate+"&Start="+getCurrentOffset(1)+"&text="+query;
+        return "/partnerapi/user/?uid=7d51d9&Anylanguage=true&Adultfilter=true&printfields=media_duration&BiasDate="+biasDate+"&Start="+getCurrentOffset(1)+"&text="+query;
     }
 
     public ResultList<? extends ResultItem> execute() {
@@ -123,6 +125,10 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                                         item.addField("source", nextSibling3.getTextContent());
                                     } else if (nextSibling3.getNodeName().equals("IMAGE")) {
                                         item.addField("preview", nextSibling3.getTextContent());
+                                    } else if (nextSibling3.getNodeName().equals("MEDIA_DURATION")) {
+                                        item.addField("videoDuration", timeFormatter.format(new Date(Long.parseLong(nextSibling3.getTextContent()) * 1 )));
+                                    } else if (nextSibling3.getNodeName().equals("MEDIA_TYPE_STRING")) {
+                                        item.addField("videoType", nextSibling3.getTextContent());
                                     } else if (nextSibling3.getNodeName().equals("DOMAIN")) {
                                         item.addField("videoDomain", nextSibling3.getTextContent());
                                     }
