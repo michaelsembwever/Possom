@@ -7,26 +7,50 @@
  <xsd:complexType name="Produkt">
   <xsd:all>
    <xsd:element name="Produktnamn" type="xsd:string"/>
+   <xsd:element name="Produkt_id" type="xsd:int"/>
    <xsd:element name="Kategorinamn" type="xsd:string"/>
-   <xsd:element name="Kategoriurl" type="xsd:string"/>
+   <xsd:element name="Kategori_id" type="xsd:int"/>
+   <xsd:element name="Url" type="xsd:string"/>
    <xsd:element name="AntalButiker" type="xsd:int"/>
    <xsd:element name="LagstaPris" type="xsd:int"/>
    <xsd:element name="Bild" type="xsd:string"/>
-   <xsd:element name="Url" type="xsd:string"/>
   </xsd:all>
  </xsd:complexType>
  <xsd:complexType name="Kategori">
   <xsd:all>
    <xsd:element name="Kategorinamn" type="xsd:string"/>
+   <xsd:element name="Kategori_id" type="xsd:int"/>
    <xsd:element name="Url" type="xsd:string"/>
+   <xsd:element name="LagstaPris" type="xsd:int"/>
    <xsd:element name="AntalProdukter" type="xsd:int"/>
+  </xsd:all>
+ </xsd:complexType>
+ <xsd:complexType name="Tillverkare">
+  <xsd:all>
+   <xsd:element name="Tillverkarnamn" type="xsd:string"/>
+   <xsd:element name="Tillverkare_id" type="xsd:int"/>
+   <xsd:element name="Url" type="xsd:string"/>
+   <xsd:element name="LagstaPris" type="xsd:int"/>
+   <xsd:element name="AntalProdukter" type="xsd:int"/>
+  </xsd:all>
+ </xsd:complexType>
+ <xsd:complexType name="Tillverkare_Kategori">
+  <xsd:all>
+   <xsd:element name="Kategori_id" type="xsd:int"/>
+   <xsd:element name="Kategorinamn" type="xsd:string"/>
+   <xsd:element name="Tillverkare_id" type="xsd:int"/>
+   <xsd:element name="Tillverkarnamn" type="xsd:string"/>
+   <xsd:element name="LagstaPris" type="xsd:int"/>
+   <xsd:element name="AntalProdukter" type="xsd:int"/>
+   <xsd:element name="Url" type="xsd:string"/>
   </xsd:all>
  </xsd:complexType>
  <xsd:complexType name="Butik">
   <xsd:all>
    <xsd:element name="Butiksnamn" type="xsd:string"/>
-   <xsd:element name="Url" type="xsd:string"/>
    <xsd:element name="AntalProdukter" type="xsd:int"/>
+   <xsd:element name="Butik_id" type="xsd:int"/>
+   <xsd:element name="Url" type="xsd:string"/>
   </xsd:all>
  </xsd:complexType>
  <xsd:complexType name="Produkter">
@@ -43,6 +67,20 @@
    </xsd:restriction>
   </xsd:complexContent>
  </xsd:complexType>
+ <xsd:complexType name="Tillverkare_plur">
+  <xsd:complexContent>
+   <xsd:restriction base="SOAP-ENC:Array">
+    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Tillverkare[]"/>
+   </xsd:restriction>
+  </xsd:complexContent>
+ </xsd:complexType>
+ <xsd:complexType name="Tillverkare_Kategorier">
+  <xsd:complexContent>
+   <xsd:restriction base="SOAP-ENC:Array">
+    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Tillverkare_Kategori[]"/>
+   </xsd:restriction>
+  </xsd:complexContent>
+ </xsd:complexType>
  <xsd:complexType name="Butiker">
   <xsd:complexContent>
    <xsd:restriction base="SOAP-ENC:Array">
@@ -54,14 +92,38 @@
   <xsd:all>
    <xsd:element name="Produkter" type="tns:Produkter"/>
    <xsd:element name="Kategorier" type="tns:Kategorier"/>
+   <xsd:element name="Tillverkare_plur" type="tns:Tillverkare_plur"/>
+   <xsd:element name="Tillverkare_Kategorier" type="tns:Tillverkare_Kategorier"/>
    <xsd:element name="Butiker" type="tns:Butiker"/>
+  </xsd:all>
+ </xsd:complexType>
+ <xsd:complexType name="IndataTillverkare_Kategori">
+  <xsd:all>
+   <xsd:element name="Kategori_id" type="xsd:int"/>
+   <xsd:element name="Tillverkare_id" type="xsd:int"/>
   </xsd:all>
  </xsd:complexType>
 </xsd:schema>
 </types>
-<message name="GetDataRequest"><part name="search" type="xsd:string" /></message>
-<message name="GetDataResponse"><part name="return" type="tns:Resultat" /></message>
-<portType name="PrisjaktPortType"><operation name="GetData"><documentation>Hämta produkter, kategorier och butiker</documentation><input message="tns:GetDataRequest"/><output message="tns:GetDataResponse"/></operation></portType>
-<binding name="PrisjaktBinding" type="tns:PrisjaktPortType"><soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/><operation name="GetData"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetData" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation></binding>
-<service name="Prisjakt"><port name="PrisjaktPort" binding="tns:PrisjaktBinding"><soap:address location="http://www.prisjakt.nu/sesam/soap.php"/></port></service>
+<message name="GetTillverkare_KategoriViaIdRequest"><part name="search" type="tns:IndataTillverkare_Kategori" /></message>
+<message name="GetTillverkare_KategoriViaIdResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetKategoriViaIdRequest"><part name="search" type="xsd:int" /></message>
+<message name="GetKategoriViaIdResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetKategoriViaNamnRequest"><part name="search" type="xsd:string" /></message>
+<message name="GetKategoriViaNamnResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetProduktViaIdRequest"><part name="search" type="xsd:int" /></message>
+<message name="GetProduktViaIdResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetProduktViaNamnRequest"><part name="search" type="xsd:string" /></message>
+<message name="GetProduktViaNamnResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetTillverkareViaIdRequest"><part name="search" type="xsd:int" /></message>
+<message name="GetTillverkareViaIdResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetTillverkareViaNamnRequest"><part name="search" type="xsd:string" /></message>
+<message name="GetTillverkareViaNamnResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetButikViaIdRequest"><part name="search" type="xsd:int" /></message>
+<message name="GetButikViaIdResponse"><part name="return" type="tns:Resultat" /></message>
+<message name="GetButikViaNamnRequest"><part name="search" type="xsd:string" /></message>
+<message name="GetButikViaNamnResponse"><part name="return" type="tns:Resultat" /></message>
+<portType name="PrisjaktPortType"><operation name="GetTillverkare_KategoriViaId"><documentation>Hämta kombination av tillverkare och kategori via Tillverkare_id och Kategori_id</documentation><input message="tns:GetTillverkare_KategoriViaIdRequest"/><output message="tns:GetTillverkare_KategoriViaIdResponse"/></operation><operation name="GetKategoriViaId"><documentation>Hämta kategori via Kategori_id</documentation><input message="tns:GetKategoriViaIdRequest"/><output message="tns:GetKategoriViaIdResponse"/></operation><operation name="GetKategoriViaNamn"><documentation>Hämta kategori(er) via Kategorinamn</documentation><input message="tns:GetKategoriViaNamnRequest"/><output message="tns:GetKategoriViaNamnResponse"/></operation><operation name="GetProduktViaId"><documentation>Hämta produkt via Produkt_id</documentation><input message="tns:GetProduktViaIdRequest"/><output message="tns:GetProduktViaIdResponse"/></operation><operation name="GetProduktViaNamn"><documentation>Hämta produkter(er) via produktnamn</documentation><input message="tns:GetProduktViaNamnRequest"/><output message="tns:GetProduktViaNamnResponse"/></operation><operation name="GetTillverkareViaId"><documentation>Hämta tillverkare via Tillverkare_id</documentation><input message="tns:GetTillverkareViaIdRequest"/><output message="tns:GetTillverkareViaIdResponse"/></operation><operation name="GetTillverkareViaNamn"><documentation>Hämta tillverkare via Tillverkarnamn</documentation><input message="tns:GetTillverkareViaNamnRequest"/><output message="tns:GetTillverkareViaNamnResponse"/></operation><operation name="GetButikViaId"><documentation>Hämta butik via Butik_id</documentation><input message="tns:GetButikViaIdRequest"/><output message="tns:GetButikViaIdResponse"/></operation><operation name="GetButikViaNamn"><documentation>Hämta butiker via Butiksnamn</documentation><input message="tns:GetButikViaNamnRequest"/><output message="tns:GetButikViaNamnResponse"/></operation></portType>
+<binding name="PrisjaktBinding" type="tns:PrisjaktPortType"><soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/><operation name="GetTillverkare_KategoriViaId"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetTillverkare_KategoriViaId" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetKategoriViaId"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetKategoriViaId" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetKategoriViaNamn"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetKategoriViaNamn" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetProduktViaId"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetProduktViaId" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetProduktViaNamn"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetProduktViaNamn" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetTillverkareViaId"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetTillverkareViaId" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetTillverkareViaNamn"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetTillverkareViaNamn" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetButikViaId"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetButikViaId" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation><operation name="GetButikViaNamn"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetButikerViaNamn" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation></binding>
+<service name="Prisjakt"><port name="PrisjaktPort" binding="tns:PrisjaktBinding"><soap:address location="http://sesam.prisjakt.nu/soap_ny.php"/></port></service>
 </definitions>

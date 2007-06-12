@@ -80,7 +80,13 @@ public enum TokenPredicate implements Predicate {
     TRADEMARK (Type.FAST),
     WIKIPEDIA (Type.FAST),
     EXACT_WIKI (Type.FAST),
-    
+
+    PRISJAKT_CATEGORIES_AND_MANUFACTURERS (Type.FAST),
+    PRISJAKT_CATEGORIES (Type.FAST),
+    PRISJAKT_MANUFACTURERS (Type.FAST),
+    PRISJAKT_PRODUCTS (Type.FAST),
+    PRISJAKT_SHOPS (Type.FAST),
+
 
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
@@ -130,7 +136,7 @@ public enum TokenPredicate implements Predicate {
     /** JepTokenPredicate. **/
     MATHPREDICATE (Type.JEP);
 
-    /** The types of TokenPredicates that exist. 
+    /** The types of TokenPredicates that exist.
      */
     public enum Type { GENERIC, FAST, REGEX, JEP }
 
@@ -189,36 +195,36 @@ public enum TokenPredicate implements Predicate {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Type getType(){
         return type;
     }
 
     /** Utility method to use all TokenPredicates in existence.
-     * @return 
+     * @return
      */
     public static Collection<TokenPredicate> getTokenPredicates() {
         return Collections.unmodifiableCollection(Arrays.asList(values()));
     }
 
     /** Utility method to use all FastTokenPredicates in existence.
-     * @return 
+     * @return
      */
     public static Set<TokenPredicate> getFastTokenPredicates() {
         return Collections.unmodifiableSet(Static.FAST_TOKENS);
     }
 
     /** Utility method to use all MagicTokenPredicates in existence.
-     * @return 
+     * @return
      */
     public static Set<TokenPredicate> getMagicTokenPredicates() {
         return Collections.unmodifiableSet(Static.MAGIC_TOKENS);
     }
 
     /** Utility method to use all TriggerTokenPredicates in existence.
-     * @return 
+     * @return
      */
     public static Set<TokenPredicate> getTriggerTokenPredicates() {
         return Collections.unmodifiableSet(Static.TRIGGER_TOKENS);
@@ -284,7 +290,7 @@ public enum TokenPredicate implements Predicate {
 
         throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
-    
+
     public static final class EvaluationException extends RuntimeException{
         public EvaluationException(final VeryFastListQueryException vflqe){
             super(vflqe);
