@@ -40,6 +40,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
             = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}&site={6}";
 
     private String siteFilter;
+    private final StringBuilder tldb = new StringBuilder();
 
     /**
      * Creates a new command in given context.
@@ -73,9 +74,16 @@ public final class PicSearchCommand extends AbstractSearchCommand {
             LOG.error(e);
         }
 
+        String topDomainBoost = "";
+
+        try {
+            topDomainBoost = URLEncoder.encode(tldb.length() > 0 ? tldb.toString() : psConfig.getCountry(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e);
+        }
 
         final String url = MessageFormat.format(REQ_URL_FMT,
-                psConfig.getCountry(),
+                topDomainBoost,
                 psConfig.getFilter(),
                 psConfig.getCustomerId(),
                 psConfig.getResultsToReturn(),
@@ -158,6 +166,17 @@ public final class PicSearchCommand extends AbstractSearchCommand {
      */
     protected void visitImpl(final LeafClause clause) {
         final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
+
+        // Temportary code to allow experimenting with the new picsearch API feature "flexible top level domain boost".
+        if (clause.getField() != null && "tldb".equals(clause.getField())) {
+            if (tldb.length() > 0) {
+                tldb.append(',');
+            }
+
+            tldb.append(clause.getTerm().replace('=', ':').replace("\"", ""));
+            return;
+        }
+        // End temporary code.
 
         // Do not care about site in query if a static site filter was specified in the configuaration.
         if (getFieldFilter(clause) != null && "".equals(siteFilter) && "site".equals(clause.getField())) {
