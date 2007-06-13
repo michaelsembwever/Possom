@@ -43,7 +43,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         final ClusteringEspFastCommandConfig config = getSearchConfiguration();
 
         final StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
-        if (clusterId == null) {
+        if (clusterId == null && ! config.isClusteringDisabled()) {
             LOG.debug("--- Modifying query. ---");
             final int resultsPerCluster = config.getResultsPerCluster();
             final int resultCount = config.getResultsToReturn() * resultsPerCluster;
@@ -61,11 +61,18 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
      * @return the FAST IQueryReslt to make the searchResult from
      * @throws IOException
      */
-    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
+    protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
         try {
             final ClusteringEspFastCommandConfig config = getSearchConfiguration();
             StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
-            if (clusterId == null) {
+            if (config.isClusteringDisabled()) {
+                FastSearchResult<ResultItem> searchResult = super.createSearchResult(result);
+                int offset = getOffset();
+                if (offset + config.getResultsToReturn() < result.getDocCount()) {
+                    addNextOffsetField(offset + config.getResultsToReturn(), searchResult);
+                }
+                return searchResult;
+            } else if (clusterId == null) {
                 return createClusteredSearchResult(config, getOffset(), result);
             } else {
                 return createCollapsedResults(config, getOffset(), result);
@@ -81,7 +88,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         return super.createSearchResult(result);
     }
 
-    private FastSearchResult createClusteredSearchResult(
+    private FastSearchResult<ResultItem> createClusteredSearchResult(
             final ClusteringEspFastCommandConfig config,
             final int offset,
             final IQueryResult result) throws IllegalType, EmptyValueException {

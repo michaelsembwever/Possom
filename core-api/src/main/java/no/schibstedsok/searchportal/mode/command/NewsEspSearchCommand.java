@@ -86,7 +86,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     @Override
-    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
+    protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
         final NewsEspCommandConfig config = getSearchConfiguration();
         try {
             return createCollapsedResults(config, getOffset(), result);
@@ -232,7 +232,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
      * @throws com.fastsearch.esp.search.result.EmptyValueException
      *
      */
-    protected FastSearchResult createCollapsedResults(
+    protected FastSearchResult<ResultItem> createCollapsedResults(
             final NewsEspCommandConfig config,
             final int offset,
             final IQueryResult result) throws IllegalType, EmptyValueException {

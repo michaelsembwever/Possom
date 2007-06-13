@@ -16,6 +16,7 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
     private String clusterIdParameter = "clusterId";
     private int resultsPerCluster;
     private String clusterField;
+    private boolean clusteringDisabled;
 
     /**
      * @return
@@ -29,6 +30,14 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
      */
     public void setClusterIdParameter(String clusterIdParameter) {
         this.clusterIdParameter = clusterIdParameter;
+    }
+
+    public boolean isClusteringDisabled() {
+        return clusteringDisabled;
+    }
+
+    public void setClusteringDisabled(boolean clusteringDisabled) {
+        this.clusteringDisabled = clusteringDisabled;
     }
 
     /**
@@ -71,6 +80,7 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
                 .fillBeanProperty(this, inherit, "clusterIdParameter", ParseType.String, element, "clusterId");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsPerCluster", ParseType.Int, element, "");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusterField", ParseType.String, element, "cluster");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusteringDisabled", ParseType.Boolean, element, "false");
         return this;
     }
 

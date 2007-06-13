@@ -43,8 +43,8 @@ public class CombineModifiersResultHandler implements ResultHandler {
         // The business
         if (sourceModifierList != null && sourceModifierList.size() > 0) {
             for (Modifier sourceModifier : sourceModifierList) {
-                LOG.debug("Combining modifier: " + sourceModifier.getName() + "=" + sourceModifier.getCount());
                 final String targetModifierName = modifierMap.get(sourceModifier.getName());
+//                LOG.debug("Combining modifier: " + sourceModifier.getName() + "=" + sourceModifier.getCount() + " to " + targetModifierName);
                 if (targetModifierName != null) {
                     Modifier targetModifier = targetModifierMap.get(targetModifierName);
                     if (targetModifier == null) {
