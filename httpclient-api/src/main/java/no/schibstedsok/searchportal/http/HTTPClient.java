@@ -449,11 +449,10 @@ public final class HTTPClient {
 
         protected URLConnection openConnection(final URL u) throws IOException {
 
-
             final URL url = new URL(u.getProtocol(), u.getHost(), u.getPort(), u.getFile());
             final URLConnection connection = url.openConnection();
 
-            if (! "".equals(hostHeader) && u.getHost().equals(hostHeader)) {
+            if (! ("".equals(hostHeader) || u.getHost().equals(hostHeader))) {
                 connection.addRequestProperty("host", hostHeader);
             }
 
