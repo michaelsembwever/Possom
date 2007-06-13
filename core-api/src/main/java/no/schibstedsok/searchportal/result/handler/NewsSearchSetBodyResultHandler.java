@@ -47,7 +47,7 @@ public class NewsSearchSetBodyResultHandler implements ResultHandler {
     private void setDocumentSummary(final ResultList<ResultItem> searchResult) {
 
         if (searchResult == null || searchResult.getResults().size() == 0) {
-            LOG.debug("Search is empty");
+//            LOG.debug("Search is empty");
             return;
         }
 
