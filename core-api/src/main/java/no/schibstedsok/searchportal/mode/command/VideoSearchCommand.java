@@ -85,7 +85,6 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             final Node rootElement = doc.getDocumentElement();
             final Node  responseData = rootElement.getFirstChild().getNextSibling().getNextSibling();
             if (responseData.getNodeName().equals("responsedata")) {
-//                LOG.info("zz128");
                 final String hits = responseData.getFirstChild().getNextSibling().getTextContent();
                 searchResult.setHitCount(Integer.parseInt(hits));
 
@@ -94,6 +93,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                 while(nextSibling != null ) {
                     if (nextSibling.getNodeName().equals("autn:hit")) {
                         final BasicResultItem item = new BasicResultItem();
+                        item.addField("videoDuration", "-");
+                        item.addField("summary", "-");
                         Node nextSibling2 = nextSibling.getFirstChild();
                         while(nextSibling2 != null ) {
                             if (nextSibling2.getNodeName().equals("autn:reference")) {
@@ -101,7 +102,10 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                             } else if (nextSibling2.getNodeName().equals("autn:title")) {
                                 item.addField("title", nextSibling2.getTextContent());
                             } else if (nextSibling2.getNodeName().equals("autn:summary")) {
-                                item.addField("summary", nextSibling2.getTextContent().replaceAll(" Date.*html", "..."));
+                                String summary = nextSibling2.getTextContent();
+                                if (summary.length()>2) {
+                                    item.addField("summary", summary.replaceAll(" Date.*html", "..."));
+                                }
                             } else if (nextSibling2.getNodeName().equals("autn:date")) {
                                 // age function  ?
                                 long videoDate = new Date(Long.parseLong(nextSibling2.getTextContent())*1000).getTime();
