@@ -310,7 +310,7 @@ public final class NavigationCommandConfig extends CommandConfig {
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
             options = new ArrayList<Option>(optionElements.size());
             for (Element optionElement : optionElements) {
-                options.add(new Option(optionElement));
+                options.add(new Option(optionElement, this));
             }
             final List<Element> staticParamElements = getDirectChildren(navElement, STATIC_PARAMETER_ELEMENT);
             staticParameters = new HashMap<String, String>();
@@ -429,16 +429,36 @@ public final class NavigationCommandConfig extends CommandConfig {
         private String valueRef;
         private boolean realNavigator;
         private boolean defaultSelect;
+        private boolean useHitCount;
+        private String commandName;
 
         public Option() {
         }
 
-        private Option(Element optionElement) {
+        private Option(Element optionElement, Nav parentrNav) {
             AbstractDocumentFactory.fillBeanProperty(this, null, "value", ParseType.String, optionElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "displayName", ParseType.String, optionElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "valueRef", ParseType.String, optionElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, optionElement, "false");
             AbstractDocumentFactory.fillBeanProperty(this, null, "defaultSelect", ParseType.Boolean, optionElement, "false");
+            AbstractDocumentFactory.fillBeanProperty(this, null, "useHitCount", ParseType.Boolean, optionElement, "false");
+            AbstractDocumentFactory.fillBeanProperty(this, null, "commandName", ParseType.String, optionElement, parentrNav.getCommandName());
+        }
+
+        public boolean isUseHitCount() {
+            return useHitCount;
+        }
+
+        public void setUseHitCount(boolean useHitCount) {
+            this.useHitCount = useHitCount;
+        }
+
+        public String getCommandName() {
+            return commandName;
+        }
+
+        public void setCommandName(String commandName) {
+            this.commandName = commandName;
         }
 
         public boolean isDefaultSelect() {

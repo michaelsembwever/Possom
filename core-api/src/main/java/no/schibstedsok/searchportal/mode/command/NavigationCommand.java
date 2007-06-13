@@ -175,7 +175,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
                 final NavigationCommandConfig.Nav navEntry,
                 final FastSearchResult fsr,
                 final NavigationItem extendedNavigators,
-                StringDataObject selectedValue) {
+                StringDataObject selectedValue) throws InterruptedException {
 
             // Only used by getNavigators. Mainly to split code.
             if (extendedNavigators.getResults().size() > 0 && navEntry.getOptions().size() > 0) {
@@ -221,15 +221,22 @@ public final class NavigationCommand extends AbstractSearchCommand {
                             value = tmp;
                         }
                     }
+                    NavigationItem navigator = null;
                     if (value != null) {
-                        final NavigationItem navigator 
-                                = new BasicNavigationItem(option.getDisplayName(), getUrlFragment(navEntry, value), -1);
-                        
+                        navigator = new BasicNavigationItem(option.getDisplayName(), getUrlFragment(navEntry, value), -1);
                         extendedNavigators.addResult(navigator);
                         if (optionSelectedValue == null && option.isDefaultSelect()) {
                             navigator.setSelected(true);
                         } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
                             navigator.setSelected(true);
+                        }
+                    }
+                    if (navigator != null && option.isUseHitCount()) {
+                        if (option.getCommandName() != null) {
+                            LOG.debug("Waiting for searchCommand: " + option.getCommandName());
+                            navigator.setHitCount(getSearchResult(option.getCommandName(), context.getDataModel()).getHitCount());
+                        } else {
+                            LOG.error("Can not set hitCount. Option: " + option + " is set to use hitCount, but commandName not set. ");
                         }
                     }
                 }
