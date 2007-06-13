@@ -4,11 +4,10 @@ import no.schibstedsok.searchportal.result.handler.AbstractResultHandlerConfig.C
 import org.w3c.dom.Element;
 
 /**
- * ''Javadoc here.''
+ * Configuration for the NewsSearchSetBodyResultHandler ...
  * <p/>
  * Created: Jun 13, 2007 1:14:57 PM
  * Author: Ola MH Sagli <a href="ola@sesam.no">ola at sesam.no</a>
- * To change this template use File | Settings | File Templates.
  */
 @Controller("NewsSearchSetBodyResultHandler")
 public class NewsSearchSetBodyResultHandlerConfig extends AbstractResultHandlerConfig {
