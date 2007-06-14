@@ -35,8 +35,8 @@
             return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
         }
 
-        public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className) {
-            return UrlResourceLoader.newBytecodeLoader(siteContext, className);
+        public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jar) {
+            return UrlResourceLoader.newBytecodeLoader(siteContext, className, jar);
         }
     };
 
