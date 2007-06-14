@@ -1,0 +1,384 @@
+package no.schibstedsok.searchportal.mode.command;
+
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
+import no.schibstedsok.searchportal.mode.config.NavigationCommandConfig;
+import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.result.BasicNavigationItem;
+import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.NavigationItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
+import org.apache.log4j.Logger;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * This is a command to help generating navigation urls in the view. I got tired of all
+ * the URL handling velocity code. Some of the effects from this is virtually impossible to
+ * code in velocity.
+ * <p/>
+ * TODO This should be a multiResult resulthandler, but right now this just a waiting searchCommand.
+ * Usually there will be no real waiting since the calls on the results occur from velocity.
+ * <p/>
+ * As a bonus from using this, you don't need to data-model the commands that only are
+ * there for navigation.
+ *
+ * @author Geir H. Pettersen(T-Rank)
+ */
+public final class NavigationCommand extends AbstractSearchCommand {
+
+    private static final Logger LOG = Logger.getLogger(NavigationCommand.class);
+
+    /**
+     * @param cxt The context to execute in.
+     */
+    public NavigationCommand(Context cxt) {
+        super(cxt);
+    }
+
+    public ResultList<? extends ResultItem> execute() {
+        NavigationCommandConfig config = getSearchConfiguration();
+        return new ExtendedNavigationSearchResult(config.getExtendedNavigationConfig(), context);
+    }
+
+    @Override
+    public NavigationCommandConfig getSearchConfiguration() {
+        return (NavigationCommandConfig) super.getSearchConfiguration();
+    }
+
+    public static class ExtendedNavigationSearchResult extends BasicResultList<ResultItem> {
+
+        private final ExtendedNavigation extendedNavigation;
+
+
+        /**
+         * @param command
+         * @param extendedNavigationConfig
+         * @param context
+         */
+        public ExtendedNavigationSearchResult(
+                final NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig,
+                final Context context) {
+
+            super();
+            this.extendedNavigation = new ExtendedNavigation(extendedNavigationConfig, context);
+        }
+
+        /**
+         * @return
+         */
+        public ExtendedNavigation getExtendedNavigation() {
+            return extendedNavigation;
+        }
+    }
+
+    /**
+     *
+     */
+    public static final class ExtendedNavigation {
+
+        private final NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig;
+        private final Context context;
+
+
+        /**
+         * @param extendedNavigationConfig
+         * @param context
+         */
+        public ExtendedNavigation(
+                final NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig,
+                final Context context) {
+
+            this.extendedNavigationConfig = extendedNavigationConfig;
+            this.context = context;
+        }
+
+        /**
+         * @param id
+         * @return
+         */
+        public NavigationCommandConfig.Navigation getNavigation(String id) {
+            return extendedNavigationConfig.getNavigationMap().get(id);
+        }
+
+        /**
+         * Returns extended navigators for a name(id)
+         *
+         * @param name the id of the navigator to get.
+         * @return a list with extended navigators
+         */
+        public NavigationItem getNavigators(final String name) {
+            
+            NavigationCommandConfig.Nav navEntry = extendedNavigationConfig.getNavMap().get(name);
+            try {
+                if (navEntry != null) {
+                    boolean selectionDone = false;
+                    StringDataObject selectedValue = context.getDataModel().getParameters().getValue(name);
+                    final NavigationItem extendedNavigators = new BasicNavigationItem();
+                    FastSearchResult fsr = null;
+                    
+                    if (navEntry.getCommandName() != null) {
+                        final ResultList<? extends ResultItem> searchResult 
+                                = getSearchResult(navEntry.getCommandName(), context.getDataModel());
+                        
+                        if (searchResult instanceof FastSearchResult) {
+                            fsr = (FastSearchResult) searchResult;
+                            final List<Modifier> modifiers = fsr.getModifiers(navEntry.isRealNavigator() 
+                                    ? navEntry.getField() 
+                                    : name);
+                            
+                            if (modifiers != null && modifiers.size() > 0) {
+                                for (Modifier modifier : modifiers) {
+                                    
+                                    final String navigatorName = modifier.getNavigator() == null 
+                                            ? null 
+                                            : modifier.getNavigator().getName();
+                                    
+                                    final String urlFragment 
+                                            = getUrlFragment(navEntry, modifier.getName(), navigatorName);
+                                    
+                                    final NavigationItem navigator 
+                                            = new BasicNavigationItem(modifier.getName(), urlFragment, modifier.getCount());
+                                    
+                                    if (!selectionDone) {
+                                        selectedValue = context.getDataModel().getParameters().getValue(navEntry.getField());
+                                        if (selectedValue != null && selectedValue.getString().equals(modifier.getName())) {
+                                            navigator.setSelected(true);
+                                            selectionDone = true;
+                                        }
+                                    }
+                                    extendedNavigators.addResult(navigator);
+                                }
+                            }
+                        }
+                    }
+                    getOptionNavigators(navEntry, fsr, extendedNavigators, selectedValue);
+                    return extendedNavigators;
+                }
+
+            } catch (InterruptedException e) {
+                LOG.error("Could not get searchResult for " + navEntry.getCommandName(), e);
+            }
+            return null;
+        }
+
+
+        private void getOptionNavigators(
+                final NavigationCommandConfig.Nav navEntry,
+                final FastSearchResult fsr,
+                final NavigationItem extendedNavigators,
+                StringDataObject selectedValue) throws InterruptedException {
+
+            // Only used by getNavigators. Mainly to split code.
+            if (extendedNavigators.getResults().size() > 0 && navEntry.getOptions().size() > 0) {
+                
+                final List<NavigationItem> toRemove = new ArrayList<NavigationItem>();
+                
+                // Navigators already collected. Options is override
+                for (NavigationItem navigator : extendedNavigators.getResults()) {
+                    boolean match = false;
+                    
+                    // Double loop to find match in two lists. Not nice, but it works.
+                    for (NavigationCommandConfig.Option option : navEntry.getOptions()) {
+                        final String value = option.getValue();
+                        if (navigator.getTitle().equals(value)) {
+                            match = true;
+                            if (selectedValue == null && option.isDefaultSelect()) {
+                                navigator.setSelected(true);
+                                selectedValue = new StringDataObjectSupport("dummy");
+                            }
+                            if (option.getDisplayName() != null) {
+                                navigator.setTitle(option.getDisplayName());
+                            }
+                        }
+                    }
+                    if (!match) {
+                        toRemove.add(navigator);
+                    }
+                }
+                for(NavigationItem item : toRemove){
+                    extendedNavigators.removeResult(item);
+                }
+                
+            } else {
+                final StringDataObject optionSelectedValue 
+                        = context.getDataModel().getParameters().getValue(navEntry.getField());
+                
+                for (NavigationCommandConfig.Option option : navEntry.getOptions()) {
+                    
+                    String value = option.getValue();
+                    if (option.getValueRef() != null && fsr != null) {
+                        String tmp = fsr.getField(option.getValueRef());
+                        if (tmp != null && tmp.length() > 0) {
+                            value = tmp;
+                        }
+                    }
+                    NavigationItem navigator = null;
+                    if (value != null) {
+                        navigator = new BasicNavigationItem(option.getDisplayName(), getUrlFragment(navEntry, value), -1);
+                        extendedNavigators.addResult(navigator);
+                        if (optionSelectedValue == null && option.isDefaultSelect()) {
+                            navigator.setSelected(true);
+                        } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
+                            navigator.setSelected(true);
+                        }
+                    }
+                    if (navigator != null && option.isUseHitCount()) {
+                        if (option.getCommandName() != null) {
+                            LOG.debug("Waiting for searchCommand: " + option.getCommandName());
+                            navigator.setHitCount(getSearchResult(option.getCommandName(), context.getDataModel()).getHitCount());
+                        } else {
+                            LOG.error("Can not set hitCount. Option: " + option + " is set to use hitCount, but commandName not set. ");
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Gets the url fragment you should use when navigating on this value.
+         *
+         * @param navigator the navigator you are using
+         * @param value     the specific field you are using
+         * @return a url fragemt to use
+         */
+        public String getUrlFragment(final String navigator, final String value) {
+            NavigationCommandConfig.Nav navEntry = extendedNavigationConfig.getNavMap().get(navigator);
+            return getUrlFragment(navEntry, value);
+        }
+
+        private String getUrlFragment(final NavigationCommandConfig.Nav navEntry, final String value) {
+            return getUrlFragment(navEntry, value, null);
+        }
+
+        /**
+         * @param navEntry
+         * @param value
+         * @param navigatorName
+         * @return
+         */
+        public String getUrlFragment(
+                final NavigationCommandConfig.Nav navEntry,
+                final String value,
+                final String navigatorName) {
+
+            final StringBuilder sb = new StringBuilder();
+            String tab = navEntry.getTab();
+            if (tab == null) {
+                tab = context.getDataModel().getParameters().getValue("c").getUtf8UrlEncoded();
+            }
+            sb.append("c=").append(tab);
+            if (!navEntry.isExcludeQuery()) {
+                sb.append("&q=").append(context.getDataModel().getQuery().getUtf8UrlEncoded());
+            }
+            if (value != null && value.length() > 0) {
+                sb.append('&').append(enc(navEntry.getField())).append('=').append(enc(value));
+                if (navEntry.isRealNavigator() && navigatorName != null) {
+                    sb.append('&').append("nav_").append(enc(navEntry.getField())).append('=').append(enc(navigatorName));
+                }
+            }
+            if (!navEntry.isOut()) {
+                addParentFragment(sb, navEntry);
+                for (NavigationCommandConfig.Navigation navigation : extendedNavigationConfig.getNavigationList()) {
+                    if (navigation != navEntry.getNavigation()) {
+                        addNavigationFragments(navigation, sb, navEntry);
+                    }
+                }
+            }
+            for (String key : navEntry.getStaticParameters().keySet()) {
+                addFragment(sb, navEntry, key, navEntry.getStaticParameters().get(key));
+            }
+            return sb.toString();
+        }
+
+        private void addNavigationFragments(
+                final NavigationCommandConfig.Navigation navigation,
+                final StringBuilder sb,
+                final NavigationCommandConfig.Nav navEntry) {
+
+            final Set<String> fieldFilterSet = new HashSet<String>();
+            for (NavigationCommandConfig.Nav nav : navigation.getNavList()) {
+                addNavigationFragment(fieldFilterSet, nav, sb, navEntry);
+            }
+        }
+
+        private void addNavigationFragment(
+                final Set<String> fieldFilterSet,
+                final NavigationCommandConfig.Nav nav,
+                final StringBuilder sb,
+                final NavigationCommandConfig.Nav navEntry) {
+
+            StringDataObject fieldValue = context.getDataModel().getParameters().getValue(nav.getField());
+            if (!fieldFilterSet.contains(nav.getField())) {
+                addPreviousField(fieldValue, sb, navEntry, nav.getField());
+                fieldFilterSet.add(nav.getField());
+                for (String staticKey : nav.getStaticParameters().keySet()) {
+                    fieldValue = context.getDataModel().getParameters().getValue(staticKey);
+                    if (!fieldFilterSet.contains(staticKey)) {
+                        addPreviousField(fieldValue, sb, navEntry, staticKey);
+                    }
+                }
+                if (nav.getChildNavs() != null) {
+                    for (NavigationCommandConfig.Nav childNav : nav.getChildNavs()) {
+                        addNavigationFragment(fieldFilterSet, childNav, sb, navEntry);
+                    }
+                }
+            }
+        }
+
+        private void addPreviousField(
+                StringDataObject fieldValue,
+                final StringBuilder sb,
+                final NavigationCommandConfig.Nav navEntry,
+                final String fieldName) {
+
+            if (fieldValue != null && addFragment(sb, navEntry, fieldName, fieldValue.getString())) {
+                fieldValue = context.getDataModel().getParameters().getValue("nav_" + fieldName);
+                if (fieldValue != null) {
+                    addFragment(sb, navEntry, "nav_" + fieldName, fieldValue.getString());
+                }
+            }
+        }
+
+        private boolean addFragment(
+                final StringBuilder sb,
+                final NavigationCommandConfig.Nav nav,
+                final String id,
+                final String value) {
+
+            if (!nav.getNavigation().getResetNavSet().contains(id)) {
+                sb.append('&').append(enc(id)).append('=').append(enc(value));
+                return true;
+            }
+            return false;
+        }
+
+        private void addParentFragment(final StringBuilder sb, final NavigationCommandConfig.Nav navEntry) {
+            NavigationCommandConfig.Nav parentNav = navEntry.getParentNav();
+            if (parentNav != null) {
+                StringDataObject fieldValue = context.getDataModel().getParameters().getValue(parentNav.getField());
+                addPreviousField(fieldValue, sb, navEntry, parentNav.getField());
+                addParentFragment(sb, parentNav);
+            }
+        }
+
+        private String enc(final String str) {
+
+            try {
+                return URLEncoder.encode(str, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                LOG.fatal("UTF-8 encoding not available");
+            }
+            return str;
+        }
+    }
+
+}
