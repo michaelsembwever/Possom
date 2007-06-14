@@ -185,8 +185,8 @@ public final class SyndicationGenerator {
 
             feed.setEncoding(this.encoding);
             feed.setFeedType(feedType);
-            feed.setDescription(render("description", null, 0));
-            feed.setTitle(render("title", null, 0));
+            feed.setDescription(StringEscapeUtils.unescapeXml(render("description", null, 0)));
+            feed.setTitle(StringEscapeUtils.unescapeXml(render("title", null, 0)));
             feed.setPublishedDate(new Date());
             feed.setLink(render("link", null, 0));
 
