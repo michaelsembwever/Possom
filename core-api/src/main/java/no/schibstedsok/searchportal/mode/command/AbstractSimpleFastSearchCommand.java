@@ -403,8 +403,6 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
                 LOG.debug(DEBUG_EXECUTE_COLLECTIONS + getSearchConfiguration().getCollections());
                 LOG.debug(DEBUG_EXECUTE_QUERY + fastQuery.getQueryString());
                 LOG.debug(DEBUG_EXECUTE_FILTER + getSearchConfiguration().getCollectionFilterString());
-
-                System.out.println("---> fastQuery = " + fastQuery);
                 
                 result = engine.search(fastQuery);
 
