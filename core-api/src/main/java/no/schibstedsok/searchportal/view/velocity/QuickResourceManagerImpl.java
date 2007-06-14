@@ -45,6 +45,10 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
         final Resource resource = globalCache.get(type + name);
 
         if (resource != null) {
+            // Touch the resource so that a closely following caller won't trigger an update thread. Keeps updates of
+            // the same resource from piling up when traffic is high.
+            resource.touch();
+
             // Use cached resource for this invocation but also start a thread to update cache with a brand new
             // resource instance.
             if (resource.requiresChecking()) {
