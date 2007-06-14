@@ -86,10 +86,14 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
         }
         String clusterId = (String) parameters.getValue(config.getClusterIdField());
         if (clusterId != null) {
-            filter.append(" and ");
+            if (paramAddCount > 0) {
+                filter.append(" and ");
+            }
             filter.append(config.getClusterField()).append(":").append('\"').append(clusterId).append("\" ");
         } else if (config.isClusterFilter()) {
-            filter.append(" and ");
+            if (paramAddCount > 0) {
+                filter.append(" and ");
+            }
             filter.append(config.getClusterField()).append(":range(1,max) ");
             if (config.getMaxAgeInDays() > 0) {
                 Calendar calendar = Calendar.getInstance();
