@@ -404,6 +404,8 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
                 LOG.debug(DEBUG_EXECUTE_QUERY + fastQuery.getQueryString());
                 LOG.debug(DEBUG_EXECUTE_FILTER + getSearchConfiguration().getCollectionFilterString());
 
+                System.out.println("---> fastQuery = " + fastQuery);
+                
                 result = engine.search(fastQuery);
 
             } catch (SocketTimeoutException ste) {
@@ -867,6 +869,8 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retriever"));
             } else if ("datetime".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
+            } else if ("-datetime".equals(sortBy)) {
+                params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "+docdatetime"));
             }
         }
 
