@@ -133,7 +133,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
         implementOf = cls;
         this.context = context;
-
+        
         final List<Property> propertiesLeftToAdd = new ArrayList(Arrays.asList(properties));
 
         if( StringDataObject.class.isAssignableFrom(implementOf) ){
@@ -288,6 +288,102 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         }
     }
 
+    protected Object invokeSupport(final Method m, final Object support, final Object[] args){
+
+        Object result = null;
+        try{
+
+//                    if( !support.getClass().isAssignableFrom(m.getDeclaringClass()) ){
+//                        // try to find method again since m is an override and won't be found as is in support
+//                        m = support.getClass().getMethod(m.getName(), m.getParameterTypes());
+//                    }
+
+            result = m.invoke(support, args);
+
+        }catch(IllegalAccessException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(IllegalArgumentException iae){
+            LOG.trace(iae.getMessage());
+//                }catch(NoSuchMethodException nsme){
+//                    LOG.trace(nsme.getMessage());
+        }catch(InvocationTargetException ite){
+            LOG.info(ite.getMessage(), ite);
+        }
+        return result;
+    }
+
+    protected Property invokeProperty(final String propertyName, final boolean setter, final Object[] args) {
+
+        Property result = null;
+        for (int i = 0; i < properties.size(); ++i) {
+            final Property p = properties.get(i);
+            if (p.getName().equalsIgnoreCase(propertyName)) {
+                if (setter) {
+
+                    // set the new child dataObject
+                    if (p.getValue() instanceof MapDataObject && args.length > 1) {
+
+                        final MapDataObject mpd = (MapDataObject) p.getValue();
+                        // detach the old contextChild
+                        removeChild(mpd.getValue((String) args[0]));
+                        // update property
+                        mpd.setValue((String) args[0], args[1]);
+                        // add the new contextChild
+                        addChild(args[1]);
+
+                    } else {
+
+                        // detach the old contextChild
+                        removeChild(p.getValue());
+                        // update property
+                        properties.set(i, new Property(p.getName(), args[0]));
+                        // add the new contextChild
+                        addChild(args[0]);
+                    }
+
+                }
+                result = null != p && null != args && p.getValue() instanceof MapDataObject && args.length > (setter ? 1 : 0)
+                        ? new Property((String) args[0], ((MapDataObject) p.getValue()).getValue((String) args[0]))
+                        : p;
+                break;
+            }
+        }
+        return result;
+    }
+
+    
+    protected Object invokeSelf(final Method method, final Object[] args){
+
+        // try invoking one of our own methods. (Works for example on methods declared by the Object class).
+
+        Object result = null;
+        try{
+            result = method.invoke(this, args);
+
+        }catch(IllegalAccessException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(IllegalArgumentException iae){
+            LOG.debug(iae.getMessage());
+        }catch(InvocationTargetException ite){
+            LOG.info(ite.getMessage(), ite);
+        }
+        return result;
+    }
+    
+    /**
+     * obj may be null. 
+     */
+    protected void addChild(final Object obj) {
+        // does nothing. DataObject don't have children.
+    }
+
+    /**
+     * obj may be null. 
+     */
+    protected void removeChild(final Object obj) {
+        // does nothing. DataObject don't have children.
+    }    
+
     // Private -------------------------------------------------------
 
     private Method findSupport(final String propertyName, final boolean setter) throws IntrospectionException{
@@ -318,67 +414,6 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         return m;
     }
 
-    protected Object invokeSupport(final Method m, final Object support, final Object[] args){
-
-        Object result = null;
-        try{
-
-//                    if( !support.getClass().isAssignableFrom(m.getDeclaringClass()) ){
-//                        // try to find method again since m is an override and won't be found as is in support
-//                        m = support.getClass().getMethod(m.getName(), m.getParameterTypes());
-//                    }
-
-            result = m.invoke(support, args);
-
-        }catch(IllegalAccessException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(IllegalArgumentException iae){
-            LOG.trace(iae.getMessage());
-//                }catch(NoSuchMethodException nsme){
-//                    LOG.trace(nsme.getMessage());
-        }catch(InvocationTargetException ite){
-            LOG.info(ite.getMessage(), ite);
-        }
-        return result;
-    }
-
-    protected Property invokeProperty(final String propertyName, final boolean setter, final Object[] args){
-
-        // Try finding something out of our own map of bean properties.
-
-        Property result = null;
-        for(int i = 0; i < properties.size(); ++i){
-            final Property p = properties.get(i);
-            if( p.getName().equalsIgnoreCase(propertyName)){
-                if( setter ){
-                    properties.set(i, new Property(p.getName(), args[0]));
-
-                }
-                // TODO if this bean is immutable then return a clone (defensive copy) this object
-                result = p;
-                break;
-            }
-        }
-        return result;
-    }
-
-    protected Object invokeSelf(final Method method, final Object[] args){
-
-        // try invoking one of our own methods. (Works for example on methods declared by the Object class).
-
-        Object result = null;
-        try{
-            result = method.invoke(this, args);
-
-        }catch(IllegalAccessException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(IllegalArgumentException iae){
-            LOG.debug(iae.getMessage());
-        }catch(InvocationTargetException ite){
-            LOG.info(ite.getMessage(), ite);
-        }
-        return result;
-    }
 
     private boolean addProperty(final Property property){
 

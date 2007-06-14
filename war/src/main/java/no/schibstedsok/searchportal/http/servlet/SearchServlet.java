@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
 import no.schibstedsok.searchportal.run.QueryFactory;
 import no.schibstedsok.searchportal.run.RunningQuery;

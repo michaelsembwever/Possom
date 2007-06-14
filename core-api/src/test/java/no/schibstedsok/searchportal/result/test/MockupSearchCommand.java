@@ -11,7 +11,7 @@ import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.config.*;
@@ -56,7 +56,7 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
         public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
             return UrlResourceLoader.newBytecodeLoader(context, className, jar);
         }
-        
+
         public DataModel getDataModel(){
                 return datamodel;
             }

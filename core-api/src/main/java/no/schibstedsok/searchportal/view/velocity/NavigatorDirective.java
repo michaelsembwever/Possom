@@ -17,7 +17,7 @@ import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.parser.node.Node;
 
 /**
- *
+ * @deprecated part of the old navigator implementation. Use new navigation model instead.
  * @author andersjj
  */
 public class NavigatorDirective extends Directive {

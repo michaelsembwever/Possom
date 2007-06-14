@@ -26,6 +26,9 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
+import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
+import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
+import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
@@ -38,7 +41,7 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutorFactory;
 import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.Query;
@@ -47,8 +50,11 @@ import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.run.handler.NavigationRunningQueryHandler;
+import no.schibstedsok.searchportal.run.handler.RunningQueryHandler;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
@@ -94,10 +100,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /** TODO comment me. **/
     protected final DataModel datamodel;
     private final Locale locale;
-    private final List<Modifier> sources = new Vector<Modifier>();
+    private final List<Modifier> sources = new Vector<Modifier>(); // TODO move into new navigation model
     /** TODO comment me. **/
     protected final TokenEvaluationEngine engine;
-    private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
+    private final List<Enrichment> enrichments = new ArrayList<Enrichment>(); // TODO into datamodel
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
     private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
@@ -167,7 +173,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 new DataObject.Property("string", queryStr),
                 new DataObject.Property("query", parser.getQuery()));
 
+        final MapDataObject<NavigationItem> navigations = new MapDataObjectSupport(Collections.EMPTY_MAP);
+        final NavigationDataObject navDO = factory.instantiate(
+                NavigationDataObject.class,
+                new DataObject.Property("configuration", context.getSearchMode().getNavigationConfiguration()),
+                new DataObject.Property("navigation",navigations),
+                new DataObject.Property("navigations", navigations)); // FIXME bug that both single and mapped needed
+
         datamodel.setQuery(queryDO);
+        datamodel.setNavigation(navDO);
 
         rules = AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context, siteCxt));
 
@@ -443,29 +457,26 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     }
                 }
 
-                performModifierHandling();
+                performHandlers();
 
                 if (!hitsToShow) {
                     noHitsOutput.append("<absolute/>");
-    // FIXME: i do not know how to reset/clean the sitemesh's outputStream so
-    //                  the result from the new RunningQuery are used.
-    //                int sourceHits = 0;
-    //                for (final Iterator it = sources.iterator(); it.hasNext();) {
-    //                    sourceHits += ((Modifier) it.next()).getCount();
-    //                }
-    //                if (sourceHits == 0) {
-    //                    // there were no hits for any of the search tabs!
-    //                    // maybe we can modify the query to broaden the search
-    //                    // replace all DefaultClause with an OrClause
-    //                    //  [simply done with wrapping the query string inside ()'s ]
-    //                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
-    //                        // create and run a new RunningQueryImpl
-    //                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
-    //                    }
-    //                }
-                }  else  {
-
-                    performEnrichmentHandling(results.keySet());
+                        // FIXME: i do not know how to reset/clean the sitemesh's outputStream so
+                        //                  the result from the new RunningQuery are used.
+                        //                int sourceHits = 0;
+                        //                for (final Iterator it = sources.iterator(); it.hasNext();) {
+                        //                    sourceHits += ((Modifier) it.next()).getCount();
+                        //                }
+                        //                if (sourceHits == 0) {
+                        //                    // there were no hits for any of the search tabs!
+                        //                    // maybe we can modify the query to broaden the search
+                        //                    // replace all DefaultClause with an OrClause
+                        //                    //  [simply done with wrapping the query string inside ()'s ]
+                        //                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
+                        //                        // create and run a new RunningQueryImpl
+                        //                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
+                        //                    }
+                        //                }
                 }
 
                 if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
@@ -477,6 +488,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     noHitsOutput.append("</no-hits>");
                     PRODUCT_LOG.info(noHitsOutput.toString());
                 }
+
             }
 
         } catch (Exception e) {
@@ -557,8 +569,19 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return e.reportToken(token, datamodel.getQuery().getString());
     }
 
-    private void performEnrichmentHandling(final Collection<Future<ResultList<? extends ResultItem>>> results)
-            throws InterruptedException{
+    private void performHandlers(){
+        
+        // TODO move into Run Handler SPI
+
+        final RunningQueryHandler.Context handlerContext
+                = ContextWrapper.wrap(RunningQueryHandler.Context.class, context);
+
+        performModifierHandling(handlerContext);
+        performEnrichmentHandling(handlerContext);
+        performNavigationHandling(handlerContext);
+    }
+
+    private void performEnrichmentHandling(final RunningQueryHandler.Context handlerContext){
 
         Collections.sort(enrichments);
 
@@ -581,8 +604,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /** Remove modifiers with invalid count.
      * Sum duplicates together.
      * Sort by HintPriorityComparator.
+     * TODO migrate to new Navigation model
      **/
-    private void performModifierHandling(){
+    private void performModifierHandling(final RunningQueryHandler.Context handlerContext){
 
         final Map<String,Modifier> map = new HashMap<String,Modifier>();
         final List<Modifier> toRemove = new ArrayList<Modifier>();
@@ -608,9 +632,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             Collections.sort(sources);
         }
     }
-    
-    private void performNavigationHandling(){
-        
+
+    private void performNavigationHandling(final RunningQueryHandler.Context handlerContext){
+
+        final NavigationRunningQueryHandler navHandler = new NavigationRunningQueryHandler();
+        navHandler.handleRunningQuery(handlerContext);
     }
 
     /** Used by the constructor. **/

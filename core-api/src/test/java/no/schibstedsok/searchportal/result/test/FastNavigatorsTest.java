@@ -14,7 +14,7 @@ import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.query.Query;
@@ -45,16 +45,16 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     MockupResultHandler resultHandler;
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public SearchConfiguration getSearchConfiguration() {
         return config;
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @BeforeClass
     protected void setUp() throws Exception {
@@ -68,7 +68,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testNoNavigators() {
@@ -78,7 +78,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testOneNavigator() {
@@ -93,7 +93,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testHierarchicalNavigator() {
@@ -452,8 +452,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 //    }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     public void tBackLinks() throws Exception{
 
@@ -511,7 +511,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        
+
         command = (FastSearchCommand) searchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
@@ -532,7 +532,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
 
-        
+
         command = (FastSearchCommand) searchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
@@ -555,7 +555,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywkommune", navigatedValue2);
         params.put("ywbydel", navigatedValue3);
 
-        
+
         command = (FastSearchCommand) searchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
@@ -569,7 +569,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     private SearchCommand.Context createTestSearchCommandContext(final String query) throws Exception{
 
         final DataModel datamodel = getDataModel();
-        
+
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
             private final SearchMode mode = new SearchMode();

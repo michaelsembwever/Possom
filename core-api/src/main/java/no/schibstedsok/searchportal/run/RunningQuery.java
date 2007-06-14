@@ -9,14 +9,12 @@ package no.schibstedsok.searchportal.run;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.datamodel.DataModelContext;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 /** A RunningQuery is the central controller for a user's submitted search.

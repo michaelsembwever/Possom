@@ -9,8 +9,8 @@ package no.schibstedsok.searchportal.mode.executor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.mode.config.SearchMode.SearchCommandExecutorConfig.Controller;
+import no.schibstedsok.searchportal.mode.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode.SearchCommandExecutorConfig.Controller;
 
 /** Obtain a working ResultHandler from a given ResultHandlerConfig.
  *
@@ -18,49 +18,43 @@ import no.schibstedsok.searchportal.mode.config.SearchMode.SearchCommandExecutor
  * @version <tt>$Id$</tt>
  */
 public final class SearchCommandExecutorFactory {
-    
+
     // Constants -----------------------------------------------------
-    
-    
+
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
-    
+
+
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of QueryTransformerFactory */
     private SearchCommandExecutorFactory() {
     }
-    
+
     // Public --------------------------------------------------------
-    
-    // Public --------------------------------------------------------
-    
-    // Public --------------------------------------------------------
-    
-    // Public --------------------------------------------------------
-    
+
     /**
-     * 
-     * @param config 
-     * @return 
+     *
+     * @param config
+     * @return
      */
     public static SearchCommandExecutor getController(final SearchMode.SearchCommandExecutorConfig config){
-        
+
         try{
-            
-            final String name = "no.schibstedsok.searchportal.mode.executor." 
+
+            final String name = "no.schibstedsok.searchportal.mode.executor."
                     + SearchMode.SearchCommandExecutorConfig.class.getDeclaredField(config.name())
                     .getAnnotation(Controller.class).value();
-                    
-            final Class<? extends SearchCommandExecutor> cls 
+
+            final Class<? extends SearchCommandExecutor> cls
                     = (Class<? extends SearchCommandExecutor>)config.getClass().getClassLoader().loadClass(name);
-            
+
             final Constructor<? extends SearchCommandExecutor> constructor = cls.getConstructor();
 
             return constructor.newInstance();
-            
+
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);
         } catch (NoSuchFieldException ex) {
@@ -75,13 +69,13 @@ public final class SearchCommandExecutorFactory {
             throw new IllegalArgumentException(ex);
         }
     }
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
+
 }

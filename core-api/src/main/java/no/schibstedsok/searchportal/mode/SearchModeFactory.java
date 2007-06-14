@@ -6,7 +6,8 @@ import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.NavigationConfig;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.site.Site;
@@ -228,23 +229,32 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     COMMANDS_LOCK.writeLock().unlock();
                 }
 
-                // commands
-                final NodeList commandsList = modeE.getChildNodes();
 
-                for (int j = 0; j < commandsList.getLength(); ++j) {
-                    final Node commandN = commandsList.item(j);
-                    if (!(commandN instanceof Element)) {
+                final NodeList childNodes = modeE.getChildNodes();
+
+                for (int j = 0; j < childNodes.getLength(); ++j) {
+                    final Node childNode = childNodes.item(j);
+                    if (!(childNode instanceof Element)) {
                         continue;
                     }
-                    final Element commandE = (Element) commandN;
+                    final Element childElement = (Element) childNode;
 
-                    if(searchConfigurationFactory.supported(commandE.getTagName(), context)){
+                    if(searchConfigurationFactory.supported(childElement.getTagName(), context)){
 
+                        // commands
                         final SearchConfiguration sc
-                                = searchConfigurationFactory.parseSearchConfiguration(context, commandE, mode);
+                                = searchConfigurationFactory.parseSearchConfiguration(context, childElement, mode);
 
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
+
+                    }else if("navigation".equals(childElement.getTagName())){
+
+                        // navigation
+                        assert null == mode.getNavigationConfiguration() : "NavigationConfiguration already set!";
+                        final NavigationConfig navConf = new NavigationConfig();
+                        navConf.readNavigationConfig(childElement, inherit.getNavigationConfiguration());
+                        mode.setNavigationConfiguration(navConf);
                     }
                 }
 

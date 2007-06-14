@@ -20,6 +20,7 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.result.Decoder;
+import no.schibstedsok.searchportal.result.NavigationHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -140,7 +141,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
-
+        // navigation helper
+        context.put("navigationHelper", new NavigationHelper());
         return context;
     }
 
@@ -249,7 +251,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
                 if(VELOCITY_DEBUG) {
                     engine.setProperty("url.resource.loader.cache", "false");
-                    engine.setProperty("velocimacro.library.autoreload", "true");                    
+                    engine.setProperty("velocimacro.library.autoreload", "true");
                 } else {
                 	engine.setProperty("url.resource.loader.cache", "true");
                 	engine.setProperty("url.resource.loader.modificationCheckInterval", "60");
@@ -300,11 +302,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         }
     }
 
-    // Package protected ---------------------------------------------
+        // Package protected ---------------------------------------------
 
-    // Protected -----------------------------------------------------
+        // Protected -----------------------------------------------------
 
-    // Private -------------------------------------------------------
+        // Private -------------------------------------------------------
 
 
     // Inner classes -------------------------------------------------

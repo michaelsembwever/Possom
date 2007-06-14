@@ -2,14 +2,11 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
-import java.util.HashMap;
 import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
@@ -30,7 +27,7 @@ import org.testng.annotations.Test;
 public final class SearchModeTest extends DataModelTestCase {
 
     /** Test the FastCommandConfig.
-     ** @throws java.lang.Exception 
+     ** @throws java.lang.Exception
      */
     @Test
     public void testFastCommandConfig() throws Exception {
@@ -63,7 +60,7 @@ public final class SearchModeTest extends DataModelTestCase {
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, 
+                    ContextWrapper.wrap(SearchTabFactory.Context.class,
                     this,
                     new SiteContext(){
                         public Site getSite(){
@@ -101,7 +98,7 @@ public final class SearchModeTest extends DataModelTestCase {
     }
 
     /** Test the OverturePPCCommandConfig.
-     ** @throws java.lang.Exception 
+     ** @throws java.lang.Exception
      */
     @Test
     public void testOverturePPCConfiguration() throws Exception {
@@ -128,7 +125,7 @@ public final class SearchModeTest extends DataModelTestCase {
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, 
+                    ContextWrapper.wrap(SearchTabFactory.Context.class,
                     this,
                     new SiteContext(){
                         public Site getSite(){
@@ -155,7 +152,7 @@ public final class SearchModeTest extends DataModelTestCase {
             public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
                 return FileResourceLoader.newBytecodeLoader(context, className, jar);
             }
-            
+
             public DataModel getDataModel(){
                 return datamodel;
             }

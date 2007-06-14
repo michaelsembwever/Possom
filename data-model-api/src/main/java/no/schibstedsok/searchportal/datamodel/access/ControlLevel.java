@@ -38,25 +38,25 @@ public enum ControlLevel {
     /**
      * The state while RunningQuery result handlers are being processed.
      */
-    RUNNING_QUERY_RESULT_HANDLING,
+    RUNNING_QUERY_RESULT_HANDLING, // TODO rename to RUNNING_QUERY_HANDLING
     /**
      * The state while jsps and velocity templates are being executed.
      */
     VIEW_CONSTRUCTION;
-    
+
 
 //    /**
-//     * 
-//     * @return 
+//     *
+//     * @return
 //     */
 //    public ControlLevel next(){
-//        
+//
 //        switch(this){
-//            case DATA_MODEL_CONSTRUCTION: 
+//            case DATA_MODEL_CONSTRUCTION:
 //                return REQUEST_CONSTRUCTION;
-//            case REQUEST_CONSTRUCTION: 
+//            case REQUEST_CONSTRUCTION:
 //                return RUNNING_QUERY_CONSTRUCTION;
-//            case RUNNING_QUERY_CONSTRUCTION: 
+//            case RUNNING_QUERY_CONSTRUCTION:
 //                return SEARCH_COMMAND_CONSTRUCTION;
 //            case SEARCH_COMMAND_CONSTRUCTION:
 //                return SEARCH_COMMAND_QUERY_TRANSFORMATION;
@@ -71,7 +71,7 @@ public enum ControlLevel {
 //            case VIEW_CONSTRUCTION:
 //                // a new request
 //                return REQUEST_CONSTRUCTION;
-//                
+//
 //            default:
 //                throw new IllegalStateException("WTF?!");
 //        }

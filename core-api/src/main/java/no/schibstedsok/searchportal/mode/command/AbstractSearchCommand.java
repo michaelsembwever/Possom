@@ -104,6 +104,23 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected volatile boolean completed = false;
     private volatile Thread thread = null;
 
+    // Static --------------------------------------------------------
+
+    /**
+     */
+    protected static final ResultList<? extends ResultItem> getSearchResult(
+            final String id,
+            final DataModel datamodel) throws InterruptedException {
+
+        synchronized (datamodel.getSearches()) {
+            while (null == datamodel.getSearch(id)) {
+                // next line releases the monitor so it is possible to call this method from different threads
+                datamodel.getSearches().wait();
+            }
+        }
+        return datamodel.getSearch(id).getResults();
+    }
+
     // Constructors --------------------------------------------------
 
     /**
@@ -441,7 +458,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapwcoords") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapycoords") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= this instanceof NewsMyNewsSearchCommand;
-            executeQuery |= this instanceof NavigationCommand;
 
             executeQuery |= null != filter && filter.length() > 0;
             LOG.info("executeQuery==" + executeQuery
@@ -806,22 +822,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected SesamSyntaxQueryBuilder newSesamSyntaxQueryBuilder() {
         return new SesamSyntaxQueryBuilder();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected static ResultList<? extends ResultItem> getSearchResult(
-            final String id,
-            final DataModel datamodel) throws InterruptedException {
-        
-        synchronized (datamodel.getSearches()) {
-            while (null == datamodel.getSearch(id)) {
-                // next line releases the monitor so it is possible to call this method from different threads
-                datamodel.getSearches().wait();
-            }
-        }
-        return datamodel.getSearch(id).getResults();
     }
 
     // Private -------------------------------------------------------

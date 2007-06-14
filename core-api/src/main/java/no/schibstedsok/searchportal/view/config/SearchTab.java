@@ -29,10 +29,10 @@ public final class SearchTab {
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(SearchTab.class);
+    
     private static final String ERR_ENRICHMENT_BY_COMMAND_NON_EXISTENT
             = "No enrichment, in this SearchTab, is linked to the command ";
-    private static final String ERR_NAVIGATION_HINT_NOT_FOUND
-            = "Navigation hint not found for ";
+    private static final String ERR_NAVIGATION_HINT_NOT_FOUND = "Navigation hint not found for ";
 
 
     // Attributes ----------------------------------------------------

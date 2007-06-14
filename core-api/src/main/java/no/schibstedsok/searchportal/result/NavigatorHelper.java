@@ -19,6 +19,7 @@ import no.schibstedsok.searchportal.result.Navigator;
 import org.apache.log4j.Logger;
 
 /**
+ * @deprecated works against the deprecated Navigator class. Use NavigationHelper instead.
  * @author andersjj
  * @version $Id$
  */

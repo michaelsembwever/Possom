@@ -131,53 +131,11 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
 
     // Protected -----------------------------------------------------
 
-    @Override
-    protected Property invokeProperty(final String propertyName, final boolean setter, final Object[] args) {
-
-        Property result = null;
-        for (int i = 0; i < properties.size(); ++i) {
-            final Property p = properties.get(i);
-            if (p.getName().equalsIgnoreCase(propertyName)) {
-                if (setter) {
-
-                    // set the new child dataObject
-                    if (p.getValue() instanceof MapDataObject && args.length > 1) {
-
-                        final MapDataObject mpd = (MapDataObject) p.getValue();
-                        // detach the old contextChild
-                        removeChild(mpd.getValue((String) args[0]));
-                        // update property
-                        mpd.setValue((String) args[0], args[1]);
-                        // add the new contextChild
-                        addChild(args[1]);
-
-                    } else {
-
-                        // detach the old contextChild
-                        removeChild(p.getValue());
-                        // update property
-                        properties.set(i, new Property(p.getName(), args[0]));
-                        // add the new contextChild
-                        addChild(args[0]);
-                    }
-
-                }
-                result = null != p && null != args && p.getValue() instanceof MapDataObject && args.length > (setter ? 1 : 0)
-                        ? new Property((String) args[0], ((MapDataObject) p.getValue()).getValue((String) args[0]))
-                        : p;
-                break;
-            }
-        }
-        return result;
-    }
-
-    // Private -------------------------------------------------------
-
-
     /**
      * obj may be null. 
      */
-    private void addChild(final Object obj) {
+    @Override
+    protected void addChild(final Object obj) {
 
         if (null != obj) {
 
@@ -193,7 +151,8 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     /**
      * obj may be null. 
      */
-    private void removeChild(final Object obj) {
+    @Override
+    protected void removeChild(final Object obj) {
 
         if (null != obj) {
 
@@ -206,6 +165,8 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
         }
     }
     
+    // Private -------------------------------------------------------
+
     private boolean isDataObjectOrNode(final Object obj){
         
         boolean dataObjectOrNode = false;

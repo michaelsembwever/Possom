@@ -15,14 +15,13 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
-import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.site.Site;
@@ -57,11 +56,11 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
 
     // Protected -----------------------------------------------------
 
-    protected final RunningQuery.Context createRunningQueryContext(final String key) 
+    protected final RunningQuery.Context createRunningQueryContext(final String key)
             throws SiteKeyedFactoryInstantiationException{
-        
+
         final DataModel datamodel = getDataModel();
-        
+
         final SiteContext siteCxt = new SiteContext(){
             public Site getSite() {
                 return datamodel.getSite().getSite();
@@ -83,17 +82,17 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
                     .getTabByKey(key);
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
 
@@ -115,7 +114,7 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
         return createCommandContext(rq, rqCxt, conf);
 
     }
-    
+
     protected final SearchCommand.Context createCommandContext(
             final RunningTestQuery rq,
             final RunningQuery.Context rqCxt,
@@ -154,16 +153,16 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
-    
+
     public static final class RunningTestQuery extends RunningQueryImpl{
-        
+
         public RunningTestQuery(
-                final Context cxt, 
+                final Context cxt,
                 final String query) throws SiteKeyedFactoryInstantiationException {
-            
+
             super(cxt, query);
         }
-        
+
         public TokenEvaluationEngine getTokenEvaluationEngine(){
             return engine;
         }

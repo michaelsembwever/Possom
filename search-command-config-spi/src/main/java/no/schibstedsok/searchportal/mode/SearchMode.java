@@ -2,8 +2,9 @@
  * Copyright (2005-2007) Schibsted Søk AS
  *
  */
-package no.schibstedsok.searchportal.mode.config;
+package no.schibstedsok.searchportal.mode;
 
+import no.schibstedsok.searchportal.mode.config.*;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -19,22 +20,24 @@ import java.util.ArrayList;
  * @version <tt>$Id$</tt>
  */
 public final class SearchMode {
-    
+
+    // Constants -----------------------------------------------------
+
     /**
-     * 
+     *
      */
     public enum SearchCommandExecutorConfig{
         /**
-         * 
+         *
          */
         @Controller("SequentialSearchCommandExecutor")
         SEQUENTIAL,
         /**
-         * 
+         *
          */
         @Controller("ParallelSearchCommandExecutor")
         PARALLEL;
-                
+
         /**
          *
          */
@@ -48,27 +51,33 @@ public final class SearchMode {
              * @return
              */
             public String value();
-        }                
+        }
     }
 
+    // Attributes ----------------------------------------------------
+
     private SearchCommandExecutorConfig searchCommandExecutor = SearchCommandExecutorConfig.SEQUENTIAL;
-    
-    /** @deprecated the key comes from the view.xml and belongs in SearchTab **/
-    private String key;
 
     private Collection<SearchConfiguration> searchConfigurations = new ArrayList<SearchConfiguration>();
     private SearchMode parentSearchMode;
     private boolean queryAnalysisEnabled = false;
-    
+    private String parentMode;
+    private String id;
+    private NavigationConfig navigationConfig;
+
+    // Static --------------------------------------------------------
+
+    // Constructors --------------------------------------------------
+
     /**
-     * 
+     *
      */
     public SearchMode(){
     }
-    
+
     /**
-     * 
-     * @param inherit 
+     *
+     * @param inherit
      */
     public SearchMode(final SearchMode inherit){
         if( inherit != null ){
@@ -79,35 +88,21 @@ public final class SearchMode {
         }
     }
 
-//    /** @deprecated the key comes from the view.xml and belongs in SearchTab **/
-//    public String getKey() {
-//        if (parentMode != null) {
-//            return parentMode;
-//        } else {
-//            return key;
-//        }
-//    }
-//
-//    /** @deprecated the key comes from the view.xml and belongs in SearchTab **/
-//    public void setKey(String key) {
-//        this.key = key;
-//    }
-
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Collection<SearchConfiguration> getSearchConfigurations() {
         return searchConfigurations;
     }
-    
+
     /**
-     * 
-     * @param name 
-     * @return 
+     *
+     * @param name
+     * @return
      */
     public SearchConfiguration getSearchConfiguration(final String name) {
-       
+
         for( SearchConfiguration sc : searchConfigurations){
             if( sc.getName().equals(name) ){
                 return sc;
@@ -117,16 +112,16 @@ public final class SearchMode {
     }
 
     /**
-     * 
-     * @param searchConfigurations 
+     *
+     * @param searchConfigurations
      */
     public void setSearchConfigurations(Collection<SearchConfiguration> searchConfigurations) {
         this.searchConfigurations = searchConfigurations;
     }
 
     /**
-     * 
-     * @param conf 
+     *
+     * @param conf
      */
     public void addSearchConfiguration(SearchConfiguration conf) {
         searchConfigurations.add(conf);
@@ -134,24 +129,24 @@ public final class SearchMode {
 
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public SearchCommandExecutorConfig getExecutor() {
         return searchCommandExecutor;
     }
 
     /**
-     * 
-     * @param searchCommandExecutor 
+     *
+     * @param searchCommandExecutor
      */
     public void setExecutor(final SearchCommandExecutorConfig searchCommandExecutor) {
         this.searchCommandExecutor = searchCommandExecutor;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public SearchMode getParentSearchMode() {
         return parentSearchMode;
@@ -176,11 +171,6 @@ public final class SearchMode {
     }
 
     /**
-     * Holds value of property parentMode.
-     */
-    private String parentMode;
-
-    /**
      * Getter for property parentMode.
      * @return Value of property parentMode.
      */
@@ -195,15 +185,10 @@ public final class SearchMode {
     public void setParentMode(String parentMode) {
         this.parentMode = parentMode;
     }
-    
+
     public String toString(){
         return id + (parentSearchMode != null ? " --> " + parentSearchMode.toString() : "");
     }
-
-    /**
-     * Holds value of property id.
-     */
-    private String id;
 
     /**
      * Getter for property id.
@@ -220,4 +205,15 @@ public final class SearchMode {
     public void setId(String id) {
         this.id = id;
     }
+
+    public NavigationConfig getNavigationConfiguration(){
+        return navigationConfig;
+    }
+
+    public void setNavigationConfiguration(final NavigationConfig navConfig){
+        navigationConfig = navConfig;
+    }
+
+    // Inner classes -------------------------------------------------
+
 }

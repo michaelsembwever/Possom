@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import static org.testng.AssertJUnit.*;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.Site;
@@ -35,7 +35,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
     }
 
     protected void setUp() throws Exception {
-        
+
     }
 
     /** TODO comment me. **/
@@ -53,7 +53,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
     }
 
     private SearchModeFactory getModeFactory(final Site.Context siteConstructorContext, final Locale locale) {
-        
+
         LOG.trace("getModeFactory");
 
         final SearchModeFactory.Context cxt = new SearchModeFactory.Context(){
@@ -63,17 +63,17 @@ public final class SearchModeFactoryTest extends SiteTestCase {
                         : Site.valueOf(siteConstructorContext, getTestingSite().getName(), locale);
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
 
@@ -93,7 +93,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
      */
     @Test
     public void testGetMode() {
-        
+
         LOG.trace("testGetMode");
 
         final String id = "default-mode";
@@ -103,7 +103,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
         final SearchMode result = instance.getMode(id);
         assert null != result : "Result cannot be null for mode " + id;
     }
-    
+
 
     /**
      * Test of memory against getMode method,
@@ -111,24 +111,24 @@ public final class SearchModeFactoryTest extends SiteTestCase {
      */
     @Test
     public void testGetModeOnAllAvailableLocales() {
-        
+
         LOG.trace("testGetModeOnAllAvailableLocales");
 
         final String id = "default-mode";
         final Site.Context siteConstructorContext = getSiteConstructingContext();
-        
+
         System.gc();
         final long initialTotal = Runtime.getRuntime().totalMemory();
         final long initialFree = Runtime.getRuntime().freeMemory();
         LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
-        
+
         for(Locale l : Locale.getAvailableLocales()){
-            
+
             final Site site = Site.valueOf(siteConstructorContext, getTestingSite().getName(), l);
             final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
                 public PropertiesLoader newPropertiesLoader(
-                        final SiteContext siteCxt, 
-                        final String resource, 
+                        final SiteContext siteCxt,
+                        final String resource,
                         final Properties properties) {
 
                     return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
@@ -138,7 +138,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
                 }
             };
             final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
-            
+
             if( siteConf.isSiteLocaleSupported(l) ){
                 final SearchModeFactory instance = getModeFactory(siteConstructorContext, l);
 
@@ -151,13 +151,13 @@ public final class SearchModeFactoryTest extends SiteTestCase {
         System.gc();
     }
 
-    
+
     /**
      * Test of deserialisation of all modes that exist in this site's modes.xml.
      */
     @Test
     public void testAllModes() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        
+
         LOG.trace("testAllModes");
 
         final Site.Context siteConstructorContext = getSiteConstructingContext();
@@ -170,5 +170,5 @@ public final class SearchModeFactoryTest extends SiteTestCase {
             assert null != result : "Result cannot be null for mode " + id;
         }
     }
-    
+
 }
