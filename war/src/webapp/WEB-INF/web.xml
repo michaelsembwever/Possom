@@ -149,8 +149,8 @@
     </servlet>
 
     <servlet>
-        <servlet-name>RetrieverLog</servlet-name>
-        <servlet-class>no.schibstedsok.searchportal.http.servlet.RetrieverLogServlet</servlet-class>
+        <servlet-name>Boomerang</servlet-name>
+        <servlet-class>no.schibstedsok.searchportal.http.servlet.BoomerangServlet</servlet-class>
     </servlet>
 
     <servlet>
@@ -180,7 +180,12 @@
     </servlet-mapping>
     
     <servlet-mapping>
-        <servlet-name>RetrieverLog</servlet-name>
+        <servlet-name>Boomerang</servlet-name>
+        <url-pattern>/boomerang/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Boomerang</servlet-name>
         <url-pattern>/search/writeLog.do</url-pattern>
     </servlet-mapping>
 

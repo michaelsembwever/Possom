@@ -3,8 +3,8 @@ package no.schibstedsok.searchportal.result;
 
 import java.io.Serializable;
 
-/**
- * @deprecated Geir's navigation model is the replacement.
+/** Configuration within a CommandConfig used for manipulating the command's navigation results.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision: 3361 $</tt>
  */
