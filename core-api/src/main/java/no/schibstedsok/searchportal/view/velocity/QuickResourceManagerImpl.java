@@ -14,6 +14,7 @@ import org.apache.commons.lang.time.StopWatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.text.MessageFormat;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * A quicker replacement for {@link org.apache.velocity.runtime.resource.ResourceManagerImpl} that avoids
@@ -24,6 +25,7 @@ import java.text.MessageFormat;
  * loaded several times during startup or reload.
  *
  * @author Magnus Eklund
+ * @version $Id$
  */
 public final class QuickResourceManagerImpl extends ResourceManagerImpl {
 
@@ -36,6 +38,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
     private static final String CHECKED_MODIFICATION = "Checked modification of velocity resource {0} in {1}";
 
     private static final Logger LOG = Logger.getLogger(QuickResourceManagerImpl.class);
+    private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
     /**
      * {@inheritDoc}
@@ -45,18 +48,21 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
         final Resource resource = globalCache.get(type + name);
 
         if (resource != null) {
-            // Touch the resource so that a closely following caller won't trigger an update thread. Keeps updates of
-            // the same resource from piling up when traffic is high.
-            resource.touch();
 
             // Use cached resource for this invocation but also start a thread to update cache with a brand new
             // resource instance.
             if (resource.requiresChecking()) {
+                
+                // Touch the resource so that a closely following caller won't trigger an update thread.
+                // Keeps updates of the same resource from piling up when traffic is high.
+                resource.touch();
                 EXECUTOR.submit(new Loader(resource, name, type, encoding));
             }
 
             return resource;
+            
         } else {
+            
             return new Loader(resource, name, type, encoding).load();
         }
     }
@@ -90,6 +96,11 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
             this.enc = enc;
 
             key = type + name;
+            
+            if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
+                final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
+                LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+            }
         }
 
         /**
@@ -119,8 +130,8 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
                 } else {
                     return oldResource;
                 }
-            } // Exception behaviour from default implementation.
-            catch (ResourceNotFoundException rnfe) {
+            }catch (ResourceNotFoundException rnfe) {
+                // Exception behaviour from default implementation.
                 log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
                 throw rnfe;
             } catch (ParseErrorException pee) {
@@ -135,10 +146,10 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
 
                 stopWatch.stop();
 
-                if (oldResource != null) {
+                if (oldResource != null && LOG.isInfoEnabled()) {
                     LOG.info(MessageFormat.format(CHECKED_MODIFICATION, key, stopWatch.toSplitString()));
                 }
-                if (modified) {
+                if (modified && LOG.isDebugEnabled()) {
                     LOG.debug(MessageFormat.format(LOADED_VELOCITY_RESOURCE, key, stopWatch.toString()));
                 }
             }
@@ -148,8 +159,10 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
          * Loads resource if it has been modified since it was last loaded.
          */
         public void run() {
+            
             try {
                 load();
+                
             }  catch (ResourceNotFoundException rnfe) {
                 log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
             } catch (ParseErrorException pee) {
