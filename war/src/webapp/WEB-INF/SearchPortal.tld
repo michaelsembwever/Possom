@@ -42,8 +42,8 @@
     </attribute>
   </tag>
   <tag>
-    <name>linkPulse</name>
-    <tag-class>no.schibstedsok.searchportal.view.taglib.LinkPulseTag</tag-class>
+    <name>boomerang</name>
+    <tag-class>no.schibstedsok.searchportal.view.taglib.BoomerangTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>url</name>
@@ -53,18 +53,6 @@
     </attribute>
     <attribute>
       <name>param</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.String</type>
-    </attribute>
-    <attribute>
-      <name>script</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.String</type>
-    </attribute>
-    <attribute>
-      <name>index</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <type>java.lang.String</type>

@@ -32,7 +32,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * @author mick
  * @version $Id$
  */
-public final class PublishDirective extends Directive {
+public final class PublishDirective extends AbstractDirective {
 
     private static final Logger LOG = Logger.getLogger(PublishDirective.class);
     private static final String ERR_NETWORK_DOWN = "Network down? ";
@@ -65,17 +65,15 @@ public final class PublishDirective extends Directive {
         }
 
         // The argument gets url encoded on the way in. Make sure to decode the / characters.
-        final String url = node.jjtGetChild(0).value(context).toString().replaceAll("%2F", "/");
-
-        final DataModel datamodel = (DataModel) context.get("datamodel");
+        final String url = getArgument(context, node, 0).replaceAll("%2F", "/");
 
         try{
-            ImportPublish.importPage(url, datamodel, writer);
+            ImportPublish.importPage(url, getDataModel(context), writer);
             return true;
-            
+
         } catch (SocketTimeoutException ste) {
             LOG.error(ERR_NETWORK_DOWN + url + " --> " + ste.getMessage());
-            
+
         }catch(IOException se){
             LOG.error(ERR_NETWORK_DOWN + url, se);
         }

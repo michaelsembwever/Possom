@@ -13,16 +13,16 @@ import org.apache.velocity.exception.MethodInvocationException;
 import java.io.Writer;
 import java.io.IOException;
 
-import no.schibstedsok.searchportal.result.Linkpulse;
+import no.schibstedsok.searchportal.result.Boomerang;
 
 /**
  * Created by IntelliJ IDEA.
- * User: SSTHKJER
+ * @author SSTHKJER
+ * @version $Id$
  * Date: 03.apr.2006
  * Time: 09:21:04
- * To change this template use File | Settings | File Templates.
  */
-public final class AccountingDirective extends Directive {
+public final class AccountingDirective extends AbstractDirective {
 
     private static final Logger LOG = Logger.getLogger(AccountingDirective.class);
 
@@ -63,17 +63,18 @@ public final class AccountingDirective extends Directive {
      * @throws org.apache.velocity.exception.MethodInvocationException
      * @return the encoded string.
      */
-    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) 
+            throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+        
         if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
         // The text string from datafield which all the accountingsnumber is stored
-        final String s = node.jjtGetChild(0).value(context).toString();
+        final String s = getArgument(context, node, 0);
 
-        String html = "";
-        html = "<table bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+        final StringBuilder html = new StringBuilder("<table bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
 
         // New line seperator
         final String[] row = s.split("#sepnl#");
@@ -82,9 +83,9 @@ public final class AccountingDirective extends Directive {
         String text = "";
         boolean quitLoop = false;
 
-        // use linkpulse to LOG lindorff logo click
-        final Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
-        final String lpUrl = linkpulse.getUrl("http://www.lindorff.no/", "category:static;subcategory:provider", "sgo", "ext");
+        final String lpUrl = Boomerang.getUrl(getDataModel(context).getSite().getSite(),
+                "http://www.lindorff.no/", 
+                "category:static;subcategory:provider");
 
         //print rows
         for (int i = 0; i < row.length; i++) {
@@ -99,10 +100,12 @@ public final class AccountingDirective extends Directive {
                 if (k==0) {
                     // #balance0# means print a new table
                     if (col[0].indexOf("#balanse0#") > -1) {
-                        html += "</table><div class=\"lindorff\"></div><table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+                        html.append("</table><div class=\"lindorff\"></div>");
+                        html.append("<table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
                         bgcolor = false;
                     } else if (col[0].indexOf("#lederlonn0#") > -1) {                        
-                        html += "</table>* Alle tall i hele 1000 kroner.<table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+                        html.append("</table>* Alle tall i hele 1000 kroner.");
+                        html.append("<table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
                         bgcolor = false;
                     // #balance1# means don't show rest of the numbers
                     } else if (col[0].indexOf("#balanse1#") > -1) {
@@ -112,34 +115,37 @@ public final class AccountingDirective extends Directive {
                     // checks if the row should be bold
                     if (col[0].indexOf("#bold#") == -1) {
                         text = col[0];
-                        html += "<tr>";
+                        html.append("<tr>");
                     } else {
-                        html += "<tr class=\"bold_line\">";
+                        html.append("<tr class=\"bold_line\">");
                         text = col[0].substring(col[0].indexOf("#bold#")+6);
                     }
                 } else
                     text = col[k];
 
                 if (!bgcolor) {
-                    html += "<td class=\"col"+ (k+1) + "\" bgcolor=\"#FFFFFF\">" + text.trim() + "</td>";
+                    html.append("<td class=\"col"+ (k+1) + "\" bgcolor=\"#FFFFFF\">" + text.trim() + "</td>");
                 } else {
-                    html += "<td class=\"col"+ (k+1) + "\" style=\"background-color: #EBEBEB;\">" + text.trim() + "</td>";
+                    html.append("<td class=\"col"+ (k+1) + "\" style=\"background-color: #EBEBEB;\">" 
+                            + text.trim() + "</td>");
                 }
             }
             if (!quitLoop) {
                 bgcolor = !bgcolor;
-                html += "</tr>";
+                html.append("</tr>");
             } else
                 break;
         }
-        html += "</table>";
-        html += "<div class=\"lindorff\">* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>";
-        html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"/images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
+        html.append("</table>");
+        html.append("<div class=\"lindorff\">");
+        html.append("* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>");
+        html.append("<div style=\"clear:both; padding-top:4px;\">");
+        html.append("<a href=\"" + lpUrl + "\" target=\"_blank\">");
+        html.append("<img src=\"/images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>");
 
-        writer.write(html);
-        final Token lastToken = node.getLastToken();
+        writer.write(html.toString());
 
-        if (lastToken.image.endsWith("\n")) {
+        if (node.getLastToken().image.endsWith("\n")) {
             writer.write("\n");
         }
 

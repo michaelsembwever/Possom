@@ -25,7 +25,6 @@ import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
-import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.Site;
@@ -363,9 +362,6 @@ public final class SearchServlet extends HttpServlet {
         })));
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
-        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
-
-        request.setAttribute("linkpulse", new Linkpulse(datamodel.getSite().getSite(), props));
     }
 
     /* TODO Move into a RunningQueryHandler

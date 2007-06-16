@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.result.Boomerang;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
@@ -143,6 +144,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("date", new DateTool());
         // navigation helper
         context.put("navigationHelper", new NavigationHelper());
+        // boomerang
+        context.put("boomerang", new Boomerang());
+        
         return context;
     }
 

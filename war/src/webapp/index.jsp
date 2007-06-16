@@ -1,4 +1,4 @@
-<%-- Copyright (2006) Schibsted Søk AS --%>
+<%-- Copyright (2006-2007) Schibsted Søk AS --%>
 <%@ page
         language="java"
         errorPage="/internal-error.jsp"
@@ -46,7 +46,7 @@
                     </div>
                 </td>
                 <td id="searchForm">
-                <form name="sf" action="<search:linkPulse url="/search/" param="category:front_search" index="true"/>" onsubmit='return check();'>
+                <form name="sf" action="<search:boomerang url="/search/" param="category:front_search"/>" onsubmit='return check();'>
                 <table cellspacing="0" cellpadding="0">
                     <tr>
                         <td>
@@ -60,7 +60,7 @@
                         </td>
                         <td><input type="image" id="formSubmit" src="images/searchbar/nett.png" alt="" /></td>
                         <td><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" width="19" height="24" alt="Pil ned" /></a></td>
-                        <td><a id="searchtip" href='<search:linkPulse url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
+                        <td><a id="searchtip" href='<search:boomerang url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header"/>'>S&#248;ketips</a></td>
                     </tr>
                     <tr>
                         <td id="searchRadio">
@@ -119,49 +119,49 @@
                 <% open = ""; %>
             } else {
                 <% hide = ""; %>
-                <% open = "style='display:none;'"; %>                
+                <% open = "style='display:none;'"; %>
             }
-        </script>         
+        </script>
         <div id="menutable" <%=hide %>>
             <div class="navMain">
                 <div class="navRow">
                     <img src="images/menu/icons/nyheter.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=m" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=m" param="category:front_service"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=y" param="category:front_service"/>' onclick="return strep(this);">Bedriftss&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/person.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=w" param="category:front_service"/>' onclick="return strep(this);">Persons&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/bilde.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=p" param="category:front_service"/>' onclick="return strep(this);">Bildes&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/blogg.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=b" param="category:front_service"/>' onclick="return strep(this);">Bloggs&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-guide</a>
+                    <a href='<search:boomerang url="/search/?c=t" param="category:front_service"/>' onclick="return strep(this);">TV-guide</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/webtv.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=wt" param="category:front_service" index="true"/>' onclick="return strep(this);">NettTV-s&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=wt" param="category:front_service"/>' onclick="return strep(this);">NettTV-s&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/ver.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>
+                    <a href='<search:boomerang url="/search/?c=sw" param="category:front_service"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/kart.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a><span class="betaNavbar">beta</span>
+                    <a href='<search:boomerang url="/search/?c=map" param="category:front_service"/>' onclick="return strep(this);">Karts&#248;k</a><span class="betaNavbar">beta</span>
                 </div>
             </div>
-            <div id="navToggleHide">    
+            <div id="navToggleHide">
                 <img src="images/index/skjul_meny.png" width="21" height="20" alt="" />
                 <span>Skjul meny</span>
             </div>
@@ -171,7 +171,7 @@
                 <img src="images/index/vis_meny.png" width="21" height="20" alt="" />
                 <span>Vis meny</span>
             </div>
-        </div>    
+        </div>
     </div>
     <div id="articles">
         <search:publish page="/pages/front"/>
@@ -183,7 +183,7 @@
     </div>
 
         <!-- start gallup (<%=locale  %>) -->
-        <% if ( "no".equals(locale) ) { %>        
+        <% if ( "no".equals(locale) ) { %>
         <script type='text/javascript' language='JavaScript' src='/javascript/tmv11.js'></script>
         <script type="text/javascript" language="JavaScript"><!--
             var tmsec = new Array(3);
