@@ -11,12 +11,16 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.URL;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * General support to import page fragments from publishing system.
@@ -43,10 +47,9 @@ public final class ImportPublish {
      * @param out 
      * @throws java.io.IOException 
      */
-    public static void importPage(
+    public static String importPage(
             final String page, 
-            final DataModel datamodel, 
-            final Writer out) throws IOException{
+            final DataModel datamodel) throws IOException{
         
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
 
@@ -84,12 +87,26 @@ public final class ImportPublish {
                     CACHE.cancelUpdate(cacheKey);
                 }
             }
-        }finally{
-            out.write(content);
         }
+        return content;
     }
-    
-    
+         
+    /**
+     * 
+     * @param page 
+     * @param datamodel 
+     * @param out 
+     * @throws java.io.IOException 
+     */
+    public static Document importXml(
+            final String page, 
+            final DataModel datamodel) throws IOException, ParserConfigurationException, SAXException{ 
+        
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(importPage(page, datamodel));
+       
+    }   
     // Constructors --------------------------------------------------
     
     /** Creates a new instance of NewClass */
