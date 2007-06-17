@@ -6,7 +6,7 @@
           <artifactId>search-portal</artifactId>
           <version>2.14-SNAPSHOT</version>
       </parent>
-    <artifactId>search-portal-httpclient-api</artifactId>
+    <artifactId>sesat-httpclient-api</artifactId>
     <packaging>jar</packaging>
     <name>SESAT HttpClient API</name>
     <description>

@@ -6,7 +6,7 @@
           <artifactId>search-portal</artifactId>
           <version>2.14-SNAPSHOT</version>
       </parent>
-    <artifactId>search-portal-war</artifactId>
+    <artifactId>sesat-war</artifactId>
     <packaging>war</packaging>
     <name>SESAT WAR</name>
     <description>
@@ -51,37 +51,37 @@
    <dependencies>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-httpclient-api</artifactId>
+            <artifactId>sesat-httpclient-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-site-spi</artifactId>
+            <artifactId>sesat-site-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-query-api</artifactId>
+            <artifactId>sesat-query-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-query-transform-control-spi</artifactId>
+            <artifactId>sesat-query-transform-control-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-core-api</artifactId>
+            <artifactId>sesat-core-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-data-model-api</artifactId>
+            <artifactId>sesat-data-model-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-data-model-javabean-impl</artifactId>
+            <artifactId>sesat-data-model-javabean-impl</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

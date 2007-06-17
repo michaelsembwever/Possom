@@ -6,7 +6,7 @@
         <artifactId>search-portal</artifactId>
         <version>2.14-SNAPSHOT</version>
     </parent>
-    <artifactId>search-portal-result-spi</artifactId>
+    <artifactId>sesat-result-spi</artifactId>
     <packaging>jar</packaging>
     <name>SESAT Result SPI</name>
     <description>

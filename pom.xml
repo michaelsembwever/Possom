@@ -30,6 +30,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>skinresourcefeed</module>
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>

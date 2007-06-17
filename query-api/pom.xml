@@ -6,7 +6,7 @@
           <artifactId>search-portal</artifactId>
           <version>2.14-SNAPSHOT</version>
       </parent>
-    <artifactId>search-portal-query-api</artifactId>
+    <artifactId>sesat-query-api</artifactId>
     <packaging>jar</packaging>
     <name>SESAT Query API</name>
     <description>
@@ -54,13 +54,13 @@
     <dependencies>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-site-spi</artifactId>
+            <artifactId>sesat-site-spi</artifactId>
             <version>${version}</version>
             <!--scope>provided</scope-->
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-httpclient-api</artifactId>
+            <artifactId>sesat-httpclient-api</artifactId>
             <version>${version}</version>
             <scope>provided</scope>
         </dependency>
@@ -79,7 +79,7 @@
         <!-- Testin -->
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-site-spi</artifactId>
+            <artifactId>sesat-site-spi</artifactId>
             <version>${version}</version>
             <type>test-jar</type>
             <scope>test</scope>

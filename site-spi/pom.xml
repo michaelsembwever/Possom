@@ -6,7 +6,7 @@
           <artifactId>search-portal</artifactId>
           <version>2.14-SNAPSHOT</version>
       </parent>
-    <artifactId>search-portal-site-spi</artifactId>
+    <artifactId>sesat-site-spi</artifactId>
     <packaging>jar</packaging>
     <name>SESAT Site SPI</name>
     <description>
@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-httpclient-api</artifactId>
+            <artifactId>sesat-httpclient-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

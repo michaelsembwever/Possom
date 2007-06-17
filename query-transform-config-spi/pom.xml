@@ -6,7 +6,7 @@
         <artifactId>search-portal</artifactId>
         <version>2.14-SNAPSHOT</version>
     </parent>
-    <artifactId>search-portal-query-transform-config-spi</artifactId>
+    <artifactId>sesat-query-transform-config-spi</artifactId>
     <packaging>jar</packaging>
     <name>SESAT Query Transform Config SPI</name>
     <description>
@@ -49,7 +49,7 @@
 
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-query-api</artifactId>
+            <artifactId>sesat-query-api</artifactId>
             <version>${version}</version>
         </dependency>
     </dependencies>

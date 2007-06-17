@@ -7,8 +7,8 @@
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
-    <name>Skin Resource Feed</name>
-    <artifactId>skinresourcefeed</artifactId>
+    <name>SESAT Resource Feed</name>
+    <artifactId>sesat-resourcefeed</artifactId>
     <packaging>jar</packaging>
 
     <description>This is the project for SESAT's skins to serve resource documents.</description>

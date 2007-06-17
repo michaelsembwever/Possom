@@ -6,7 +6,7 @@
         <artifactId>search-portal</artifactId>
         <version>2.14-SNAPSHOT</version>
     </parent>
-    <artifactId>search-portal-search-command-config-spi</artifactId>
+    <artifactId>sesat-search-command-config-spi</artifactId>
     <packaging>jar</packaging>
     <name>SESAT Search Command Config SPI</name>
     <description>
@@ -48,17 +48,17 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-query-transform-config-spi</artifactId>
+            <artifactId>sesat-query-transform-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-result-spi</artifactId>
+            <artifactId>sesat-result-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-result-handler-config-spi</artifactId>
+            <artifactId>sesat-result-handler-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
 
