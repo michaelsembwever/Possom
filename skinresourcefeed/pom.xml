@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+      <groupId>schibstedsok</groupId>
+      <artifactId>search-portal</artifactId>
+      <version>2.14-SNAPSHOT</version>
+    </parent>
+    
+    <modelVersion>4.0.0</modelVersion>
+    <name>Skin Resource Feed</name>
+    <artifactId>skinresourcefeed</artifactId>
+    <packaging>jar</packaging>
+
+    <description>This is the project for SESAT's skins to serve resource documents.</description>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/conf</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.xml</include>
+                    <include>*.dtd</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.dtd</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+   
+    <dependencies>
+       <dependency>
+         <groupId>log4j</groupId>
+         <artifactId>log4j</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+      </dependency>
+  </dependencies>
+</project>
