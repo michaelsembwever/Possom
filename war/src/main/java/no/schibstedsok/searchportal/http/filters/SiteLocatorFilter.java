@@ -550,7 +550,7 @@ public final class SiteLocatorFilter implements Filter {
     private static boolean isAccessAllowed(final HttpServletRequest request){
         
         final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
-        final String allowedList = siteConf.getProperty(SiteConfiguration.ALLOWED_LIST);
+        final String allowedList = siteConf.getProperty(SiteConfiguration.ALLOW_LIST);
         final String disallowedList = siteConf.getProperty(SiteConfiguration.DISALLOW_LIST);
         final String ipaddress = request.getRemoteAddr();
         
