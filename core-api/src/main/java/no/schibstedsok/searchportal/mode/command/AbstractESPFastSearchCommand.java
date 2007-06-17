@@ -47,6 +47,7 @@ import java.util.Properties;
 
 /**
  * Base class for commands querying a FAST EPS Server.
+ * See https://dev.schibstedsok.no/confluence/display/TECHDEV/FAST+ESP+5.0+Documentation
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
