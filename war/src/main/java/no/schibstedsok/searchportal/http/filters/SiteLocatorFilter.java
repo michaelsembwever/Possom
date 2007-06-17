@@ -96,19 +96,11 @@ public final class SiteLocatorFilter implements Filter {
 
     // Attributes ----------------------------------------------------
 
-    // Attributes ----------------------------------------------------
-
-    // Attributes ----------------------------------------------------
-
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
     private static final String LOCALE_DETAILS = "Locale details: Language: {0}, Country: {1} and Variant: {2}";
-
-    // Static --------------------------------------------------------
-
-    // Static --------------------------------------------------------
 
     // Static --------------------------------------------------------
 
@@ -118,10 +110,6 @@ public final class SiteLocatorFilter implements Filter {
     /** Default constructor. **/
     public SiteLocatorFilter() {
     }
-
-    // Public --------------------------------------------------------
-
-    // Public --------------------------------------------------------
 
     // Public --------------------------------------------------------
 
@@ -158,60 +146,67 @@ public final class SiteLocatorFilter implements Filter {
 
                 final HttpServletRequest req = (HttpServletRequest)request;
                 final HttpServletResponse res = (HttpServletResponse) response;
+                final Site site = (Site) req.getAttribute(Site.NAME_KEY);
                 final String uri = req.getRequestURI();
                 final String resource = uri;
                 final String rscDir = resource != null && resource.indexOf('/',1) >= 0
                         ? resource.substring(0, resource.indexOf('/',1)+1)
                         : null;
+                
+                if(isAccessAllowed(req)){
 
-                if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
+                    if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
-                    // This URL does not belong to search-front-html
-                    final Site site = (Site) req.getAttribute(Site.NAME_KEY);
-                    final String url;
+                        // This URL does not belong to search-front-html
+                        final String url;
 
-                    if (resource.startsWith(PUBLISH_DIR)) { // publishing system
-                        // the publishing system is responsible for this.
-                        final Properties props = SiteConfiguration.valueOf(site).getProperties();
-                        url = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL)
-                            .replaceFirst("localhost",props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST))
-                            + '/' + resource;
+                        if (resource.startsWith(PUBLISH_DIR)) { // publishing system
+                            // the publishing system is responsible for this.
+                            final Properties props = SiteConfiguration.valueOf(site).getProperties();
+                            url = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL)
+                                .replaceFirst("localhost",props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST))
+                                + '/' + resource;
 
-                    }  else  {
-                        // strip the version number out of the resource
-                        final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
+                        }  else  {
+                            // strip the version number out of the resource
+                            final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
 
-                        // Find resource in current site or any of its
-                        // ancestors
-                        url = recursivelyFindResource(noVersionRsc, site);
+                            // Find resource in current site or any of its
+                            // ancestors
+                            url = recursivelyFindResource(noVersionRsc, site);
 
-                        if (url == null) {
-                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                            
-                            if(resource.endsWith(".css")){
-                                LOG.info(ERR_NOT_FOUND + resource);
-                            }else{
-                                LOG.error(ERR_NOT_FOUND + resource);
+                            if (url == null) {
+                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                                if(resource.endsWith(".css")){
+                                    LOG.info(ERR_NOT_FOUND + resource);
+                                }else{
+                                    LOG.error(ERR_NOT_FOUND + resource);
+                                }
                             }
                         }
-                    }
 
-                    if (url != null) {
-                        // Cache the client-resource redirects on a short (session-equivilant) period
-                        res.setHeader("Cache-Control", "Public"); 
-                        res.setDateHeader("Expires", System.currentTimeMillis() + 1000*60*10); // ten minutes
-                        // send the redirect to where the resource really resides
-                        res.sendRedirect(url);
-                        LOG.trace(resource + DEBUG_REDIRECTING_TO + url);
-                    }
+                        if (url != null) {
+                            // Cache the client-resource redirects on a short (session-equivilant) period
+                            res.setHeader("Cache-Control", "Public"); 
+                            res.setDateHeader("Expires", System.currentTimeMillis() + 1000*60*10); // ten minutes
+                            // send the redirect to where the resource really resides
+                            res.sendRedirect(url);
+                            LOG.trace(resource + DEBUG_REDIRECTING_TO + url);
+                        }
 
-                } else  {
-                    doChainFilter(chain, request, response);
+                    } else  {
+                        doChainFilter(chain, request, response);
+                    }
+                    
+                }else{
+                    // Forbidden client
+                    res.sendError(HttpServletResponse.SC_FORBIDDEN);
                 }
+                
             }  else  {
                 doChainFilter(chain, request, response);
             }
-
 
             doAfterProcessing(request, response);
 
@@ -349,10 +344,6 @@ public final class SiteLocatorFilter implements Filter {
 
     // Package protected ---------------------------------------------
 
-    // Package protected ---------------------------------------------
-
-    // Package protected ---------------------------------------------
-
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
@@ -416,6 +407,7 @@ public final class SiteLocatorFilter implements Filter {
 
         if (null != dataModel && !dataModel.getSite().getSite().equals(site)) {
             LOG.warn(WARN_FAULTY_BROWSER + dataModel.getBrowser().getUserAgent().getString());
+            // DataModelFilter will correct it
         }
 
         request.setAttribute(Site.NAME_KEY, site);
@@ -553,6 +545,30 @@ public final class SiteLocatorFilter implements Filter {
             ? (String) servletRequest.getAttribute("SERVER_NAME")
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
+    }
+    
+    private static boolean isAccessAllowed(final HttpServletRequest request){
+        
+        final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
+        final String allowedList = siteConf.getProperty(SiteConfiguration.ALLOWED_LIST);
+        final String disallowedList = siteConf.getProperty(SiteConfiguration.DISALLOW_LIST);
+        final String ipaddress = request.getRemoteAddr();
+        
+        boolean allowed = false;
+        boolean disallowed = false;
+        if(null != allowedList && 0 < allowedList.length()){
+            for(String allow : allowedList.split(",")){
+                allowed |= ipaddress.startsWith(allow);
+            }
+        }else{
+            allowed = true;
+        }
+        if(null != disallowedList && 0 < disallowedList.length()){
+            for(String disallow : disallowedList.split(",")){
+                disallowed |= ipaddress.startsWith(disallow);
+            }
+        }
+        return allowed && !disallowed;  
     }
     
     private static class AccessLogResponse extends HttpServletResponseWrapper{

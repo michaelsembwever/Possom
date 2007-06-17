@@ -24,15 +24,15 @@ public final class SiteConfiguration implements SiteKeyedFactory {
 
     public static final String NAME_KEY = "SiteConfiguration";
     /**
-     * TODO comment me. *
+     *
      */
     public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
     /**
-     * TODO comment me. *
+     *
      */
     public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
     /**
-     * TODO comment me. *
+     *
      */
     public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
     private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
@@ -43,6 +43,9 @@ public final class SiteConfiguration implements SiteKeyedFactory {
     public static final String IS_SITESEARCH_KEY = "site.issitesearch";
 
     public static final String DEFAULTTAB_KEY = "site.defaultTab";
+    
+    public static final String ALLOW_LIST = "site.allow";
+    public static final String DISALLOW_LIST = "site.disallow";
     
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
@@ -72,7 +75,7 @@ public final class SiteConfiguration implements SiteKeyedFactory {
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public Properties getProperties() {
 
@@ -80,7 +83,7 @@ public final class SiteConfiguration implements SiteKeyedFactory {
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public String getProperty(final String key) {
 
@@ -138,7 +141,7 @@ public final class SiteConfiguration implements SiteKeyedFactory {
     }
 
     /**
-     * TODO comment me. *
+     *
      */
     public boolean remove(final Site site) {
 

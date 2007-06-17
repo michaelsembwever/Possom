@@ -116,7 +116,10 @@ public final class DataModelFilter implements Filter {
                 final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
                 datamodel.setParameters(parametersDO);
-                datamodel.setSite(getSiteDO(request, factory));
+                
+                if(null == datamodel.getSite() || !datamodel.getSite().getSite().equals(site)){
+                    datamodel.setSite(getSiteDO(request, factory));
+                }
                 
                 // DataModel's ControlLevel will be REQUEST_CONSTRUCTION (from getDataModel(..))
                 //  Increment it onwards to VIEW_CONSTRUCTION.
@@ -210,6 +213,7 @@ public final class DataModelFilter implements Filter {
     }
 
     private static SiteDataObject getSiteDO(final ServletRequest request, final DataModelFactory factory) {
+        
         final Site site = (Site) request.getAttribute(Site.NAME_KEY);
         final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
 

@@ -206,6 +206,10 @@
     </session-config>
 
     <error-page>
+        <error-code>403</error-code>
+        <location>/WEB-INF/jsp/403.jsp</location>
+    </error-page>
+    <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/jsp/404.jsp</location>
     </error-page>
