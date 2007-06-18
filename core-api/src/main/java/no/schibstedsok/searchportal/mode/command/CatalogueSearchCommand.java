@@ -530,7 +530,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             }else{
 
                 final String kwTerm = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD_RESERVED)
-                        ? "\"^" + transformedTerm + "$\""
+                        ? '^' + transformedTerm + '$'
                         : transformedTerm;
  
                  appendToQueryRepresentation(
