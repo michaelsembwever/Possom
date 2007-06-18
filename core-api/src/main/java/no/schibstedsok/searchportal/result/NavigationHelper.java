@@ -11,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
+
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.NavigationConfig;
@@ -64,9 +66,12 @@ public final class NavigationHelper {
             final String navigatorName) {
 
         final StringBuilder sb = new StringBuilder();
-        String tab = navEntry.getTab();
+        String tab = navEntry.getTabByValue(value);
         if (tab == null) {
-            tab = datamodel.getParameters().getValue("c").getUtf8UrlEncoded();
+            tab = navEntry.getTab();
+            if (tab == null) {
+                tab = datamodel.getParameters().getValue("c").getUtf8UrlEncoded();
+            }
         }
         sb.append("c=").append(tab);
         if (!navEntry.isExcludeQuery()) {

@@ -148,7 +148,6 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
             for(NavigationItem item : toRemove){
                 extendedNavigators.removeResult(item);
             }
-
         } else {
             final StringDataObject optionSelectedValue
                     = datamodel.getParameters().getValue(navEntry.getField());
@@ -167,12 +166,14 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                             option.getDisplayName(),
                             NavigationHelper.getUrlFragment(datamodel, navEntry, value, null),
                             -1);
-
                     extendedNavigators.addResult(navigator);
                     if (optionSelectedValue == null && option.isDefaultSelect()) {
                         navigator.setSelected(true);
                     } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
                         navigator.setSelected(true);
+                    }
+                    if (option.isUseHitCount() && option.getCommandName() != null) {
+                        navigator.setHitCount(datamodel.getSearch(option.getCommandName()).getResults().getHitCount());
                     }
                 }
             }

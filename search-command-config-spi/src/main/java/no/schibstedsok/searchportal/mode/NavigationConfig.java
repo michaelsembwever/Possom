@@ -281,7 +281,7 @@ public final class NavigationConfig{
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
             options = new ArrayList<Option>(optionElements.size());
             for (Element optionElement : optionElements) {
-                options.add(new Option(optionElement));
+                options.add(new Option(optionElement, this));
             }
             final List<Element> staticParamElements = getDirectChildren(navElement, STATIC_PARAMETER_ELEMENT);
             staticParameters = new HashMap<String, String>();
@@ -350,6 +350,17 @@ public final class NavigationConfig{
             this.id = id;
         }
 
+        public String getTabByValue(String value) {
+            if (options != null) {
+                for (Option option : options) {
+                    if (option.getValue() != null && option.getValue().equals(value)) {
+                        return option.getTab();
+                    }
+                }
+            }
+            return null;
+        }
+
         public String getTab() {
             return tab;
         }
@@ -402,8 +413,11 @@ public final class NavigationConfig{
         private String valueRef;
         private boolean realNavigator;
         private boolean defaultSelect;
+        private String tab;
+        private boolean useHitCount;
+        private String commandName;
 
-        private Option(Element optionElement) {
+        private Option(Element optionElement, Nav parentNav) {
 
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "value", ParseType.String, optionElement, null);
@@ -415,6 +429,13 @@ public final class NavigationConfig{
                     .fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, optionElement, "false");
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "defaultSelect", ParseType.Boolean, optionElement, "false");
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "tab", ParseType.String, optionElement, parentNav.getTab());
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "useHitCount", ParseType.Boolean, optionElement, "false");
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "commandName", ParseType.String, optionElement, parentNav.getCommandName());
+
         }
 
         public boolean isDefaultSelect() {
@@ -423,6 +444,30 @@ public final class NavigationConfig{
 
         public void setDefaultSelect(final boolean defaultSelect) {
             this.defaultSelect = defaultSelect;
+        }
+
+        public String getTab() {
+            return tab;
+        }
+
+        public void setTab(String tab) {
+            this.tab = tab;
+        }
+
+        public boolean isUseHitCount() {
+            return useHitCount;
+        }
+
+        public void setUseHitCount(boolean useHitCount) {
+            this.useHitCount = useHitCount;
+        }
+
+        public String getCommandName() {
+            return commandName;
+        }
+
+        public void setCommandName(String commandName) {
+            this.commandName = commandName;
         }
 
         public boolean isRealNavigator() {
