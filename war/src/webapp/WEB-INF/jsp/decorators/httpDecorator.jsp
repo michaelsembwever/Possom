@@ -105,6 +105,7 @@
 </table>
 <search:include include="verbosePager"/>
 <search:include include="footer"/>
+<search:include include="bottom-one"/>
 
 <search:include include="map-script"/>
 
