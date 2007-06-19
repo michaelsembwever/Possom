@@ -72,6 +72,7 @@ public final class SiteLocatorFilter implements Filter {
     
     private static final String UNKNOWN = "unknown";
 
+     
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
             Collections.unmodifiableCollection(Arrays.asList(new String[]{
@@ -463,6 +464,7 @@ public final class SiteLocatorFilter implements Filter {
             userAgent = req.getHeader("User-Agent");
             sesamId = getCookieValue(req, "SesamID");
             sesamUser = getCookieValue(req, "SesamUser");
+
             
         }else{
             

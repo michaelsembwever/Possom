@@ -58,7 +58,6 @@ public final class TopDomainDirective extends Directive {
         }
 
         final String input = node.jjtGetChild(0).value(context).toString();
-        String topDomain = "";
         String string = "";
 
         if (input.indexOf("http://") > -1) 
@@ -69,8 +68,9 @@ public final class TopDomainDirective extends Directive {
             string = input;
         }
 
-        int i = string.indexOf("/");
-        topDomain = string.substring(0, i);
+        final int i = string.indexOf("/");
+
+        final String topDomain = i > 0 ? string.substring(0, i) : string;
 
         writer.write(topDomain);
 
