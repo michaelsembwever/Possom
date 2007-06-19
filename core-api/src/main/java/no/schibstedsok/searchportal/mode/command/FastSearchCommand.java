@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision: 3359 $</tt>
+ * @version <tt>$Id$</tt>
  */
 public class FastSearchCommand extends AbstractSimpleFastSearchCommand {
 
