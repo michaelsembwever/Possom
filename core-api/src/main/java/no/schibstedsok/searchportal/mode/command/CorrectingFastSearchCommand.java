@@ -38,18 +38,35 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     private static final String RESULT_FIELD_CORRECTED_QUERY = "autoCorrectedQuery";
     
     private static final Logger LOG = Logger.getLogger(CorrectingFastSearchCommand.class);
-    
+
     private boolean correct = true;
-    
+    private final Context cxt;
+    private final ReconstructedQuery correctedQuery;
+
     /** Creates a new instance of CorrectionFastSearchCommand.
      *
      * @param cxt Search command context.
      */
     public CorrectingFastSearchCommand(final Context cxt) {
-        
         super(cxt);
+        this.cxt = cxt;
+        this.correctedQuery = null;
     }
-    
+
+    /** Creates a new instance of CorrectionFastSearchCommand.
+     *
+     * @param cxt Search command context.
+     */
+    public CorrectingFastSearchCommand(final Context cxt, final String correctedQuery) {
+        super(cxt);
+        this.cxt = cxt;
+        this.correctedQuery = createQuery(correctedQuery);
+    }
+
+    protected final Query getQuery() {
+        return correctedQuery != null ? correctedQuery.getQuery() : super.getQuery();
+    }
+
     /** {@inheritDoc} */
     public ResultList<? extends ResultItem> execute() {
         
@@ -70,26 +87,12 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
             final String newQuery = correctQuery(suggestions, oldQuery);
             
             // Create a new identical context apart from the corrected query
-            final ReconstructedQuery rq = createQuery(newQuery);
-            final SearchCommand.Context cmdCxt = ContextWrapper.wrap(
-                    SearchCommand.Context.class,
-                    new BaseContext(){
-                public Query getQuery() {
-                    return rq.getQuery();
-                }
-                public TokenEvaluationEngine getTokenEvaluationEngine(){
-                    return rq.getEngine();
-                }
-            },
-                    context
-                    );
-            
-            
+
             try {
                 // Create and execute command on corrected query.
                 // Making sure this new command does not try to do the whole
                 // correction thing all over again.
-                final CorrectingFastSearchCommand c = createCommand(cmdCxt);
+                final CorrectingFastSearchCommand c = createCommand(cxt, newQuery);
                 c.performQueryTransformation();
                 c.correct = false;
                 
@@ -120,12 +123,12 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
         return true;
     }
     
-    private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt) throws Exception {
+    private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt, final String query) throws Exception {
         
         final Class<? extends CorrectingFastSearchCommand> clazz = getClass();
-        final Constructor<? extends CorrectingFastSearchCommand> con = clazz.getConstructor(Context.class);
+        final Constructor<? extends CorrectingFastSearchCommand> con = clazz.getConstructor(Context.class, String.class);
         
-        return con.newInstance(cmdCxt);
+        return con.newInstance(cmdCxt, query);
     }
     
     private String correctQuery(

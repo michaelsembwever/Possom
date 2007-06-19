@@ -16,7 +16,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
 
     private static final String CLASS_LOADER_FOR = "Class loader for ({0}, {1} => {2})";
     private static final Logger LOG = Logger.getLogger(SpiClassLoader.class);
-
+            
     private final String jarName;
 
     private final ClassLoader parentSite;
