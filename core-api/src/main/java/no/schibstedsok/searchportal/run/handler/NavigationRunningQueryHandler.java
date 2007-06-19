@@ -69,7 +69,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
             final NavigationItem extendedNavigators = new BasicNavigationItem();
             FastSearchResult fsr = null;
 
-            if (navEntry.getCommandName() != null) {
+            if (navEntry.getCommandName() != null && datamodel.getSearch(navEntry.getCommandName()) != null) {
                 final ResultList<? extends ResultItem> searchResult
                         = datamodel.getSearch(navEntry.getCommandName()).getResults();
 
