@@ -91,8 +91,8 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
                 final Resultat prisjaktResult = port.getKategoriViaNamn(query);
                 final Kategori[] kategorier = prisjaktResult.getKategorier();
                 result.addField("searchtype", "categorysearch");
-                result.setHitCount(kategorier.length);
-                catagorieConverter(result, kategorier);
+                result.setHitCount(kategorier != null ? kategorier.length : 0);
+                categoryConverter(result, kategorier);
             } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_MANUFACTURERS, getQuery())) {
                 LOG.debug("PJ: manufacturers");
                 final Resultat prisjaktResult = port.getTillverkareViaNamn(query);
@@ -148,15 +148,15 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         }
     }
 
-    private void catagorieConverter(final ResultList<ResultItem> result, final Kategori[] kategorier) {
-
-        for (final Kategori katag : kategorier) {
-
-            ResultItem item = new BasicResultItem();
-            item = item.addField("numberofProducts", Integer.toString(katag.getAntalProdukter()));
-            item = item.addField("categoryURL", katag.getUrl());
-            item = item.addField("categoryName", katag.getKategorinamn());
-            result.addResult(item);
+    private void categoryConverter(final ResultList<ResultItem> result, final Kategori[] kategorier) {
+        if (kategorier != null) {
+            for (final Kategori kategori : kategorier) {
+                ResultItem item = new BasicResultItem();
+                item = item.addField("numberofProducts", Integer.toString(kategori.getAntalProdukter()));
+                item = item.addField("categoryURL", kategori.getUrl());
+                item = item.addField("categoryName", kategori.getKategorinamn());
+                result.addResult(item);
+            }
         }
     }
 
