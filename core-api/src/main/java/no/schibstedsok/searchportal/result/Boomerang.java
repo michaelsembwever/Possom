@@ -32,7 +32,7 @@ public final class Boomerang {
         final SiteConfiguration siteConf = SiteConfiguration.valueOf(site);
         toUrl.append( Boolean.parseBoolean(siteConf.getProperty("linkpulse.enable"))
             ? siteConf.getProperty("linkpulse.url")
-            : toUrl.append("http://" + site.getName() + BASE_URL));
+            : "http://" + site.getName() + BASE_URL);
         // Deprecated LinkPulse code <--
 
         // click attributes comes as a string seperated by ';'
