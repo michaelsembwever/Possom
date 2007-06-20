@@ -41,7 +41,7 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
 
     private boolean correct = true;
     private final Context cxt;
-    private final ReconstructedQuery correctedQuery;
+    private ReconstructedQuery correctedQuery;
 
     /** Creates a new instance of CorrectionFastSearchCommand.
      *
@@ -50,16 +50,9 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     public CorrectingFastSearchCommand(final Context cxt) {
         super(cxt);
         this.cxt = cxt;
-        this.correctedQuery = null;
     }
 
-    /** Creates a new instance of CorrectionFastSearchCommand.
-     *
-     * @param cxt Search command context.
-     */
-    public CorrectingFastSearchCommand(final Context cxt, final String correctedQuery) {
-        super(cxt);
-        this.cxt = cxt;
+    private void setCorrectedQuery(final String correctedQuery) {
         this.correctedQuery = createQuery(correctedQuery);
     }
 
@@ -85,18 +78,19 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
             // Correct spelling suggestions and parse the resulting query string.
             final String oldQuery = datamodel.getQuery().getString();
             final String newQuery = correctQuery(suggestions, oldQuery);
-            
+
             // Create a new identical context apart from the corrected query
 
             try {
                 // Create and execute command on corrected query.
                 // Making sure this new command does not try to do the whole
                 // correction thing all over again.
-                final CorrectingFastSearchCommand c = createCommand(cxt, newQuery);
+                final CorrectingFastSearchCommand c = createCommand(cxt);
                 c.performQueryTransformation();
                 c.correct = false;
-                
-                final ResultList<? extends ResultItem> result = c.execute();
+                c.setCorrectedQuery(newQuery);
+
+                final ResultList<? extends ResultItem> result = c.call();
                 
                 if (result.getHitCount() > 0) {
                     result.addField(RESULT_FIELD_CORRECTED_QUERY, newQuery);
@@ -123,12 +117,12 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
         return true;
     }
     
-    private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt, final String query) throws Exception {
+    private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt) throws Exception {
         
         final Class<? extends CorrectingFastSearchCommand> clazz = getClass();
-        final Constructor<? extends CorrectingFastSearchCommand> con = clazz.getConstructor(Context.class, String.class);
+        final Constructor<? extends CorrectingFastSearchCommand> con = clazz.getConstructor(Context.class);
         
-        return con.newInstance(cmdCxt, query);
+        return con.newInstance(cmdCxt);
     }
     
     private String correctQuery(
