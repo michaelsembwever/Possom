@@ -37,79 +37,45 @@
     <body>
         <img src="images/index/logo.png" id="logoIndex" width="215" height="61" alt="Sesamlogo" />
         <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
-        <table id="searchbar" cellspacing="0" cellpadding="0">
-            <tr>
-                <td id="menuCol">
-                    <div id="menuMiddle">
-                        <img src="images/index/nettsok_30_30.gif" width="30" height="30" alt="Netts&#248;k logo" />
-                        Netts&#248;k
-                    </div>
-                </td>
-                <td id="searchForm">
-                <form name="sf" action="<search:boomerang url="/search/" param="category:front_search"/>" onsubmit='return check();'>
-                <table cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td>
-                            <input type="text" name="q" id="searchInput" onfocus="this.form.q.select();" />
-                            <script type="text/javascript"><!--
-                                var focusControl = document.forms["sf"].elements["q"];
-                                if (focusControl.type != "hidden" && !focusControl.disabled) {
-                                    focusControl.focus();
-                                } // -->
-                            </script>
-                        </td>
-                        <td><input type="image" id="formSubmit" src="images/searchbar/nett.png" alt="" /></td>
-                        <td><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" width="19" height="24" alt="Pil ned" /></a></td>
-                        <td><a id="searchtip" href='<search:boomerang url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header"/>'>S&#248;ketips</a></td>
-                    </tr>
-                    <tr>
-                        <td id="searchRadio">
-                            <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
-                            <input type="radio" name="c" value="g" /> Verden
-                        </td>
-
-                        <td colspan="3">
-                            <div id="front_button_layer">
-                            <table cellspacing="1" cellpadding="0" id="front_button_table">
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bedriftss&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("w","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Persons&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("p","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bildes&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bloggs&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-guide</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>NettTV-s&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","", "http://kart.sesam.no");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Karts&#248;k</td>
-                                </tr>
-                                <tr>
-                                    <td onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" width="21" height="20" alt="" align="left" /><div class="navbutend">&nbsp;&nbsp;Lukk</div></td>
-                                </tr>
-                            </table>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                </form>
-            </td>
-        </tr>
-    </table>
+        <form name="sf" action="<search:boomerang url="/search/" param="category:front_search"/>" onsubmit='return check();'>
+        <div id="searchbar">
+            <div id="menuCol">
+                <div id="menuMiddle">
+                    <img src="images/index/nettsok_30_30.gif" width="30" height="30" alt="Netts&#248;k logo" />
+                    Netts&#248;k
+                </div>
+            </div>          
+            <input type="text" name="q" id="searchInput" onfocus="this.form.q.select();" />
+            <script type="text/javascript"><!--
+                var focusControl = document.forms["sf"].elements["q"];
+                if (focusControl.type != "hidden" && !focusControl.disabled) {
+                    focusControl.focus();
+                } // -->
+            </script>                
+            <input type="image" id="formSubmit" src="images/searchbar/nett.png" alt="" />
+            <img src="images/searchbar/dropdown.png" onclick="javascript:toggleButton('front_button_layer');" id="dropdownImg" width="19" height="24" alt="Pil ned" />
+            <a id="searchtip" href='<search:boomerang url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header"/>'>S&#248;ketips</a>
+            <div id="searchRadio">
+                <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
+                <input type="radio" name="c" value="g" /> Verden
+            </div>
+            <div id="front_button_layer">
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bedriftss&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("w","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Persons&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("p","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bildes&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bloggs&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-guide</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>NettTV-s&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</div>
+                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Karts&#248;k</div>
+                <div id="closeDD" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>
+                    <img src="../images/index/skjul_meny.png" width="21" height="20" alt="Skjul meny" />
+                    <span>Lukk</span>
+                </div>
+            </div>
+        </div>
+    </form>
     <div id="nav">
         <% String hide = ""; String open = ""; %>
         <script type="text/javascript" language="JavaScript">
