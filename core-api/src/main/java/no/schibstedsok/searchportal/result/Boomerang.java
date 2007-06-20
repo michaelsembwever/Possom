@@ -1,10 +1,9 @@
 // Copyright (2005-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.StringTokenizer;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,16 +19,21 @@ public final class Boomerang {
 
     private static final Logger LOG = Logger.getLogger(Boomerang.class);
 
-    private static final String ERR_TOO_MANY_COLONS = "Too many colons in key-value ";
-
     private static final String BASE_URL = "boomerang/";
 
     public static String getUrl(
             final Site site,
             final String orgUrl,
             final String paramString) {
-
-        final StringBuilder toUrl = new StringBuilder("http://" + site.getName() + BASE_URL);
+        
+        final StringBuilder toUrl = new StringBuilder(/*"http://" + site.getName() + BASE_URL)*/);
+        
+        // --> Deprecated LinkPulse code: soon to be demolished
+        final SiteConfiguration siteConf = SiteConfiguration.valueOf(site);
+        toUrl.append( Boolean.parseBoolean(siteConf.getProperty("linkpulse.enable"))
+            ? siteConf.getProperty("linkpulse.url")
+            : toUrl.append("http://" + site.getName() + BASE_URL));
+        // Deprecated LinkPulse code <--
 
         // click attributes comes as a string seperated by ';'
         final StringTokenizer tokeniser = new StringTokenizer(paramString, ";");
