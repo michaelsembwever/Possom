@@ -58,16 +58,16 @@
                 <input type="radio" name="c" value="g" /> Verden
             </div>
             <div id="front_button_layer">
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");'>Nyhetss&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y","");'>Bedriftss&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("w","");'>Persons&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("p","");'>Bildes&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b","");'>Bloggs&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");'>TV-guide</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");'>NettTV-s&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");'>V&#230;rs&#248;k</div>
-                <div class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","");'>Karts&#248;k</div>
-                <div id="closeDD" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>
+                <div id="cn" class="nb">Nyhetss&#248;k</div>
+                <div id="cy" class="nb">Bedriftss&#248;k</div>
+                <div id="cw" class="nb">Persons&#248;k</div>
+                <div id="cp" class="nb">Bildes&#248;k</div>
+                <div id="cb" class="nb">Bloggs&#248;k</div>
+                <div id="ct" class="nb">TV-guide</div>
+                <div id="cwt" class="nb">NettTV-s&#248;k</div>
+                <div id="csw" class="nb">V&#230;rs&#248;k</div>
+                <div id="cmap" class="nb">Karts&#248;k</div>
+                <div id="closeDD">
                     <img src="../images/index/skjul_meny.png" width="21" height="20" alt="Skjul meny" />
                     <span>Lukk</span>
                 </div>
