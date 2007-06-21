@@ -438,7 +438,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         try {
 
             final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
-            //TODO: Hide this in QueryRule.execute(some parameters)
+
+            // -->> FIXME SEARCH-2890 Clean all this bullshit up. EG move it to the individual command subclass.
             boolean executeQuery = queryToUse.getQueryString().length() > 0;
             executeQuery |= null != parameters.get("contentsource");
             executeQuery |= null != parameters.get("newscountry")
@@ -467,6 +468,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     + " ; queryToUse:" + queryToUse.getQueryString()
                     + "; filter:" + filter
                     + "; tabKey:" + parameters.get("c") + ';');
+            // SEARCH-2890 <<--
 
             final ResultList<? extends ResultItem> result = executeQuery
                     ? execute()
