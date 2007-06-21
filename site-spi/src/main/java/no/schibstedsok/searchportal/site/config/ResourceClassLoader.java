@@ -4,17 +4,22 @@ package no.schibstedsok.searchportal.site.config;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 
+import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * @author magnuse
  */
 public abstract class ResourceClassLoader extends ClassLoader {
 
-    private static final Logger LOG = Logger.getLogger(ResourceClassLoader.class);
-
     /**  Context needed by this class. */
     public interface Context extends BytecodeContext, SiteContext {}
 
     private final Context context;
+
+    private Collection<String> notFound = Collections.synchronizedCollection(new HashSet<String>());
+    private ReadWriteLock notFoundLock = new ReentrantReadWriteLock();
 
     /**
      * Creates a new resource class loader for a site.
@@ -47,6 +52,16 @@ public abstract class ResourceClassLoader extends ClassLoader {
      */
     protected Class<?> findClass(final String className) throws ClassNotFoundException {
 
+        try {
+            // Optimization. Do not try to load class if it has not been found before.
+            notFoundLock.readLock().lock();
+            if (notFound.contains(className)) {
+                throw new ClassNotFoundException(className + " not found");
+            }
+        } finally {
+            notFoundLock.readLock().unlock();
+        }
+
         final BytecodeLoader loader = context.newBytecodeLoader(context, className, getJarName());
         loader.abut();
 
@@ -54,6 +69,12 @@ public abstract class ResourceClassLoader extends ClassLoader {
 
         // Resource loader loaded empty result means class was not found.
         if (bytecode.length == 0) {
+            try {
+                notFoundLock.writeLock().lock();
+                notFound.add(className);
+            } finally {
+                notFoundLock.writeLock().unlock();
+            }
             throw new ClassNotFoundException(className + " not found");
         }
 
