@@ -451,6 +451,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("l") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na") && getTransformedQuery().trim().length() > 0;
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("naid") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("ncf") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nco") && getTransformedQuery().trim().length() > 0;
