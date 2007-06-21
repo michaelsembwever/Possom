@@ -33,11 +33,8 @@ import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.QueryStringContext;
-import no.schibstedsok.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
-import no.schibstedsok.searchportal.query.token.TokenMatch;
-import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
@@ -47,7 +44,6 @@ import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
 import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
-import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.NavigationItem;
@@ -188,26 +184,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     // Public --------------------------------------------------------
-
-
-    /** {@inherit}. **/
-    public List<TokenMatch> getGeographicMatches() {
-
-
-        final List<TokenMatch> matches = new ArrayList<TokenMatch>();
-
-        try{
-
-            matches.addAll(getTokenMatches(TokenPredicate.GEOLOCAL));
-            matches.addAll(getTokenMatches(TokenPredicate.GEOGLOBAL));
-
-        }catch(VeryFastListQueryException ie){
-            LOG.error("Magnus: fix SEARCH-943   :-)");
-        }
-        Collections.sort(matches);
-
-        return matches;
-    }
 
     /** {@inherit}. **/
     public String getGlobalSearchTips () {
@@ -562,12 +538,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-
-    private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws VeryFastListQueryException {
-
-        final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
-        return e.reportToken(token, datamodel.getQuery().getString());
-    }
 
     private void performHandlers(){
         

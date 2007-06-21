@@ -45,12 +45,14 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
+public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     /** The context required by this class. **/
     public interface Context extends BaseContext, QueryStringContext, DocumentContext, PropertiesContext, SiteContext{
     }
 
+    // Constants -----------------------------------------------------
+    
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
     private static final String ERR_FAILED_INITIALISATION = "Failed reading configuration files";
     private static final String ERR_QUERY_FAILED = "Querying the fast list failed on ";
@@ -72,13 +74,18 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             = new HashMap<Site,Map<TokenPredicate,String>>();
     private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();
 
+    // Attributes ----------------------------------------------------
+    
     private volatile boolean init = false;
 
     private final HTTPClient httpClient;
     private final Context context;
     private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
+    // Static --------------------------------------------------------
 
+    // Constructors -------------------------------------------------
+    
     /**
      * Search fast and initialize analysis result.
      * @param query
@@ -99,6 +106,75 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         queryFast(context.getQueryString());
     }
 
+    // Public --------------------------------------------------------
+    
+    /**
+     * Find out if given token is on or more of the following.
+     *      <li>GEO
+     *      <li>FIRSTNAME
+     *      <li>LASTNAME
+     *      <li>COMPANY
+     *      <li>KEYWORDS
+     *      <li>CATEGORY
+     * </ul>
+     *
+     * @param token  can be any of the above
+     * @return true if the query contains any of the above
+     */
+    public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
+
+        boolean evaluation = false;
+        final String realTokenFQ = getFastListName(token);
+
+        if (analysisResult.containsKey(realTokenFQ)) {
+            if (term == null) {
+                evaluation = true;
+            }  else  {
+
+                // HACK since DefaultOperatorClause wraps its children in parenthesis
+                final String hackTerm = term.replaceAll("\\(|\\)","");
+
+                for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
+
+                    final Matcher m =occurance.getMatcher(hackTerm);
+                    evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+
+                    // keep track of which TokenMatch's we've used.
+                    if (evaluation) {
+                        occurance.setTouched(true);
+                        break;
+                    }
+                }
+            }
+
+        }
+        return evaluation;
+    }
+
+    /**  **/
+    public List<TokenMatch> reportToken(final TokenPredicate token, final String query) {
+
+        LOG.trace("reportToken(" + token + "," + query + ")");
+
+        if (evaluateToken(token, null, query)) {
+            final String realTokenFQ = getFastListName(token);
+            return analysisResult.get(realTokenFQ);
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    /** TODO comment me. **/
+    public boolean isQueryDependant(final TokenPredicate predicate) {
+        return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
+    }
+    
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+    
     private void init() {
 
         try{
@@ -188,62 +264,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     }
 
     /**
-     * Find out if given token is on or more of the following.
-     *      <li>GEO
-     *      <li>FIRSTNAME
-     *      <li>LASTNAME
-     *      <li>COMPANY
-     *      <li>KEYWORDS
-     *      <li>CATEGORY
-     * </ul>
-     *
-     * @param token  can be any of the above
-     * @return true if the query contains any of the above
-     */
-    public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
-
-        boolean evaluation = false;
-        final String realTokenFQ = getFastListName(token);
-
-        if (analysisResult.containsKey(realTokenFQ)) {
-            if (term == null) {
-                evaluation = true;
-            }  else  {
-
-                // HACK since DefaultOperatorClause wraps its children in parenthesis
-                final String hackTerm = term.replaceAll("\\(|\\)","");
-
-                for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
-
-                    final Matcher m =occurance.getMatcher(hackTerm);
-                    evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
-
-                    // keep track of which TokenMatch's we've used.
-                    if (evaluation) {
-                        occurance.setTouched(true);
-                        break;
-                    }
-                }
-            }
-
-        }
-        return evaluation;
-    }
-
-    /** TODO comment me. **/
-    public List<TokenMatch> reportToken(final TokenPredicate token, final String query) {
-
-        LOG.trace("reportToken(" + token + "," + query + ")");
-
-        if (evaluateToken(token, null, query)) {
-            final String realTokenFQ = getFastListName(token);
-            return analysisResult.get(realTokenFQ);
-        } else {
-            return Collections.EMPTY_LIST;
-        }
-    }
-
-    /**
      * Search fast and find out if the given tokens are company, firstname, lastname etc
      * @param query
      */
@@ -302,11 +322,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         }
     }
 
-    /** TODO comment me. **/
-    public boolean isQueryDependant(final TokenPredicate predicate) {
-        return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
-    }
-
     private void addMatch(final String name, final String match, final String query) {
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
@@ -348,4 +363,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
         return listNames.get(token);
     }
+    
+    // Inner classes -------------------------------------------------
 }

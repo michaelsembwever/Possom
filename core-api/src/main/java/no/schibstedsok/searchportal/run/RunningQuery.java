@@ -38,9 +38,6 @@ public interface RunningQuery {
     /** TODO comment me. **/
     List getEnrichments();
 
-    /** TODO comment me. **/
-    List getGeographicMatches();
-
     /**
      * First find out if the user types in an advanced search etc by analyzing the queryStr.
      * Then lookup correct tip using messageresources.
