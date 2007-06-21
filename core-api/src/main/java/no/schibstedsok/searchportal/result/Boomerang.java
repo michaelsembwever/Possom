@@ -7,7 +7,7 @@ import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
 /**
- * Boomerang ensures outbound links are logged.
+ * Boomerang manipulates URL links, for example to ensure outbound links are logged.
  *
  * <b> Immutable. </b>
  *
@@ -17,10 +17,16 @@ import org.apache.log4j.Logger;
  */
 public final class Boomerang {
 
+    // Constants -----------------------------------------------------
+    
     private static final Logger LOG = Logger.getLogger(Boomerang.class);
 
     private static final String BASE_URL = "boomerang/";
 
+    // Attributes ----------------------------------------------------
+
+    // Static --------------------------------------------------------
+    
     public static String getUrl(
             final Site site,
             final String orgUrl,
@@ -65,4 +71,15 @@ public final class Boomerang {
         return toUrl.toString();
     }
 
+    // Constructors -------------------------------------------------
+    
+    // Public --------------------------------------------------------
+    
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+    
+    // Inner classes -------------------------------------------------
 }
