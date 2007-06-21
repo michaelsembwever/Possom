@@ -1,4 +1,4 @@
-// Copyright (2005-2006) Schibsted Søk AS
+// Copyright (2005-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.token;
 
 
@@ -70,8 +70,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
-    private static final Map<Site,Map<TokenPredicate,String>> LIST_NAMES
-            = new HashMap<Site,Map<TokenPredicate,String>>();
+    private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
+            = new HashMap<Site,Map<TokenPredicate,String[]>>();
     private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();
 
     // Attributes ----------------------------------------------------
@@ -124,44 +124,40 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
-        final String realTokenFQ = getFastListName(token);
+        final String[] listnames = getFastListNames(token);
+        
+        if(null != listnames){
+            for(int i = 0; !evaluation && i < listnames.length; ++i){
 
-        if (analysisResult.containsKey(realTokenFQ)) {
-            if (term == null) {
-                evaluation = true;
-            }  else  {
+                final String listname = listnames[i];
 
-                // HACK since DefaultOperatorClause wraps its children in parenthesis
-                final String hackTerm = term.replaceAll("\\(|\\)","");
+                if (analysisResult.containsKey(listname)) {
+                    if (term == null) {
+                        evaluation = true;
+                    }  else  {
 
-                for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
+                        // HACK since DefaultOperatorClause wraps its children in parenthesis
+                        final String hackTerm = term.replaceAll("\\(|\\)","");
 
-                    final Matcher m =occurance.getMatcher(hackTerm);
-                    evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+                        for (TokenMatch occurance : analysisResult.get(listname)) {
 
-                    // keep track of which TokenMatch's we've used.
-                    if (evaluation) {
-                        occurance.setTouched(true);
-                        break;
+                            final Matcher m = occurance.getMatcher(hackTerm);
+                            evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+
+                            // keep track of which TokenMatch's we've used.
+                            if (evaluation) {
+                                occurance.setTouched(true);
+                                break;
+                            }
+                        }
                     }
+
                 }
             }
-
+        }else{
+            LOG.info(context.getSite() + " does not define lists behind the token predicate " + token);
         }
         return evaluation;
-    }
-
-    /**  **/
-    public List<TokenMatch> reportToken(final TokenPredicate token, final String query) {
-
-        LOG.trace("reportToken(" + token + "," + query + ")");
-
-        if (evaluateToken(token, null, query)) {
-            final String realTokenFQ = getFastListName(token);
-            return analysisResult.get(realTokenFQ);
-        } else {
-            return Collections.EMPTY_LIST;
-        }
     }
 
     /** TODO comment me. **/
@@ -204,22 +200,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                         public Site getSite(){
                             return parent;
                         }
-//                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties props) {
-//
-//                            return ProxyResourceLoaderFactory.newPropertiesLoader(
-//                                    cxt.newPropertiesLoader(resource, properties).getClass(), 
-//                                    this, 
-//                                    resource, 
-//                                    properties);
-//                        }
-//                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-//
-//                            return ProxyResourceLoaderFactory.newDocumentLoader(
-//                                    cxt.newDocumentLoader(resource, builder).getClass(), 
-//                                    this, 
-//                                    resource, 
-//                                    builder);
-//                        }
                     },
                     cxt
                 ));
@@ -227,20 +207,21 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         final Site site = cxt.getSite();
         if(LIST_NAMES.get(site) == null){
+            
             // create map entry for this site
-
-            LIST_NAMES.put(site, new HashMap<TokenPredicate,String>());
+            LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
 
             // initialise this site's configuration
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//            factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
             final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
             loader.abut();
+            
             LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
-            final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
+            final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
+            
             if( null != root ){
                 final NodeList lists = root.getElementsByTagName("list");
                 for (int i = 0; i < lists.getLength(); ++i) {
@@ -252,10 +233,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
                     final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
-                    final String listName = list.getAttribute("list-name");
-                    LOG.info(" ->list: " + listName);
+                    final String[] l = list.getAttribute("list-name").split(",");
+                    LOG.info(" ->lists: " + list.getAttribute("list-name"));
 
-                    listNames.put(token, listName);
+                    listNames.put(token, l);
 
                 }
             }
@@ -323,6 +304,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     }
 
     private void addMatch(final String name, final String match, final String query) {
+        
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
         final Matcher m = pattern.matcher(query);
@@ -330,7 +312,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         while (m.find()) {
 
             final TokenMatch tknMatch = new TokenMatch(name, match, m.start(), m.end());
-
+            
+            // XXX will store match on every countries different lists supplied in the qm result. Restrict to skin.
             if (!analysisResult.containsKey(name)) {
                 analysisResult.put(name, new ArrayList());
             }
@@ -339,28 +322,40 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         }
     }
 
-    private String getFastListName(final TokenPredicate token){
+    private String[] getFastListNames(final TokenPredicate token){
         
         init();
         
-        String listName = null;
+        String[] listNames = null;
         try{
             LIST_NAMES_LOCK.readLock().lock();
             Site site = context.getSite();
             
-            while(listName == null && site != null){
-                listName = getFastListNameImpl(token, site);
+            while(null != site){
+                
+                // find listnames used for this token predicate
+                listNames = getFastListNamesImpl(token, site);
+                
+                // update each listname to the format the fast query matching servers use
+                if(null != listNames){
+                    for(int i = 0; i < listNames.length; ++i){
+                        listNames[i] = REAL_TOKEN_PREFIX + listNames[i] + REAL_TOKEN_SUFFIX;
+                    }
+                    break;
+                }
+                
+                // prepare to go to parent
                 site = site.getParent();
             }
         }finally{
             LIST_NAMES_LOCK.readLock().unlock();
         }
-        return REAL_TOKEN_PREFIX + listName + REAL_TOKEN_SUFFIX;
+        return listNames;
     }
 
-    private static String getFastListNameImpl(final TokenPredicate token, final Site site){
+    private static String[] getFastListNamesImpl(final TokenPredicate token, final Site site){
 
-        final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
+        final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
         return listNames.get(token);
     }
     

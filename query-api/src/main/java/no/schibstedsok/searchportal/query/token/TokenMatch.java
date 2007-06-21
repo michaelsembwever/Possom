@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.token;
 
@@ -7,9 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * @version $Id$
  **/
-public final class TokenMatch
- implements Comparable {
+public final class TokenMatch implements Comparable {
 
     private final String token;
     private final String match;
