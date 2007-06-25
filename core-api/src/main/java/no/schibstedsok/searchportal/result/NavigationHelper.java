@@ -80,7 +80,7 @@ public final class NavigationHelper {
         if (value != null && value.length() > 0) {
             sb.append('&').append(enc(navEntry.getField())).append('=').append(enc(value));
             if (navEntry.isRealNavigator() && navigatorName != null) {
-                sb.append('&').append("nav_").append(enc(navEntry.getField())).append('=').append(enc(navigatorName));
+                sb.append('&').append("nav_").append(enc(navEntry.getId())).append('=').append(enc(navigatorName));
             }
         }
         if (!navEntry.isOut()) {

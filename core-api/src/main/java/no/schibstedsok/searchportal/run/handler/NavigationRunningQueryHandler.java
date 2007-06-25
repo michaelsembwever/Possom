@@ -75,9 +75,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
                 if (searchResult instanceof FastSearchResult) {
                     fsr = (FastSearchResult) searchResult;
-                    final List<Modifier> modifiers = fsr.getModifiers(navEntry.isRealNavigator()
-                            ? navEntry.getField()
-                            : name);
+                    final List<Modifier> modifiers = fsr.getModifiers(name);
 
                     if (modifiers != null && modifiers.size() > 0) {
                         for (Modifier modifier : modifiers) {
