@@ -2,6 +2,8 @@
  */
 package no.schibstedsok.searchportal.result;
 
+import org.apache.log4j.Logger;
+
 import no.schibstedsok.searchportal.result.ProductResult;
 
 /**
@@ -11,7 +13,7 @@ import no.schibstedsok.searchportal.result.ProductResult;
  * @version <tt>$Id$</tt>
  */
 public final class CatalogueSearchResultItem extends BasicResultItem {
-
+    private static final Logger LOG = Logger.getLogger(CatalogueSearchResultItem.class);
 	/**
 	 * TODO: javadoc.
 	 */
@@ -156,6 +158,26 @@ public final class CatalogueSearchResultItem extends BasicResultItem {
     	}
     	return null;
     }
+    
+    public String imagePart(final String stringToSplit){
+     
+        if(stringToSplit == null || stringToSplit.length() < 1 || !stringToSplit.contains(";")){
+            return null;
+        }
+        
+        String[] imageAndUrl = stringToSplit.split(";");
+        return imageAndUrl[0];
+    }
+    
+    public String urlPart(final String stringToSplit){
+        if(stringToSplit == null || stringToSplit.length() < 1 || !stringToSplit.contains(";")){
+            return null;
+        }
+        
+        String[] imageAndUrl = stringToSplit.split(";");
+        return imageAndUrl[1];
+    }
+
     
     
     /**
