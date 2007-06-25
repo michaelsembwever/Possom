@@ -51,19 +51,18 @@ public class CommandConfig implements SearchConfiguration {
     private String name;
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
     private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
-//    private int pageSize = DEFAULT_DOCUMENTS_TO_RETURN;
+
     private final Map<String,String> resultFields = new HashMap<String,String>();
     private int resultsToReturn;
     private boolean paging = false;
-//    private boolean child = false;
-    private String rule;
-    private int ruleThreshold = -1;
+
     private String queryParameter;
     private boolean alwaysRun = false;
+    private boolean runBlank = false;
 
     private String statisticalName;
 
-    /** TODO comment me. *
+    /**
      * @param sc 
      */
     public CommandConfig(){}
@@ -114,26 +113,12 @@ public class CommandConfig implements SearchConfiguration {
         return name;
     }
 
-    /** TODO comment me. *
+    /**
      * @param name 
      */
     public final void setName(final String name) {
         this.name = name;
     }
-
-//    /** TODO comment me. *
-//     * @return 
-//     */
-//    public final int getPageSize() {
-//        return pageSize;
-//    }
-
-//    /** TODO comment me. *
-//     * @param pageSize 
-//     */
-//    public final void setPageSize(final int pageSize) {
-//        this.pageSize = pageSize;
-//    }
 
     /** {@inheritDoc} **/
     public final boolean isPaging() {
@@ -177,14 +162,28 @@ public class CommandConfig implements SearchConfiguration {
         return alwaysRun;
     }
 
-    /** TODO comment me. *
+    /**
      * @param enable 
      */
     public void setAlwaysRun(final boolean enable){
         alwaysRun = enable;
     }
 
-    /** TODO comment me. *
+    /** {@inheritDoc} *
+     * @return 
+     */
+    public boolean isRunBlank() {
+        return runBlank;
+    }
+
+    /**
+     * @param enable 
+     */
+    public void setRunBlank(final boolean enable){
+        runBlank = enable;
+    }
+    
+    /**
      * @param useParameterAsQuery 
      */
     public void setQueryParameter(final String useParameterAsQuery) {
@@ -196,7 +195,7 @@ public class CommandConfig implements SearchConfiguration {
         return statisticalName;
     }
 
-    /** TODO comment me. *
+    /**
      * @param name 
      */
     public void setStatisticalName(final String name){
@@ -213,7 +212,7 @@ public class CommandConfig implements SearchConfiguration {
      */
     private final Map<String,String> fieldFilters = new HashMap<String,String>();
 
-    /** TODO comment me. *
+    /**
      * @param field 
      */
     public void addFieldFilter(final String field, final String filter){
@@ -252,6 +251,7 @@ public class CommandConfig implements SearchConfiguration {
         setName(element.getAttribute("id"));
         
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "alwaysRun", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "runBlank", ParseType.Boolean, element, "false");
 
         // field-filters
         if(null!=inherit){

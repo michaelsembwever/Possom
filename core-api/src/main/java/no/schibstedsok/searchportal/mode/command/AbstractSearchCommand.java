@@ -439,11 +439,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
 
+            boolean executeQuery = queryToUse.getQueryString().length() > 0 || getSearchConfiguration().isRunBlank();
+            
             // -->> FIXME SEARCH-2890 Clean all this bullshit up. EG move it to the individual command subclass.
-            boolean executeQuery = queryToUse.getQueryString().length() > 0;
             executeQuery |= null != parameters.get("contentsource");
-            executeQuery |= null != parameters.get("newscountry")
-                    && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
+            executeQuery |= null != parameters.get("newscountry") && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt") && getSearchConfiguration().isAlwaysRun();

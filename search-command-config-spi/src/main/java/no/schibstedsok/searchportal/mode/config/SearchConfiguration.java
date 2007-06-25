@@ -89,21 +89,27 @@ public interface SearchConfiguration {
      */
     void setResultsToReturn(int numberOfResults);
 
-//    /** TODO comment me. *
+//    /**
 //     * @return 
 //     */
 //    boolean isChild();
 
-    /** TODO comment me. *
+    /**
      * @return 
      */
     public String getQueryParameter();
 
-    /** TODO comment me. *
+    /**
      * @return 
      */
     boolean isAlwaysRun();
-    /** TODO comment me. *
+    
+    /**
+     * @return 
+     */
+    boolean isRunBlank();
+    
+    /**
      * @return 
      */
     String getStatisticalName();
@@ -115,10 +121,10 @@ public interface SearchConfiguration {
      */
     Map<String, String> getFieldFilters();
 
-    /** TODO comment me. **/
+    /***/
     void clearQueryTransformers();
 
-    /** TODO comment me. **/
+    /***/
     void clearResultHandlers();
 
     /**
