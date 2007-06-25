@@ -242,7 +242,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.trace("call()");
 
             performQueryTransformation();
-            final ResultList<? extends ResultItem> result = performExecution(getQuery());
+            final ResultList<? extends ResultItem> result = performExecution();
             performResultHandling(result);
 
 
@@ -425,51 +425,25 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
 
-    /**
-     * @param queryToUse
+    /** Handles the execution process. Will determine whether to call execute() and wrap it with timing info.
      * @return
      */
-    protected final ResultList<? extends ResultItem> performExecution(final Query queryToUse) {
+    protected final ResultList<? extends ResultItem> performExecution() {
 
         final StopWatch watch = new StopWatch();
         watch.start();
+        
+        final String query = getTransformedQuery().trim();
         Integer hitCount = null;
 
         try {
 
-            final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
-
-            boolean executeQuery = queryToUse.getQueryString().length() > 0 || getSearchConfiguration().isRunBlank();
-            
-            // -->> FIXME SEARCH-2890 Clean all this bullshit up. EG move it to the individual command subclass.
-            executeQuery |= null != parameters.get("contentsource");
-            executeQuery |= null != parameters.get("newscountry") && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("l") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("naid") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("ncf") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nco") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nif") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("naf") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nao") && getTransformedQuery().trim().length() > 0;
-
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapwcoords") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapycoords") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= this instanceof NewsMyNewsSearchCommand;
-
+            // we will be executing the command IF there's a valid query or filter, 
+            // or if the configuration specifies that we should run anyway.
+            boolean executeQuery = query.length() > 0 || getSearchConfiguration().isRunBlank();
             executeQuery |= null != filter && filter.length() > 0;
-            LOG.info("executeQuery==" + executeQuery
-                    + " ; queryToUse:" + queryToUse.getQueryString()
-                    + "; filter:" + filter
-                    + "; tabKey:" + parameters.get("c") + ';');
-            // SEARCH-2890 <<--
+            
+            LOG.info("executeQuery==" + executeQuery + " ; query:" + query + " ; filter:" + filter);
 
             final ResultList<? extends ResultItem> result = executeQuery
                     ? execute()
@@ -503,12 +477,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param result
      */
     protected final void performResultHandling(final ResultList<? extends ResultItem> result) {
-
-        // XXX following is deprecated. use instead datamodel.getSearch(name).getQuery().getString()
-        result.addField(FIELD_TRANSFORMED_QUERY,
-                null != getTransformedQuerySesamSyntax() && getTransformedQuerySesamSyntax().length() > 0
-                        ? getTransformedQuerySesamSyntax()
-                        : getQuery().getQueryString());
 
         // Build the context each result handler will need.
         final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
