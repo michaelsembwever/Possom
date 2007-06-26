@@ -30,6 +30,7 @@ public final class PictureCommandConfig extends CommandConfig {
     private String filter;
     private String customerId;
     private String site;
+    private String domainBoost;
 
     /**
      * Getter for property key for queryServerUrl.
@@ -64,7 +65,7 @@ public final class PictureCommandConfig extends CommandConfig {
     }
 
     /**
-     *
+     * @deprecated use domainBoost instead. A boost of 50 is equivalent to setting the country parameter
      * @return
      */
     public String getCountry() {
@@ -133,6 +134,24 @@ public final class PictureCommandConfig extends CommandConfig {
         this.site = site;
     }
 
+    /**
+     * Returns the domain boost to use.
+     *
+     * @return the domain boost.
+     */
+    public String getDomainBoost() {
+        return domainBoost;
+    }
+
+    /**
+     * Sets the domain boost. Example of domain boost string: se=100,nu=100,dk=50.
+     *
+     * @param domainBoost the domain boost string.
+     */
+    public void setDomainBoost(String domainBoost) {
+        this.domainBoost = domainBoost;
+    }
+
     @Override
     public CommandConfig readSearchConfiguration(
             final Element element,
@@ -146,9 +165,11 @@ public final class PictureCommandConfig extends CommandConfig {
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "medium");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "customerId", ParseType.String, element, "558735");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "site", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "domainBoost", ParseType.String, element, "");
 
         LOG.debug("customerid " + getCustomerId());
 
         return this;
     }
+
 }

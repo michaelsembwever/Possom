@@ -65,63 +65,63 @@ public final class PicSearchCommand extends AbstractSearchCommand {
      */
     public ResultList<? extends ResultItem> execute() {
 
-        String query = getTransformedQuery();
-        final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
+        final PictureCommandConfig cfg = (PictureCommandConfig) context.getSearchConfiguration();
 
         try {
-            query = URLEncoder.encode(query, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e);
-        }
 
-        String topDomainBoost = "";
+            final String query = URLEncoder.encode(getTransformedQuery(), "utf-8");
+            final String urlBoost = tldb.toString();
 
-        try {
-            topDomainBoost = URLEncoder.encode(tldb.length() > 0 ? tldb.toString() : psConfig.getCountry(), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e);
-        }
+            final String cfgBoost = ! "".equals(cfg.getDomainBoost()) ? cfg.getDomainBoost() : cfg.getCountry();
 
-        final String url = MessageFormat.format(REQ_URL_FMT,
-                topDomainBoost,
-                psConfig.getFilter(),
-                psConfig.getCustomerId(),
-                psConfig.getResultsToReturn(),
-                query,
-                getCurrentOffset(1),
-                siteFilter);
+            // The boost can eiter be from the URL or from the configuration.
+            final String boost = URLEncoder.encode(urlBoost.length() > 0 ? urlBoost : cfgBoost, "utf-8");
 
-        DUMP.info("Using " + url);
+            final String url = MessageFormat.format(REQ_URL_FMT,
+                    boost,
+                    cfg.getFilter(),
+                    cfg.getCustomerId(),
+                    cfg.getResultsToReturn(),
+                    query,
+                    getCurrentOffset(1),
+                    siteFilter);
 
-        final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
+            DUMP.info("Using " + url);
 
-        if (port > 0){
+            final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
-            final Document doc = doSearch(url);
+            if (port > 0){
 
-            if (doc != null) {
+                final Document doc = doSearch(url);
 
-                final Element resultElement = doc.getDocumentElement();
+                if (doc != null) {
 
-                searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
+                    final Element resultElement = doc.getDocumentElement();
 
-                final NodeList list = resultElement.getElementsByTagName("image");
-                for (int i = 0; i < list.getLength(); i++) {
+                    searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
 
-                    final Element picture = (Element) list.item(i);
+                    final NodeList list = resultElement.getElementsByTagName("image");
+                    for (int i = 0; i < list.getLength(); i++) {
 
-                    final BasicResultItem item = new BasicResultItem();
+                        final Element picture = (Element) list.item(i);
 
-                    for (final Map.Entry<String,String> entry : psConfig.getResultFields().entrySet()) {
+                        final BasicResultItem item = new BasicResultItem();
 
-                        item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
+                        for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
+
+                            item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
+                        }
+                        searchResult.addResult(item);
+
                     }
-                    searchResult.addResult(item);
-
                 }
             }
+
+            return searchResult;
+
+        } catch (UnsupportedEncodingException e) {
+           throw new RuntimeException(e);
         }
-        return searchResult;
     }
 
     /**
