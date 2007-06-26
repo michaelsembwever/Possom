@@ -48,6 +48,8 @@ import java.util.Properties;
 /**
  * Base class for commands querying a FAST EPS Server.
  * See https://dev.schibstedsok.no/confluence/display/TECHDEV/FAST+ESP+5.0+Documentation
+ * 
+ * @version $Id$
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
@@ -125,39 +127,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         searchView = initialiseSearchView();
     }
 
-    /**
-     * Default collapsing from the configuration, can be overridden in subcommands..
-     * @return true if collapsing is enabled
-     */
-    protected boolean isCollapsingEnabled() {
-        return cfg.isCollapsingEnabled();
-    }
-
-    /**
-     * Default sortby, can be overridden by subcommands.
-     * @return sortby field
-     */
-    protected String getSortBy() {
-        String sortBy = cfg.getSortBy();
-
-        if (getParameters().containsKey("userSortBy")) {
-
-            final String userSortBy = getParameter("userSortBy");
-            LOG.debug("execute: SortBy " + userSortBy);
-
-            if ("standard".equals(userSortBy)) {
-                sortBy = "-frontpagename -contentprofile -docdatetime";
-            } else if ("datetime".equals(userSortBy)) {
-                sortBy = "-frontpagename -docdatetime";
-            } else if ("standard_nettby".equals(userSortBy)) {
-                sortBy = "-contentprofile -publishedtime";
-            } else if ("datetime_nettby".equals(userSortBy)) {
-                sortBy = "-publishedtime";
-            }
-        }
-
-        return sortBy;
-    }
 
     // Public --------------------------------------------------------
 
@@ -199,7 +168,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 }
             }
 
-            String sortBy = getSortBy();
+            final String sortBy = getSortBy();
 
             query.setParameter(new SearchParameter("sesat:uniqueId",
                     context.getDataModel().getParameters().getUniqueId()));
@@ -243,6 +212,40 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Protected -----------------------------------------------------
 
+    /**
+     * Default collapsing from the configuration, can be overridden in subcommands..
+     * @return true if collapsing is enabled
+     */
+    protected boolean isCollapsingEnabled() {
+        return cfg.isCollapsingEnabled();
+    }
+
+    /**
+     * Default sortby, can be overridden by subcommands.
+     * @return sortby field
+     */
+    protected String getSortBy() {
+        String sortBy = cfg.getSortBy();
+
+        if (getParameters().containsKey("userSortBy")) {
+
+            final String userSortBy = getParameter("userSortBy");
+            LOG.debug("execute: SortBy " + userSortBy);
+
+            if ("standard".equals(userSortBy)) {
+                sortBy = "-frontpagename -contentprofile -docdatetime";
+            } else if ("datetime".equals(userSortBy)) {
+                sortBy = "-frontpagename -docdatetime";
+            } else if ("standard_nettby".equals(userSortBy)) {
+                sortBy = "-contentprofile -publishedtime";
+            } else if ("datetime_nettby".equals(userSortBy)) {
+                sortBy = "-publishedtime";
+            }
+        }
+
+        return sortBy;
+    }
+    
     /**
      * {@inheritDoc}
      */
