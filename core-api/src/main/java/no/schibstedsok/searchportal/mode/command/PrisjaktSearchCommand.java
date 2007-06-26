@@ -35,8 +35,8 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
 
     private static final Logger LOG = Logger.getLogger(PrisjaktSearchCommand.class);
 
-    private static final String ERR_FAILED_PRISJAKT_SEARCH = "Failed Prisjakt search command";
-    private static final String ERR_FAILED_ENCODE_PRISJAKT = "Failed to encode Prisjakt search query";
+//    private static final String ERR_FAILED_PRISJAKT_SEARCH = "Failed Prisjakt search command";
+//    private static final String ERR_FAILED_ENCODE_PRISJAKT = "Failed to encode Prisjakt search query";
 
     /**
      * Format för siffror utan decimaler med tusenavskiljare.
@@ -72,40 +72,39 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         final String query = getTransformedQuery();
         result.setHitCount(0);
         try {
-            LOG.debug("PJ: pre1");
             port = service.getPrisjaktPort(new java.net.URL(service.getPrisjaktPortAddress()));
-            LOG.debug("PJ: pre2");
             ((Stub)port).setTimeout(1000);
-            LOG.debug("PJ: pre3");
             result.addField("urlEncodedsearchquery", URLEncoder.encode(query, "iso-8859-1").replaceAll("\\+", "%20"));
             result.addField("searchquery", query);
             if (engine.evaluateQuery(TokenPredicate.PRISJAKT_PRODUCTS, getQuery())) {
-                LOG.debug("PJ: prod");
                 final Resultat prisjaktResult = port.getProduktViaNamn(query);
                 final Produkt[] products = prisjaktResult.getProdukter();
                 result.addField("searchtype", "productsearch");
-                result.setHitCount(products.length);
+                result.setHitCount(products != null ? products.length : 0);
                 productConverter(result, products);
+//            } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_CATEGORIES_AND_MANUFACTURERS, getQuery())) {
+//                final IndataTillverkare_Kategorinamn itk = new IndataTillverkare_Kategorinamn();
+//                final Resultat prisjaktResult = port.getTillverkare_KategoriViaNamn(itk);
+//                final Tillverkare_Kategori[] tillverkareKategorier = prisjaktResult.getTillverkare_Kategorier();
+//                result.addField("searchtype", "manufacturer_categorysearch");
+//                result.setHitCount(tillverkareKategorier != null ? tillverkareKategorier.length : 0);
             } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_CATEGORIES, getQuery())) {
-                LOG.debug("PJ: cat");
                 final Resultat prisjaktResult = port.getKategoriViaNamn(query);
                 final Kategori[] kategorier = prisjaktResult.getKategorier();
                 result.addField("searchtype", "categorysearch");
                 result.setHitCount(kategorier != null ? kategorier.length : 0);
                 categoryConverter(result, kategorier);
             } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_MANUFACTURERS, getQuery())) {
-                LOG.debug("PJ: manufacturers");
                 final Resultat prisjaktResult = port.getTillverkareViaNamn(query);
                 final Tillverkare[] manufacturers = prisjaktResult.getTillverkare_plur();
                 result.addField("searchtype", "manufacturersearch");
-                result.setHitCount(manufacturers.length);
+                result.setHitCount(manufacturers != null ? manufacturers.length : 0);
                 manufacturerConverter(result, manufacturers);
             } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_SHOPS, getQuery())) {
-                LOG.debug("PJ: shop");
                 final Resultat prisjaktResult = port.getButikViaNamn(query);
                 final Butik[] butiker = prisjaktResult.getButiker();
                 result.addField("searchtype", "storesearch");
-                result.setHitCount(butiker.length);
+                result.setHitCount(butiker != null ? butiker.length : 0);
                 storeConverter(result, butiker);
             }
         } catch (MalformedURLException e) {
@@ -174,13 +173,14 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
 
     private void manufacturerConverter(ResultList<ResultItem> result, Tillverkare[] manufacturers) {
 
-        for (final Tillverkare manufacturer : manufacturers) {
-
-            ResultItem item = new BasicResultList();
-            item = item.addField("numberofProducts", Integer.toString(manufacturer.getAntalProdukter()));
-            item = item.addField("manufacturerURL", manufacturer.getUrl());
-            item = item.addField("manufacturerName", manufacturer.getTillverkarnamn());
-            result.addResult(item);
+        if (manufacturers != null) {
+            for (final Tillverkare manufacturer : manufacturers) {
+                ResultItem item = new BasicResultList();
+                item = item.addField("numberofProducts", Integer.toString(manufacturer.getAntalProdukter()));
+                item = item.addField("manufacturerURL", manufacturer.getUrl());
+                item = item.addField("manufacturerName", manufacturer.getTillverkarnamn());
+                result.addResult(item);
+            }
         }
     }
 
