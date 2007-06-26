@@ -9,6 +9,7 @@
 
 package no.schibstedsok.searchportal.query;
 
+import java.io.Serializable;
 
 /** Interface for Classes that will implement the Visitor pattern.
  * See complimentary Visitor interface.
@@ -16,7 +17,7 @@ package no.schibstedsok.searchportal.query;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface Visitable {
+public interface Visitable extends Serializable {
 
     /** Method to accept a visitor.
      * This method usually doesn't do more than

@@ -4,6 +4,7 @@
  */
 package no.schibstedsok.searchportal.mode.config;
 
+import java.io.Serializable;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 
@@ -15,8 +16,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public interface SearchConfiguration {
-
+public interface SearchConfiguration extends Serializable {
     /**
      * Returns a (defensive copy) list of {@link no.schibstedsok.searchportal.query.transform.QueryTransformer} that should be applied to
      * the query before the query is sent to search indices.

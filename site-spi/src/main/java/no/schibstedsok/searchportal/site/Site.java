@@ -10,6 +10,7 @@ package no.schibstedsok.searchportal.site;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -27,7 +28,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class Site {
+public final class Site implements Serializable {
 
     /** Not to be confused with the SiteContext.
      * This is a Context required for constructing a Site.
@@ -82,6 +83,15 @@ public final class Site {
     */
     private final Site parent;
 
+    /** No-argument constructor for deserialization. */
+    private Site() {
+        siteName = null;
+        cxtName = null;
+        locale = Locale.getDefault();
+        uniqueName = null;
+        parent = null;
+    }
+    
     /** Creates a new instance of Site.
      * A null Context will result in a parentSiteName == siteName
      */

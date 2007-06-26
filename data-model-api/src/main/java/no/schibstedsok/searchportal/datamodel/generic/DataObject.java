@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.datamodel.generic;
 
+import java.io.Serializable;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -29,9 +30,15 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface DataObject {
 
-    public final class Property{
+    public final class Property implements Serializable {
         private final String name;
         private final Object value;
+        
+        private Property() {
+            name = null;
+            value = null;
+        }
+        
         public Property(final String name, final Object value){
             this.name = name;
             this.value = value;

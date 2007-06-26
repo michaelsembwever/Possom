@@ -161,10 +161,15 @@ public abstract class AbstractClause implements Clause {
     /** You must use <CODE>AbstractClause(String, Set&lt;Predicate&gt;, Set&lt;Predicate&gt;)</CODE> instead.
      * This constructor will throw an IllegalArgumentException.
      **/
+//    protected AbstractClause() {
+//        throw new IllegalArgumentException(ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR);
+//    }
+    /** We need a no-argument constructor for serialization. */
     protected AbstractClause() {
-        throw new IllegalArgumentException(ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR);
+        this.term = null;
+        this.knownPredicates = null;
+        this.possiblePredicates = null;
     }
-
     /**
      * Create clause with the given term, known and possible predicates.
      * @param term the term (query string) for this clause.

@@ -1,6 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.site.config;
 
+import java.io.Serializable;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -20,7 +21,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version $Id$
  */
-public final class SiteConfiguration implements SiteKeyedFactory {
+public final class SiteConfiguration implements SiteKeyedFactory, Serializable {
 
     public static final String NAME_KEY = "SiteConfiguration";
     /**
@@ -47,7 +48,7 @@ public final class SiteConfiguration implements SiteKeyedFactory {
     public static final String ALLOW_LIST = "site.allow";
     public static final String DISALLOW_LIST = "site.disallow";
     
-    public interface Context extends BaseContext, PropertiesContext, SiteContext {
+    public interface Context extends BaseContext, PropertiesContext, SiteContext, Serializable {
     }
 
     private final Properties properties = new Properties();
@@ -59,6 +60,11 @@ public final class SiteConfiguration implements SiteKeyedFactory {
 
     private static final Logger LOG = Logger.getLogger(SiteConfiguration.class);
 
+    /** No-argument constructor for deserialization. */
+    private SiteConfiguration() {
+        context = null;
+    }
+    
     private SiteConfiguration(final Context cxt) {
 
         try {

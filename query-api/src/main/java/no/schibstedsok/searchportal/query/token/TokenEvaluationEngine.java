@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.searchportal.query.token;
 
+import java.io.Serializable;
 import java.util.Set;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.query.Clause;
@@ -31,7 +32,7 @@ public interface TokenEvaluationEngine {
     public interface Context extends BaseContext, QueryStringContext, ResourceContext, SiteContext{
     }
 
-    public interface State{
+    public interface State extends Serializable {
         /** the current clause's term, or null if in query-evaluation mode. **/
         String getTerm();
         /** the current query, or null if in term-evaluation mode. **/

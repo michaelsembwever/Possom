@@ -1,5 +1,6 @@
 package no.schibstedsok.searchportal.mode;
 
+import java.io.Serializable;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
@@ -28,7 +29,7 @@ import java.util.Set;
  * @author Geir H. Pettersen(T-Rank)
  * @version $Id$
  */
-public final class NavigationConfig{
+public final class NavigationConfig implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(NavigationConfig.class);
 

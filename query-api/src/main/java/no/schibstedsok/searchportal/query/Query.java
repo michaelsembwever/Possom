@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.searchportal.query;
 
+import java.io.Serializable;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 
@@ -14,7 +15,7 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface Query {
+public interface Query extends Serializable {
 
     /** The root clause to the clause heirarchy.
      * Will always be an operation clause if more than one term exists in the query.

@@ -14,10 +14,16 @@ import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextSupport;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +36,7 @@ import no.schibstedsok.searchportal.datamodel.BeanDataModelInvocationHandler.Dat
 import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
 import no.schibstedsok.searchportal.datamodel.access.AccessDisallow;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
+import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
@@ -43,7 +50,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
+class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializable {
 
     // Constants -----------------------------------------------------
 
@@ -59,17 +66,17 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     // Attributes ----------------------------------------------------
 
 
-    private final Class<T> implementOf;
-    private final Object support;
-    private final boolean immutable;
+    private Class<T> implementOf;
+    private Object support;
+    private boolean immutable;
 
     // properties: the only part of this class that be immutable and reused
-    protected final List<Property> properties = new CopyOnWriteArrayList<Property>();
+    protected List<Property> properties = new CopyOnWriteArrayList<Property>();
 
-    protected final BeanContext context;
+    protected BeanContext context;
 
-    private final Map<Method,InvocationTarget> invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>();
-    private final Map<Method,Method> supportMethodCache = new ConcurrentHashMap<Method,Method>();
+    transient private Map<Method,InvocationTarget> invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>();
+    transient private Map<Method,Method> supportMethodCache = new ConcurrentHashMap<Method,Method>();
 
     // Static --------------------------------------------------------
 
@@ -114,7 +121,33 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Constructors --------------------------------------------------
 
+    /** No-arg constructor to support serialization */
+    protected BeanDataObjectInvocationHandler() {
+        implementOf = null;
+        context = new BeanContextSupport();
+        support = new Object();
+        immutable = false;
+    };
+   
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>();
+        supportMethodCache = new ConcurrentHashMap<Method,Method>();
+        implementOf = (Class<T>) stream.readObject();
+        context = (BeanContext) stream.readObject();
+        support = stream.readObject();
+        immutable = stream.readBoolean();
+        properties = (List<Property>) stream.readObject();
+    }
 
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.writeObject(implementOf);
+        stream.writeObject(context);
+        stream.writeObject(support);
+        stream.writeBoolean(immutable);
+        stream.writeObject(properties);
+    }
+    
     /** Creates a new instance of ProxyBeanDataObject */
     protected BeanDataObjectInvocationHandler(
             final Class<T> cls,
