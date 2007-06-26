@@ -77,7 +77,7 @@ public final class HittaWeatherSearchCommand extends AbstractWebServiceSearchCom
 					String yy = y.substring(2, endIndexy);
 
 					String hittaURL = "http://www.hitta.se/SearchCombi.aspx?SearchType=4&UCSB%3aWflWhite=1a1b&UCSB%3aWflPink=4a&UCSB%3aTextBoxWho=&UCSB%3aTextBoxWhere="
-							+ encTransQuery;
+							+ encTransQuery+"&weather=true";
 
 					String hittaBigMapURL ="http://www.hitta.se/LargeMap.aspx?ShowSatellite=false&pointX="
 					+ yy
@@ -87,7 +87,7 @@ public final class HittaWeatherSearchCommand extends AbstractWebServiceSearchCom
 					+ yy
 					+ "&cy="
 					+ xx
-					+ "&z=3&name=" + encTransQuery;
+					+ "&z=3&name=" + encTransQuery+"&weather=true";
 
 
    				    result.addField("hittaURL", hittaURL);
@@ -99,7 +99,7 @@ public final class HittaWeatherSearchCommand extends AbstractWebServiceSearchCom
 				} else if (traff > 1) {
 
 					String hittaURL = "http://www.hitta.se/SearchCombi.aspx?SearchType=4&UCSB%3aWflWhite=1a1b&UCSB%3aWflPink=4a&UCSB%3aTextBoxWho=&UCSB%3aTextBoxWhere="
-							+ encTransQuery;
+							+ encTransQuery+"&weather=true";
 					result.addField("hittaURL", hittaURL);
 					result.addField("searchquery", transQuery);
 					result.setHitCount(traff);
