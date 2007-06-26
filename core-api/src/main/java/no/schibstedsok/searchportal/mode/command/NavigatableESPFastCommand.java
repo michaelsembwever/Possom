@@ -35,6 +35,7 @@ import no.schibstedsok.searchportal.result.ResultList;
  * capabilities.
  *
  * @author maek
+ * @version $Id$
  */
 public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
@@ -64,6 +65,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     public ResultList<? extends ResultItem> execute() {
+        
         if (getNavigators() != null) {
             for (String navigatorKey : getNavigators().keySet()) {
 
@@ -73,10 +75,10 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
             }
         }
 
-        final FastSearchResult searchResult = (FastSearchResult) super.execute();
+        final ResultList<? extends ResultItem> searchResult = super.execute();
 
-        if (getNavigators() != null) {
-            collectModifiers(getIQueryResult(), searchResult);
+        if (null != getNavigators() && searchResult instanceof FastSearchResult) {
+            collectModifiers(getIQueryResult(), (FastSearchResult)searchResult);
         }
 
         return searchResult;
