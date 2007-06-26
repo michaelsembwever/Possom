@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Collections;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -333,6 +334,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                     }
                 }
             }
+        } else {
+            result = Collections.EMPTY_MAP;
         }
         return result;
     }
