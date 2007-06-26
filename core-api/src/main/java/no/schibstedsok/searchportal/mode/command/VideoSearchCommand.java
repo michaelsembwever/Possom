@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.text.Format;
 import java.util.Date;
 
-import no.schibstedsok.searchportal.result.BasicResultList;
+import no.schibstedsok.searchportal.mode.config.VideoCommandConfig;
 import no.schibstedsok.searchportal.result.BasicResultItem;
+import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -35,11 +35,13 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     private static final Logger LOG = Logger.getLogger(VideoSearchCommand.class);
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     final SimpleDateFormat timeFormatter = new SimpleDateFormat("m:ss");
-
-    // http://usp1.blinkx.com/partnerapi/user/?uid=7d51d9&text=pixies
+    private String searchType;
 
     public VideoSearchCommand(final Context cxt) {
         super(cxt);
+        final VideoCommandConfig vcConfig = (VideoCommandConfig) context.getSearchConfiguration();
+
+        searchType = vcConfig.getSearchType();
 
     }
 
@@ -60,8 +62,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             Start   Prints results only from this position onwards.
             Text    The query text.
          */
-        LOG.info("zz124");
-//        return "http://usp1.blinkx.com/partnerapi/user/?uid=7d51d9&text=pixies";
+        LOG.info("zz124: "+searchType);
         String query = getTransformedQuery();
         try {
             query = URLEncoder.encode(query, "utf-8");
@@ -73,7 +74,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         if (sortByString.equals("standard")) {
             biasDate = "100";
         }
-        return "/partnerapi/user/?uid=7d51d9&Anylanguage=true&Adultfilter=true&printfields=media_duration&BiasDate="+biasDate+"&Start="+getCurrentOffset(1)+"&text="+query;
+        // http://usp1.blinkx.com/partnerapi/sesam/?text=george+bush&channelhits=true
+        return "/partnerapi/sesam/?searchtype="+searchType+"Anylanguage=true&Adultfilter=true&printfields=media_duration&BiasDate="+biasDate+"&Start="+getCurrentOffset(1)+"&text="+query;
     }
 
     public ResultList<? extends ResultItem> execute() {
