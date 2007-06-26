@@ -108,6 +108,8 @@ public enum TokenPredicate implements Predicate {
     WHITE_MAGIC (Type.REGEX),
     WIKIPEDIA_MAGIC (Type.REGEX),
     YELLOW_MAGIC (Type.REGEX),
+    MAP_MAGIC(Type.REGEX),
+    
 
     // RegExp TokenPredicates -- trigger words/phrases
     CATALOGUE_TRIGGER (Type.REGEX),
