@@ -203,9 +203,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         if(datamodel.getParameters().getValue("q")!=null) LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
             else LOG.info("datamodel.getParameters().getValue(q) is NULL");
         
-        String whoParameter 
-                = datamodel.getParameters().getValue("who")!=null ? 
-                    datamodel.getParameters().getValue("who").getString() : datamodel.getQuery().getString();
+        final String whoParameter = null != datamodel.getParameters().getValue("who")
+                    ? datamodel.getParameters().getValue("who").getString() 
+                    : datamodel.getQuery().getString();
 
         
         WhoWhereSplit splitQuery = new WhoWhereSplit(
