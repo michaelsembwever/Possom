@@ -63,8 +63,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     private static final DataModelResultHandler DATAMODEL_HANDLER = new DataModelResultHandler();
 
-    private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
-
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
     protected static final Logger DUMP = Logger.getLogger("no.schibstedsok.searchportal.Dump");
 
