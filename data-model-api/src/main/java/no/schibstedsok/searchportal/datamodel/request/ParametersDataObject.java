@@ -45,16 +45,10 @@ public interface ParametersDataObject extends MapDataObject<StringDataObject>{
     @AccessAllow({})
     void setValue(final String key, final StringDataObject value);
     
-    /** @deprecated Pointless since sesat can only run against the root context.
+    /** The UniqueId is used to trace one request from it's origin (apace or tomcat) down through each command and 
+     * into the indexes.
      * 
-     * @return 
-     */
-    @AccessAllow({REQUEST_CONSTRUCTION, VIEW_CONSTRUCTION})
-    String getContextPath();
-
-    /**
-     * 
-     * @return 
+     * @return the uniqueId
      */
     String getUniqueId();
 }
