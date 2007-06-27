@@ -282,7 +282,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                     disallowed |= cl == level;
                 }
             }
-            if(null != allow && null != disallow && (!allowed || disallowed)){
+            if((null != allow && !allowed) || (null != disallow && disallowed)){
                 throw new IllegalAccessException(ERR_DENIED + method.getName() + " against " + level);
             }
         }
