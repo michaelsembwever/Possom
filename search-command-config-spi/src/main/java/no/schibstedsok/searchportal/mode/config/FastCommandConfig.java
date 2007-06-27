@@ -528,7 +528,7 @@ public class FastCommandConfig extends CommandConfig {
     }
 
     @Override
-    public FastCommandConfig readSearchConfiguration(
+    public CommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
         

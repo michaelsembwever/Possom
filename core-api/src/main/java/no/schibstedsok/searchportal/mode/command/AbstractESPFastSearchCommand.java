@@ -149,8 +149,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 filterBuilder.append(' ');
             }
 
-
-            final String transformedQuery = getTransformedQuery();
+            final String transformedQuery = appendFilter(cfg.getFilter(), getTransformedQuery());
 
             LOG.debug("Transformed query is " + transformedQuery);
 
@@ -202,6 +201,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             LOG.error(ex.getMessage(), ex);
             throw new InfrastructureException(ex);
         }
+    }
+
+    private String appendFilter(final String filter, final String q) {
+        return filter.length() > 0 ? "and(" + q + "," + "filter(" + filter + "))" : q;
     }
 
     // Z implementation ----------------------------------------------
