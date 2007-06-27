@@ -194,7 +194,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
     }
 
     @Override
-    public CommandConfig readSearchConfiguration(
+    public FastCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
         

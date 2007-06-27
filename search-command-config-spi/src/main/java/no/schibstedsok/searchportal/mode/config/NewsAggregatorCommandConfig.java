@@ -141,7 +141,7 @@ public class NewsAggregatorCommandConfig extends ClusteringEspFastCommandConfig 
     }
 
     @Override
-    public CommandConfig readSearchConfiguration(
+    public FastCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
         

@@ -156,7 +156,7 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     }
 
     @Override
-    public CommandConfig readSearchConfiguration(
+    public FastCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
 
