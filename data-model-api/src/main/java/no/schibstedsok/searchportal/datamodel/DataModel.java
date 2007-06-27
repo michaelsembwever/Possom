@@ -164,7 +164,7 @@ public interface DataModel extends Serializable{
     /** Set the NavigationDataObject.
      * @param value the NavigationDataObject associated to the SearchMode
      */
-    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    @AccessAllow(RUNNING_QUERY_CONSTRUCTION)
     void setNavigation(final NavigationDataObject value);
     
     // JunkYardDataObject ------------------------------------------------------------
