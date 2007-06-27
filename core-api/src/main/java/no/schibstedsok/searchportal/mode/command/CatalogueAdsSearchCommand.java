@@ -89,7 +89,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             final ReconstructedQuery queryGeo
                     = createQuery(getSingleParameter(whereParameter));
 
-            queryGeoString = queryGeo.getQuery().getQueryString().replaceAll("\\W", "").toLowerCase();
+            queryGeoString = queryGeo.getQuery().getQueryString().replaceAll("[\"\\s]", "").toLowerCase();
         } else {
             queryGeoString = DOMESTIC_SEARCH;
         }        
@@ -97,9 +97,9 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         
         
         if(getSingleParameter("who")!=null) {
-            originalQuery = getSingleParameter("who").replaceAll("\\W", "").toLowerCase();            
+            originalQuery = getSingleParameter("who").replaceAll("[\"\\s]", "").toLowerCase();
         }else{
-            originalQuery = super.getTransformedQuery().replaceAll("\\W", "").toLowerCase();
+            originalQuery = super.getTransformedQuery().replaceAll("[\"\\s]", "").toLowerCase();
         }
         
         LOG.info("CatalogueAdsSearch Debug output");
@@ -262,7 +262,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
         if (whichQueryToRun == QueryType.GEO) {
             query = originalQuery
-            + queryGeoString.replaceAll("\\W", "");
+            + queryGeoString.replaceAll("[\"\\s]", "");
             
             
         } else {
