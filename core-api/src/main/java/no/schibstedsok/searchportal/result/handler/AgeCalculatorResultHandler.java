@@ -88,9 +88,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
 
                 final long age = System.currentTimeMillis() - stamp;
 
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("Doctime is " + docTime);
-                }
+                LOG.trace("Doctime is " + docTime);
 
                 final Long dateParts[] = new Long[3];
 
@@ -100,7 +98,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
 
                 final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
                 String ageString = "";
-                // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
+
                 final String s = parameters.get("contentsource") instanceof String[]
                         ? ((String[]) parameters.get("contentsource"))[0]
                         : (String) parameters.get("contentsource");
@@ -122,15 +120,18 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                             datamodel.getSite().getSite().getLocale());
 
                     ageString = shortFmt.format(new Date(stamp));
+                    
                     //more than 1 day, show days
                 } else if (dateParts[0].longValue() > 0) {
                     dateParts[1] = Long.valueOf(0);
                     dateParts[2] = Long.valueOf(0);
                     ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
+                    
                     //more than 1 hour, show hours
                 } else if (dateParts[1].longValue() > 0) {
                     dateParts[2] = Long.valueOf(0);
                     ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
+                    
                     //if less than 1 hour, show minutes
                 } else if (dateParts[2].longValue() > 0) {
                     dateParts[0] = Long.valueOf(0);
@@ -150,7 +151,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                 LOG.warn("Unparsable date: " + docTime);
             }
         } else {
-            LOG.warn(config.getSourceField() + " is null");
+            LOG.warn(config.getSourceField() + " is null against " + item.getTitle());
         }
         
         return item;
