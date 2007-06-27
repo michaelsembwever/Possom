@@ -81,6 +81,9 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     public ResultList<? extends ResultItem> execute() {
 
         final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
+        
+        String transformedQuery = getTransformedQuery();
+        searchResult.addField("searchquery", transformedQuery);
         searchResult.setHitCount(0);
         try {
             final Document doc = this.getXmlResult();
