@@ -9,7 +9,9 @@ import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
@@ -91,6 +93,19 @@ public final class SearchModeTest extends DataModelTestCase {
             }
         };
 
+        // DataModel's ControlLevel will be REQUEST_CONSTRUCTION
+        //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
+        DataModelFactory
+                .valueOf(ContextWrapper.wrap(
+                DataModelFactory.Context.class, 
+                rqCxt,
+                new SiteContext(){
+                    public Site getSite(){
+                        return datamodel.getSite().getSite();
+                    }
+                }))
+                .assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
+        
         final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no");
 
         query.run();
@@ -158,6 +173,19 @@ public final class SearchModeTest extends DataModelTestCase {
             }
         };
 
+        // DataModel's ControlLevel will be REQUEST_CONSTRUCTION
+        //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
+        DataModelFactory
+                .valueOf(ContextWrapper.wrap(
+                DataModelFactory.Context.class, 
+                rqCxt,
+                new SiteContext(){
+                    public Site getSite(){
+                        return datamodel.getSite().getSite();
+                    }
+                }))
+                .assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
+        
         final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query);
 
         runningQuery.run();
