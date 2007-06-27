@@ -118,7 +118,7 @@ public final class SyndicationGenerator {
 
         this.context = context;
 
-        this.result = context.getDataModel().getSearches().get(context.getTab().getRssResultName()).getResults();
+        this.result = context.getDataModel().getSearch(context.getTab().getRssResultName()).getResults();
         this.site = context.getSite();
 
         this.text = TextMessages.valueOf(getTextMessagesContext());
@@ -399,5 +399,6 @@ public final class SyndicationGenerator {
             }
         };
     }
-// Inner classes -------------------------------------------------
+    
+    // Inner classes -------------------------------------------------
 }
