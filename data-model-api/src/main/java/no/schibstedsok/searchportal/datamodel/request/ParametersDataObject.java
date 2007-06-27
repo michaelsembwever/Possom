@@ -34,7 +34,6 @@ public interface ParametersDataObject extends MapDataObject<StringDataObject>{
      * @param key 
      * @return 
      */
-    @AccessDisallow(VIEW_CONSTRUCTION)
     StringDataObject getValue(final String key);
 
     /**

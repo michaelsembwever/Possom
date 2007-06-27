@@ -132,6 +132,7 @@ public interface DataModel extends Serializable{
      * 
      * @return 
      */
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING})
     Map<String,SearchDataObject> getSearches();
     
     /** Get the SearchDataObject holding the given search's results
@@ -139,7 +140,7 @@ public interface DataModel extends Serializable{
      * @param key the search (commandName) to get SearchDataObject for
      * @return the SearchDataObject
      */
-    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    @AccessAllow({SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING, VIEW_CONSTRUCTION})
     SearchDataObject getSearch(final String key);
 
     /** Set a search command's finished results.
