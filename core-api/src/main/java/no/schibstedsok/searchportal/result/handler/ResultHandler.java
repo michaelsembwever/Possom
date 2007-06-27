@@ -43,10 +43,17 @@ public interface ResultHandler {
         SearchConfiguration getSearchConfiguration();
 
         /**
-         * Result handling action *
+         * Result handling action 
          * @param modifier 
          */
         void addSource(Modifier modifier);
+        
+        /**
+         * Returns the query as it is after the query transformers have been applied to it.
+         *
+         * @return
+         */
+        String getDisplayQuery();
     }
 
     /**

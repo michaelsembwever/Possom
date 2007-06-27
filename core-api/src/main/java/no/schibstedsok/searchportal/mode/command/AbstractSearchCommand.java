@@ -491,17 +491,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     public ResultList<? extends ResultItem> getSearchResult() {
                         return result;
                     }
-
                     public SearchTab getSearchTab() {
                         return context.getRunningQuery().getSearchTab();
                     }
-
                     public void addSource(final Modifier modifier) {
                         context.getRunningQuery().addSource(modifier);
                     }
-
                     public Query getQuery() {
                         return AbstractSearchCommand.this.getQuery();
+                    }
+                    public String getDisplayQuery(){
+                        return AbstractSearchCommand.this.getTransformedQuerySesamSyntax();
                     }
                 },
                 context
