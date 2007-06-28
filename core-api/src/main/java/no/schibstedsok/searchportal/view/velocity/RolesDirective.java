@@ -90,6 +90,7 @@ public final class RolesDirective extends AbstractDirective{
         String text = "";
         String name = "";
         String recordid = "";
+        boolean bgcolor = false;
 
         // Needs this for link, find a way to import password..
         final MD5Generator md5 = new MD5Generator("S3SAM rockz");
@@ -155,9 +156,15 @@ public final class RolesDirective extends AbstractDirective{
                 }else{
                     text = col[k].trim();
                 }
-                html.append("<td class=\"col" + (k + 1) + "\" style=\"background-color: #EBEBEB;\">"
+                if (!bgcolor) {
+                    html.append("<td class=\"col" + (k + 1) + "\" style=\"background-color: #FFF;\">"
+                            + text.trim() + "</td>");
+                } else {
+                    html.append("<td class=\"col" + (k + 1) + "\" style=\"background-color: #EBEBEB;\">"
                         + text.trim() + "</td>");
+                }
             }
+            bgcolor = !bgcolor;
             html.append("</tr>");
         }
 
