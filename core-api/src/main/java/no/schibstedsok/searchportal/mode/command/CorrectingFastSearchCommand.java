@@ -61,12 +61,11 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     }
 
     /** {@inheritDoc} */
-    public ResultList<? extends ResultItem> execute() {
-        
-        final ResultList<? extends ResultItem> originalResult = super.execute();
+    public ResultList<? extends ResultItem> call() {
+        final ResultList<? extends ResultItem> originalResult = super.call();
         final Map<String, List<WeightedSuggestion>> suggestions
                 = ((BasicResultList)originalResult).getSpellingSuggestionsMap();
-        
+
         // Rerun command?
         // TODO Consider moving the isCorrectionEnabled() call after the
         // correction has been made and then discarding the result
@@ -79,8 +78,6 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
             final String oldQuery = datamodel.getQuery().getString();
             final String newQuery = correctQuery(suggestions, oldQuery);
 
-            // Create a new identical context apart from the corrected query
-
             try {
                 // Create and execute command on corrected query.
                 // Making sure this new command does not try to do the whole
@@ -91,22 +88,22 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
                 c.setCorrectedQuery(newQuery);
 
                 final ResultList<? extends ResultItem> result = c.call();
-                
+
                 if (result.getHitCount() > 0) {
                     result.addField(RESULT_FIELD_CORRECTED_QUERY, newQuery);
                 }
-                
+
                 return result;
-                
+
             } catch (Exception ex) {
                 LOG.error(ERR_CANNOT_CREATE_COMMAND, ex);
                 return originalResult;
             }
         }
-        
+
         return originalResult;
     }
-    
+
     /**
      * Correction will only be enabled if this method returns true. Override
      * this to dynamically turn correction on and off.
