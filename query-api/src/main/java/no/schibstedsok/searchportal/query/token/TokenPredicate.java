@@ -81,6 +81,9 @@ public enum TokenPredicate implements Predicate {
     WIKIPEDIA (Type.FAST),
     EXACT_WIKI (Type.FAST),
 
+    IMAGES (Type.FAST),
+    EXACT_IMAGE (Type.FAST),
+
     PRISJAKT_CATEGORIES_AND_MANUFACTURERS (Type.FAST),
     PRISJAKT_CATEGORIES (Type.FAST),
     PRISJAKT_MANUFACTURERS (Type.FAST),
