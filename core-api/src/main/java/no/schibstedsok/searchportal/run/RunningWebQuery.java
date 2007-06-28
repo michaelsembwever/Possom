@@ -81,6 +81,10 @@ public final class RunningWebQuery extends RunningQueryImpl {
             parameters.put("nav_newspaperNames", "newssourcenavigator");
         }
 
+        if (parameters.containsKey("nav_videosourceNames")) {
+            parameters.put("nav_videosourceNames", "videosourcenavigator");
+        }
+
         if (parameters.containsKey("ywpopnavn")) {
             parameters.put("newssource", parameters.get("ywpopnavn"));
             parameters.remove("ywpopnavn");
