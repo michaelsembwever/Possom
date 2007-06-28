@@ -1,4 +1,4 @@
-// Copyright (2007) Schibsted Søk AS
+// Copyright (2007) Schibsted Sök AB
 package no.schibstedsok.searchportal.mode.command;
 
 import java.io.UnsupportedEncodingException;
@@ -10,6 +10,7 @@ import java.text.DecimalFormatSymbols;
 
 import javax.xml.rpc.ServiceException;
 
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicResultItem;
@@ -25,7 +26,6 @@ import nu.prisjakt.www.wsdl.Resultat;
 import nu.prisjakt.www.wsdl.Tillverkare;
 
 import org.apache.axis.client.Stub;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -34,9 +34,6 @@ import org.apache.log4j.Logger;
 public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PrisjaktSearchCommand.class);
-
-//    private static final String ERR_FAILED_PRISJAKT_SEARCH = "Failed Prisjakt search command";
-//    private static final String ERR_FAILED_ENCODE_PRISJAKT = "Failed to encode Prisjakt search query";
 
     /**
      * Format för siffror utan decimaler med tusenavskiljare.
@@ -53,10 +50,10 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
     /**
      * Creates a new instance of this class.
      *
-     * @param cxt The context to execute in.
+     * @param cxt
+     *            The context to execute in.
      */
     public PrisjaktSearchCommand(final Context cxt) {
-
         super(cxt);
     }
 
@@ -73,7 +70,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         result.setHitCount(0);
         try {
             port = service.getPrisjaktPort(new java.net.URL(service.getPrisjaktPortAddress()));
-            ((Stub)port).setTimeout(1000);
+            ((Stub) port).setTimeout(1000);
             result.addField("urlEncodedsearchquery", URLEncoder.encode(query, "iso-8859-1").replaceAll("\\+", "%20"));
             result.addField("searchquery", query);
             if (engine.evaluateQuery(TokenPredicate.PRISJAKT_PRODUCTS, getQuery())) {
@@ -82,12 +79,18 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
                 result.addField("searchtype", "productsearch");
                 result.setHitCount(products != null ? products.length : 0);
                 productConverter(result, products);
-//            } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_CATEGORIES_AND_MANUFACTURERS, getQuery())) {
-//                final IndataTillverkare_Kategorinamn itk = new IndataTillverkare_Kategorinamn();
-//                final Resultat prisjaktResult = port.getTillverkare_KategoriViaNamn(itk);
-//                final Tillverkare_Kategori[] tillverkareKategorier = prisjaktResult.getTillverkare_Kategorier();
-//                result.addField("searchtype", "manufacturer_categorysearch");
-//                result.setHitCount(tillverkareKategorier != null ? tillverkareKategorier.length : 0);
+                // } else if
+                // (engine.evaluateQuery(TokenPredicate.PRISJAKT_CATEGORIES_AND_MANUFACTURERS,
+                // getQuery())) {
+                // final IndataTillverkare_Kategorinamn itk = new
+                // IndataTillverkare_Kategorinamn();
+                // final Resultat prisjaktResult =
+                // port.getTillverkare_KategoriViaNamn(itk);
+                // final Tillverkare_Kategori[] tillverkareKategorier =
+                // prisjaktResult.getTillverkare_Kategorier();
+                // result.addField("searchtype", "manufacturer_categorysearch");
+                // result.setHitCount(tillverkareKategorier != null ?
+                // tillverkareKategorier.length : 0);
             } else if (engine.evaluateQuery(TokenPredicate.PRISJAKT_CATEGORIES, getQuery())) {
                 final Resultat prisjaktResult = port.getKategoriViaNamn(query);
                 final Kategori[] kategorier = prisjaktResult.getKategorier();
@@ -108,42 +111,40 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
                 storeConverter(result, butiker);
             }
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("MalformedURLException:",e);
+            throw new InfrastructureException(e);
         } catch (ServiceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("InfrastructureException:",e);
+            throw new InfrastructureException(e);
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("RemoteException:",e);
+            throw new InfrastructureException(e);
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("UnsupportedEncodingException:",e);
+            throw new InfrastructureException(e);
         }
-
         return result;
     }
 
     private void productConverter(final ResultList<ResultItem> result, final Produkt[] products) {
-
-        for (final Produkt product : products) {
-
-            ResultItem item = new BasicResultItem();
-            item = item.addField("productName", product.getProduktnamn());
-            final int lPris = product.getLagstaPris();
-            final String cf = nummerAvskFormat(lPris);
-            item = item.addField("lowestPrice", cf);
-            item = item.addField("numberofStores", Integer.toString(product
-                    .getAntalButiker()));
-            /* &st=4 tillägget gör att vi får en liten bild ifrån prisjakt*/
-            if (product.getBild().equalsIgnoreCase("")) {
-                item = item.addField("productPicture", "");
-            } else {
-                item = item.addField("productPicture", product.getBild() + "&st=4");
+        if (products != null) {
+            for (final Produkt product : products) {
+                ResultItem item = new BasicResultItem();
+                item = item.addField("productName", product.getProduktnamn());
+                final int lPris = product.getLagstaPris();
+                final String cf = nummerAvskFormat(lPris);
+                item = item.addField("lowestPrice", cf);
+                item = item.addField("numberofStores", Integer.toString(product.getAntalButiker()));
+                /* &st=4 shows small images in prisjakt enrichment */
+                if (product.getBild().equalsIgnoreCase("")) {
+                    item = item.addField("productPicture", "");
+                } else {
+                    item = item.addField("productPicture", product.getBild() + "&st=4");
+                }
+                item = item.addField("productURL", product.getUrl());
+                item = item.addField("categoryName", product.getKategorinamn());
+                result.addResult(item);
             }
-            item = item.addField("productURL", product.getUrl());
-            item = item.addField("categoryName", product.getKategorinamn());
-            result.addResult(item);
         }
     }
 
@@ -160,19 +161,18 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
     }
 
     private void storeConverter(ResultList<ResultItem> result, Butik[] stores) {
-
-        for (final Butik store : stores) {
-
-            ResultItem item = new BasicResultItem();
-            item = item.addField("numberofProducts", Integer.toString(store.getAntalProdukter()));
-            item = item.addField("storeURL", store.getUrl());
-            item = item.addField("storeName", store.getButiksnamn());
-            result.addResult(item);
+        if (stores != null) {
+            for (final Butik store : stores) {
+                ResultItem item = new BasicResultItem();
+                item = item.addField("numberofProducts", Integer.toString(store.getAntalProdukter()));
+                item = item.addField("storeURL", store.getUrl());
+                item = item.addField("storeName", store.getButiksnamn());
+                result.addResult(item);
+            }
         }
     }
 
     private void manufacturerConverter(ResultList<ResultItem> result, Tillverkare[] manufacturers) {
-
         if (manufacturers != null) {
             for (final Tillverkare manufacturer : manufacturers) {
                 ResultItem item = new BasicResultList();
@@ -189,63 +189,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
      */
     private static String nummerAvskFormat(final Number nummer) {
 
-        return nummer == null ? "" :NUMMER_AVSK_FORMAT.format(nummer.doubleValue());
+        return nummer == null ? "" : NUMMER_AVSK_FORMAT.format(nummer.doubleValue());
     }
 
-    /** Isn't there a java class for number formatting? */
-
-    /**
-     * Formatera med tusenavskiljare och lägger till decimaldel med komma-tecken
-     * om decimaldel förekommer. Tar bort alla inledande och avslutande blanksteg
-     * samt ev inledande '+'-tecken Ex: +5555510.35->5 555 510,35 +5555510,35->5
-     * 555 510,35 +10002000 ->10 002 000
-     *
-     * @param numStr <code>String</code> Strängen som ska formateras
-     * @return En sträng som har formaterats enligt ovan.
-     */
-    private static String nummerAvskFormat(String numStr) {
-
-        // XXX please use a StringBuilder here instead
-
-        if (numStr == null || numStr.equals("")) {
-            return "";
-        }
-        // Bort med alla inledande och avslutande blanksteg samt
-        // ev inledande '+'-tecken
-        numStr = numStr.trim();
-        numStr = removeBlanks(numStr);
-        numStr = numStr.indexOf("+") > 0 ? numStr.substring(1) : numStr;
-        // Spara undan ev. decimaldelen och se till att den alltid bestÃ¥r av ett
-        // komma-tecken om den fÃ¶rekommer.
-        final String decPart = numStr.indexOf(',') > 0
-                ? numStr.substring(numStr.indexOf(','))
-                : numStr.indexOf('.') > 0 ? numStr.substring(numStr.indexOf('.')).replaceFirst(".", ",") : "";
-        // Substringa ut heltalsdelen
-        final double d;
-        try {
-            d = Double.valueOf(numStr.substring(0, numStr.length() - decPart.length()));
-        } catch (NumberFormatException e) {
-            LOG.error(e.getMessage(), e);
-            return "";
-        }
-
-        return NUMMER_AVSK_FORMAT.format(d).concat(decPart);
-    }
-
-    /**
-     * Tar bort blanktecken ur strängen
-     */
-    private static String removeBlanks(String str) {
-        if (isEmpty(str)) {
-            return str;
-        }
-        return StringUtils.deleteSpaces(str);
-    }
-
-    /**
-     * Kontrollerar om strängargumentet är null eller tom sträng.
-     */
-    private static boolean isEmpty(String s) {
-        return StringUtils.isEmpty(s);
-    }
 }
