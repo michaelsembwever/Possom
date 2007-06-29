@@ -74,19 +74,23 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         }
         final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "datetime";
         final String videoSource = this.getParameters().get("videosource") != null ? (String) this.getParameters().get("videosource") : "";
-        final String language = this.getParameters().get("language") != null ? (String) this.getParameters().get("language") : "";
+        final String videoLanguage = this.getParameters().get("videoLanguage") != null ? (String) this.getParameters().get("videoLanguage") : "";
         String biasDate = sortByString.equals("standard") ? "100" : "0"; // default is normally datetime which is 0
 
         // Sample url: http://usp1.blinkx.com/partnerapi/sesam/?Anylanguage=true&Adultfilter=true&channelhits=true&printfields=media_duration&searchtype=enrichment&BiasDate=0&Start=1&text=pixies
         // Please note that Schibsted is charged for every search on Blinkx!
+
+//        http://usp1.blinkx.com/partnerapi/sesam/?text=jack&printfields=media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms&channelhits=true
+
         StringBuilder url = new StringBuilder(255);
-        url.append("/partnerapi/sesam/?Anylanguage=true&Adultfilter=true&channelhits=true&printfields=media_duration");
+        url.append("/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms");
         url.append("&searchtype="); url.append(searchType);
         url.append(videoSource.length()>0?"&databasematch="+videoSource.toLowerCase():"");
+        url.append(videoLanguage.length()>0?"&language="+videoLanguage.toUpperCase():"&Anylanguage=true");
         url.append("&BiasDate="); url.append(biasDate);
-        url.append("&Start="); url.append(getCurrentOffset(1));
+        url.append("&Start="); url.append(getCurrentOffset(0));
         url.append("&text="); url.append(query);
-        LOG.debug("zz:VSC_URL: "+url);
+        LOG.debug("zz:VSC_URL: http://usp1.blinkx.com"+url);
         return url.toString();
     }
 
@@ -107,6 +111,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                 while(nextSibling != null ) {
                     if (nextSibling.getNodeName().equals("autn:channelhits")) {
                         addVideoSourcesNavigatorField(searchResult, nextSibling);
+                    } else if (nextSibling.getNodeName().equals("autn:languagehits")) {
+                            addVideoLanguageNavigatorField(searchResult, nextSibling);
                     } else if (nextSibling.getNodeName().equals("autn:totalhits")) {
                         searchResult.setHitCount(Integer.parseInt(nextSibling.getTextContent()));
                     } else if (nextSibling.getNodeName().equals("autn:hit")) {
@@ -164,6 +170,27 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             }
             itemContentSibling = itemContentSibling.getNextSibling();
         }
+    }
+
+    private void addVideoLanguageNavigatorField(final BasicResultList<ResultItem> searchResult, Node nextSibling) {
+        TreeMap<String, String> videoLanguage = new TreeMap<String, String>();
+        Node channelSibling = nextSibling.getFirstChild();
+        while(channelSibling != null ) {
+            videoLanguage.put(channelSibling.getAttributes().getNamedItem("name").getTextContent(),channelSibling.getTextContent());
+            channelSibling = channelSibling.getNextSibling();
+        }
+//      TreeSet<Map.Entry> set = new TreeSet<Map.Entry>();
+      TreeSet<Map.Entry> set = new TreeSet<Map.Entry>(new Comparator<Map.Entry>() {
+            public int compare(Map.Entry a, Map.Entry b) { // Sort descending by hits, ascending by case insensitive channel name if number of hits is equal
+                int ret = ((Comparable) Integer.parseInt((String)((Map.Entry)a).getValue())).compareTo(Integer.parseInt((String)((Map.Entry)b).getValue()))*-1;
+                if (ret == 0) {
+                    ret = ((Comparable) ((Map.Entry)a).getKey()).toString().toLowerCase().compareTo(((Map.Entry)b).getKey().toString().toLowerCase());
+                }
+                return ret;
+            }
+        });
+        set.addAll(videoLanguage.entrySet());
+        searchResult.addObjectField("videoLanguages", set);
     }
 
     private void addVideoSourcesNavigatorField(final BasicResultList<ResultItem> searchResult, Node nextSibling) {
