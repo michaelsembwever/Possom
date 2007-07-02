@@ -20,6 +20,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.OrClause;
+import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.mode.config.VideoCommandConfig;
 import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.BasicResultList;
@@ -150,6 +154,33 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             throw new InfrastructureException(e);
         }
         return searchResult;
+    }
+
+    protected void visitImpl(final DefaultOperatorClause clause) {
+        clause.getFirstClause().accept(this);
+        appendToQueryRepresentation(" AND ");
+        clause.getSecondClause().accept(this);
+    }
+
+    protected void visitImpl(final OrClause clause) {
+        appendToQueryRepresentation("(");
+        clause.getFirstClause().accept(this);
+        appendToQueryRepresentation(" OR ");
+        clause.getSecondClause().accept(this);
+        appendToQueryRepresentation(")");
+    }
+
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+            switch (clause.getHint()) {
+                // Honor phrases.
+                case PHRASE_ON_LEFT:
+                    clause.getFirstClause().accept(visitor);
+                    break;
+                    // Treat all other high level clauses (like non-normalized phone numbers) as individual terms.
+                default:
+                    clause.getSecondClause().accept(visitor);
+                    break;
+            }
     }
 
     private void addContentFields(final BasicResultItem item, Node itemSibling) {
