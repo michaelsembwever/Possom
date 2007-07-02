@@ -26,7 +26,6 @@ import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 @DataNode
 public interface ParametersDataObject extends MapDataObject<StringDataObject>{
 
-    @AccessDisallow(VIEW_CONSTRUCTION)
     Map<String,StringDataObject> getValues();
 
     /**
