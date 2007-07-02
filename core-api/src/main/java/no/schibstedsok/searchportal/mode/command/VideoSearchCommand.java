@@ -24,6 +24,7 @@ import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.mode.config.VideoCommandConfig;
 import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.BasicResultList;
@@ -165,9 +166,15 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     }
 
     protected void visitImpl(final DefaultOperatorClause clause) {
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" AND ");
-        clause.getSecondClause().accept(this);
+        if (clause.getFirstClause() instanceof NotClause) {
+            clause.getSecondClause().accept(this);
+            appendToQueryRepresentation(" AND ");
+            clause.getFirstClause().accept(this);
+        } else {
+            clause.getFirstClause().accept(this);
+            appendToQueryRepresentation(" AND ");
+            clause.getSecondClause().accept(this);
+        }
     }
 
     protected void visitImpl(final OrClause clause) {
