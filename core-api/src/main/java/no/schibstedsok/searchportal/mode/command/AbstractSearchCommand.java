@@ -438,7 +438,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             // we will be executing the command IF there's a valid query or filter, 
             // or if the configuration specifies that we should run anyway.
-            boolean executeQuery = query.length() > 0 || getSearchConfiguration().isRunBlank();
+            boolean executeQuery = "*".equals(datamodel.getQuery().getString());
+            executeQuery |= query.length() > 0 || getSearchConfiguration().isRunBlank();
             executeQuery |= null != filter && 0 < filter.length();
             executeQuery |= null != additionalFilter && 0 < additionalFilter.length();
             
