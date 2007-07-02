@@ -166,6 +166,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     }
 
     protected void visitImpl(final DefaultOperatorClause clause) {
+        // Leading NOT operator not supported by blinkx. Rearrage query to try to avoid it.
         if (clause.getFirstClause() instanceof NotClause) {
             clause.getSecondClause().accept(this);
             appendToQueryRepresentation(" AND ");
