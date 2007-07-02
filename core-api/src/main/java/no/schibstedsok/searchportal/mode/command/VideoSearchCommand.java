@@ -137,7 +137,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                             if (itemSibling.getNodeName().equals("autn:reference")) {
                                 item.addField("url", itemSibling.getTextContent());
                             } else if (itemSibling.getNodeName().equals("autn:title")) {
-                                item.addField("title", itemSibling.getTextContent());
+                                String title = itemSibling.getTextContent();
+                                item.addField("title", title.length()>2?title:"[Titel saknas]");
                             } else if (itemSibling.getNodeName().equals("autn:summary")) {
                                 String summary = itemSibling.getTextContent();
                                 if (summary.length()>2) {
@@ -227,7 +228,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             channelSibling = channelSibling.getNextSibling();
         }
 //      TreeSet<Map.Entry> set = new TreeSet<Map.Entry>();
-      TreeSet<Map.Entry> set = new TreeSet<Map.Entry>(new Comparator<Map.Entry>() {
+        TreeSet<Map.Entry> set = new TreeSet<Map.Entry>(new Comparator<Map.Entry>() {
             public int compare(Map.Entry a, Map.Entry b) { // Sort descending by hits, ascending by case insensitive channel name if number of hits is equal
                 // Always swedish first.... change this to a property?
                 if (a.getKey().equals("swedish")) {
