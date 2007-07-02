@@ -77,10 +77,10 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         // API is available at http://usp1.blinkx.com/partnerapi/help/
 
         StringBuilder url = new StringBuilder(255);
-        url.append("/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms");
+        url.append("/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language_type&fieldhits=language,media_format_string&highlight=terms,summaryterms");
         url.append("&searchtype="); url.append(searchType);
         url.append(videoSource.length()>0?"&databasematch="+videoSource.toLowerCase():"");
-        url.append(videoLanguage.length()>0?"&language="+videoLanguage.toUpperCase():"&Anylanguage=true");
+        url.append(videoLanguage.length()>0?"&languageType="+videoLanguage.toUpperCase():"&Anylanguage=true");
         url.append("&BiasDate="); url.append(biasDate);
         url.append("&Start="); url.append(getCurrentOffset(0));
         url.append("&text="); url.append(query);
