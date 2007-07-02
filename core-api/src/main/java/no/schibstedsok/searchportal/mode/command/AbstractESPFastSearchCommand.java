@@ -280,7 +280,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @return a searchResult constructed from the supplied IQueryResult.
      * @throws IOException if something bad happens... Like, an invalid url. (Actually just to not break old code.)
      */
-    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
+    protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
 
         final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(this);
         final int cnt = getCurrentOffset(0);
