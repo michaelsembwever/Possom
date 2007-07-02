@@ -54,22 +54,6 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     }
 
     protected String createRequestURL() {
-        /*
-         * The following parameters are available.
-            Parameter   Description     Required
-            AdultFilter     Allows adult content to be filtered out.
-            AnyLanguage     Allows documents of any language to be returned.
-            BiasDate    Controls the ordering of the returned results.
-            ChannelBias     Applies channel biasing to results.
-            DatabaseMatch   Restricts the results to a particular source.
-            LanguageType    The language type of the query text.
-            MaxDate     The latest date permitted for a result document.
-            MaxResults  The maximum number of results to be returned.
-            MinDate     The earliest date permitted for a result document.
-            PrintFields     Return additional information.
-            Start   Prints results only from this position onwards.
-            Text    The query text.
-         */
 
         String query = getTransformedQuery();
         try {
@@ -80,20 +64,17 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "mix";
         final String videoSource = this.getParameters().get("videoSource") != null ? (String) this.getParameters().get("videoSource") : "";
         final String videoLanguage = this.getParameters().get("videoLanguage") != null ? (String) this.getParameters().get("videoLanguage") : "";
-//        String biasDate = sortByString.equals("standard") ? "100" : "0"; // default is normally datetime which is 0
 
         String biasDate = "50"; // mix
         if (sortByString.equals("datetime")) {
             biasDate="0";
-        }
-        else if (sortByString.equals("standard")) {
+        } else if (sortByString.equals("standard")) {
             biasDate="100";
         }
 
-        // Sample url: http://usp1.blinkx.com/partnerapi/sesam/?Anylanguage=true&Adultfilter=true&channelhits=true&printfields=media_duration&searchtype=enrichment&BiasDate=0&Start=1&text=pixies
+        // Sample url: http://usp1.blinkx.com/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms&searchtype=full&Anylanguage=true&BiasDate=50&Start=0&text=pixies
         // Please note that Schibsted is charged for every search on Blinkx!
-
-//        http://usp1.blinkx.com/partnerapi/sesam/?text=jack&printfields=media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms&channelhits=true
+        // API is available at http://usp1.blinkx.com/partnerapi/help/
 
         StringBuilder url = new StringBuilder(255);
         url.append("/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms");
@@ -103,7 +84,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         url.append("&BiasDate="); url.append(biasDate);
         url.append("&Start="); url.append(getCurrentOffset(0));
         url.append("&text="); url.append(query);
-        LOG.debug("zz:VSC_URL: http://usp1.blinkx.com"+url);
+        LOG.debug("VSC_URL: http://usp1.blinkx.com"+url);
         return url.toString();
     }
 
@@ -227,9 +208,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             videoLanguage.put(channelSibling.getAttributes().getNamedItem("name").getTextContent().toLowerCase(),channelSibling.getTextContent());
             channelSibling = channelSibling.getNextSibling();
         }
-//      TreeSet<Map.Entry> set = new TreeSet<Map.Entry>();
         TreeSet<Map.Entry> set = new TreeSet<Map.Entry>(new Comparator<Map.Entry>() {
-            public int compare(Map.Entry a, Map.Entry b) { // Sort descending by hits, ascending by case insensitive channel name if number of hits is equal
+            public int compare(Map.Entry a, Map.Entry b) { // Swedish first then sort descending by hits, ascending by case insensitive language name if number of hits is equal
                 // Always swedish first.... change this to a property?
                 if (a.getKey().equals("swedish")) {
                     return -1;
