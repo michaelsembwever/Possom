@@ -13,6 +13,7 @@ import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
+import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.datamodel.search.SearchDataObject;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.result.PagingDisplayHelper;
@@ -93,11 +94,16 @@ public final class DataModelResultHandler implements ResultHandler{
 
         }
 
+        final QueryDataObject queryDO = factory.instantiate(
+                QueryDataObject.class,
+                new DataObject.Property("string", cxt.getQuery().getQueryString()),
+                new DataObject.Property("query", cxt.getQuery()));
+        
         // Update the datamodel
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
                 new DataObject.Property("configuration", cxt.getSearchConfiguration()),
-                new DataObject.Property("query", cxt.getQuery()),
+                new DataObject.Property("query", queryDO),
                 new DataObject.Property("results", cxt.getSearchResult()),
                 new DataObject.Property("pager", pager));
 
