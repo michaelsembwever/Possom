@@ -64,8 +64,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     public static final String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
     private static final String TOKEN_HOST_PROPERTY = "tokenevaluator.host";
     private static final String TOKEN_PORT_PROPERTY = "tokenevaluator.port";
-    private static final String REAL_TOKEN_PREFIX = "FastQT_";
-    private static final String REAL_TOKEN_SUFFIX = "QM";
+    private static final String LIST_PREFIX = "FastQT_";
+    private static final String LIST_SUFFIX = "QM";
     private static final String EXACT_PREFIX = "exact_";
     private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
@@ -243,7 +243,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                     // update each listname to the format the fast query matching servers use
                     if(null != listNameArr){
                         for(int j = 0; j < listNameArr.length; ++j){
-                            listNameArr[j] = REAL_TOKEN_PREFIX + listNameArr[j] + REAL_TOKEN_SUFFIX;
+                            listNameArr[j] = LIST_PREFIX + listNameArr[j] + LIST_SUFFIX;
                         }
                         
                         // put the listnames in
@@ -295,8 +295,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                         final Element trans = (Element) l.item(i);
                         final String name = trans.getAttribute("NAME");
                         final String custom = trans.getAttribute("CUSTOM");
+                        final String exactname = 0 <= name.indexOf(LIST_PREFIX) && 0 < name.indexOf(LIST_SUFFIX)
+                                ? LIST_PREFIX + EXACT_PREFIX 
+                                    + name.substring(name.indexOf('_') + 1, name.indexOf("QM"))
+                                    + LIST_SUFFIX
+                                : null;
 
-                        if(custom.endsWith("->") && usesListName(name)){
+                        if(custom.endsWith("->") && usesListName(name, exactname)){
 
                             final String match = custom.indexOf("->") >0
                                     ? custom.substring(0, custom.indexOf("->"))
@@ -306,11 +311,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
                             if (match.equalsIgnoreCase(query.trim())) {
 
-                                final String fullname = REAL_TOKEN_PREFIX + EXACT_PREFIX 
-                                        + name.substring(name.indexOf('_') + 1, name.indexOf("QM"))
-                                        + REAL_TOKEN_SUFFIX;
-
-                                addMatch(fullname, match, query, result);
+                                addMatch(exactname, match, query, result);
                             }
                         }
                     }
@@ -362,7 +363,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         }
     }
 
-    private boolean usesListName(final String listname){
+    private boolean usesListName(final String listname, final String exactname){
                
         boolean uses = false;
         try{
@@ -373,10 +374,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 
                 // find listnames used for this token predicate
                 for(String[] listnames : LIST_NAMES.get(site).values()){
-                    if(0 <= Arrays.binarySearch(listnames, listname, null)){
-                        uses = true;
-                        break;
-                    }
+                    uses |= 0 <= Arrays.binarySearch(listnames, listname, null);
+                    uses |= null != exactname && 0 <= Arrays.binarySearch(listnames, exactname, null);
+                    if(uses){  break; }
                 }
                                 
                 // prepare to go to parent
