@@ -1066,9 +1066,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final LeafClause clause) {
+            
             final String field = clause.getField();
 
-            if (field == null) {
+            if (null == field && null != transformedTerms.get(clause)) {
                 sb.append(transformedTerms.get(clause));
             }
         }
