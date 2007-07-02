@@ -320,8 +320,10 @@ public final class SiteLocatorFilter implements Filter {
             return result;
         }
         
-        // Use the skin's default locale.
-        final String[] prefLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
+        // Use the skin's default locale. For some reason that fails use JVM's default.
+        final String[] prefLocale = null != siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT)
+                ? siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_")
+                : new String[]{Locale.getDefault().toString()};
 
         switch(prefLocale.length){
 
