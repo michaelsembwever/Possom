@@ -76,10 +76,18 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         } catch (UnsupportedEncodingException e) {
             LOG.error(e);
         }
-        final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "datetime";
-        final String videoSource = this.getParameters().get("videosource") != null ? (String) this.getParameters().get("videosource") : "";
-        final String videoLanguage = this.getParameters().get("videoLanguage") != null ? (String) this.getParameters().get("videoLanguage") : "";
-        String biasDate = sortByString.equals("standard") ? "100" : "0"; // default is normally datetime which is 0
+        final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "mix";
+        final String videoSource = this.getParameters().get("videoSource") != null ? (String) this.getParameters().get("videoSource") : "";
+        final String videoLanguage = this.getParameters().get("videoLanguage") != null ? (String) this.getParameters().get("videoLanguage").toString().toLowerCase() : "";
+//        String biasDate = sortByString.equals("standard") ? "100" : "0"; // default is normally datetime which is 0
+
+        String biasDate = "50"; // mix
+        if (sortByString.equals("datetime")) {
+            biasDate="0";
+        }
+        else if (sortByString.equals("standard")) {
+            biasDate="100";
+        }
 
         // Sample url: http://usp1.blinkx.com/partnerapi/sesam/?Anylanguage=true&Adultfilter=true&channelhits=true&printfields=media_duration&searchtype=enrichment&BiasDate=0&Start=1&text=pixies
         // Please note that Schibsted is charged for every search on Blinkx!
