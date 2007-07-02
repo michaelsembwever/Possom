@@ -69,7 +69,7 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
         void setControlLevel(final ControlLevel controlLevel){
         
             this.controlLevel = controlLevel;
-            LOG.debug("Incrementing ControlLevel to " + controlLevel);
+            LOG.trace("Incrementing ControlLevel to " + controlLevel);
         }
     }
 }
