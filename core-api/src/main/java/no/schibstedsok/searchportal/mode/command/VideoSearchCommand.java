@@ -79,7 +79,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         }
         final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "mix";
         final String videoSource = this.getParameters().get("videoSource") != null ? (String) this.getParameters().get("videoSource") : "";
-        final String videoLanguage = this.getParameters().get("videoLanguage") != null ? (String) this.getParameters().get("videoLanguage").toString().toLowerCase() : "";
+        final String videoLanguage = this.getParameters().get("videoLanguage") != null ? (String) this.getParameters().get("videoLanguage") : "";
 //        String biasDate = sortByString.equals("standard") ? "100" : "0"; // default is normally datetime which is 0
 
         String biasDate = "50"; // mix
@@ -223,12 +223,18 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
         TreeMap<String, String> videoLanguage = new TreeMap<String, String>();
         Node channelSibling = nextSibling.getFirstChild();
         while(channelSibling != null ) {
-            videoLanguage.put(channelSibling.getAttributes().getNamedItem("name").getTextContent(),channelSibling.getTextContent());
+            videoLanguage.put(channelSibling.getAttributes().getNamedItem("name").getTextContent().toLowerCase(),channelSibling.getTextContent());
             channelSibling = channelSibling.getNextSibling();
         }
 //      TreeSet<Map.Entry> set = new TreeSet<Map.Entry>();
       TreeSet<Map.Entry> set = new TreeSet<Map.Entry>(new Comparator<Map.Entry>() {
             public int compare(Map.Entry a, Map.Entry b) { // Sort descending by hits, ascending by case insensitive channel name if number of hits is equal
+                // Always swedish first.... change this to a property?
+                if (a.getKey().equals("swedish")) {
+                    return -1;
+                } else if (b.getKey().equals("swedish")) {
+                    return 1;
+                }
                 int ret = ((Comparable) Integer.parseInt((String)((Map.Entry)a).getValue())).compareTo(Integer.parseInt((String)((Map.Entry)b).getValue()))*-1;
                 if (ret == 0) {
                     ret = ((Comparable) ((Map.Entry)a).getKey()).toString().toLowerCase().compareTo(((Map.Entry)b).getKey().toString().toLowerCase());
