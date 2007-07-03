@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -48,12 +47,14 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     final SimpleDateFormat timeFormatter = new SimpleDateFormat("m:ss");
     private String searchType;
+    private String videoLanguageOnTop;
     private final TextMessages textMessages = TextMessages.valueOf(datamodel.getSite().getSite());
 
     public VideoSearchCommand(final Context cxt) {
         super(cxt);
         final VideoCommandConfig vcConfig = (VideoCommandConfig) context.getSearchConfiguration();
         searchType = vcConfig.getSearchType();
+        videoLanguageOnTop = vcConfig.getVideoLanguageOnTop();
     }
 
     protected String createRequestURL() {
@@ -214,11 +215,10 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             channelSibling = channelSibling.getNextSibling();
         }
         TreeSet<Map.Entry> set = new TreeSet<Map.Entry>(new Comparator<Map.Entry>() {
-            public int compare(Map.Entry a, Map.Entry b) { // Swedish first then sort descending by hits, ascending by case insensitive language name if number of hits is equal
-                // Always swedish first.... change this to a property?
-                if (a.getKey().equals("swedish")) {
+            public int compare(Map.Entry a, Map.Entry b) { // Site language first, then sort descending by hits, ascending by case insensitive site language name if number of hits is equal
+                if (a.getKey().equals(videoLanguageOnTop)) {
                     return -1;
-                } else if (b.getKey().equals("swedish")) {
+                } else if (b.getKey().equals(videoLanguageOnTop)) {
                     return 1;
                 }
                 int ret = ((Comparable) Integer.parseInt((String)((Map.Entry)a).getValue())).compareTo(Integer.parseInt((String)((Map.Entry)b).getValue()))*-1;
