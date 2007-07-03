@@ -41,27 +41,38 @@ public final class StringChopper {
      * @return 
      */
     public static String chop(final String s, final int length) {
-        
+
         if(null != s){
-            
+
             final StringBuilder choppedString = new StringBuilder(s);
 
-            int laOriginalCount = 0, raOriginalCount = 0;
+            int laOriginalCount = 0, raOriginalCount = 0, markupLength = 0;
+            boolean insideMarkup = false;
             for(int i = 0; i < choppedString.length(); ++i){ 
-                if( '<' == choppedString.charAt(i) ){ ++laOriginalCount; }
-                else if( '>' == choppedString.charAt(i) ){ ++raOriginalCount; }
+                if( '<' == choppedString.charAt(i) ){ ++laOriginalCount; insideMarkup = true;}
+
+                if (insideMarkup) {
+                    ++markupLength;
+                }
+
+                if( '>' == choppedString.charAt(i) ){ ++raOriginalCount; insideMarkup = false;}
+
             }
 
             // if we have more left than right arrows 
             while(laOriginalCount > raOriginalCount){
                 choppedString.append('>');
                 ++raOriginalCount;
-            }        
+                markupLength = 0; // Be safe, use original length if markup unbalanced.
+            }
 
-            if(length >= 0 && choppedString.length() > length){
+            // We're interested in limiting the length of the rendered string excluding the length of the markup.
+            final int maxLength = length + markupLength;
+
+            if(length > 0 && choppedString.length() > maxLength){
 
                 // chop the string first
-                choppedString.setLength(length);
+                choppedString.setLength(maxLength);
 
                 // if we chopped a tag in half remove the half left over.
                 int laCount = 0, raCount = 0;
