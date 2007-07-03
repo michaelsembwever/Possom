@@ -72,12 +72,12 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
             biasDate="100";
         }
 
-        // Sample url: http://usp1.blinkx.com/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language&fieldhits=language,media_format_string&highlight=terms,summaryterms&searchtype=full&Anylanguage=true&BiasDate=50&Start=0&text=pixies
+        // Sample url: http://usp1.blinkx.com/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_type,language&fieldhits=language,media_format_string&highlight=terms,summaryterms&searchtype=full&Anylanguage=true&BiasDate=50&Start=0&text=pixies
         // Please note that Schibsted is charged for every search on Blinkx!
         // API is available at http://usp1.blinkx.com/partnerapi/help/
 
         StringBuilder url = new StringBuilder(255);
-        url.append("/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_format_string,language_type&fieldhits=language,media_format_string&highlight=terms,summaryterms");
+        url.append("/partnerapi/sesam/?Adultfilter=true&channelhits=true&printfields=media_duration,media_type,language&fieldhits=language,media_format_string&highlight=terms,summaryterms");
         url.append("&searchtype="); url.append(searchType);
         url.append(videoSource.length()>0?"&databasematch="+videoSource.toLowerCase():"");
         url.append(videoLanguage.length()>0?"&languageType="+videoLanguage.toUpperCase():"&Anylanguage=true");
@@ -194,6 +194,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                 item.addField("videoType", itemContentSibling.getTextContent());
             } else if (itemContentSibling.getNodeName().equals("DOMAIN")) {
                 item.addField("videoDomain", itemContentSibling.getTextContent());
+            } else if (itemContentSibling.getNodeName().equals("LANGUAGE")) {
+                item.addField("language", itemContentSibling.getTextContent().toLowerCase());
             } else if (itemContentSibling.getNodeName().equals("STATICPREVIEW")) {
                 item.addField("staticPreview", itemContentSibling.getTextContent());
             }
