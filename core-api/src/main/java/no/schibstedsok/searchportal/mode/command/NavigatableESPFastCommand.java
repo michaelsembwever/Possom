@@ -75,6 +75,15 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
         final ResultList<? extends ResultItem> searchResult = super.execute();
 
+        // We want to collect modifiers even if we ignore navigation
+        if (getNavigators() != null) {
+            for (String navigatorKey : getNavigators().keySet()) {
+                addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
+                        ? getParameter("nav_" + navigatorKey)
+                        : null);
+            }
+        }
+
         if (null != getNavigators() && searchResult instanceof FastSearchResult) {
             collectModifiers(getIQueryResult(), (FastSearchResult)searchResult);
         }
