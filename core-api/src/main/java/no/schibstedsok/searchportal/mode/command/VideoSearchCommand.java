@@ -16,20 +16,22 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.mode.config.VideoCommandConfig;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.mode.config.VideoCommandConfig;
 import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.view.i18n.TextMessages;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -46,6 +48,7 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     final SimpleDateFormat timeFormatter = new SimpleDateFormat("m:ss");
     private String searchType;
+    private final TextMessages textMessages = TextMessages.valueOf(datamodel.getSite().getSite());
 
     public VideoSearchCommand(final Context cxt) {
         super(cxt);
@@ -220,7 +223,9 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                 }
                 int ret = ((Comparable) Integer.parseInt((String)((Map.Entry)a).getValue())).compareTo(Integer.parseInt((String)((Map.Entry)b).getValue()))*-1;
                 if (ret == 0) {
-                    ret = ((Comparable) ((Map.Entry)a).getKey()).toString().toLowerCase().compareTo(((Map.Entry)b).getKey().toString().toLowerCase());
+                    String langA = textMessages.getMessage("video_language_"+((Map.Entry)a).getKey()).toLowerCase();
+                    String langB = textMessages.getMessage("video_language_"+((Map.Entry)b).getKey()).toLowerCase();
+                    ret = langA.compareTo(langB);
                 }
                 return ret;
             }
