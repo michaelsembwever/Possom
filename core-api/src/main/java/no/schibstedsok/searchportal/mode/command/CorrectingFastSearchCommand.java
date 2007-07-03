@@ -32,7 +32,6 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
 public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchCommand {
     
     private static final String ERR_CANNOT_CREATE_COMMAND = "Unable to create command to rerun.";
-    private static final String RESULT_FIELD_CORRECTED_QUERY = "autoCorrectedQuery";
     
     private static final Logger LOG = Logger.getLogger(CorrectingFastSearchCommand.class);
 
@@ -88,10 +87,6 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
                 c.setCorrectedQuery(newQuery);
 
                 final ResultList<? extends ResultItem> result = c.call();
-
-                if (result.getHitCount() > 0) {
-                    result.addField(RESULT_FIELD_CORRECTED_QUERY, newQuery);
-                }
 
                 return result;
 
