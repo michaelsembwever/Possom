@@ -9,10 +9,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -41,6 +38,7 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
 
     private boolean correct = true;
     private final Context cxt;
+    // XXX couldn't we re-use functionality given by overriding AbstractSearchCommand.getQuery()
     private ReconstructedQuery correctedQuery;
 
     /** Creates a new instance of CorrectionFastSearchCommand.
@@ -56,15 +54,17 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
         this.correctedQuery = createQuery(correctedQuery);
     }
 
+    @Override
     protected final Query getQuery() {
         return correctedQuery != null ? correctedQuery.getQuery() : super.getQuery();
     }
 
     /** {@inheritDoc} */
+    @Override
     public ResultList<? extends ResultItem> call() {
         final ResultList<? extends ResultItem> originalResult = super.call();
         final Map<String, List<WeightedSuggestion>> suggestions
-                = ((BasicResultList)originalResult).getSpellingSuggestionsMap();
+                = ((BasicResultList<?>)originalResult).getSpellingSuggestionsMap();
 
         // Rerun command?
         // TODO Consider moving the isCorrectionEnabled() call after the
@@ -103,6 +103,16 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
 
         return originalResult;
     }
+
+    @Override
+    protected void updateTransformedQuerySesamSyntax() {
+                
+        // redo the transformedQuerySesamSyntax off our correctedQuery (if it exists)
+        initialiseTransformedTerms(getQuery());
+        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
+        builder.visit(getQuery().getRootClause());
+        setTransformedQuerySesamSyntax(builder.getQueryRepresentation());
+    }   
 
     /**
      * Correction will only be enabled if this method returns true. Override

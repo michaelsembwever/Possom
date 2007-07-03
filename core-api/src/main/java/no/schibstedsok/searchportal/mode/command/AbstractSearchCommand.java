@@ -137,16 +137,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         initialiseQuery();
         transformedQuery = query.getQueryString();
-        final Clause root = query.getRootClause();
 
-        // initialise transformed terms
-        final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
-        mapInitialisor.visit(root);
-        untransformedQuery = getQueryRepresentation(query);
+        untransformedQuery = initialiseTransformedTerms(query);
 
         // create additional filters
         final FilterVisitor additionalFilterVisitor = new FilterVisitor();
-        additionalFilterVisitor.visit(root);
+        additionalFilterVisitor.visit(query.getRootClause());
         additionalFilter = additionalFilterVisitor.getFilter();
     }
 
@@ -172,18 +168,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
-     * Returns the query as it is after the query transformers have been applied to it.
-     *
-     * @return
-     */
-    public String getTransformedQuerySesamSyntax() {
-        return transformedQuerySesamSyntax;
-    }
-
-
-    /**
      * TODO comment me. *
      */
+    @Override
     public String toString() {
         return getSearchConfiguration().getName() + ' ' + datamodel.getQuery().getString();
     }
@@ -414,7 +401,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * TODO comment me.
      */
-    protected final void performQueryTransformation() {
+    protected void performQueryTransformation() {
 
         applyQueryTransformers(
                 getQuery(),
@@ -797,12 +784,41 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
+     * Returns the query as it is after the query transformers have been applied to it.
+     *
+     * @return
+     */
+    protected String getTransformedQuerySesamSyntax() {
+        return transformedQuerySesamSyntax;
+    }
+    
+    /**
      * @return
      */
     protected SesamSyntaxQueryBuilder newSesamSyntaxQueryBuilder() {
         return new SesamSyntaxQueryBuilder();
     }
 
+    protected void updateTransformedQuerySesamSyntax(){
+        
+        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
+        builder.visit(query.getRootClause());
+        setTransformedQuerySesamSyntax(builder.getQueryRepresentation());
+    }
+    
+    protected void setTransformedQuerySesamSyntax(final String sesamSyntax){
+        
+        transformedQuerySesamSyntax = sesamSyntax;
+    }
+
+    protected final String initialiseTransformedTerms(final Query query){
+        
+        // initialise transformed terms
+        final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+        mapInitialisor.visit(query.getRootClause());
+        return getQueryRepresentation(query);
+    }
+    
     protected boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
@@ -937,12 +953,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         } else {
             transformedQuery = getQueryRepresentation(query);
         }
-
-        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
-        builder.visit(query.getRootClause());
-        transformedQuerySesamSyntax = builder.getQueryRepresentation();
+        
+        updateTransformedQuerySesamSyntax();
     }
-
+    
     // Inner classes -------------------------------------------------
 
 
@@ -1083,6 +1097,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             
             final String field = clause.getField();
 
+            // ignore terms that are fielded and terms that have been initialised but since nulled
             if (null == field && null != transformedTerms.get(clause)) {
                 sb.append(transformedTerms.get(clause));
             }
