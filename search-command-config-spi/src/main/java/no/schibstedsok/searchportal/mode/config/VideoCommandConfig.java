@@ -1,6 +1,5 @@
 package no.schibstedsok.searchportal.mode.config;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
@@ -11,25 +10,8 @@ import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseTyp
 @Controller("VideoSearchCommand")
 public class VideoCommandConfig extends AbstractXmlSearchConfiguration {
 
-    private static final Logger LOG = Logger.getLogger(VideoCommandConfig.class);
-    private String customerId;
     private String searchType;
-//    /**
-//     * Returns the customer id to use for picsearch queries associated with this configuration.
-//     *
-//     * @return The customer id.
-//     */
-//    public String getCustomerId() {
-//        return customerId;
-//    }
-//    /**
-//     * Sets property customerId
-//     *
-//     * @param customerId New value for customerId
-//     */
-//    public void setCustomerId(final String customerId) {
-//        this.customerId = customerId;
-//    }
+    private String videoLanguageOnTop;
 
     public String getSearchType() {
         return searchType;
@@ -39,6 +21,15 @@ public class VideoCommandConfig extends AbstractXmlSearchConfiguration {
         this.searchType = searchType;
     }
 
+    public String getVideoLanguageOnTop() {
+        return videoLanguageOnTop;
+    }
+
+    public void setVideoLanguageOnTop(String videoLanguageOnTop) {
+        this.videoLanguageOnTop = videoLanguageOnTop;
+    }
+
+
     @Override
     public AbstractXmlSearchConfiguration readSearchConfiguration(
             final Element element,
@@ -47,6 +38,7 @@ public class VideoCommandConfig extends AbstractXmlSearchConfiguration {
         super.readSearchConfiguration(element, inherit);
 
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "searchType", ParseType.String, element, "notset");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "videoLanguageOnTop", ParseType.String, element, "english");
 
         return this;
     }
