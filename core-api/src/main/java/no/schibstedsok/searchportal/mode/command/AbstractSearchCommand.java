@@ -803,6 +803,20 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return new SesamSyntaxQueryBuilder();
     }
 
+    protected boolean isEmptyLeaf(final Clause clause) {
+        if (clause instanceof LeafClause) {
+            final LeafClause leaf = (LeafClause) clause;
+            // Changed logic to include: no field and no term. - Geir H. Pettersen - T-Rank
+            String transformedTerm = getTransformedTerm(clause);
+            transformedTerm = transformedTerm.length() == 0 ? null : transformedTerm;
+            return leaf.getField() == null && transformedTerm == null || null != leaf.getField() && null != getFieldFilter(leaf);
+        } else if (clause instanceof DoubleOperatorClause) {
+            DoubleOperatorClause doc = (DoubleOperatorClause) clause;
+            return isEmptyLeaf(doc.getFirstClause()) && isEmptyLeaf(doc.getSecondClause());
+        }
+        return false;
+    }
+
     // Private -------------------------------------------------------
 
     private void initialiseQuery() {

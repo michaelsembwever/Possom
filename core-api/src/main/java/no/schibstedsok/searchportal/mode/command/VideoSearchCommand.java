@@ -152,14 +152,24 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
     }
 
     protected void visitImpl(final DefaultOperatorClause clause) {
+
+        // True if any of the terms has been been blanked out by a query transformer.
+        final boolean hasEmptyLeaf = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
         // Leading NOT operator not supported by blinkx. Rearrage query to try to avoid it.
         if (clause.getFirstClause() instanceof NotClause) {
             clause.getSecondClause().accept(this);
-            appendToQueryRepresentation(" AND ");
+
+            if (!hasEmptyLeaf)
+                appendToQueryRepresentation(" AND ");
+
             clause.getFirstClause().accept(this);
         } else {
             clause.getFirstClause().accept(this);
-            appendToQueryRepresentation(" AND ");
+
+            if (!hasEmptyLeaf)
+                appendToQueryRepresentation(" AND ");
+
             clause.getSecondClause().accept(this);
         }
     }
