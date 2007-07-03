@@ -142,8 +142,8 @@ public final class RolesDirective extends AbstractDirective{
 
                         }else {
                             nameEncode = URLEncoder.encode(name, "utf-8");
-                            orgUrl = "/search/?c=yip&amp;q=" + nameEncode + "&amp;companyId="
-                                    + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid);
+                            orgUrl = "/katalog/infoside/" + nameEncode + "/"
+                                    + recordid + "/" + md5.generateMD5(recordid);
                         }
 
                         lpUrl = Boomerang.getUrl(
