@@ -195,11 +195,14 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private WhoWhereSplit initialiseWhoWhere() {
 
         final CatalogueCommandConfig conf = (CatalogueCommandConfig) context.getSearchConfiguration();
-        if(datamodel.getParameters().getValue("who")!=null) LOG.info("datamodel.getParameters().getValue(who) is "+datamodel.getParameters().getValue("who"));
-            else LOG.info("datamodel.getParameters().getValue(who) is NULL");
+        
+        if(null != datamodel.getParameters().getValue("who")){ 
+            LOG.info("datamodel.getParameters().getValue(who) is "+datamodel.getParameters().getValue("who"));
+        }else{ LOG.info("datamodel.getParameters().getValue(who) is NULL"); }
             
-        if(datamodel.getParameters().getValue("q")!=null) LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
-            else LOG.info("datamodel.getParameters().getValue(q) is NULL");
+        if(null != datamodel.getParameters().getValue("q")){ 
+            LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
+        }else{ LOG.info("datamodel.getParameters().getValue(q) is NULL"); }
         
         final String whoParameter = null != datamodel.getParameters().getValue("who")
                     ? datamodel.getParameters().getValue("who").getString() 
