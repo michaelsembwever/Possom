@@ -65,10 +65,8 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     public ResultList<? extends ResultItem> execute() {
-        
-        if (getNavigators() != null) {
+        if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
             for (String navigatorKey : getNavigators().keySet()) {
-
                 addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
                         ? getParameter("nav_" + navigatorKey)
                         : null);
