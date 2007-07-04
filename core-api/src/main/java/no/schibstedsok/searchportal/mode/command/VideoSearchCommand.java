@@ -202,6 +202,8 @@ public class VideoSearchCommand extends AbstractXmlSearchCommand {
                 item.addField("source", itemContentSibling.getTextContent());
             } else if (itemContentSibling.getNodeName().equals("IMAGE")) {
                 item.addField("preview", itemContentSibling.getTextContent());
+            } else if (itemContentSibling.getNodeName().equals("ALTIMAGE")) {
+                item.addField("altPreview", itemContentSibling.getTextContent());
             } else if (itemContentSibling.getNodeName().equals("MEDIA_DURATION")) {
                 item.addField("videoDuration", timeFormatter.format(new Date(Long.parseLong(itemContentSibling.getTextContent()))));
             } else if (itemContentSibling.getNodeName().equals("MEDIA_TYPE_STRING")) {
