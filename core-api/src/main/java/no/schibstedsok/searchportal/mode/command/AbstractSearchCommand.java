@@ -802,7 +802,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected void updateTransformedQuerySesamSyntax(){
         
         final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
-        builder.visit(query.getRootClause());
+        builder.visit(getQuery().getRootClause());
         setTransformedQuerySesamSyntax(builder.getQueryRepresentation());
     }
     

@@ -104,9 +104,7 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
                 
         // redo the transformedQuerySesamSyntax off our correctedQuery (if it exists)
         initialiseTransformedTerms(getQuery());
-        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
-        builder.visit(getQuery().getRootClause());
-        setTransformedQuerySesamSyntax(builder.getQueryRepresentation());
+        super.updateTransformedQuerySesamSyntax();
     }   
 
     /**
