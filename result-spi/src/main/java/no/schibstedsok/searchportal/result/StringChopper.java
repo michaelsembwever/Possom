@@ -41,6 +41,17 @@ public final class StringChopper {
      * @return 
      */
     public static String chop(final String s, final int length) {
+        return chop(s, length, false);
+    }  
+    
+    /**
+     * null safe.
+     * @param s 
+     * @param length 
+     * @param chopWord allowed to chop a word in half
+     * @return 
+     */    
+    public static String chop(final String s, final int length, final boolean chopWord) {
         
         if(null != s){
             
@@ -88,10 +99,12 @@ public final class StringChopper {
                         }
                         break;
                     default:
-                        final int lastSpace = choppedString.lastIndexOf(" ");
+                        if(!chopWord){
+                            final int lastSpace = choppedString.lastIndexOf(" ");
 
-                        if (lastSpace >= 0) {
-                            choppedString.setLength(lastSpace + 1);
+                            if (lastSpace >= 0) {
+                                choppedString.setLength(lastSpace + 1);
+                            }
                         }
                         choppedString.append("...");
                         break;
