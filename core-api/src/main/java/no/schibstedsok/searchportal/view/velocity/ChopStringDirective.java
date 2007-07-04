@@ -60,7 +60,7 @@ public final class ChopStringDirective extends AbstractDirective {
 
         final int argCount = node.jjtGetNumChildren();
 
-        if (argCount > 0 && argCount < 4) {
+        if (argCount > 0 && argCount < 5) {
 
             final Object nodeValue = node.jjtGetChild(0).value(context);
 
@@ -75,14 +75,16 @@ public final class ChopStringDirective extends AbstractDirective {
             final int length = argCount > 1
                     ? Integer.parseInt(getArgument(context, node, 1))
                     : Integer.MAX_VALUE;
-
-            if (argCount > 2 && "esc".equals(getArgument(context, node, 2))) {
-
-                writer.write(StringEscapeUtils.escapeHtml(StringChopper.chop(s, length)));
-            }else{
-
-                writer.write(StringChopper.chop(s, length));
-            }
+            
+            final boolean esc = argCount > 2 && "esc".equals(getArgument(context, node, 2));
+            
+            final boolean chopWord = argCount > 3 && Boolean.parseBoolean(getArgument(context, node, 3));
+            
+            final String chopSuey = esc
+                    ? StringEscapeUtils.escapeHtml(StringChopper.chop(s, length, chopWord))
+                    : StringChopper.chop(s, length, chopWord);
+            
+            writer.write(chopSuey);
 
             if (node.getLastToken().image.endsWith("\n")) {
                 writer.write('\n');
