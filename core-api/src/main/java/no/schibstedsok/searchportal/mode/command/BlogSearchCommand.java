@@ -49,13 +49,10 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
      * Override collapsing if output is rss, otherwise return false.
      * @return false if output is rss, otherwise the default configuration.
      */
-    protected boolean isCollapsingEnabled()
-    {
-        boolean collapsed = super.isCollapsingEnabled();
-        if("rss".equals(getParameter("output"))) {
-            collapsed = false;
-        }
-        return collapsed;
+    protected boolean isCollapsingEnabled(){
+        
+        return "rss".equals(getParameter("output")) ? false : super.isCollapsingEnabled();
+        
     }
 
     /**
@@ -81,6 +78,7 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
 
     // Public --------------------------------------------------------
+    
     public ResultList<? extends ResultItem> execute() {
     	
     	final List<BlogSearchResultItem> blogSearchResultItems = new ArrayList<BlogSearchResultItem>();
@@ -141,6 +139,7 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
 
     protected void visitImpl(final LeafClause clause) {
+        
         if (clause.getField() == null && !getTransformedTerm(clause).trim().equals("")) {
             appendTermRepresentation(getTransformedTerm(clause));
         } else if(null != clause.getField() && null == getFieldFilter(clause)) {

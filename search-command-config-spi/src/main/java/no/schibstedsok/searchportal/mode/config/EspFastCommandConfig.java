@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 @Controller("ESPFastSearchCommand")
-public class EspFastCommandConfig extends CommandConfig {
+public class EspFastCommandConfig extends FastCommandConfig {
 
     // Constants -----------------------------------------------------
     
@@ -194,7 +194,7 @@ public class EspFastCommandConfig extends CommandConfig {
     }
 
     @Override
-    public CommandConfig readSearchConfiguration(
+    public FastCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
         

@@ -35,6 +35,7 @@ import no.schibstedsok.searchportal.result.ResultList;
  * capabilities.
  *
  * @author maek
+ * @version $Id$
  */
 public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
@@ -64,19 +65,27 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     public ResultList<? extends ResultItem> execute() {
-        if (getNavigators() != null) {
+        if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
             for (String navigatorKey : getNavigators().keySet()) {
-
                 addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
                         ? getParameter("nav_" + navigatorKey)
                         : null);
             }
         }
 
-        final FastSearchResult searchResult = (FastSearchResult) super.execute();
+        final ResultList<? extends ResultItem> searchResult = super.execute();
 
+        // We want to collect modifiers even if we ignore navigation
         if (getNavigators() != null) {
-            collectModifiers(getIQueryResult(), searchResult);
+            for (String navigatorKey : getNavigators().keySet()) {
+                addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
+                        ? getParameter("nav_" + navigatorKey)
+                        : null);
+            }
+        }
+
+        if (null != getNavigators() && searchResult instanceof FastSearchResult) {
+            collectModifiers(getIQueryResult(), (FastSearchResult)searchResult);
         }
 
         return searchResult;

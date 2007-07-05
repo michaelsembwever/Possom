@@ -212,7 +212,9 @@ public final class SearchTab {
             this.enrichments.addAll(inherit.enrichments);
             this.css.addAll(inherit.css);            
         }
-        this.rssResultName = rssResultName;
+        this.rssResultName = null != rssResultName && 0 < rssResultName.length()  || inherit == null
+                ? rssResultName 
+                : inherit.getRssResultName();
         this.css.addAll(css);
         this.javascript.addAll(javascript);
         this.absoluteOrdering = absoluteOrdering;

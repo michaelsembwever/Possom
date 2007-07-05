@@ -48,75 +48,76 @@ public interface DataModel extends Serializable{
 
     // ParametersDataObject ------------------------------------------------------------
 
-    /**
+    /** Get the ParametersDataObject associated to this request.
      * 
-     * @return 
+     * @return the ParametersDataObject updated for this request.
      */
     ParametersDataObject getParameters();
 
-    /**
+    /** Update the ParametersDataObject.
      * 
-     * @param parameters 
+     * @param parameters ParametsDataObject associated to this request.
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setParameters(ParametersDataObject parameters);
 
     // BrowserDataObject ------------------------------------------------------------
 
-    /**
+    /** Get the BrowserDataObject associated to this session.
      * 
-     * @return 
+     * @return the BrowserDataObject created at the beginning of the session.
      */
     BrowserDataObject getBrowser();
 
-    /**
+    /** Assign the BrowserDataObject. Can only be called once.
      * 
-     * @param browser 
+     * @param browser BrowserDataObject holding session-static information.
      */
     @AccessAllow(DATA_MODEL_CONSTRUCTION)
     void setBrowser(BrowserDataObject browser);
 
     // UserDataObject ------------------------------------------------------------
 
-    /**
+    /** Get the UserDataObject holding the user information.
      * 
-     * @return 
+     * @return the UserDataObject.
      */
     UserDataObject getUser();
 
-    /**
+    /** Assign the UserDataObject when user logs in.
      * 
-     * @param user 
+     * @param user UserDataObject holding user information.
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setUser(UserDataObject user);
 
     // SiteDataObject ------------------------------------------------------------
 
-    /**
+    /** Get the SiteDataObject holding site and skin information.
      * 
-     * @return 
+     * @return the SiteDataObject
      */
     SiteDataObject getSite();
 
-    /**
+    /** Assign the SiteDataObject. 
+     * Usually only done once but some browsers don't use separate sessions for sub-domains.
      * 
-     * @param site 
+     * @param site the SiteDataObject holding site and skin information.
      */
-    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setSite(SiteDataObject site);
 
     // QueryDataObject ------------------------------------------------------------
 
-    /**
+    /** The QueryDataObject holding all query related information associated to this request.
      * 
-     * @return 
+     * @return the QueryDataObject
      */
     QueryDataObject getQuery();
 
-    /**
+    /** Set the QueryDataObject associated to this request.
      * 
-     * @param query 
+     * @param query the QueryDataObject holding all query related information
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, RUNNING_QUERY_CONSTRUCTION})
     void setQuery(QueryDataObject query);
@@ -131,14 +132,15 @@ public interface DataModel extends Serializable{
      * 
      * @return 
      */
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING})
     Map<String,SearchDataObject> getSearches();
     
-    /**
+    /** Get the SearchDataObject holding the given search's results
      * 
-     * @param key 
-     * @return 
+     * @param key the search (commandName) to get SearchDataObject for
+     * @return the SearchDataObject
      */
-    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    @AccessAllow({SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING, VIEW_CONSTRUCTION})
     SearchDataObject getSearch(final String key);
 
     /** Set a search command's finished results.
@@ -154,21 +156,21 @@ public interface DataModel extends Serializable{
     
     // NavigationDataObject ------------------------------------------------------------
     
-    /**
+    /** Get the NavigationDataObject associated to the SearchMode.
      * 
-     * @return 
+     * @return the NavigationDataObject
      */
     NavigationDataObject getNavigation();
 
-    /** 
-     * @param value 
+    /** Set the NavigationDataObject.
+     * @param value the NavigationDataObject associated to the SearchMode
      */
-    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    @AccessAllow(RUNNING_QUERY_CONSTRUCTION)
     void setNavigation(final NavigationDataObject value);
     
     // JunkYardDataObject ------------------------------------------------------------
 
-    /** @return 
+    /** @return all the old crap
      * @deprecated Provides access to datamodel elements not yet migrated into the DataModel proper.
      **/
     JunkYardDataObject getJunkYard();

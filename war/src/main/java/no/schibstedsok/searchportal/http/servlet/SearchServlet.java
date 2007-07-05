@@ -234,22 +234,14 @@ public final class SearchServlet extends HttpServlet {
         final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY));
 
         if (qParam == null) {
-            redirect = null != parametersDO.getContextPath() && parametersDO.getContextPath().length() >0
-                    ? parametersDO.getContextPath()
-                    : "/";
+            redirect = "/";
         } else if (null != cParm
                 && ("d".equals(cParm) || "g".equals(cParm) || "cat".equals(cParm) || "catip".equals(cParm))
                 && !isSitesearch) {
             // Extra check for the Norwegian web search. Search with an empty query string
             // should return the first page.
-            if ("cat".equals(cParm) || "catip".equals(cParm)) {
-                if (wParam.trim().length() == 0 && qParam.trim().length() == 0) {
-                    redirect = "/";
-                }
-            } else {
-                if (qParam.trim().length() == 0) {
-                    redirect = "/";
-                }
+            if (qParam.trim().length() == 0) {
+                redirect = "/";
             }
         }
 

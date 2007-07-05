@@ -63,8 +63,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     private static final DataModelResultHandler DATAMODEL_HANDLER = new DataModelResultHandler();
 
-    private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
-
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
     protected static final Logger DUMP = Logger.getLogger("no.schibstedsok.searchportal.Dump");
 
@@ -139,16 +137,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         initialiseQuery();
         transformedQuery = query.getQueryString();
-        final Clause root = query.getRootClause();
 
-        // initialise transformed terms
-        final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
-        mapInitialisor.visit(root);
-        untransformedQuery = getQueryRepresentation(query);
+        untransformedQuery = initialiseTransformedTerms(query);
 
         // create additional filters
         final FilterVisitor additionalFilterVisitor = new FilterVisitor();
-        additionalFilterVisitor.visit(root);
+        additionalFilterVisitor.visit(query.getRootClause());
         additionalFilter = additionalFilterVisitor.getFilter();
     }
 
@@ -174,18 +168,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
-     * Returns the query as it is after the query transformers have been applied to it.
-     *
-     * @return
-     */
-    public String getTransformedQuerySesamSyntax() {
-        return transformedQuerySesamSyntax;
-    }
-
-
-    /**
      * TODO comment me. *
      */
+    @Override
     public String toString() {
         return getSearchConfiguration().getName() + ' ' + datamodel.getQuery().getString();
     }
@@ -242,7 +227,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.trace("call()");
 
             performQueryTransformation();
-            final ResultList<? extends ResultItem> result = performExecution(getQuery());
+            final ResultList<? extends ResultItem> result = performExecution();
             performResultHandling(result);
 
 
@@ -416,7 +401,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * TODO comment me.
      */
-    protected final void performQueryTransformation() {
+    protected void performQueryTransformation() {
 
         applyQueryTransformers(
                 getQuery(),
@@ -425,55 +410,36 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
 
-    /**
-     * @param queryToUse
+    /** Handles the execution process. Will determine whether to call execute() and wrap it with timing info.
      * @return
      */
-    protected final ResultList<? extends ResultItem> performExecution(final Query queryToUse) {
+    protected final ResultList<? extends ResultItem> performExecution() {
 
         final StopWatch watch = new StopWatch();
         watch.start();
+        
+        final String query = getTransformedQuery().trim();
         Integer hitCount = null;
 
         try {
 
-            final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
-
-            boolean executeQuery = queryToUse.getQueryString().length() > 0 || getSearchConfiguration().isRunBlank();
+            // we will be executing the command IF there's a valid query or filter, 
+            // or if the configuration specifies that we should run anyway.
+            boolean executeQuery = "*".equals(datamodel.getQuery().getString());
+            executeQuery |= query.length() > 0 || getSearchConfiguration().isRunBlank();
+            executeQuery |= null != filter && 0 < filter.length();
+            executeQuery |= null != additionalFilter && 0 < additionalFilter.length();
             
-            // -->> FIXME SEARCH-2890 Clean all this bullshit up. EG move it to the individual command subclass.
-            executeQuery |= null != parameters.get("contentsource");
-            executeQuery |= null != parameters.get("newscountry") && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("l") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("naid") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("ncf") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nco") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nif") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("naf") && getTransformedQuery().trim().length() > 0;
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nao") && getTransformedQuery().trim().length() > 0;
-
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapwcoords") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("mapycoords") && getSearchConfiguration().isAlwaysRun();
-            executeQuery |= this instanceof NewsMyNewsSearchCommand;
-
-            executeQuery |= null != filter && filter.length() > 0;
-            LOG.info("executeQuery==" + executeQuery
-                    + " ; queryToUse:" + queryToUse.getQueryString()
-                    + "; filter:" + filter
-                    + "; tabKey:" + parameters.get("c") + ';');
-            // SEARCH-2890 <<--
+            LOG.info("executeQuery==" + executeQuery + " ; query:" + query + " ; filter:" + filter);
 
             final ResultList<? extends ResultItem> result = executeQuery
                     ? execute()
                     : new BasicResultList<ResultItem>();
+            
+            if(!executeQuery){
+                // sent hit count to zero since we have intentionally avoiding searching.
+                result.setHitCount(0);
+            }
 
             hitCount = result.getHitCount();
 
@@ -504,12 +470,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected final void performResultHandling(final ResultList<? extends ResultItem> result) {
 
-        // XXX following is deprecated. use instead datamodel.getSearch(name).getQuery().getString()
-        result.addField(FIELD_TRANSFORMED_QUERY,
-                null != getTransformedQuerySesamSyntax() && getTransformedQuerySesamSyntax().length() > 0
-                        ? getTransformedQuerySesamSyntax()
-                        : getQuery().getQueryString());
-
         // Build the context each result handler will need.
         final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
                 ResultHandler.Context.class,
@@ -517,17 +477,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     public ResultList<? extends ResultItem> getSearchResult() {
                         return result;
                     }
-
                     public SearchTab getSearchTab() {
                         return context.getRunningQuery().getSearchTab();
                     }
-
                     public void addSource(final Modifier modifier) {
                         context.getRunningQuery().addSource(modifier);
                     }
-
                     public Query getQuery() {
                         return AbstractSearchCommand.this.getQuery();
+                    }
+                    public String getDisplayQuery(){
+                        return AbstractSearchCommand.this.getTransformedQuerySesamSyntax();
                     }
                 },
                 context
@@ -824,10 +784,53 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
+     * Returns the query as it is after the query transformers have been applied to it.
+     *
+     * @return
+     */
+    protected String getTransformedQuerySesamSyntax() {
+        return transformedQuerySesamSyntax;
+    }
+    
+    /**
      * @return
      */
     protected SesamSyntaxQueryBuilder newSesamSyntaxQueryBuilder() {
         return new SesamSyntaxQueryBuilder();
+    }
+
+    protected void updateTransformedQuerySesamSyntax(){
+        
+        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
+        builder.visit(getQuery().getRootClause());
+        setTransformedQuerySesamSyntax(builder.getQueryRepresentation());
+    }
+    
+    protected void setTransformedQuerySesamSyntax(final String sesamSyntax){
+        
+        transformedQuerySesamSyntax = sesamSyntax;
+    }
+
+    protected final String initialiseTransformedTerms(final Query query){
+        
+        // initialise transformed terms
+        final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+        mapInitialisor.visit(query.getRootClause());
+        return getQueryRepresentation(query);
+    }
+    
+    protected boolean isEmptyLeaf(final Clause clause) {
+        if (clause instanceof LeafClause) {
+            final LeafClause leaf = (LeafClause) clause;
+            // Changed logic to include: no field and no term. - Geir H. Pettersen - T-Rank
+            String transformedTerm = getTransformedTerm(clause);
+            transformedTerm = transformedTerm.length() == 0 ? null : transformedTerm;
+            return leaf.getField() == null && transformedTerm == null || null != leaf.getField() && null != getFieldFilter(leaf);
+        } else if (clause instanceof DoubleOperatorClause) {
+            DoubleOperatorClause doc = (DoubleOperatorClause) clause;
+            return isEmptyLeaf(doc.getFirstClause()) && isEmptyLeaf(doc.getSecondClause());
+        }
+        return false;
     }
 
     // Private -------------------------------------------------------
@@ -950,12 +953,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         } else {
             transformedQuery = getQueryRepresentation(query);
         }
-
-        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
-        builder.visit(query.getRootClause());
-        transformedQuerySesamSyntax = builder.getQueryRepresentation();
+        
+        updateTransformedQuerySesamSyntax();
     }
-
+    
     // Inner classes -------------------------------------------------
 
 
@@ -1093,9 +1094,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final LeafClause clause) {
+            
             final String field = clause.getField();
 
-            if (field == null) {
+            // ignore terms that are fielded and terms that have been initialised but since nulled
+            if (null == field && null != transformedTerms.get(clause)) {
                 sb.append(transformedTerms.get(clause));
             }
         }

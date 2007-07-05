@@ -93,6 +93,11 @@ public final class DataModelResultHandler implements ResultHandler{
                     : (String) v));
 
         }
+        
+        // friendly command-specific search string
+        final String friendly = null != cxt.getDisplayQuery() && cxt.getDisplayQuery().length() > 0
+                        ? cxt.getDisplayQuery()
+                        : cxt.getQuery().getQueryString();
 
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
@@ -100,6 +105,11 @@ public final class DataModelResultHandler implements ResultHandler{
                 new DataObject.Property("query", cxt.getQuery()));
         
         // Update the datamodel
+        final QueryDataObject queryDO = factory.instantiate(
+                QueryDataObject.class,
+                new DataObject.Property("string", friendly),
+                new DataObject.Property("query", cxt.getQuery()));
+        
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
                 new DataObject.Property("configuration", cxt.getSearchConfiguration()),

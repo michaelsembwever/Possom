@@ -38,7 +38,7 @@ public interface QueryDataObject extends StringDataObject{
     @AccessAllow(RUNNING_QUERY_CONSTRUCTION)
     void setQuery(Query query);
 
-    @AccessAllow({REQUEST_CONSTRUCTION, RUNNING_QUERY_CONSTRUCTION})
+    @AccessAllow({SEARCH_COMMAND_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING})
     String getString();
 
 }

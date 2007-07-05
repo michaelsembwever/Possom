@@ -48,6 +48,8 @@ import java.util.Properties;
 /**
  * Base class for commands querying a FAST EPS Server.
  * See https://dev.schibstedsok.no/confluence/display/TECHDEV/FAST+ESP+5.0+Documentation
+ * 
+ * @version $Id$
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
@@ -125,39 +127,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         searchView = initialiseSearchView();
     }
 
-    /**
-     * Default collapsing from the configuration, can be overridden in subcommands..
-     * @return true if collapsing is enabled
-     */
-    protected boolean isCollapsingEnabled() {
-        return cfg.isCollapsingEnabled();
-    }
-
-    /**
-     * Default sortby, can be overridden by subcommands.
-     * @return sortby field
-     */
-    protected String getSortBy() {
-        String sortBy = cfg.getSortBy();
-
-        if (getParameters().containsKey("userSortBy")) {
-
-            final String userSortBy = getParameter("userSortBy");
-            LOG.debug("execute: SortBy " + userSortBy);
-
-            if ("standard".equals(userSortBy)) {
-                sortBy = "-frontpagename -contentprofile -docdatetime";
-            } else if ("datetime".equals(userSortBy)) {
-                sortBy = "-frontpagename -docdatetime";
-            } else if ("standard_nettby".equals(userSortBy)) {
-                sortBy = "-contentprofile -publishedtime";
-            } else if ("datetime_nettby".equals(userSortBy)) {
-                sortBy = "-publishedtime";
-            }
-        }
-
-        return sortBy;
-    }
 
     // Public --------------------------------------------------------
 
@@ -180,8 +149,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 filterBuilder.append(' ');
             }
 
-
-            final String transformedQuery = getTransformedQuery();
+            final String transformedQuery = appendFilter(cfg.getFilter(), getTransformedQuery());
 
             LOG.debug("Transformed query is " + transformedQuery);
 
@@ -199,7 +167,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 }
             }
 
-            String sortBy = getSortBy();
+            final String sortBy = getSortBy();
 
             query.setParameter(new SearchParameter("sesat:uniqueId",
                     context.getDataModel().getParameters().getUniqueId()));
@@ -235,6 +203,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
     }
 
+    private String appendFilter(final String filter, final String q) {
+        return filter.length() > 0 ? "and(" + q + "," + "filter(" + filter + "))" : q;
+    }
+
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------
@@ -243,6 +215,40 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Protected -----------------------------------------------------
 
+    /**
+     * Default collapsing from the configuration, can be overridden in subcommands..
+     * @return true if collapsing is enabled
+     */
+    protected boolean isCollapsingEnabled() {
+        return cfg.isCollapsingEnabled();
+    }
+
+    /**
+     * Default sortby, can be overridden by subcommands.
+     * @return sortby field
+     */
+    protected String getSortBy() {
+        String sortBy = cfg.getSortBy();
+
+        if (getParameters().containsKey("userSortBy")) {
+
+            final String userSortBy = getParameter("userSortBy");
+            LOG.debug("execute: SortBy " + userSortBy);
+
+            if ("standard".equals(userSortBy)) {
+                sortBy = "-frontpagename -contentprofile -docdatetime";
+            } else if ("datetime".equals(userSortBy)) {
+                sortBy = "-frontpagename -docdatetime";
+            } else if ("standard_nettby".equals(userSortBy)) {
+                sortBy = "-contentprofile -publishedtime";
+            } else if ("datetime_nettby".equals(userSortBy)) {
+                sortBy = "-publishedtime";
+            }
+        }
+
+        return sortBy;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -274,7 +280,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @return a searchResult constructed from the supplied IQueryResult.
      * @throws IOException if something bad happens... Like, an invalid url. (Actually just to not break old code.)
      */
-    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
+    protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
 
         final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(this);
         final int cnt = getCurrentOffset(0);
@@ -388,20 +394,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         appendToQueryRepresentation("(");
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(")");
-    }
-
-    private boolean isEmptyLeaf(final Clause clause) {
-        if (clause instanceof LeafClause) {
-            final LeafClause leaf = (LeafClause) clause;
-            // Changed logic to include: no field and no term. - Geir H. Pettersen - T-Rank
-            String transformedTerm = getTransformedTerm(clause);
-            transformedTerm = transformedTerm.length() == 0 ? null : transformedTerm;
-            return leaf.getField() == null && transformedTerm == null || null != leaf.getField() && null != getFieldFilter(leaf);
-        } else if (clause instanceof DoubleOperatorClause) {
-            DoubleOperatorClause doc = (DoubleOperatorClause) clause;
-            return isEmptyLeaf(doc.getFirstClause()) && isEmptyLeaf(doc.getSecondClause());
-        }
-        return false;
     }
 
     /**

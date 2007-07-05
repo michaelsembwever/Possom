@@ -70,7 +70,7 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
 
 
     @Override
-    public CommandConfig readSearchConfiguration(
+    public FastCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
 

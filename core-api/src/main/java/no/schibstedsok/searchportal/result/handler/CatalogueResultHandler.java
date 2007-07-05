@@ -2,7 +2,7 @@
 
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Collection;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Properties;
 
 import javax.ejb.EJBException;
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * product information to be presented in the infopage for katalog.
  *
  * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
- * @version <tt>$Revision: 3436 $</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class CatalogueResultHandler implements ResultHandler {
 
@@ -68,12 +68,17 @@ public final class CatalogueResultHandler implements ResultHandler {
             no.schibstedsok.alfa.external.dto.ProductSearchResult companyServiceResult = null;
 
             try {
-                companyServiceResult = (no.schibstedsok.alfa.external.dto.ProductSearchResult) getCompanyService(siteConf).getProductDataForCompany(
-                        companyId);
+                companyServiceResult 
+                        = (no.schibstedsok.alfa.external.dto.ProductSearchResult) getCompanyService(siteConf)
+                        .getProductDataForCompany(companyId);
+                
                 internalResult = new ProductSearchResult();
+                        
                 if (companyServiceResult.hasInfoPageProducts()) {
                     LOG.debug("Found info page products for companyId: "+ companyId);
-                    for (no.schibstedsok.alfa.external.dto.ProductResultItem externalProductResultItem : companyServiceResult.getInfoPageProducts()) {
+                    
+                    for (no.schibstedsok.alfa.external.dto.ProductResultItem externalProductResultItem 
+                            : companyServiceResult.getInfoPageProducts()) {
 
                         final ProductResultItem item = new ProductSearchResultItem();
 
@@ -87,15 +92,19 @@ public final class CatalogueResultHandler implements ResultHandler {
                     LOG.debug("No info page products for companyId: " + companyId);
                 }
                 cat.addProducts(internalResult);
+                
                 // the content enrichment was done from remote service, return.
                 return;
+                
             } catch (NamingException e) {
                 LOG.error("Unable to lookup remote service, index will be used for info page result " , e);
             } catch(EJBException e){
                 LOG.error("Error occured calling remote service, index will be used for info page result ", e);
+            } catch(UndeclaredThrowableException e){
+                LOG.error("Error occured calling remote service, index will be used for info page result ", e);
             }
           
-            ProductSearchResult internalIndexResult = new ProductSearchResult();      
+            final ProductSearchResult internalIndexResult = new ProductSearchResult();      
             internalIndexResult.addInfoPageResult(createIndexInfoPageItem(cat));
             
             //internalIndexResult.addInfoPageResult(indexInfoPageItem);

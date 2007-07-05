@@ -124,7 +124,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      *
      * @return true iff leaf is empty.
      */
-    private boolean isEmptyLeaf(final Clause clause) {
+    protected boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leafClause = (LeafClause) clause;
             return getFieldFilter(leafClause) != null || getTransformedTerm(clause).equals("");

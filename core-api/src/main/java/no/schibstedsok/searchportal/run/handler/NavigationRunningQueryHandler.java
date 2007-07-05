@@ -44,15 +44,6 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
         }
     }
 
-//    /**
-//     * @param id
-//     * @return
-//     */
-//    private static NavigationConfig.Navigation getNavigation(final DataModel datamodel, final String id) {
-//
-//        return NavigationHelper.getConfig(datamodel).getNavigationMap().get(id);
-//    }
-
     /**
      * Returns extended navigators for a name(id)
      *

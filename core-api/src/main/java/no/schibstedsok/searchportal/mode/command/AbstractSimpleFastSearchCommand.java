@@ -1011,7 +1011,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
         }
 
         if (nav.getChildNavigator() == null) {
-            throw new RuntimeException("Navigator " + nameToFind + " not found.");
+            throw new IllegalStateException("Navigator " + nameToFind + " not found.");
         }
 
         return findChildNavigator(nav.getChildNavigator(), nameToFind);

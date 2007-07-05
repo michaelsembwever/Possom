@@ -7,14 +7,12 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueAdsCommandConfig;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.NotClause;
@@ -39,6 +37,8 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueAdsSearchCommand.class);
+
+    private static final String NOT_LETTERS_AND_NUMBERS = "[[\\P{L}&&\\P{N}]\\s]";
 
     /** String that hold the original untransformed query supplied by the user. */
     private String originalQuery;
@@ -68,7 +68,6 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
      * Creates a new instance of CatalogueAdsSearchCommand.
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public CatalogueAdsSearchCommand(final Context cxt) {
 
@@ -89,7 +88,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             final ReconstructedQuery queryGeo
                     = createQuery(getSingleParameter(whereParameter));
 
-            queryGeoString = queryGeo.getQuery().getQueryString().replaceAll("\\W", "").toLowerCase();
+            queryGeoString = queryGeo.getQuery().getQueryString().replaceAll(NOT_LETTERS_AND_NUMBERS, "").toLowerCase();
         } else {
             queryGeoString = DOMESTIC_SEARCH;
         }        
@@ -97,9 +96,9 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         
         
         if(getSingleParameter("who")!=null) {
-            originalQuery = getSingleParameter("who").replaceAll("\\W", "").toLowerCase();            
+            originalQuery = getSingleParameter("who").replaceAll(NOT_LETTERS_AND_NUMBERS, "").toLowerCase();
         }else{
-            originalQuery = super.getTransformedQuery().replaceAll("\\W", "").toLowerCase();
+            originalQuery = super.getTransformedQuery().replaceAll(NOT_LETTERS_AND_NUMBERS, "").toLowerCase();
         }
         
         LOG.info("CatalogueAdsSearch Debug output");
@@ -262,7 +261,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
         if (whichQueryToRun == QueryType.GEO) {
             query = originalQuery
-            + queryGeoString.replaceAll("\\W", "");
+            + queryGeoString.replaceAll(NOT_LETTERS_AND_NUMBERS, "");
             
             
         } else {

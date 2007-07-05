@@ -33,6 +33,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * The default charset is utf-8.
  *
  * @author magnuse
+ * @version $Id$
  */
 public final class UrlEncodeDirective extends Directive {
 
@@ -81,7 +82,7 @@ public final class UrlEncodeDirective extends Directive {
                 charset = node.jjtGetChild(1).value(context).toString();
             }
 
-            writer.write(URLEncoder.encode(input, charset));
+            writer.write(URLEncoder.encode(input, charset).replace("'", "%27").replace("(", "%28").replace(")", "%29"));
 
             final Token lastToken = node.getLastToken();
 

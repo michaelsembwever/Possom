@@ -8,9 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
-import java.util.regex.Pattern;
 
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
@@ -197,15 +195,18 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private WhoWhereSplit initialiseWhoWhere() {
 
         final CatalogueCommandConfig conf = (CatalogueCommandConfig) context.getSearchConfiguration();
-        if(datamodel.getParameters().getValue("who")!=null) LOG.info("datamodel.getParameters().getValue(who) is "+datamodel.getParameters().getValue("who"));
-            else LOG.info("datamodel.getParameters().getValue(who) is NULL");
-            
-        if(datamodel.getParameters().getValue("q")!=null) LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
-            else LOG.info("datamodel.getParameters().getValue(q) is NULL");
         
-        String whoParameter 
-                = datamodel.getParameters().getValue("who")!=null ? 
-                    datamodel.getParameters().getValue("who").getString() : datamodel.getQuery().getString();
+        if(null != datamodel.getParameters().getValue("who")){ 
+            LOG.info("datamodel.getParameters().getValue(who) is "+datamodel.getParameters().getValue("who"));
+        }else{ LOG.info("datamodel.getParameters().getValue(who) is NULL"); }
+            
+        if(null != datamodel.getParameters().getValue("q")){ 
+            LOG.info("datamodel.getParameters().getValue(q) is "+datamodel.getParameters().getValue("who"));
+        }else{ LOG.info("datamodel.getParameters().getValue(q) is NULL"); }
+        
+        final String whoParameter = null != datamodel.getParameters().getValue("who")
+                    ? datamodel.getParameters().getValue("who").getString() 
+                    : datamodel.getQuery().getString();
 
         
         WhoWhereSplit splitQuery = new WhoWhereSplit(
@@ -331,18 +332,13 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         result.removeResults();
         result.addResults(nyResultListe);
 
-        // add the who and where fields (preferred over using them out of the junkyard)
-        // WHY!? When displaying the infopage, getTransformedQuerySesamSyntax returns NULL.
-        // hmm. getQuery().getQueryString() always return the plain text search string for the query.
-        //result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
-        
-        result.addField(PARAMETER_NAME_WHAT, getQuery().getQueryString());
-        result.addField(PARAMETER_NAME_WHERE, whereString);
+        // add the where field
+        result.addObjectField(PARAMETER_NAME_WHERE, whereString);
         
         LOG.debug(DEBUG_SEARCHING_1 + getQuery().getQueryString());
         LOG.debug(DEBUG_SEARCHING_2 + whereString);
                
-        result.addField("sortBy",getSortBy());
+        result.addField("sortBy", getSortBy());
         return result;
     }
 

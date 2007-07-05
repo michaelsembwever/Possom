@@ -63,12 +63,12 @@ public final class DateFormatHandlerTest extends SiteTestCase {
                 return command.getRunningQuery().getSearchTab();
             }
 
-            public String getQueryString() {
-                return command.getRunningQuery().getQuery().getQueryString();
-            }
-
             public Query getQuery() {
                 return command.getRunningQuery().getQuery();
+            }
+            
+            public String getDisplayQuery() {
+                return command.getRunningQuery().getQuery().getQueryString();
             }
 
             public void addSource(final Modifier modifier) {

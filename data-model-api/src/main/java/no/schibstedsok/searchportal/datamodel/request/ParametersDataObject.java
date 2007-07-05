@@ -26,7 +26,6 @@ import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 @DataNode
 public interface ParametersDataObject extends MapDataObject<StringDataObject>{
 
-    @AccessDisallow(VIEW_CONSTRUCTION)
     Map<String,StringDataObject> getValues();
 
     /**
@@ -34,7 +33,6 @@ public interface ParametersDataObject extends MapDataObject<StringDataObject>{
      * @param key 
      * @return 
      */
-    @AccessDisallow(VIEW_CONSTRUCTION)
     StringDataObject getValue(final String key);
 
     /**
@@ -45,16 +43,10 @@ public interface ParametersDataObject extends MapDataObject<StringDataObject>{
     @AccessAllow({})
     void setValue(final String key, final StringDataObject value);
     
-    /** @deprecated Pointless since sesat can only run against the root context.
+    /** The UniqueId is used to trace one request from it's origin (apace or tomcat) down through each command and 
+     * into the indexes.
      * 
-     * @return 
-     */
-    @AccessAllow({REQUEST_CONSTRUCTION, VIEW_CONSTRUCTION})
-    String getContextPath();
-
-    /**
-     * 
-     * @return 
+     * @return the uniqueId
      */
     String getUniqueId();
 }

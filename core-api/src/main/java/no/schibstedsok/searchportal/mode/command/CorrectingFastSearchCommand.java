@@ -9,10 +9,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -35,12 +32,12 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
 public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchCommand {
     
     private static final String ERR_CANNOT_CREATE_COMMAND = "Unable to create command to rerun.";
-    private static final String RESULT_FIELD_CORRECTED_QUERY = "autoCorrectedQuery";
     
     private static final Logger LOG = Logger.getLogger(CorrectingFastSearchCommand.class);
 
     private boolean correct = true;
     private final Context cxt;
+    // XXX couldn't we re-use functionality given by overriding AbstractSearchCommand.getQuery()
     private ReconstructedQuery correctedQuery;
 
     /** Creates a new instance of CorrectionFastSearchCommand.
@@ -56,17 +53,18 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
         this.correctedQuery = createQuery(correctedQuery);
     }
 
+    @Override
     protected final Query getQuery() {
         return correctedQuery != null ? correctedQuery.getQuery() : super.getQuery();
     }
 
     /** {@inheritDoc} */
-    public ResultList<? extends ResultItem> execute() {
-        
-        final ResultList<? extends ResultItem> originalResult = super.execute();
+    @Override
+    public ResultList<? extends ResultItem> call() {
+        final ResultList<? extends ResultItem> originalResult = super.call();
         final Map<String, List<WeightedSuggestion>> suggestions
-                = ((BasicResultList)originalResult).getSpellingSuggestionsMap();
-        
+                = ((BasicResultList<?>)originalResult).getSpellingSuggestionsMap();
+
         // Rerun command?
         // TODO Consider moving the isCorrectionEnabled() call after the
         // correction has been made and then discarding the result
@@ -79,8 +77,6 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
             final String oldQuery = datamodel.getQuery().getString();
             final String newQuery = correctQuery(suggestions, oldQuery);
 
-            // Create a new identical context apart from the corrected query
-
             try {
                 // Create and execute command on corrected query.
                 // Making sure this new command does not try to do the whole
@@ -91,22 +87,26 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
                 c.setCorrectedQuery(newQuery);
 
                 final ResultList<? extends ResultItem> result = c.call();
-                
-                if (result.getHitCount() > 0) {
-                    result.addField(RESULT_FIELD_CORRECTED_QUERY, newQuery);
-                }
-                
+
                 return result;
-                
+
             } catch (Exception ex) {
                 LOG.error(ERR_CANNOT_CREATE_COMMAND, ex);
                 return originalResult;
             }
         }
-        
+
         return originalResult;
     }
-    
+
+    @Override
+    protected void updateTransformedQuerySesamSyntax() {
+                
+        // redo the transformedQuerySesamSyntax off our correctedQuery (if it exists)
+        initialiseTransformedTerms(getQuery());
+        super.updateTransformedQuerySesamSyntax();
+    }   
+
     /**
      * Correction will only be enabled if this method returns true. Override
      * this to dynamically turn correction on and off.
