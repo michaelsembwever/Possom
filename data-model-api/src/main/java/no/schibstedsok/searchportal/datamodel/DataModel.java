@@ -104,7 +104,7 @@ public interface DataModel extends Serializable{
      * 
      * @param site the SiteDataObject holding site and skin information.
      */
-    @AccessAllow(DATA_MODEL_CONSTRUCTION)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setSite(SiteDataObject site);
 
     // QueryDataObject ------------------------------------------------------------
