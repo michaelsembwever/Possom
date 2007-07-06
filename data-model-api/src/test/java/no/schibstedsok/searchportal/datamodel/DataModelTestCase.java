@@ -34,13 +34,17 @@ public abstract class DataModelTestCase extends SiteTestCase{
     private static final Logger LOG = Logger.getLogger(DataModelTestCase.class);
 
     // Attributes ----------------------------------------------------
+    
+    private DataModelFactory factory = null;
+    private Site site = null;
+    private SiteConfiguration.Context siteConfCxt = null;
 
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
     
     protected DataModelTestCase(){}
-
+    
     // Public --------------------------------------------------------
 
     // Z implementation ----------------------------------------------
@@ -51,37 +55,42 @@ public abstract class DataModelTestCase extends SiteTestCase{
 
     // Protected -----------------------------------------------------
     
-    protected DataModel getDataModel() throws SiteKeyedFactoryInstantiationException{
+    protected synchronized DataModelFactory getDataModelFactory() throws SiteKeyedFactoryInstantiationException{
         
-        final DataModelFactory factory;
-        final Site site = super.getTestingSite();
-        final SiteConfiguration.Context cxt = new SiteConfiguration.Context(){
-                public Site getSite() {
-                    return site;
-                }
+        if(null == factory){
+            try{
+                site = getTestingSite();
+                siteConfCxt = new SiteConfiguration.Context(){
+                    public Site getSite() {
+                        return site;
+                    }
 
-                public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
-                                                            final String resource,
-                                                            final Properties properties) {
-                    return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
-                }
-            };
-        final SiteConfiguration siteConf = SiteConfiguration.valueOf(cxt);
-        
-        try{
-            factory = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt));
+                    public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
+                                                                final String resource,
+                                                                final Properties properties) {
+                        return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+                    }
+                };
+                factory = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, siteConfCxt));
 
-        }catch(SiteKeyedFactoryInstantiationException skfie){
-            LOG.error(skfie.getMessage(), skfie);
-            throw skfie;
+            }catch(SiteKeyedFactoryInstantiationException skfie){
+                LOG.error(skfie.getMessage(), skfie);
+                throw skfie;
+            }
         }
-        
+        return factory;
+    }
+    
+    protected DataModel getDataModel() throws SiteKeyedFactoryInstantiationException{
+
+        getDataModelFactory();
+       
         final DataModel datamodel = factory.instantiate();
 
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
                 new DataObject.Property("site", site),
-                new DataObject.Property("siteConfiguration", siteConf));
+                new DataObject.Property("siteConfiguration", siteConfCxt));
         
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,

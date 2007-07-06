@@ -90,7 +90,7 @@ public abstract class SiteTestCase {
         };
     }
     
-    protected Site getTestingSite(){
+    protected final Site getTestingSite(){
         
         final String basedir = System.getProperty("basedir").replaceAll("/war", "");
         return Site.valueOf(

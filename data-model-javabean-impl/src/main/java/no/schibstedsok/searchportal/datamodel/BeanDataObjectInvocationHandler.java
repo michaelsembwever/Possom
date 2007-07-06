@@ -62,6 +62,8 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
     private static final Logger LOG = Logger.getLogger(BeanDataObjectInvocationHandler.class);
     
     private static final String ERR_DENIED = "Failure to honour the Access control annotations on ";
+    
+    private static final boolean ACCESS_CONTROLLED = !Boolean.getBoolean("sesat.datamodel.accesscontrol.ignore");
 
     // Attributes ----------------------------------------------------
 
@@ -315,7 +317,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
                     disallowed |= cl == level;
                 }
             }
-            if((null != allow && !allowed) || (null != disallow && disallowed)){
+            if(ACCESS_CONTROLLED && ((null != allow && !allowed) || (null != disallow && disallowed))){
                 throw new IllegalAccessException(ERR_DENIED + method.getName() + " against " + level);
             }
         }

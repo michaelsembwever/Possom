@@ -39,8 +39,8 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                        <argLine>-ea -Xmx512m -Dfile.encoding=UTF-8</argLine>
-                        <!--argLine>-ea -Xmx512m -Dfile.encoding=UTF-8 -Xdebug -Xrunjdwp:transport=dt_socket,address=54321,server=y,suspend=y</argLine-->
+                        <argLine>-ea -Xmx512m -Dfile.encoding=UTF-8 -Dsesat.datamodel.accesscontrol.ignore=true</argLine>
+                        <!--argLine>-ea -Xmx512m -Dfile.encoding=UTF-8 -Dsesat.datamodel.accesscontrol.ignore=true -Xdebug -Xrunjdwp:transport=dt_socket,address=54321,server=y,suspend=y</argLine-->
                   </configuration>
               </plugin>
          </plugins>
@@ -73,6 +73,13 @@
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
             <version>${version}</version>
             <type>test-jar</type>
             <scope>test</scope>

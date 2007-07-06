@@ -63,7 +63,7 @@ public final class DataModelFactoryImplTest {
                                                         final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-});
+        });
     }
 
     // Public --------------------------------------------------------

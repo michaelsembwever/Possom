@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler<DataModel>{
+final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler<DataModel>{
     
     // Constants -----------------------------------------------------
     

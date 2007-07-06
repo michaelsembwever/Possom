@@ -58,6 +58,7 @@ import org.testng.annotations.Test;
 /**
  *
  * @author andersjj
+ *  @version $Id$
  */
 public class DataModelSerializeTest implements Serializable {
     
