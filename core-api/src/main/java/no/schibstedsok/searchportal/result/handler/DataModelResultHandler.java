@@ -99,11 +99,6 @@ public final class DataModelResultHandler implements ResultHandler{
                         ? cxt.getDisplayQuery()
                         : cxt.getQuery().getQueryString();
 
-        final QueryDataObject queryDO = factory.instantiate(
-                QueryDataObject.class,
-                new DataObject.Property("string", cxt.getQuery().getQueryString()),
-                new DataObject.Property("query", cxt.getQuery()));
-        
         // Update the datamodel
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
