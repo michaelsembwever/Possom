@@ -29,6 +29,7 @@ import no.fast.ds.search.SearchEngineException;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -112,7 +113,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
      * Creates a new instance of AbstractSimpleFastSearchCommand
      */
     public AbstractSimpleFastSearchCommand(final Context cxt) {
-
+        
         super(cxt);
 
         final FastCommandConfig conf = (FastCommandConfig) cxt.getSearchConfiguration();
@@ -123,23 +124,35 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
     // Public --------------------------------------------------------
 
     /**
-     * TODO comment me. *
+     * 
      */
     public Collection createNavigationFilterStrings() {
-        final Collection filterStrings = new ArrayList();
+        final Collection<String> filterStrings = new ArrayList<String>();
 
         for (final Iterator iterator = navigatedValues.keySet().iterator(); iterator.hasNext();) {
             final String field = (String) iterator.next();
 
-            final String modifiers[] = (String[]) navigatedValues.get(field);
-
+            final String modifiers[] = navigatedValues.get(field);
 
             for (int i = 0; i < modifiers.length; i++) {
                 if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")) {
                     if ("adv".equals(getSearchConfiguration().getFiltertype()))
                         filterStrings.add(" AND " + field + ":\"" + modifiers[i] + "\"");
                     else
-                        filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+                        filterStrings.add("+" + field + ":^\"" + modifiers[i] + "\"$");
+                }
+            }
+        }
+
+        for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
+            if (navigator.isNewStyle()) {
+                final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
+
+                if (navigatedValue != null) {
+                    if ("adv".equals(getSearchConfiguration().getFiltertype()))
+                        filterStrings.add(" AND " + navigator.getField() + ":\"" + navigatedValue.getString() + "\"");
+                    else
+                        filterStrings.add("+" + navigator.getField() + ":^\"" + navigatedValue.getString() + "\"$");
                 }
             }
         }
@@ -176,7 +189,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
      */
     public void addNavigatedTo(final String navigatorKey, final String navigatorName) {
 
-        final Navigator navigator = (Navigator) getNavigators().get(navigatorKey);
+        final Navigator navigator = getNavigators().get(navigatorKey);
 
         if (navigatorName == null) {
             navigatedTo.put(navigatorKey, navigator);
@@ -200,7 +213,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
         if (getParameters().containsKey("nav_" + navigatorKey)) {
             final String navName = getParameter("nav_" + navigatorKey);
 
-            return findParentNavigator((Navigator) getNavigators().get(navigatorKey), navName);
+            return findParentNavigator(getNavigators().get(navigatorKey), navName);
 
         } else {
             return null;
@@ -213,7 +226,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
     public Navigator getParentNavigator(final String navigatorKey, final String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
 
-            return findParentNavigator((Navigator) getNavigators().get(navigatorKey), name);
+            return findParentNavigator(getNavigators().get(navigatorKey), name);
 
         } else {
             return null;
@@ -250,7 +263,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
      * TODO comment me. *
      */
     public String getNavigatedValue(final String fieldName) {
-        final String[] singleValue = (String[]) navigatedValues.get(fieldName);
+        final String[] singleValue = navigatedValues.get(fieldName);
 
         if (singleValue != null) {
             return (singleValue[0]);
@@ -344,7 +357,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
      */
     public List addNavigatorBackLinks(final Navigator navigator, final List links, final String navigatorKey) {
 
-        final String a = getParameter(navigator.getField());
+        final String a = getParameter(navigator.getField());                                                            
 
         if (a != null) {
             if (!((navigator.getName().equals("ywfylkesnavigator") || navigator.getName().equals("iypnavfylke")) && a.equals("Oslo"))) {
@@ -449,7 +462,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
                     if (searchResult.getResults().size() > 0) {
                         final ResultItem itm = searchResult.getResults().get(0);
-                        final URL url = new URL((String)itm.getField("url"));
+                        final URL url = new URL(itm.getField("url"));
                         searchResult.addField("collapsedDomain", url.getHost());
                     }
                 }

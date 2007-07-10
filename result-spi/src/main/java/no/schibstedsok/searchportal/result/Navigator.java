@@ -20,6 +20,8 @@ public final class Navigator implements Serializable {
     private String displayName;
     private Sort sort;
 
+    private final boolean newStyle;
+
     public enum Sort {
         COUNT(),
         CHANNEL(),
@@ -34,17 +36,19 @@ public final class Navigator implements Serializable {
     /**
      *
      */
-    public Navigator(final String name, final String field, final String displayName, final Sort sort) {
+    public Navigator(final String name, final String field, final String displayName, final Sort sort, final boolean newStyle) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;
         this.sort = sort;
+        this.newStyle = newStyle;
     }
 
     /**
      *
      */
     public Navigator() {
+        newStyle = false;
     }
 
     /**
@@ -140,5 +144,10 @@ public final class Navigator implements Serializable {
      */
     public void setId(final String id) {
         this.id = id;
+    }
+    
+    public boolean isNewStyle()
+    {
+        return newStyle;
     }
 }
