@@ -13,7 +13,9 @@ import no.schibstedsok.searchportal.result.ProductResult;
  * @version <tt>$Id$</tt>
  */
 public final class CatalogueSearchResultItem extends BasicResultItem {
+	
     private static final Logger LOG = Logger.getLogger(CatalogueSearchResultItem.class);
+    private static final String SEPARATOR = ",";
 	/**
 	 * TODO: javadoc.
 	 */
@@ -42,6 +44,117 @@ public final class CatalogueSearchResultItem extends BasicResultItem {
     public ProductResult getProducts(){
     	return this.products;
     }
+    
+    /**
+     * Responsible for building html meta description content.
+     * <meta name='description' content="data from method." />
+     * 
+     * @return Comma separated values for content attribute.
+     */
+    public String getHtmlMetaDescriptionContent(){
+    	StringBuffer metaDataDescrption = new StringBuffer();
+    	
+    	if(getDescription() != null){
+    		metaDataDescrption.append(getDescription());
+    		metaDataDescrption.append(SEPARATOR);
+    	}
+    	
+    	if(getMarketName() != null){
+    		metaDataDescrption.append(getMarketName());
+    		metaDataDescrption.append(SEPARATOR);
+    	}
+    	
+    	metaDataDescrption.append(getField("iypurl"));
+    	metaDataDescrption.append(SEPARATOR);
+    	metaDataDescrption.append("Adresse: " + getField("iypadresse"));
+    	metaDataDescrption.append(SEPARATOR);
+    	metaDataDescrption.append(getField("iyppostnr"));
+    	metaDataDescrption.append(SEPARATOR);
+    	metaDataDescrption.append(getField("iyppoststed"));
+    	metaDataDescrption.append(SEPARATOR);
+    	metaDataDescrption.append(getField("iypkommune"));
+    	return metaDataDescrption.toString();
+    }
+    
+    /**
+     * Responsible for building the value of the keyword metadata content attribute.
+     * <meta name='keywords' content='result from this method' />
+     * @return Comma separated values for keywords.
+     */
+    public String getHtmlMetaKeywordsContent(){
+    	StringBuffer metaDataKeywords = new StringBuffer();
+    	if(getMarketName() != null){
+    		metaDataKeywords.append(getMarketName());
+    		metaDataKeywords.append(SEPARATOR);
+    	}
+    	
+    	if(getDescription() != null){
+    		metaDataKeywords.append(getDescription());
+    		metaDataKeywords.append(SEPARATOR);
+    	}
+    	
+    	metaDataKeywords.append(getField("iypurl"));
+    	metaDataKeywords.append(SEPARATOR);
+    	
+    	metaDataKeywords.append("Tlf:"+getPhoneNumber());
+    	metaDataKeywords.append(SEPARATOR);
+    	if(getFax() != null){
+    		metaDataKeywords.append("Fax:" + getFax());
+    		metaDataKeywords.append(SEPARATOR);
+    	}
+
+    	metaDataKeywords.append("Adresse: " + getField("iypadresse"));
+    	metaDataKeywords.append(SEPARATOR);
+    	metaDataKeywords.append(getField("iyppostnr"));
+    	metaDataKeywords.append(SEPARATOR);
+    	metaDataKeywords.append(getField("iyppoststed"));
+    	metaDataKeywords.append(SEPARATOR);
+    	metaDataKeywords.append(getField("iypkommune"));
+    	
+    	
+    	if(getKeywords() != null){
+    		metaDataKeywords.append(SEPARATOR);
+    		metaDataKeywords.append(getKeywords());
+    	}
+    	
+    	return metaDataKeywords.toString();
+    }
+    
+    /**
+     * Util method for getting keywords from search result.
+     * @return Comma separated keywords.
+     */
+    private String getKeywords() {
+    	if(products != null && products.getInfoPageProducts() != null && products.getInfoPageProducts().size() > 0){
+    		return products.getInfoPageProducts().get(0).getField("keywords");
+    	}
+    	
+    	return null;
+	}
+
+    
+    private String getDescription(){
+    	if(products != null && products.getInfoPageProducts() != null && products.getInfoPageProducts().size() > 0){
+    		return products.getInfoPageProducts().get(0).getField("textShort");
+    	}
+    	return null;
+    }
+    
+    private String getMarketName(){
+    	if(products != null && products.getInfoPageProducts() != null && products.getInfoPageProducts().size() > 0){
+    		return products.getInfoPageProducts().get(0).getField("marketname");
+    	}
+    	return null;
+    }
+    
+    private String getFax(){
+    	if(products != null && products.getInfoPageProducts() != null && products.getInfoPageProducts().size() > 0){
+    		return products.getInfoPageProducts().get(0).getField("fax");
+    	}
+    	
+    	return null;
+    }
+
     
     /**
      * Utility method for checking if the entry belongs to a paying customer.
