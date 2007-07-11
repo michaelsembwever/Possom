@@ -47,13 +47,13 @@
             </td>
         </tr>        
     </table>
-    <search:include include="bottom-ads"/>
-    <search:include include="offsetPager"/>
-    <search:include include="top3-ads-bottom"/>
-    <search:include include="verbosePager"/>
-    <search:include include="footer"/>
     <search:include include="bottom-one"/>
-    <search:include include="map-script"/>
-    <search:include include="gallup"/>
+    <search:include include="bottom-two"/>
+    <search:include include="bottom-three"/>
+    <search:include include="bottom-four"/>
+    <search:include include="bottom-five"/>
+    <search:include include="bottom-six"/>
+    <search:include include="bottom-seven"/>
+    <search:include include="bottom-eight"/>
 </body>
 </html>
