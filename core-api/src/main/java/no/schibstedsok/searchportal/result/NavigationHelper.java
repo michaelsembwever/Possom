@@ -75,12 +75,12 @@ public final class NavigationHelper {
         }
         sb.append("c=").append(tab);
         if (!navEntry.isExcludeQuery()) {
-            sb.append("&q=").append(datamodel.getQuery().getUtf8UrlEncoded());
+            sb.append("&amp;q=").append(datamodel.getQuery().getUtf8UrlEncoded());
         }
         if (value != null && value.length() > 0) {
-            sb.append('&').append(enc(navEntry.getField())).append('=').append(enc(value));
+            sb.append("&amp;").append(enc(navEntry.getField())).append('=').append(enc(value));
             if (navEntry.isRealNavigator() && navigatorName != null) {
-                sb.append('&').append("nav_").append(enc(navEntry.getId())).append('=').append(enc(navigatorName));
+                sb.append("&amp;").append("nav_").append(enc(navEntry.getId())).append('=').append(enc(navigatorName));
             }
         }
         if (!navEntry.isOut()) {
@@ -167,7 +167,7 @@ public final class NavigationHelper {
             final String value) {
 
         if (!nav.getNavigation().getResetNavSet().contains(id)) {
-            sb.append('&').append(enc(id)).append('=').append(enc(value));
+            sb.append("&amp;").append(enc(id)).append('=').append(enc(value));
             return true;
         }
         return false;
