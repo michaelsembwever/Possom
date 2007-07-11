@@ -8,7 +8,11 @@
 
 package no.schibstedsok.searchportal.http.filters;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -37,10 +41,13 @@ import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
+import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
+import no.schibstedsok.searchportal.datamodel.search.SearchDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.datamodel.user.UserDataObject;
+import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
@@ -249,16 +256,19 @@ public final class DataModelFilter implements Filter {
 
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
-
+        
         factory.assignControlLevel(datamodel, ControlLevel.DATA_MODEL_CONSTRUCTION);
         for(String key : datamodel.getJunkYard().getValues().keySet()){
             datamodel.getJunkYard().setValue(key, null);
         }
-        for(String key : datamodel.getSearches().keySet()){
-            datamodel.setSearch(key, null);
-        }
-        datamodel.setParameters(null);
-        datamodel.setQuery(null);
+        
+        /* Moving this into SearchServlet so the results can be accessed in later requests */
+        
+        //for(String key : datamodel.getSearches().keySet()){
+        //    datamodel.setSearch(key, null);
+        //}
+        //datamodel.setParameters(null);
+        //datamodel.setQuery(null);
         factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
     }
 
