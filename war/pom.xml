@@ -180,7 +180,14 @@
         <type>jar</type>
         <version>3.0-schibstedsok-r1</version>
       </dependency> 
-      
+     
+      <dependency>
+        <groupId>dwr</groupId>
+        <artifactId>dwr</artifactId>
+        <type>jar</type>
+        <version>2.0.1</version>
+      </dependency>
+        
     </dependencies> 
     <profiles>
         <profile>
