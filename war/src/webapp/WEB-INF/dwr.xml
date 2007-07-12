@@ -1,0 +1,30 @@
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr//dwr20.dtd">
+<dwr>
+    <allow>
+        <create creator="none" javascript="DataModelWrapper">
+          <param name="class" value="no.schibstedsok.searchportal.http.dwr.DataModelWrapper"/>
+          <include method="getDataModel"/>
+          <include method="getSearch"/>
+          <include method="getResults"/>
+          <include method="getResultItem"/>
+        </create>
+        <convert converter="bean" match="$Proxy*"/>
+        <convert converter="bean" match="no.schibstedsok.searchportal.datamodel.*"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.result.BasicResultItem">
+            <param name="force" value="true"/>
+        </convert>
+        <!--convert converter="object" match="no.schibstedsok.searchportal.site.config.SiteConfiguration"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.site.Site"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.result.ResultList"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.result.BasicResultItem"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.result.ResultItem"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.result.BasicResultList"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.result.FastSearchResult"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.mode.config.*"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.mode.command.*"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.mode.command.WebSearchCommand"/>
+        <convert converter="object" match="no.schibstedsok.searchportal.query.Query"/>
+        <convert converter="object" match="java.util.Locale"/>
+        <convert converter="object" match="java.util.List"/-->
+    </allow>
+</dwr>
