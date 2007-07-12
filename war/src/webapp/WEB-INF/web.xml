@@ -157,11 +157,26 @@
         <servlet-name>SendMail</servlet-name>
         <servlet-class>no.schibstedsok.searchportal.http.servlet.SendMailServlet</servlet-class>
     </servlet>
+    
+    <servlet>
+      <servlet-name>dwr-invoker</servlet-name>
+      <display-name>DWR Servlet</display-name>
+      <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+      <init-param>
+         <param-name>debug</param-name>
+         <param-value>true</param-value>
+      </init-param>
+    </servlet>
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>VelocityDebug</servlet-name>
         <url-pattern>/servlet/VelocityDebug</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>dwr-invoker</servlet-name>
+      <url-pattern>/dwr/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
