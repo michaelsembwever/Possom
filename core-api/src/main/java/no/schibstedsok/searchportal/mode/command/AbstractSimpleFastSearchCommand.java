@@ -139,7 +139,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
                     if ("adv".equals(getSearchConfiguration().getFiltertype()))
                         filterStrings.add(" AND " + field + ":\"" + modifiers[i] + "\"");
                     else
-                        filterStrings.add("+" + field + ":^\"" + modifiers[i] + "\"$");
+                        filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
                 }
             }
         }
@@ -152,7 +152,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
                     if ("adv".equals(getSearchConfiguration().getFiltertype()))
                         filterStrings.add(" AND " + navigator.getField() + ":\"" + navigatedValue.getString() + "\"");
                     else
-                        filterStrings.add("+" + navigator.getField() + ":^\"" + navigatedValue.getString() + "\"$");
+                        filterStrings.add("+" + navigator.getField() + ":\"" + navigatedValue.getString() + "\"");
                 }
             }
         }
