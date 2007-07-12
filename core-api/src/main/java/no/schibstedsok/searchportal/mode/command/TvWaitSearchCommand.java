@@ -124,7 +124,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             return new FastSearchResult(this);
         }
 
-        final String waitOn = config.getWaitOn();
+        final String waitOn = useAllChannels ? config.getWaitOnAllChannels() : config.getWaitOnMyChannels();
 
         if (waitOn != null) {
             LOG.debug("Waiting on: " + waitOn);
@@ -278,7 +278,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
 
         /* If navigator root command and blankQuery, set default navigator */
         if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories") && !getParameters().containsKey("allhits")) {
-            if (useAllChannels) {
+            if (useAllChannels && !config.getUseMyChannels()) {
                 filter.append(addChannelCategoryNavigator(false));
             } else {
                 if (config.getUseMyChannels() && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
@@ -308,7 +308,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             filter.append("+starttime:<").append(new SimpleDateFormat("yyyy-MM-dd'T05:00:00Z'").format(cal.getTime())).append(" ");
 
             /* Use channels navigator in waitOn command */
-            if (config.getWaitOn() != null) {
+            if (config.getWaitOnAllChannels() != null) {
                 final Modifier modifier = (Modifier) wosr.getModifiers("channels").get(index);
                 final Navigator navigator = modifier.getNavigator();
                 filter.append("+").append(navigator.getField()).append(":").append(modifier.getName()).append(" ");
@@ -319,7 +319,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             filter.append("+endtime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
 
             /* Starttime less than 05:00 the next day or less than 05:00 seven days from now for the navigator */
-            if (config.getWaitOn() != null) {
+            if (config.getWaitOnAllChannels() != null) {
                 cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY);
             } else {
                 cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * 7);
@@ -327,7 +327,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             filter.append("+starttime:<").append(new SimpleDateFormat("yyyy-MM-dd'T05:00:00Z'").format(cal.getTime())).append(" ");
 
             /* Use channels navigator to add filter for top 5 channels */
-            if (config.getWaitOn() != null && blankQuery && wosr.getModifiers("channels").size() > 0) {
+            if (config.getWaitOnAllChannels() != null && blankQuery && wosr.getModifiers("channels").size() > 0) {
                 filter.append("+(");
                 final int maxIdx = wosr.getModifiers("channels").size() < 5 ? wosr.getModifiers("channels").size() : 5;
                 for (Modifier modifier : wosr.getModifiers("channels").subList(0, maxIdx)) {
@@ -347,7 +347,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             filter.append("+starttime:<").append(new SimpleDateFormat("yyyy-MM-dd'T05:00:00Z'").format(cal.getTime())).append(" ");
 
             /* Use categories navigator to select categories to display */
-            if (config.getWaitOn() != null) {
+            if (config.getWaitOnAllChannels() != null) {
                 final Modifier modifier = (Modifier) wosr.getModifiers("categories").get(index);
                 final Navigator navigator = modifier.getNavigator();
                 filter.append("+").append(navigator.getField()).append(":").append(modifier.getName()).append(" ");
@@ -365,7 +365,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             
         }
 
-        if (config.getUseMyChannels() && !useAllChannels && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
+        if (!useAllChannels && config.getUseMyChannels() && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
             final StringBuilder sb = new StringBuilder();
             sb.append("+(");
             for (String str : getParameter("myChannels").split(",")) {
