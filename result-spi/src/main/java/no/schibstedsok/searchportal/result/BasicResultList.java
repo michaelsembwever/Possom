@@ -136,7 +136,7 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
         querySuggestions.add(query);
     }
 
-    /** {@inheritDoc} **/
+    /** {@inheritDoc} **/          
     public List<T> getResults() {
         return Collections.unmodifiableList(results);
     }

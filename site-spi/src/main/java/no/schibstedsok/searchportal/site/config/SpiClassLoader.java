@@ -28,7 +28,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
 
     /**
      * Creates a new spi class loader.
-     * {@todo describle hierarchy.}
+     * {@todo describe hierarchy.}
      *
      * @param context the context.
      */

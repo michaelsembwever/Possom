@@ -127,6 +127,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
      * 
      */
     public Collection createNavigationFilterStrings() {
+
         final Collection<String> filterStrings = new ArrayList<String>();
 
         for (final Iterator iterator = navigatedValues.keySet().iterator(); iterator.hasNext();) {
@@ -148,11 +149,14 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
             if (navigator.isNewStyle()) {
                 final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
 
+                
                 if (navigatedValue != null) {
+                    final String value =  navigator.isBoundaryMatch() ? "^\"" + navigatedValue.getString() + "\"$" : "\"" + navigatedValue.getString() + "\"";
+
                     if ("adv".equals(getSearchConfiguration().getFiltertype()))
-                        filterStrings.add(" AND " + navigator.getField() + ":\"" + navigatedValue.getString() + "\"");
+                        filterStrings.add(" AND " + navigator.getField() + ':'  + value );
                     else
-                        filterStrings.add("+" + navigator.getField() + ":\"" + navigatedValue.getString() + "\"");
+                        filterStrings.add("+" + navigator.getField() + ':'  + value);
                 }
             }
         }

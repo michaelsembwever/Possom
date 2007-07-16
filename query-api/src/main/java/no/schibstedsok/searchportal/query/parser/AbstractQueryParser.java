@@ -275,6 +275,7 @@ public abstract class AbstractQueryParser implements QueryParser {
 
         return new AbstractQuery(string){
             public Clause getRootClause(){
+
                 return root;
             }
             public ParentFinder getParentFinder(){

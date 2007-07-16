@@ -225,6 +225,7 @@ public final class NavigationConfig implements Serializable {
         private String commandName;
         private String field;
         private String tab;
+        private String backText;
         private boolean out;
         private boolean realNavigator;
 
@@ -271,6 +272,9 @@ public final class NavigationConfig implements Serializable {
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, navElement, "true");
 
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
+            
 
             final List<Element> childNavElements = getDirectChildren(navElement, NAV_ELEMENT);
             if (childNavElements.size() > 0) {
@@ -394,6 +398,14 @@ public final class NavigationConfig implements Serializable {
             this.field = field;
         }
 
+        public String getBackText() {
+            return backText;
+        }
+
+        public void setBackText(String backText) {
+            this.backText = backText;
+        }
+
         @Override
         public String toString() {
 
@@ -436,7 +448,6 @@ public final class NavigationConfig implements Serializable {
                     .fillBeanProperty(this, null, "useHitCount", ParseType.Boolean, optionElement, "false");
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "commandName", ParseType.String, optionElement, parentNav.getCommandName());
-
         }
 
         public boolean isDefaultSelect() {

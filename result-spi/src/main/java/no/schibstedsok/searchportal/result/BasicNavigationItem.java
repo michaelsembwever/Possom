@@ -21,7 +21,7 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
     /**
      * @param title
      * @param url
-     * @param count
+     * @param hitCount
      */
     public BasicNavigationItem(final String title, final String url, final int hitCount) {
         super(title, url, hitCount);

@@ -94,7 +94,7 @@ public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
      * @return 
      */
     public Modifier getModifier(final String navigatorName, final String modifierName) {
-        final List modifiers = getModifiers(navigatorName);
+        final List modifiers = getModifiers(navigatorName);      
 
         if (modifiers != null) {
             for (final Iterator iterator = modifiers.iterator(); iterator.hasNext();) {

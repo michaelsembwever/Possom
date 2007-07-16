@@ -101,6 +101,18 @@ public final class NavigationHelper {
 
         return datamodel.getNavigation().getConfiguration();
     }
+
+    public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
+        if (dm.getParameters().getValue(nav.getId()) != null && nav.getChildNavs() != null) {
+            return getFirstNotSelected(dm, nav.getChildNavs().get(0));
+        } else {
+            if (dm.getNavigation().getNavigation(nav.getId()).getResults().size() == 1 && nav.getChildNavs() != null) {
+                return getFirstNotSelected(dm, nav.getChildNavs().get(0)); 
+            } else {
+                return nav;
+            }
+        }
+    }
     
     // Constructors --------------------------------------------------
     // Public --------------------------------------------------------
