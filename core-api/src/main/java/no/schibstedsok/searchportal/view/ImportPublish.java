@@ -11,6 +11,7 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
@@ -21,6 +22,7 @@ import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
 
 /**
  * General support to import page fragments from publishing system.
@@ -53,7 +55,9 @@ public final class ImportPublish {
         
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
 
-        final URL u = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + ".html");
+        final String fileExtension = page.endsWith(".xml") ? "" : ".html"; 
+        
+        final URL u = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + fileExtension);
         final String hostHeader = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST);
         final String cacheKey = '[' + hostHeader + ']' + u.toString();
         
@@ -104,7 +108,7 @@ public final class ImportPublish {
         
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(importPage(page, datamodel));
+        return builder.parse(new InputSource(new StringReader(importPage(page, datamodel))));
        
     }   
     // Constructors --------------------------------------------------
