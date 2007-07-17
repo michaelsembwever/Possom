@@ -73,6 +73,8 @@ public final class XPathDirective extends AbstractDirective {
 
         try {
             final String expression = node.jjtGetChild(0).value(context).toString();
+
+            // Implicitly use document from context if no document argument was supplied.
             final Document document = (Document) (2 == node.jjtGetNumChildren()
                     ? node.jjtGetChild(1).value(context)
                     : context.get("document"));
