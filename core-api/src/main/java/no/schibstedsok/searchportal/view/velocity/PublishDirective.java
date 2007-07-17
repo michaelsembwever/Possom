@@ -11,12 +11,16 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.SocketTimeoutException;
 import no.schibstedsok.searchportal.view.ImportPublish;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.parser.node.Node;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.Template;
 
 /**
  *
@@ -70,15 +74,20 @@ public final class PublishDirective extends AbstractDirective {
             if(1 == node.jjtGetNumChildren()) {
                 writer.write(ImportPublish.importPage(url, getDataModel(context)));
             }else{
-                context.put("document", ImportPublish.importXml(url, getDataModel(context)));
-                rsvc.getTemplate(getArgument(context, node, 1)).merge(context, writer);
+                final DataModel dataModel = getDataModel(context);
+                final Site site = dataModel.getSite().getSite();
+                final VelocityEngine engine = VelocityEngineFactory.valueOf(dataModel.getSite().getSite()).getEngine();
+
+                context.put("document", ImportPublish.importXml(url, dataModel));
+
+                VelocityEngineFactory.getTemplate(engine, site, getArgument(context, node, 1)).merge(context, writer);
             }
             return true;
 
         } catch (SocketTimeoutException ste) {
             LOG.error(ERR_NETWORK_DOWN + url + " --> " + ste.getMessage());
  
-        }catch(Exception e){
+        } catch(Exception e) {
             LOG.error(ERR_NETWORK_DOWN + url , e);
         }
 
