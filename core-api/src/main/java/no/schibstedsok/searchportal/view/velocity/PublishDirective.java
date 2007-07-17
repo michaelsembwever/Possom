@@ -68,10 +68,10 @@ public final class PublishDirective extends AbstractDirective {
 
         // The argument gets url encoded on the way in. Make sure to decode the / characters.
         final String url = getArgument(context, node, 0).replaceAll("%2F", "/");
-            
+
         try{
-                            
-            if(1 == node.jjtGetNumChildren()) {
+
+            if(1 == node.jjtGetNumChildren() && !url.endsWith(".xml")) {
                 writer.write(ImportPublish.importPage(url, getDataModel(context)));
             }else{
                 final DataModel dataModel = getDataModel(context);
@@ -80,13 +80,14 @@ public final class PublishDirective extends AbstractDirective {
 
                 context.put("document", ImportPublish.importXml(url, dataModel));
 
-                VelocityEngineFactory.getTemplate(engine, site, getArgument(context, node, 1)).merge(context, writer);
+                if (2 == node.jjtGetNumChildren()) {
+                    VelocityEngineFactory.getTemplate(engine, site, getArgument(context, node, 1)).merge(context, writer);
+                }
             }
             return true;
 
         } catch (SocketTimeoutException ste) {
             LOG.error(ERR_NETWORK_DOWN + url + " --> " + ste.getMessage());
- 
         } catch(Exception e) {
             LOG.error(ERR_NETWORK_DOWN + url , e);
         }

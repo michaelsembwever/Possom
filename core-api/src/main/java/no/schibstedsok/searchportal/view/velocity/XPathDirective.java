@@ -66,14 +66,16 @@ public final class XPathDirective extends AbstractDirective {
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
-        if (node.jjtGetNumChildren() != 2) {
+        if (node.jjtGetNumChildren() < 1) {
             LOG.error("#" + getName() + " - missing argument");
             return false;
         }
 
         try {
-            final Document document = (Document) node.jjtGetChild(0).value(context);
-            final String expression = node.jjtGetChild(1).value(context).toString();
+            final String expression = node.jjtGetChild(0).value(context).toString();
+            final Document document = (Document) (2 == node.jjtGetNumChildren()
+                    ? node.jjtGetChild(1).value(context)
+                    : context.get("document"));
 
             writer.write(XPathFactory.newInstance().newXPath().evaluate(expression, document));
             return true;
