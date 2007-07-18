@@ -11,7 +11,6 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPath;
@@ -20,7 +19,11 @@ import java.io.Writer;
 import java.io.IOException;
 
 /**
- * Velocity directive to apply xpath expression to a org.w3c.dom.Document.
+ * Evaluates xpath expression and writes the result as a string. Expects the following velocity parameters:
+ * <ul>
+ * <li>the expression</li>
+ * <li>optional org.w3c.dom.Node to apply expression to (default is value of "document" from cxt)</li>
+ * </ul>
  *
  * @author magnuse
  */
@@ -45,14 +48,13 @@ public final class XPathDirective extends AbstractDirective {
     }
 
     /**
-     * Evaluates xpath expression and adds result to context. Expects the following velocity parameters:
+     * Evaluates xpath expression and writes the result as a string. Expects the following velocity parameters:
      * <ul>
-     * <li>the name of the context variable to hold the result</li>
-     * <li>the org.w3c.dom.Document to apply expression to</li>
-     * <li>the name of the context variable to hold the result</li>
+     * <li>the expression</li>
+     * <li>optional org.w3c.dom.Node to apply expression to (default is value of "document" from cxt)</li>
      * </ul>
      *
-     * @param context The context.
+     * @param cxt The cxt.
      * @param writer The writer.
      * @param node The node.
      *
@@ -63,7 +65,7 @@ public final class XPathDirective extends AbstractDirective {
      * @throws ParseErrorException
      * @throws MethodInvocationException
      */
-    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node)
+    public boolean render(final InternalContextAdapter cxt, final Writer writer, final Node node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
         if (node.jjtGetNumChildren() < 1) {
@@ -72,14 +74,10 @@ public final class XPathDirective extends AbstractDirective {
         }
 
         try {
-            final String expression = node.jjtGetChild(0).value(context).toString();
-
-            // Implicitly use document from context if no document argument was supplied.
-            final Document document = (Document) (2 == node.jjtGetNumChildren()
-                    ? node.jjtGetChild(1).value(context)
-                    : context.get("document"));
-
-            writer.write(XPathFactory.newInstance().newXPath().evaluate(expression, document));
+            final String expression = node.jjtGetChild(0).value(cxt).toString();
+            // Implicitly use doc from cxt if no doc argument was supplied.
+            final Object doc = 2 == node.jjtGetNumChildren() ? node.jjtGetChild(1).value(cxt) : cxt.get("document");
+            writer.write(XPathFactory.newInstance().newXPath().evaluate(expression, doc));
             return true;
         } catch (XPathExpressionException e) {
             LOG.error(e);

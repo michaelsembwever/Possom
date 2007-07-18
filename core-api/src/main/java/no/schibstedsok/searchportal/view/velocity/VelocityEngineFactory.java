@@ -93,8 +93,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.NavigatorDirective,"
             + "no.schibstedsok.searchportal.view.velocity.ChopStringOnlyDirective,"
             + "no.schibstedsok.searchportal.view.velocity.SlashTrimStringDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.XPathDirective";
-            
+            + "no.schibstedsok.searchportal.view.velocity.XPathDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.XPathForeachDirective";
+
 
 
     // Attributes ----------------------------------------------------
@@ -149,7 +150,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("navigationHelper", new NavigationHelper());
         // boomerang
         context.put("boomerang", new Boomerang());
-        
+
         return context;
     }
 
