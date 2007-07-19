@@ -7,9 +7,13 @@ package no.schibstedsok.searchportal.view.velocity;
 
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.runtime.parser.node.Node;
+import org.apache.velocity.runtime.parser.node.SimpleNode;
+import org.apache.velocity.runtime.parser.node.ASTReference;
+import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.TemplateInitException;
 import org.apache.log4j.Logger;
 
 import javax.xml.xpath.XPathFactory;
@@ -21,8 +25,9 @@ import java.io.IOException;
 /**
  * Evaluates xpath expression and writes the result as a string. Expects the following velocity parameters:
  * <ul>
+ * <li>optional variable to assign result to</li>
  * <li>the expression</li>
- * <li>optional org.w3c.dom.Node to apply expression to (default is value of "document" from cxt)</li>
+ * <li>org.w3c.dom.Node to apply expression to (default is value of "document" from cxt)</li>
  * </ul>
  *
  * @author magnuse
@@ -32,6 +37,24 @@ public final class XPathDirective extends AbstractDirective {
     private static final Logger LOG = Logger.getLogger(XPath.class);
 
     private static final String NAME = "xpath";
+
+    private String targetVariable;
+
+    public void init(final RuntimeServices runtimeServices, final InternalContextAdapter context, final Node node)
+            throws TemplateInitException {
+        super.init(runtimeServices, context, node);
+
+        if (node.jjtGetNumChildren() > 2) {
+
+            final SimpleNode sn = (SimpleNode) node.jjtGetChild(0);
+
+            if (sn instanceof ASTReference) {
+                targetVariable = ((ASTReference) sn).getRootString();
+            } else {
+                targetVariable = sn.getFirstToken().image.substring(1);
+            }
+        }
+    }
 
     /**
       * {@inheritDoc}
@@ -50,8 +73,10 @@ public final class XPathDirective extends AbstractDirective {
     /**
      * Evaluates xpath expression and writes the result as a string. Expects the following velocity parameters:
      * <ul>
+     * <li>optional target variable</li>
      * <li>the expression</li>
-     * <li>optional org.w3c.dom.Node to apply expression to (default is value of "document" from cxt)</li>
+     * <li>optional if target variable was not supplied org.w3c.dom.Node to apply expression to (default is value of
+     * "document" from cxt)</li>
      * </ul>
      *
      * @param cxt The cxt.
@@ -74,10 +99,24 @@ public final class XPathDirective extends AbstractDirective {
         }
 
         try {
-            final String expression = node.jjtGetChild(0).value(cxt).toString();
+
+            int nextArg = targetVariable == null ? 0 : 1;
+
+            final String expression = getArgument(cxt, node, nextArg++);
+
             // Implicitly use doc from cxt if no doc argument was supplied.
-            final Object doc = 2 == node.jjtGetNumChildren() ? node.jjtGetChild(1).value(cxt) : cxt.get("document");
-            writer.write(XPathFactory.newInstance().newXPath().evaluate(expression, doc));
+            final Object doc = node.jjtGetNumChildren() > 1
+                    ? node.jjtGetChild(nextArg).value(cxt)
+                    : cxt.get("document");
+
+            final String xPathResult = XPathFactory.newInstance().newXPath().evaluate(expression, doc);
+
+            if (targetVariable == null) {
+                writer.write(xPathResult);
+            } else {
+                cxt.put(targetVariable, xPathResult);
+            }
+
             return true;
         } catch (XPathExpressionException e) {
             LOG.error(e);
