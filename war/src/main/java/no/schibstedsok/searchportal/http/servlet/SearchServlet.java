@@ -377,33 +377,24 @@ public final class SearchServlet extends HttpServlet {
      */
     private static boolean checkFinn(
             final HttpServletRequest request,
-            final HttpServletResponse response) throws IOException{
+            final HttpServletResponse response, final DataModel datamodel) throws IOException{
 
         if ("finn".equalsIgnoreCase(request.getParameter("finn"))) {
 
-            final Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
-            final Map<String,ResultList<ResultItem>> res
-                    = (Map<String,ResultList<ResultItem>>)request.getAttribute("results");
+            if (datamodel.getSearch("catalogue").getResults().getHitCount() > 0) {
 
-            final ResultList<ResultItem> sr = res.get("yellowPages");
-            if (sr.getResults().size() > 0) {
-
-                final ResultItem sri = sr.getResults().get(0);
-                final String recordid = sri.getField("recordid").toString();
-                final Integer yHits = hits.get("yellowPages");
-
-                if (yHits == 1) {
-
-                    final String url = "/search/?c=yip&q=" + request.getParameter("q")
+                if (datamodel.getSearch("catalogue").getResults().getHitCount() == 1) {
+                    final ResultItem sri = datamodel.getSearch("catalogue").getResults().getResults().get(0);
+                    final String recordid = sri.getField("contentid").toString();                    
+                    final String url = "/search/?c=yip&q=" + datamodel.getQuery().getQuery().getQueryString()
                             + "&companyId=" + recordid
                             + "&companyId_x=" + new MD5Generator("S3SAM rockz").generateMD5(recordid)
-                            + (null != request.getParameter("showtab")
-                            ? "&showtab=" + request.getParameter("showtab")
+                            + (null != datamodel.getParameters().getValue("showtab").getUtf8UrlEncoded()
+                            ? "&showtab=" + datamodel.getParameters().getValue("showtab").getUtf8UrlEncoded()
                             : "");
 
                     LOG.info("Finn.no redirect: " + url);
                     response.sendRedirect(url);
-
                     return true;
                 }
             }
@@ -495,7 +486,7 @@ public final class SearchServlet extends HttpServlet {
                 }
 
 
-                checkFinn(request, response);
+                checkFinn(request, response, datamodel);
 
             } catch (InterruptedException e) {
                 LOG.error("Task timed out");
