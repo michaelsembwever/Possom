@@ -66,7 +66,6 @@ import org.apache.log4j.Logger;
  * The functionality in this class is enhanced by several QueryTransformers;
  *
  * @see no.schibstedsok.searchportal.query.transform.CatalogueExactTitleMatchQueryTransformer
- * @see no.schibstedsok.searchportal.query.transform.CatalogueEmptyQueryTransformer
  * @see no.schibstedsok.searchportal.query.transform.CatalogueInfopageQueryTransformer
  *
  *
@@ -338,7 +337,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         LOG.debug(DEBUG_SEARCHING_1 + getQuery().getQueryString());
         LOG.debug(DEBUG_SEARCHING_2 + whereString);
                
-        result.addField("sortBy", getSortBy());
+        if (SORTBY_COMPANYNAME.equals(getSortBy())) {
+            result.addField("sortBy", "name");
+        } else {
+            result.addField("sortBy", "kw");
+        }
+
         return result;
     }
 
