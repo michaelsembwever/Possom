@@ -426,6 +426,7 @@ public final class NavigationConfig implements Serializable {
         private String valueRef;
         private boolean realNavigator;
         private boolean defaultSelect;
+        private String defaultSelectValueRef;
         private String tab;
         private boolean useHitCount;
         private String commandName;
@@ -443,6 +444,8 @@ public final class NavigationConfig implements Serializable {
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "defaultSelect", ParseType.Boolean, optionElement, "false");
             AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "defaultSelectValueRef", ParseType.String, optionElement, null);
+            AbstractDocumentFactory
                     .fillBeanProperty(this, null, "tab", ParseType.String, optionElement, parentNav.getTab());
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "useHitCount", ParseType.Boolean, optionElement, "false");
@@ -456,6 +459,14 @@ public final class NavigationConfig implements Serializable {
 
         public void setDefaultSelect(final boolean defaultSelect) {
             this.defaultSelect = defaultSelect;
+        }
+
+        public String getDefaultSelectValueRef() {
+            return defaultSelectValueRef;
+        }
+
+        public void setDefaultSelectValueRef(String defaultSelectValueRef) {
+            this.defaultSelectValueRef = defaultSelectValueRef;
         }
 
         public String getTab() {

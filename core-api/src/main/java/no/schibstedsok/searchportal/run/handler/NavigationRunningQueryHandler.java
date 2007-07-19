@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
-import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand;
 import no.schibstedsok.searchportal.result.NavigationHelper;
 
 /**
@@ -52,7 +51,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
      */
     private static NavigationItem getNavigators(final DataModel datamodel, final String name) {
 
-        NavigationConfig.Nav navEntry = NavigationHelper.getConfig(datamodel).getNavMap().get(name);
+        final NavigationConfig.Nav navEntry = NavigationHelper.getConfig(datamodel).getNavMap().get(name);
 
         if (navEntry != null) {
             boolean selectionDone = false;
@@ -121,7 +120,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                     final String value = option.getValue();
                     if (navigator.getTitle().equals(value)) {
                         match = true;
-                        if (selectedValue == null && option.isDefaultSelect()) {
+                        if (selectedValue == null && isOptionDefaultSelected(option, fsr)) {
                             navigator.setSelected(true);
                             selectedValue = new StringDataObjectSupport("dummy");
                         }
@@ -145,7 +144,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
                 String value = option.getValue();
                 if (option.getValueRef() != null && fsr != null) {
-                    String tmp = fsr.getField(option.getValueRef());
+                    final String tmp = fsr.getField(option.getValueRef());
                     if (tmp != null && tmp.length() > 0) {
                         value = tmp;
                     }
@@ -156,7 +155,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                             NavigationHelper.getUrlFragment(datamodel, navEntry, value, null),
                             -1);
                     extendedNavigators.addResult(navigator);
-                    if (optionSelectedValue == null && option.isDefaultSelect()) {
+                    if (optionSelectedValue == null && isOptionDefaultSelected(option, fsr)) {
                         navigator.setSelected(true);
                     } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
                         navigator.setSelected(true);
@@ -167,6 +166,13 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                 }
             }
         }
+    }
+
+    private static boolean isOptionDefaultSelected(NavigationConfig.Option option, FastSearchResult fsr) {
+        final String valueRef = option.getDefaultSelectValueRef();
+
+        return option.isDefaultSelect()
+                || (fsr != null &&  valueRef != null && option.getValue().equals(fsr.getField(valueRef)));
     }
 
 }
