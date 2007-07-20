@@ -100,12 +100,12 @@ public final class AccountingDirective extends AbstractDirective {
                 if (k==0) {
                     // #balance0# means print a new table
                     if (col[0].indexOf("#balanse0#") > -1) {
-                        html.append("</table><div class=\"lindorff\"></div>");
-                        html.append("<table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
+                        html.append("</table>");
+                        html.append("<table class=\"balance\" cellspacing=\"1\">");
                         bgcolor = false;
                     } else if (col[0].indexOf("#lederlonn0#") > -1) {                        
                         html.append("</table>* Alle tall i hele 1000 kroner.");
-                        html.append("<table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
+                        html.append("<table class=\"balance\" cellspacing=\"1\">");
                         bgcolor = false;
                     // #balance1# means don't show rest of the numbers
                     } else if (col[0].indexOf("#balanse1#") > -1) {
@@ -115,18 +115,26 @@ public final class AccountingDirective extends AbstractDirective {
                     // checks if the row should be bold
                     if (col[0].indexOf("#bold#") == -1) {
                         text = col[0];
-                        html.append("<tr>");
+                        if (!bgcolor) {
+                            html.append("<tr class=\"bg1\">");
+                        } else {
+                            html.append("<tr class=\"bg2\">");                            
+                        }
                     } else {
-                        html.append("<tr class=\"bold_line\">");
+                        if (!bgcolor) {
+                            html.append("<tr class=\"bold_line bg1\">");
+                        } else {
+                            html.append("<tr class=\"bold_line bg2\">");
+                        }
                         text = col[0].substring(col[0].indexOf("#bold#")+6);
                     }
                 } else
                     text = col[k];
 
-                if (!bgcolor) {
-                    html.append("<td class=\"col"+ (k+1) + "\" bgcolor=\"#FFFFFF\">" + text.trim() + "</td>");
+                if (!bgcolor) {                    
+                    html.append("<td class=\"col"+ (k+1) + "\">" + text.trim() + "</td>");
                 } else {
-                    html.append("<td class=\"col"+ (k+1) + "\" style=\"background-color: #EBEBEB;\">" 
+                    html.append("<td class=\"col"+ (k+1) + "\">" 
                             + text.trim() + "</td>");
                 }
             }
