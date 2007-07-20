@@ -8,10 +8,9 @@
 
 package no.schibstedsok.searchportal.http.filters;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,6 +31,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -41,13 +41,11 @@ import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
-import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
-import no.schibstedsok.searchportal.datamodel.search.SearchDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.datamodel.user.UserDataObject;
-import no.schibstedsok.searchportal.query.Query;
+import no.schibstedsok.searchportal.mode.command.TvWaitSearchCommand;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
@@ -243,7 +241,17 @@ public final class DataModelFilter implements Filter {
                 StringDataObject.class,
                 new DataObject.Property("string", getParameterSafely(request, key))));
         }
-
+        
+        /* Adding cookie myChannels to parameters.
+         * TODO: add generic handling of cookies, or make it part of User initailization.
+         */
+        for (Cookie cookie : request.getCookies()) {
+            if (TvWaitSearchCommand.MY_CHANNELS_KEY.equals(cookie.getName())) {
+                values.put(TvWaitSearchCommand.MY_CHANNELS_KEY, factory.instantiate(
+                        StringDataObject.class,
+                        new DataObject.Property("string", cookie.getValue())));
+            }
+        }
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
@@ -257,7 +265,6 @@ public final class DataModelFilter implements Filter {
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
         
-        factory.assignControlLevel(datamodel, ControlLevel.DATA_MODEL_CONSTRUCTION);
         for(String key : datamodel.getJunkYard().getValues().keySet()){
             datamodel.getJunkYard().setValue(key, null);
         }
@@ -269,9 +276,31 @@ public final class DataModelFilter implements Filter {
         //}
         //datamodel.setParameters(null);
         //datamodel.setQuery(null);
+       
+        //assert isSerializable(datamodel) : "Datamodel is not serializable!";
         factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
     }
 
+    private static boolean isSerializable(final DataModel datamodel) {
+        boolean retval = false;
+        
+        try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ObjectOutputStream os = new ObjectOutputStream(baos);
+        
+            LOG.info("Serializing datamodel");
+            os.writeObject(datamodel);
+            retval = true;
+            
+        } catch (NotSerializableException e) {
+            LOG.error("Failed to serialize datamodel: " + e);
+        } catch (IOException e) {
+            LOG.error("Failed to serialize datamodel:" + e);
+        }
+        
+        return retval;
+    }
+    
     /** A safer way to get parameters for the query string.
      * Handles ISO-8859-1 and UTF-8 URL encodings.
      *
