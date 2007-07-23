@@ -657,5 +657,5 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             return (Class<C>) classLoader.loadClass(classNameFQ);
         }
-w    }
+    }
 }
