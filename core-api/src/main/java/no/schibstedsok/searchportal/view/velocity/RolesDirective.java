@@ -96,18 +96,22 @@ public final class RolesDirective extends AbstractDirective{
         final MD5Generator md5 = new MD5Generator("S3SAM rockz");
 
         final StringBuilder html
-                = new StringBuilder("<div><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
+                = new StringBuilder("<div><table class=\"roletable\" cellspacing=\"1\">");
 
 
         // print rows
         for (int i = 0; i < row.length; i++) {
-
-            html.append("<tr>");
+            if (!bgcolor) {
+                html.append("<tr class=\"bg1\">");
+            } else {
+                html.append("<tr class=\"bg2\">");
+            }
+                
 
             // show 30 first rows
             if (i == LAST_ROW) {
                 html.append("</tr></table></div><div id=\"more_roles\" style=\"display: none;\">");
-                html.append("<table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
+                html.append("<table class=\"roletable\" cellspacing=\"1\">");
             }
 
             // column seperator
@@ -156,13 +160,8 @@ public final class RolesDirective extends AbstractDirective{
                 }else{
                     text = col[k].trim();
                 }
-                if (!bgcolor) {
-                    html.append("<td class=\"col" + (k + 1) + "\" style=\"background-color: #FFF;\">"
-                            + text.trim() + "</td>");
-                } else {
-                    html.append("<td class=\"col" + (k + 1) + "\" style=\"background-color: #EBEBEB;\">"
+                html.append("<td class=\"col" + (k + 1) + "\">"
                         + text.trim() + "</td>");
-                }
             }
             bgcolor = !bgcolor;
             html.append("</tr>");

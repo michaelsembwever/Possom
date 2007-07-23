@@ -74,7 +74,7 @@ public final class AccountingDirective extends AbstractDirective {
         // The text string from datafield which all the accountingsnumber is stored
         final String s = getArgument(context, node, 0);
 
-        final StringBuilder html = new StringBuilder("<table bgcolor=\"#CCCCCC\" cellspacing=\"1\">");
+        final StringBuilder html = new StringBuilder("<table cellspacing=\"1\">");
 
         // New line seperator
         final String[] row = s.split("#sepnl#");
@@ -131,12 +131,7 @@ public final class AccountingDirective extends AbstractDirective {
                 } else
                     text = col[k];
 
-                if (!bgcolor) {                    
-                    html.append("<td class=\"col"+ (k+1) + "\">" + text.trim() + "</td>");
-                } else {
-                    html.append("<td class=\"col"+ (k+1) + "\">" 
-                            + text.trim() + "</td>");
-                }
+                html.append("<td class=\"col"+ (k+1) + "\">" + text.trim() + "</td>");
             }
             if (!quitLoop) {
                 bgcolor = !bgcolor;
@@ -145,11 +140,10 @@ public final class AccountingDirective extends AbstractDirective {
                 break;
         }
         html.append("</table>");
-        html.append("<div class=\"lindorff\">");
-        html.append("* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>");
-        html.append("<div style=\"clear:both; padding-top:4px;\">");
+        html.append("<div id=\"lindorff\">");
+        html.append("* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>");        
         html.append("<a href=\"" + lpUrl + "\" target=\"_blank\">");
-        html.append("<img src=\"/images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>");
+        html.append("<img src=\"/images/lindorff_logo.gif\" width=\"81\" height=\"31\" alt=\"Linforff logo\" /></a>");
 
         writer.write(html.toString());
 
