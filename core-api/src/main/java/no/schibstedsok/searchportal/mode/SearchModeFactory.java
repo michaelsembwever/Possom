@@ -27,7 +27,6 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -252,48 +251,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         mode.addSearchConfiguration(sc);
 
                     }else if("navigation".equals(childElement.getTagName())){
-
                         // navigation
                         assert null == mode.getNavigationConfiguration() : "NavigationConfiguration already set!";
-                        final NavigationConfig cfg = new NavigationConfig();
 
                         final NodeList navigationElements = childElement.getElementsByTagName("navigation");
 
-                        for (int k = 0; k < navigationElements.getLength(); k++) {
-                            final Element navigationElement = (Element) navigationElements.item(k);
-                            final NavigationConfig.Navigation navigation = new NavigationConfig.Navigation(navigationElement);
-
-                            final NodeList navs = navigationElement.getChildNodes();
-
-                            for (int l = 0; l < navs.getLength(); l++) {
-                                final Node navNode = navs.item(l);
-
-                                if (navNode instanceof Element && !RESET_NAV_ELEMENT.equals(navNode.getNodeName())) {
-                                    NavigationConfig.Nav nav = navFactory.parseNav((Element) navNode,navigation,  context, null);
-                                    navigation.addNav(nav, cfg);
-                                }
-                            }
-
-                            for (int l = 0; l < navs.getLength(); l++) {
-                                final Node navElement = navs.item(l);
-
-                                if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
-                                    String resetNavId = ((Element)navElement).getAttribute("id");
-                                    if (id != null) {
-                                        NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
-                                        if (nav != null) {
-                                            navigation.addReset(nav);
-                                        } else {
-                                            LOG.error("Error in config, <reset-nav id=\"" + id + "\" />, nav with id=" + id + " not found");
-                                        }
-                                    }
-                                }
-                            }
-
-                            cfg.addNavigation(navigation);
-                        }
-                        
-                        mode.setNavigationConfiguration(cfg);
+                        mode.setNavigationConfiguration(parseNavigation(id, navigationElements));
                     }
                 }
 
@@ -310,6 +273,45 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         // finished
         LOG.debug("Parsing " + MODES_XMLFILE + " finished");
 
+    }
+
+    private NavigationConfig parseNavigation(final String modeId, final NodeList navigationElements) {
+        final NavigationConfig cfg = new NavigationConfig();
+
+        for (int i = 0; i < navigationElements.getLength(); i++) {
+            final Element navigationElement = (Element) navigationElements.item(i);
+            final NavigationConfig.Navigation navigation = new NavigationConfig.Navigation(navigationElement);
+
+            final NodeList navs = navigationElement.getChildNodes();
+
+            for (int l = 0; l < navs.getLength(); l++) {
+                final Node navNode = navs.item(l);
+
+                if (navNode instanceof Element && !RESET_NAV_ELEMENT.equals(navNode.getNodeName())) {
+                    NavigationConfig.Nav nav = navFactory.parseNav((Element) navNode,navigation,  context, null);
+                    navigation.addNav(nav, cfg);
+                }
+            }
+
+            for (int j = 0; j < navs.getLength(); j++) {
+                final Node navElement = navs.item(j);
+
+                if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
+                    String resetNavId = ((Element)navElement).getAttribute("modeId");
+                    if (modeId != null) {
+                        NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
+                        if (nav != null) {
+                            navigation.addReset(nav);
+                        } else {
+                            LOG.error("Error in config, <reset-nav modeId=\"" + modeId + "\" />, in mode " + modeId + " not found");
+                        }
+                    }
+                }
+            }
+
+            cfg.addNavigation(navigation);
+        }
+        return cfg;
     }
 
     private static SearchMode.SearchCommandExecutorConfig parseExecutor(
@@ -458,12 +460,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Context context) {
 
             final SearchConfiguration sc = construct(element, context);
-            
+
             assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass()) 
-                    : "Can only inherit from same or superclass configuration. " 
+                    : "Can only inherit from same or superclass configuration. "
                     + element.getAttribute("id") + '(' + sc.getClass().getSimpleName() + ')'
                     + " trying to inherit from " + inherit.getName() + '(' + inherit.getClass().getSimpleName() + ')';
-            
+
             return sc.readSearchConfiguration(element, inherit);
         }
 
@@ -535,7 +537,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.debug("findClass " + className);
 
-            // Special case for "nav". 
+            // Special case for "nav".
             String classNameFQ = xmlName.equals("nav") ?
                     NavigationConfig.Nav.class.getName() :
                     "no.schibstedsok.searchportal.mode.navigation."+ className+ "Navigation";
@@ -603,7 +605,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-    private static abstract class AbstractFactory<C>{
+    private abstract static class AbstractFactory<C>{
 
         private static final String INFO_CONSTRUCT = "  Construct ";
 
@@ -635,10 +637,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             }
         }
 
-        protected abstract Class<C> findClass(final String xmlName, final Context context) throws ClassNotFoundException;
+        protected abstract Class<C> findClass(final String xmlName, final Context context)
+                throws ClassNotFoundException;
 
         @SuppressWarnings("unchecked")
-        protected Class<C> loadClass(final Context context, final String classNameFQ, final Spi spi) throws ClassNotFoundException {
+        protected Class<C> loadClass(final Context context, final String classNameFQ, final Spi spi)
+                throws ClassNotFoundException {
             final SiteClassLoaderFactory.Context c = new SiteClassLoaderFactory.Context() {
                 public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
                     return context.newBytecodeLoader(site, name, jar);
