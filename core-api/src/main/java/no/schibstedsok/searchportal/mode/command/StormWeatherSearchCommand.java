@@ -219,58 +219,58 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
             throw new IllegalArgumentException("One of more arguments equals null: (la, lo) (" + la + ", " + lo + ")");
         }
 
-         /* use dot notation */
-         la = la.replace(',', '.');
-         lo = lo.replace(',', '.');
+        /* use dot notation */
+        la = la.replace(',', '.');
+        lo = lo.replace(',', '.');
 
-         final StringBuilder url = new StringBuilder();
-         try {
-             url.append("/kunder/schibsted/wod.aspx?la=").append(URLEncoder.encode(la, "utf-8")).append("&lo=").append(URLEncoder.encode(lo, "UTF8"));
-         } catch(UnsupportedEncodingException e1){
-             LOG.error("Unable to encode URL when speaking with Storm weather service: " + e1.getMessage());
-             throw new InfrastructureException(e1);
-         }
+        final StringBuilder url = new StringBuilder();
+        try {
+            url.append("/kunder/schibsted/wod.aspx?la=").append(URLEncoder.encode(la, "utf-8")).append("&lo=").append(URLEncoder.encode(lo, "UTF8"));
+        } catch (UnsupportedEncodingException e1) {
+            LOG.error("Unable to encode URL when speaking with Storm weather service: " + e1.getMessage());
+            throw new InfrastructureException(e1);
+        }
 
-         if(altitude != null){
-             altitude = altitude.replace(',', '.');
-             url.append("&m=").append(altitude);
-         }
+        if (altitude != null) {
+            altitude = altitude.replace(',', '.');
+            url.append("&m=").append(altitude);
+        }
 
-         LOG.debug("Using url:" + url.toString());
+        LOG.debug("Using url:" + url.toString());
 
-         final Document doc = doSearch(url.toString());
-         return doc;
-     }
+        final Document doc = doSearch(url.toString());
+        return doc;
+    }
 
 
-     /**
-      * Create a ResultItem using the resultFields listed in configuration.
-      *
-      * @param element
-      * @return
-      */
-     private BasicResultItem getItem(final Element element) {
+    /**
+     * Create a ResultItem using the resultFields listed in configuration.
+     *
+     * @param element
+     * @return
+     */
+    private BasicResultItem getItem(final Element element) {
 
-         final BasicResultItem e = new BasicResultItem();
-         for (final String field : getSearchConfiguration().getElementValues()) {
-             e.addField(field, getTextValue(element, field));
-         }
-         return e;
-     }
-
-    @Override
-     public StormweatherCommandConfig getSearchConfiguration() {
-         return (StormweatherCommandConfig)super.getSearchConfiguration();
-     }
+        final BasicResultItem e = new BasicResultItem();
+        for (final String field : getSearchConfiguration().getElementValues()) {
+            e.addField(field, getTextValue(element, field));
+        }
+        return e;
+    }
 
     @Override
-     public String getSortBy(){
+    public StormweatherCommandConfig getSearchConfiguration() {
+        return (StormweatherCommandConfig) super.getSearchConfiguration();
+    }
+
+    @Override
+    public String getSortBy() {
         final ParametersDataObject pdo = datamodel.getParameters();
-        if(GeoSearchUtil.isGeoSearch(pdo)){
+        if (GeoSearchUtil.isGeoSearch(pdo)) {
             return GeoSearchUtil.GEO_SORT_BY;
         }
         return super.getSortBy();
-     }
+    }
 
     /**
      * If the search is a GEO search, add required GEO search parameters.
@@ -281,7 +281,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         super.setAdditionalParameters(params);
         final ParametersDataObject pdo = datamodel.getParameters();
 
-        if(!GeoSearchUtil.isGeoSearch(pdo)){
+        if (!GeoSearchUtil.isGeoSearch(pdo)) {
             return;
         }
 
@@ -292,56 +292,51 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         params.setParameter(new SearchParameter("qtf_geosearch:center", center));
     }
 
-     private final String getTextValue(final Element ele, final String tagName) {
-         String textVal = null;
-         final NodeList nl = ele.getElementsByTagName(tagName);
-         if(nl != null && nl.getLength() > 0) {
-             final Element el = (Element)nl.item(0);
-             textVal = el.getFirstChild().getNodeValue();
-         }
-         return textVal;
-     }
+    private final String getTextValue(final Element ele, final String tagName) {
+        String textVal = null;
+        final NodeList nl = ele.getElementsByTagName(tagName);
+        if (nl != null && nl.getLength() > 0) {
+            final Element el = (Element) nl.item(0);
+            textVal = el.getFirstChild().getNodeValue();
+        }
+        return textVal;
+    }
 
-     private final Document doSearch(final String url) {
+    private final Document doSearch(final String url) {
 
-         Document doc = null;
-         final String cacheKey = url;
+        Document doc = null;
+        final String cacheKey = url;
 
-         boolean updated = false; //cache flag used for eviction/update deadlock.
+        boolean updated = false; //cache flag used for eviction/update deadlock.
 
-         try {
+        try {
+            /* Get from the cache */
+            doc = (Document) ADMIN.getFromCache(cacheKey, EVICTIONPERIOD_WEATHER_CACHE);
+        } catch (NeedsRefreshException nre) {
 
-             /* Get from the cache */
-             doc = (Document) ADMIN.getFromCache(cacheKey, EVICTIONPERIOD_WEATHER_CACHE);
+            try {
 
-         } catch (NeedsRefreshException nre) {
+                /* Fetch from Storm webservice */
+                doc = client.getXmlDocument(url);
 
-             try {
+                /* Store in the cache */
+                ADMIN.putInCache(cacheKey, doc);
 
-                 /* Fetch from Storm webservice */
-                 doc = client.getXmlDocument(url);
+                updated = true;
+            } catch (Exception ex) {
 
-                 /* Store in the cache */
-                 ADMIN.putInCache(cacheKey, doc);
+                /* We have the outdated content for fail-over. May become stale! */
+                doc = (Document) nre.getCacheContent();
+                LOG.error("Cache update exception, document may become stale! " + ex.getMessage());
+            } finally {
+                if (!updated) {
+                    /* It is essential that cancelUpdate is called if the
+                     * cached content could not be rebuilt */
+                    ADMIN.cancelUpdate(cacheKey);
+                }
+            }
+        }
 
-                 updated = true;
-
-             } catch (Exception ex) {
-
-                 /* We have the outdated content for fail-over. May become stale! */
-                 doc = (Document) nre.getCacheContent();
-                 LOG.error("Cache update exception, document may become stale! " + ex.getMessage());
-
-             } finally{
-                 if (!updated) {
-                     /* It is essential that cancelUpdate is called if the
-                      * cached content could not be rebuilt */
-                     ADMIN.cancelUpdate(cacheKey);
-                 }
-             }
-
-         }
-
-         return doc;
-     }
+        return doc;
+    }
 }
