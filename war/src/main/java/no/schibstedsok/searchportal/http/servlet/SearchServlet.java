@@ -349,8 +349,7 @@ public final class SearchServlet extends HttpServlet {
             request.setAttribute("offset", "0"); // TODO remove, access through datamodel instead.
         }
 
-         // TODO remove next three, access through datamodel instead.
-        request.setAttribute("tradedoubler", new TradeDoubler(request));
+         // TODO remove next two, access through datamodel instead.
         request.setAttribute("text",TextMessages.valueOf(ContextWrapper.wrap(
                 TextMessages.Context.class,
                 rqCxt,new SiteContext(){
