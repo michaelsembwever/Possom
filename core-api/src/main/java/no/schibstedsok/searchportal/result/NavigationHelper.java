@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.List;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
@@ -103,10 +102,10 @@ public final class NavigationHelper {
     }
 
     public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
-        if (dm.getParameters().getValue(nav.getId()) != null && nav.getChildNavs() != null) {
+        if (dm.getParameters().getValue(nav.getId()) != null && ! nav.getChildNavs().isEmpty()) {
             return getFirstNotSelected(dm, nav.getChildNavs().get(0));
         } else {
-            if (dm.getNavigation().getNavigation(nav.getId()).getResults().size() == 1 && nav.getChildNavs() != null) {
+            if (dm.getNavigation().getNavigation(nav.getId()).getResults().size() == 1 && !nav.getChildNavs().isEmpty()) {
                 return getFirstNotSelected(dm, nav.getChildNavs().get(0)); 
             } else {
                 return nav;
@@ -149,10 +148,8 @@ public final class NavigationHelper {
                     addPreviousField(datamodel, fieldValue, sb, navEntry, staticKey);
                 }
             }
-            if (nav.getChildNavs() != null) {
-                for (NavigationConfig.Nav childNav : nav.getChildNavs()) {
-                    addNavigationFragment(datamodel, fieldFilterSet, childNav, sb, navEntry);
-                }
+            for (NavigationConfig.Nav childNav : nav.getChildNavs()) {
+                addNavigationFragment(datamodel, fieldFilterSet, childNav, sb, navEntry);
             }
         }
     }
@@ -190,7 +187,7 @@ public final class NavigationHelper {
             final StringBuilder sb,
             final NavigationConfig.Nav navEntry) {
 
-        NavigationConfig.Nav parentNav = navEntry.getParentNav();
+        NavigationConfig.Nav parentNav = navEntry.getParent();
         if (parentNav != null) {
             StringDataObject fieldValue = datamodel.getParameters().getValue(parentNav.getField());
             addPreviousField(datamodel, fieldValue, sb, navEntry, parentNav.getField());

@@ -42,28 +42,6 @@ public final class NavigationConfig implements Serializable {
 
     public NavigationConfig() {}
 
-    public NavigationConfig readNavigationConfig(final Element element, final NavigationConfig inherit) {
-
-        // inheritence first so that self-configuration can override
-        if(null != inherit){
-            navMap.putAll(inherit.getNavMap());
-            navigationMap.putAll(inherit.getNavigationMap());
-            navigationList.addAll(inherit.getNavigationList());
-        }
-
-        final List<Element> navigationElements = getDirectChildren(element, NAVIGATION_ELEMENT);
-
-        for (Element navigationElement : navigationElements) {
-            final Navigation navigation = new Navigation(navigationElement, navMap);
-            navigationList.add(navigation);
-            if (navigation.getId() != null) {
-                navigationMap.put(navigation.getId(), navigation);
-            }
-        }
-
-        return this;
-    }
-
     public Map<String, Nav> getNavMap() {
         return Collections.unmodifiableMap(navMap);
     }
@@ -74,6 +52,13 @@ public final class NavigationConfig implements Serializable {
 
     public List<Navigation> getNavigationList() {
         return Collections.unmodifiableList(navigationList);
+    }
+
+    public void addNavigation(final Navigation navigation) {
+        navigationList.add(navigation);
+        if (navigation.getId() != null) {
+            navigationMap.put(navigation.getId(), navigation);
+        }
     }
 
     private static List<Element> getDirectChildren(final Element element, final String elementName) {
@@ -101,59 +86,41 @@ public final class NavigationConfig implements Serializable {
         private List<Nav> navList;
         private Map<String, Nav> navMap;
         private Set<String> resetNavSet;
-        private static final String RESET_NAV_ELEMENT = "reset-nav";
 
         public Navigation() {
         }
 
-        public Navigation(final Element navigationElement, final Map<String, Nav> navMap) {
+        public Navigation(final Element navigationElement) {
 
             AbstractDocumentFactory.fillBeanProperty(this, null, "id", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "commandName", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "tab", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "out", ParseType.Boolean, navigationElement, null);
 
-            final List<Element> navElements = getDirectChildren(navigationElement, NAV_ELEMENT);
-            navList = new ArrayList<Nav>(navElements.size());
-            this.navMap = new HashMap<String, Nav>();
-            for (Element navElement : navElements) {
-                Nav nav = new Nav(this, navElement);
-                navList.add(nav);
-                updateNavMap(nav, navMap);
-                updateNavMap(nav, this.navMap);
-            }
-            final List<Element> resetNavElements = getDirectChildren(navigationElement, RESET_NAV_ELEMENT);
-            resetNavSet = new HashSet<String>(resetNavElements.size());
-            for (Element resetNavElement : resetNavElements) {
-                String id = resetNavElement.getAttribute("id");
-                if (id != null) {
-                    Nav nav = navMap.get(id);
-                    if (nav != null) {
-                        addReset(nav);
-                    } else {
-                        LOG.error("Error in config, <reset-nav id=\"" + id + "\" />, nav with id=" + id + " not found");
-                    }
+            this.navList = new ArrayList<NavigationConfig.Nav>();
+            this.navMap = new HashMap<String, NavigationConfig.Nav>();
+            this.resetNavSet = new HashSet<String>();
+        }
+
+        public void addReset(final Nav nav) {
+            if (nav != null) {
+                resetNavSet.add(nav.getField());
+                for (Nav childNav : nav.getChildNavs()) {
+                    addReset(childNav);
                 }
             }
         }
 
-        private void addReset(final Nav nav) {
-            if (nav != null) {
-                resetNavSet.add(nav.getField());
-                if (nav.getChildNavs() != null) {
-                    for (Nav childNav : nav.getChildNavs()) {
-                        addReset(childNav);
-                    }
-                }
-            }
+        public void addNav(final Nav nav, final NavigationConfig cfg) {
+            navList.add(nav);
+            updateNavMap(nav, cfg.navMap);
+            updateNavMap(nav, navMap);
         }
 
         private void updateNavMap(final Nav nav, final Map<String, Nav> navMap) {
             navMap.put(nav.getId(), nav);
-            if (nav.getChildNavs() != null && nav.getChildNavs().size() > 0) {
-                for (Nav subNav : nav.getChildNavs()) {
-                    updateNavMap(subNav, navMap);
-                }
+            for (Nav subNav : nav.getChildNavs()) {
+                updateNavMap(subNav, navMap);
             }
         }
 
@@ -217,7 +184,7 @@ public final class NavigationConfig implements Serializable {
         }
     }
 
-    public static final class Nav implements Serializable {
+    public static class Nav implements Serializable {
 
         private static final String OPTION_ELEMENT = "option";
         private static final String STATIC_PARAMETER_ELEMENT = "static-parameter";
@@ -233,13 +200,14 @@ public final class NavigationConfig implements Serializable {
         private Map<String, String> staticParameters;
         private List<Nav> childNavs;
         private final Navigation navigation;
-        private final Nav parentNav;
+        private final Nav parent;
         private boolean excludeQuery = false;
 
-        private Nav(final Nav parentNav, final Navigation navigation, final Element navElement) {
+        public Nav(final Nav parent, final Navigation navigation, final Element navElement) {
 
             this.navigation = navigation;
-            this.parentNav = parentNav;
+            this.parent = parent;
+            this.childNavs = new ArrayList<Nav>(1);
 
             AbstractDocumentFactory.fillBeanProperty(
                     this,
@@ -276,13 +244,6 @@ public final class NavigationConfig implements Serializable {
                     .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
             
 
-            final List<Element> childNavElements = getDirectChildren(navElement, NAV_ELEMENT);
-            if (childNavElements.size() > 0) {
-                childNavs = new ArrayList<Nav>(childNavElements.size());
-                for (Element childNavElement : childNavElements) {
-                    childNavs.add(new Nav(this, this.navigation, childNavElement));
-                }
-            }
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
             options = new ArrayList<Option>(optionElements.size());
             for (Element optionElement : optionElements) {
@@ -299,16 +260,20 @@ public final class NavigationConfig implements Serializable {
             }
         }
 
-        private Nav(final Navigation navigation, final Element navElement) {
+        public Nav(final Navigation navigation, final Element navElement) {
             this(null, navigation, navElement);
         }
 
-        public Nav getParentNav() {
-            return parentNav;
+        public Nav getParent() {
+            return parent;
         }
 
         public Navigation getNavigation() {
             return navigation;
+        }
+
+        public void addChild(final Nav nav) {
+            childNavs.add(nav);
         }
 
         public List<Nav> getChildNavs() {

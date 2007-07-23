@@ -6,8 +6,6 @@ import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.NavigationConfig;
-import no.schibstedsok.searchportal.mode.SearchMode;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.site.Site;
@@ -31,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -53,6 +53,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final SearchCommandFactory searchConfigurationFactory = new SearchCommandFactory();
     private static final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory();
     private static final ResultHandlerFactory resultHandlerFactory = new ResultHandlerFactory();
+    private static final NavFactory navFactory = new NavFactory();
 
     /**
      * The name of the modes configuration file.
@@ -70,6 +71,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_MODE = "Parsing mode ";
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
     private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
+
+    private static final String RESET_NAV_ELEMENT = "reset-nav";
 
     // Attributes ----------------------------------------------------
 
@@ -252,9 +255,45 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                         // navigation
                         assert null == mode.getNavigationConfiguration() : "NavigationConfiguration already set!";
-                        final NavigationConfig navConf = new NavigationConfig();
-                        navConf.readNavigationConfig(childElement, inherit.getNavigationConfiguration());
-                        mode.setNavigationConfiguration(navConf);
+                        final NavigationConfig cfg = new NavigationConfig();
+
+                        final NodeList navigationElements = childElement.getElementsByTagName("navigation");
+
+                        for (int k = 0; k < navigationElements.getLength(); k++) {
+                            final Element navigationElement = (Element) navigationElements.item(k);
+                            final NavigationConfig.Navigation navigation = new NavigationConfig.Navigation(navigationElement);
+
+                            final NodeList navs = navigationElement.getChildNodes();
+
+                            for (int l = 0; l < navs.getLength(); l++) {
+                                final Node navNode = navs.item(l);
+
+                                if (navNode instanceof Element && !RESET_NAV_ELEMENT.equals(navNode.getNodeName())) {
+                                    NavigationConfig.Nav nav = navFactory.parseNav((Element) navNode,navigation,  context, null);
+                                    navigation.addNav(nav, cfg);
+                                }
+                            }
+
+                            for (int l = 0; l < navs.getLength(); l++) {
+                                final Node navElement = navs.item(l);
+
+                                if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
+                                    String resetNavId = ((Element)navElement).getAttribute("id");
+                                    if (id != null) {
+                                        NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
+                                        if (nav != null) {
+                                            navigation.addReset(nav);
+                                        } else {
+                                            LOG.error("Error in config, <reset-nav id=\"" + id + "\" />, nav with id=" + id + " not found");
+                                        }
+                                    }
+                                }
+                            }
+
+                            cfg.addNavigation(navigation);
+                        }
+                        
+                        mode.setNavigationConfiguration(cfg);
                     }
                 }
 
@@ -439,6 +478,69 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             String classNameFQ = "no.schibstedsok.searchportal.mode.config."+ className+ "Config";
             final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
+
+            LOG.debug("Found class " + clazz.getName());
+            return clazz;
+        }
+    }
+
+    private static final class NavFactory extends AbstractFactory<NavigationConfig.Nav> {
+
+        NavigationConfig.Nav parseNav(
+                final Element element,
+                final NavigationConfig.Navigation navigation,
+                final Context context,
+                final NavigationConfig.Nav parent) {
+            try {
+                final Class<NavigationConfig.Nav> clazz = findClass(element.getTagName(), context);
+
+                final Constructor<NavigationConfig.Nav> c
+                        = clazz.getConstructor(NavigationConfig.Nav.class, NavigationConfig.Navigation.class, Element.class);
+
+                final NavigationConfig.Nav nav = c.newInstance(parent, navigation, element);
+
+                final NodeList children = element.getChildNodes();
+
+                for (int i = 0; i < children.getLength(); ++i) {
+                    final Node navNode = children.item(i);
+
+                    // TODO. Shoud be possible to remove these special cases by implementating static-parameter and option as navigation controller sub classses.
+                    if (navNode instanceof Element
+                            && ! ("static-parameter".equals(navNode.getNodeName()) || "option".equals(navNode.getNodeName()))) {
+                        NavigationConfig.Nav n = parseNav((Element) navNode, navigation, context, nav);
+                        nav.addChild(n);
+                    }
+
+                }
+                return nav;
+            } catch (InstantiationException ex) {
+                throw new InfrastructureException(ex);
+            } catch (IllegalAccessException ex) {
+                throw new InfrastructureException(ex);
+            } catch (ClassNotFoundException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
+            } catch (NoSuchMethodException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
+            } catch (InvocationTargetException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
+            }
+        }
+
+        protected Class<NavigationConfig.Nav> findClass(final String xmlName, final Context context) throws ClassNotFoundException {
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+
+            LOG.debug("findClass " + className);
+
+            // Special case for "nav". 
+            String classNameFQ = xmlName.equals("nav") ?
+                    NavigationConfig.Nav.class.getName() :
+                    "no.schibstedsok.searchportal.mode.navigation."+ className+ "Navigation";
+
+            final Class<NavigationConfig.Nav> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
 
             LOG.debug("Found class " + clazz.getName());
             return clazz;
