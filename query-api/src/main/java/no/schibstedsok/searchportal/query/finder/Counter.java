@@ -1,6 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.finder;
 
+import java.io.Serializable;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
@@ -15,7 +16,7 @@ import no.schibstedsok.searchportal.query.parser.*;
  * @author mick
  * @version $Id$
  */
-public final class Counter extends AbstractReflectionVisitor {
+public final class Counter extends AbstractReflectionVisitor implements Serializable {
 
     private Integer termCount = null;
 

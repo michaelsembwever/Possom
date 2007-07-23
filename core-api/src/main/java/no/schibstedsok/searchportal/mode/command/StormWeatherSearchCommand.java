@@ -37,7 +37,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(StormWeatherSearchCommand.class);
     /** TODO comment me. **/
-    private final HTTPClient client = HTTPClient.instance(STORM_WEATHER_SEARCH_HOST, 80);
+    private transient final HTTPClient client = HTTPClient.instance(STORM_WEATHER_SEARCH_HOST, 80);
 
     /**
      */

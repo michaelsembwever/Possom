@@ -1,6 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.finder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  * @author mick
  * @version $Id$
  */
-public final class ParentFinder extends AbstractReflectionVisitor {
+public final class ParentFinder extends AbstractReflectionVisitor implements Serializable {
 
     private boolean searching = false;
     private boolean singleMode = false;

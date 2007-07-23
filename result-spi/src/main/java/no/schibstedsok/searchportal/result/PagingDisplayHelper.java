@@ -4,11 +4,13 @@
  */
 package no.schibstedsok.searchportal.result;
 
+import java.io.Serializable;
+
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class PagingDisplayHelper {
+public final class PagingDisplayHelper implements Serializable {
 
     private int pageSize = 10;
     private int maxPages = 10;

@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.query.finder;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -17,9 +18,7 @@ import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import org.apache.log4j.Logger;
 
 /**
  * Responsible for Visiting the Query and finding where the predicate lies.
@@ -29,15 +28,8 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class PredicateCollector extends AbstractReflectionVisitor {
+public final class PredicateCollector extends AbstractReflectionVisitor implements Serializable {
     
-    private static final Logger LOG = Logger.getLogger(PredicateCollector.class);
-    
-    private static final String ERR_ILLEGAL_TO_CALL_VISIT = "Illegal to call visit on this visitor.";
-    
-    private final Query query;
-    private TokenEvaluationEngine engine;
-
     private final Set<TokenPredicate> known = new HashSet<TokenPredicate>();
     private final Set<TokenPredicate> possible = new HashSet<TokenPredicate>();
     
@@ -46,7 +38,6 @@ public final class PredicateCollector extends AbstractReflectionVisitor {
      * @param query 
      */
     public PredicateCollector(final Query query){
-        this.query = query;
         visit(query.getRootClause());
     }
     

@@ -1,6 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.finder;
 
+import java.io.Serializable;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
@@ -9,7 +10,7 @@ import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.parser.*;
 
 
-public final class FirstLeafFinder extends AbstractReflectionVisitor {
+public final class FirstLeafFinder extends AbstractReflectionVisitor implements Serializable {
     private boolean searching = true;
     private LeafClause firstLeaf;
 

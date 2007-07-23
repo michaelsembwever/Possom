@@ -92,7 +92,7 @@ public final class NavigationConfig implements Serializable {
     }
 
 
-    public static final class Navigation {
+    public static final class Navigation implements Serializable {
 
         private String id;
         private String commandName;
@@ -217,7 +217,7 @@ public final class NavigationConfig implements Serializable {
         }
     }
 
-    public static final class Nav {
+    public static final class Nav implements Serializable {
 
         private static final String OPTION_ELEMENT = "option";
         private static final String STATIC_PARAMETER_ELEMENT = "static-parameter";
@@ -419,7 +419,7 @@ public final class NavigationConfig implements Serializable {
         }
     }
 
-    public static final class Option {
+    public static final class Option implements Serializable {
 
         private String value;
         private String displayName;

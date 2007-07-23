@@ -7,6 +7,7 @@
 
 package no.schibstedsok.searchportal.view.config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +24,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class SearchTab {
+public final class SearchTab implements Serializable {
 
 
     // Constants -----------------------------------------------------
@@ -519,7 +520,7 @@ public final class SearchTab {
     // Inner classes -------------------------------------------------
 
     /** Immutable POJO holding Enrichment properties from a given tab. **/
-    public static final class EnrichmentHint  {
+    public static final class EnrichmentHint implements Serializable {
 
         /**
          * 
@@ -594,7 +595,7 @@ public final class SearchTab {
     }
 
     /** Immutable POJO holding navigation information for a given tab. **/
-    public static final class NavigatorHint {
+    public static final class NavigatorHint implements Serializable {
         
         /** Plain constructor. 
          * @param id 
@@ -707,7 +708,7 @@ public final class SearchTab {
          * @return 
          */
         public SearchTab getTab() {
-            return tabFactory.getTabByName(tabName);
+            return this.tabFactory.getTabByName(tabName);
         }
 
         /**
@@ -795,7 +796,7 @@ public final class SearchTab {
     /** POJO holding layout information for the given tab. 
      * readLayout(Element) is the only way to mutate the bean and can only be called once.
      **/
-    public static final class Layout{
+    public static final class Layout implements Serializable {
         
         private String origin;
         private String main;

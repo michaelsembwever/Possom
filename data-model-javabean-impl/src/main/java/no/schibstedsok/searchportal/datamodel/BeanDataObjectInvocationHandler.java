@@ -14,7 +14,9 @@ import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextSupport;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -208,12 +210,56 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         }
 
         for(Property p : propertiesLeftToAdd){
+            assert checkPropertyClass(implementOf, p) : "Property '" + p.getName() + "' not of right class";
+            assert isSerializable(p.getValue()) : "Property value not serializable: " + p.getName() + " " + p.getValue();
             addProperty(p);
         }
 
         this.immutable = isImmutable(cls);
+    }   
+    
+    private boolean isSerializable(final Object obj) {
+        boolean correct = false;
+        if (obj == null) {
+            return true;
+        }
+        
+        try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ObjectOutputStream os = new ObjectOutputStream(baos);
+            
+            os.writeObject(obj);
+            correct = true;
+        } catch (NotSerializableException e) {
+            /* Do nothing, return value already set */
+        } catch (IOException e) {
+            /* Do nothing, return value already set */
+        }
+        return correct;
     }
-
+    
+    private boolean checkPropertyClass(final Class cls, final Property property) {
+        boolean correct = false;
+        if (property.getValue() == null) {
+            return true;
+        }
+        
+        try {
+            PropertyDescriptor[] descriptors = Introspector.getBeanInfo(cls).getPropertyDescriptors();
+            for (PropertyDescriptor descriptor : descriptors) {
+                if (descriptor.getName().equals(property.getName())) {
+                    final Class<?> propertyType = property.getValue().getClass().equals(MapDataObjectSupport.class) 
+                            ? Map.class : property.getValue().getClass();
+                    correct |= descriptor.getPropertyType() == null || descriptor.getPropertyType().isAssignableFrom(propertyType);
+                    break; 
+                }
+            }
+        } catch (IntrospectionException e) {
+            /* Do nothing, return value already set */
+        }
+        return correct;
+    }
+    
     // Public --------------------------------------------------------
 
     /** {@inherit} **/

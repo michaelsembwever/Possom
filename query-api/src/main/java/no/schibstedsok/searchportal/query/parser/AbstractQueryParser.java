@@ -54,7 +54,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     
     /** the context this query parser implementation must work against.
      ***/
-    protected Context context;
+    protected transient Context context;
     
     /** the resulting query object.
      ***/
@@ -273,7 +273,8 @@ public abstract class AbstractQueryParser implements QueryParser {
             final Clause root, 
             final ParentFinder parentFinder){
 
-        return new AbstractQuery(string){
+        return AbstractQuery.createQuery(string, blank, root, parentFinder);
+                /*new AbstractQuery(string){
             public Clause getRootClause(){
 
                 return root;
@@ -284,7 +285,7 @@ public abstract class AbstractQueryParser implements QueryParser {
             public boolean isBlank(){
                 return blank;
             }
-        };
+        };*/
     }
 }
 

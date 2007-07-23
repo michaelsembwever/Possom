@@ -8,9 +8,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.DocumentContext;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.Channel;
 import no.schibstedsok.searchportal.util.Channels;
 import org.apache.velocity.context.InternalContextAdapter;
@@ -50,12 +53,19 @@ public class ChannelCategoryListDirective extends Directive {
         final String[] myChannels = node.jjtGetChild(0).value(context).toString().split(",");
         final Site site = (Site) context.get("site");
         final Channels.Context siteContext = ContextWrapper.wrap(
+            
             Channels.Context.class,
             new SiteContext() {
                 public Site getSite() {
                     return site;
                 }
-        });
+            },
+            new DocumentContext() {
+                public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+            }
+        );
         
         ArrayList<Channel.Category> categories = new ArrayList<Channel.Category>();
         Channels channels = Channels.valueOf(siteContext);

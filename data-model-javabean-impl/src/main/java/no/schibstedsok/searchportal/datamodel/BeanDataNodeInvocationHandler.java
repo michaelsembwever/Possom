@@ -20,6 +20,10 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextSupport;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -140,7 +144,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
         if (null != obj) {
 
             assert isDataObjectOrNode(obj) : "my own properties should only be Data(Object|Node)s";
-
+            assert isSerializable(obj) : "Object not serializable: " + obj;
             final BeanDataObjectInvocationHandler<?> childsNewHandler
                     = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
             context.add(childsNewHandler.getBeanContextChild());
@@ -148,6 +152,26 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
         }
     }
 
+    private boolean isSerializable(final Object obj) {
+        boolean correct = false;
+        if (obj == null) {
+            return true;
+        }
+        
+        try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ObjectOutputStream os = new ObjectOutputStream(baos);
+            
+            os.writeObject(obj);
+            correct = true;
+        } catch (NotSerializableException e) {
+            /* Do nothing, return value already correct */
+        } catch (IOException e) {
+            /* Do nothing, return value already correct */
+        }
+        return correct;
+    }
+    
     /**
      * obj may be null. 
      */

@@ -3,15 +3,13 @@
  */
 package no.schibstedsok.searchportal.query;
 
-import java.io.Serializable;
-
 /** Interface for Classes that will implement the Visitor pattern.
  * See complimentary Visitable interface.
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface Visitor extends Serializable {
+public interface Visitor {
 
     /** Method to hold implementation for what the visitor is supposed to do to the clause object.
      *

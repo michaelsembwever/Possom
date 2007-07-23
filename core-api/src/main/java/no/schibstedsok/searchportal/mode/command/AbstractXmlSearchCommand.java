@@ -27,7 +27,7 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
 
     // Attributes ----------------------------------------------------
 
-    private final HTTPClient client;
+    private final transient HTTPClient client;
 
     // Static --------------------------------------------------------
 

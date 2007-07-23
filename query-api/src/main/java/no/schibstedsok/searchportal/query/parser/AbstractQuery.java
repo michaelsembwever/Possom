@@ -9,10 +9,12 @@
 package no.schibstedsok.searchportal.query.parser;
 
 import java.util.Set;
+import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.finder.Counter;
 import no.schibstedsok.searchportal.query.finder.FirstLeafFinder;
+import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.finder.PredicateCollector;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -35,6 +37,23 @@ public abstract class AbstractQuery implements Query {
 
     private final String queryStr;
 
+    public static Query createQuery(final String string, final boolean blank, final Clause rootClause, final ParentFinder parentFinder) {
+        return new AbstractQuery(string) {
+
+            public Clause getRootClause() {
+                return rootClause;
+            }
+
+            public ParentFinder getParentFinder() {
+                return parentFinder;
+            }
+            
+            @Override
+            public boolean isBlank() {
+                return blank;
+            }
+        };
+    }
     /** Creates a new instance of AbstractQuery .
      * @param queryStr the query string as inputted from the user.
      */
@@ -89,5 +108,4 @@ public abstract class AbstractQuery implements Query {
     public TokenEvaluationEngine.State getEvaluationState(){
         return evaluationState;
     }
-    
 }

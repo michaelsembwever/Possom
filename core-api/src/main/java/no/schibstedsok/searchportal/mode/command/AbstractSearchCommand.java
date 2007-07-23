@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
+import java.io.Serializable;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
@@ -57,7 +58,7 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
  * @version <tt>$Id$</tt>
  */
-public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
+public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
 
     // Constants -----------------------------------------------------
 
@@ -79,7 +80,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * The context to work against.
      */
-    protected final Context context;
+    protected transient final Context context;
     private transient Query query = null;
     private transient TokenEvaluationEngine engine = null;
 
@@ -192,7 +193,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public SearchConfiguration getSearchConfiguration() {
         return context.getSearchConfiguration();
     }
-
+    
     /**
      * Returns the query with which this command is associated.
      *
@@ -202,7 +203,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         LOG.trace("getQuery()");
         return context.getRunningQuery();
     }
-
+    
     /**
      * Called by thread executor
      *

@@ -60,7 +60,7 @@ import org.testng.annotations.Test;
  * @author andersjj
  *  @version $Id$
  */
-public class DataModelSerializeTest implements Serializable {
+public class DataModelSerializeTest {
     
     private static final Logger LOG = Logger.getLogger(DataModelSerializeTest.class);
     
@@ -116,7 +116,7 @@ public class DataModelSerializeTest implements Serializable {
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
                 new DataObject.Property("site", site),
-                new DataObject.Property("siteconfiguration", siteConfig));
+                new DataObject.Property("siteConfiguration", siteConfig));
         datamodel.setSite(siteDO);
         
         final JunkYardDataObject junkYardDO = factory.instantiate(
@@ -133,7 +133,8 @@ public class DataModelSerializeTest implements Serializable {
         final Set<TokenPredicate> tokenPredicateSet = new HashSet<TokenPredicate>();
         tokenPredicateSet.add(TokenPredicate.FOOD);
         
-        final Clause root = new Clause() {
+        final Clause root = ClauseFactory.createClause(QUERY_STRING, tokenPredicateSet);
+        /* new Clause() {
 
             public String getTerm() {
                 return QUERY_STRING;
@@ -149,11 +150,12 @@ public class DataModelSerializeTest implements Serializable {
 
             public void accept(Visitor visitor) {
             }
-        };
+        };*/
        
         final ParentFinder parentFinder = new ParentFinder();
         
-        final Query query = new AbstractQuery(QUERY_STRING){
+        final Query query = AbstractQuery.createQuery(QUERY_STRING, false, root, parentFinder); 
+        /*new AbstractQuery(QUERY_STRING){
             public Clause getRootClause(){
                 return root;
             }
@@ -163,11 +165,13 @@ public class DataModelSerializeTest implements Serializable {
             public boolean isBlank(){
                 return false;
             }
-        };
+        };*/
         
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
                 new DataObject.Property("query", query));
+        
+        datamodel.setQuery(queryDO);
         
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
@@ -176,8 +180,6 @@ public class DataModelSerializeTest implements Serializable {
                 new DataObject.Property("query", queryDO));
         datamodel.setSearch(SEARCH_KEY, searchDO);
        
-        datamodel.setQuery(queryDO);
-     
         final StringDataObject userAgent = factory.instantiate(
                 StringDataObject.class,
                 new DataObject.Property("string", USER_AGENT));
@@ -208,7 +210,7 @@ public class DataModelSerializeTest implements Serializable {
                 ParametersDataObject.class);
         datamodel.setParameters(parametersDO);
      
-        final User user = new User() {};
+        final User user = new TestUser();
         
         final UserDataObject userDO = factory.instantiate(
                 UserDataObject.class,
@@ -355,3 +357,26 @@ class TestResourceLoader extends FileResourceLoader {
     @Override
     public void abut() {}
 }
+
+class ClauseFactory implements Serializable {
+    static Clause createClause(final String term, final Set<TokenPredicate> predicateSet) {
+        return new Clause() {
+            public String getTerm() {
+                return term;
+            }
+
+            public Set<TokenPredicate> getKnownPredicates() {
+                return predicateSet;
+            }
+
+            public Set<TokenPredicate> getPossiblePredicates() {
+                return predicateSet;
+            }
+
+            public void accept(Visitor visitor) {
+            }
+        };
+    }
+}
+
+class TestUser implements User {}

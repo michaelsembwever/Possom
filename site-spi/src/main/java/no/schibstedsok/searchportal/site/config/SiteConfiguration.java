@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version $Id$
  */
-public final class SiteConfiguration implements SiteKeyedFactory, Serializable {
+public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
 
     public static final String NAME_KEY = "SiteConfiguration";
     /**
@@ -48,13 +48,13 @@ public final class SiteConfiguration implements SiteKeyedFactory, Serializable {
     public static final String ALLOW_LIST = "site.allow";
     public static final String DISALLOW_LIST = "site.disallow";
     
-    public interface Context extends BaseContext, PropertiesContext, SiteContext, Serializable {
+    public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
 
     private final Properties properties = new Properties();
 
-    private final Context context;
-
+    private final Site site;
+    
     private static final Map<Site, SiteConfiguration> INSTANCES = new HashMap<Site, SiteConfiguration>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
@@ -62,7 +62,7 @@ public final class SiteConfiguration implements SiteKeyedFactory, Serializable {
 
     /** No-argument constructor for deserialization. */
     private SiteConfiguration() {
-        context = null;
+        site = null;
     }
     
     private SiteConfiguration(final Context cxt) {
@@ -70,11 +70,12 @@ public final class SiteConfiguration implements SiteKeyedFactory, Serializable {
         try {
             INSTANCES_LOCK.writeLock().lock();
             LOG.trace("SiteConfiguration(cxt)");
-            context = cxt;
+            
+            site = cxt.getSite();
+            
+            cxt.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
-            context.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
-
-            INSTANCES.put(context.getSite(), this);
+            INSTANCES.put(cxt.getSite(), this);
         } finally {
             INSTANCES_LOCK.writeLock().unlock();
         }
@@ -161,7 +162,7 @@ public final class SiteConfiguration implements SiteKeyedFactory, Serializable {
 
     public boolean isSiteLocaleSupported(final Locale locale) {
 
-        if (Site.DEFAULT.getName().equals(context.getSite().getName())) {
+        if (Site.DEFAULT.getName().equals(site.getName())) {
             // the DEFAULT site supports all Locales !
             return true;
         }

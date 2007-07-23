@@ -19,7 +19,7 @@ import no.schibstedsok.searchportal.result.Navigator;
 public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
 
     /** @deprecated will be removed without replacement in future version. **/
-    final SearchCommand command;
+    final transient SearchCommand command;
     private Map<String,List<Modifier>> navigators = new HashMap<String,List<Modifier>>();
     private Map<String,Navigator> currentNavigators = new HashMap<String,Navigator>();
 

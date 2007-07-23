@@ -48,7 +48,7 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
         if ("day".equals(sortByString)) {
             return 15;
         }
-        if (getRunningQuery().getQuery().isBlank()) {
+        if (datamodel.getQuery().getQuery().isBlank()) {
             return getTvsearchCommandConfig().getResultsToFetch();
         } else {
             return getTvsearchCommandConfig().getResultsToReturn();
@@ -86,11 +86,11 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
 
     protected String getAdditionalFilter() {
         /* Only fetch default channels on blank query */
-        if (getRunningQuery().getQuery().isBlank() && !getParameters().containsKey("nav_channels") && !getParameters().containsKey("nav_categories")) {
+        if (datamodel.getQuery().getQuery().isBlank() && !getParameters().containsKey("nav_channels") && !getParameters().containsKey("nav_categories")) {
             return additionalFilter + " " + defaultChannelFilter.toString();
         }
 
-        if (getRunningQuery().getQuery().isBlank() && getParameters().containsKey("output") && getParameters().get("output").equals("rss")) {
+        if (datamodel.getQuery().getQuery().isBlank() && getParameters().containsKey("output") && getParameters().get("output").equals("rss")) {
             return additionalFilter + " " + defaultChannelFilter.toString();
         }
 

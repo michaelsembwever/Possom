@@ -1,6 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
@@ -8,7 +9,7 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class Modifier implements Comparable<Modifier> {
+public final class Modifier implements Comparable<Modifier>, Serializable {
     
     private int count = 0;
 

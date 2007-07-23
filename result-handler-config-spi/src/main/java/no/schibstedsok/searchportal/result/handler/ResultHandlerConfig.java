@@ -7,6 +7,7 @@
 
 package no.schibstedsok.searchportal.result.handler;
 
+import java.io.Serializable;
 import org.w3c.dom.Element;
 
 /**
@@ -14,7 +15,7 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-public interface ResultHandlerConfig {
+public interface ResultHandlerConfig extends Serializable {
     /**
      * 
      * @param element 

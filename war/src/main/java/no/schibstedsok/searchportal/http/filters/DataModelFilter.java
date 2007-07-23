@@ -277,7 +277,7 @@ public final class DataModelFilter implements Filter {
         //datamodel.setParameters(null);
         //datamodel.setQuery(null);
        
-        //assert isSerializable(datamodel) : "Datamodel is not serializable!";
+        assert isSerializable(datamodel) : "Datamodel is not serializable!";
         factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
     }
 

@@ -4,6 +4,7 @@
  */
 package no.schibstedsok.searchportal.mode;
 
+import java.io.Serializable;
 import no.schibstedsok.searchportal.mode.config.*;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class SearchMode {
+public final class SearchMode implements Serializable {
 
     // Constants -----------------------------------------------------
 
