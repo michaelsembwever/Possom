@@ -36,6 +36,13 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
         if (myNews != null && myNews.length() > 0) {
             final ResultList<ResultItem> mergedResult = new BasicResultList<ResultItem>();
             Matcher matcher = cookiePattern.matcher(myNews);
+            int hitCount = 0;
+            while (matcher.find()) {
+                // count all cookies
+                hitCount++;
+            }
+            matcher.reset();
+
             int position = 0;
             int offset = getOffset();
             for (int i = 0; i < offset; i++) {
@@ -63,7 +70,6 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                     try {
                         LOG.debug("Waiting for " + commandName);
                         collectedResult = getSearchResult(commandName, datamodel);
-
 
                         if (collectedResult != null
                                 && collectedResult.getResults().size() > 0) {
@@ -102,13 +108,8 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 }
                 position++;
             }
-
-            while (matcher.find()) {
-                // count all cookies
-                position++;
-            }
-            mergedResult.setHitCount(position + offset);
-
+            
+            mergedResult.setHitCount(hitCount);
             setNextOffset(mergedResult, config.getResultsToReturn());
 
             return mergedResult;
