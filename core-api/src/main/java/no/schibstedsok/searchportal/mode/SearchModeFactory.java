@@ -657,23 +657,5 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             return (Class<C>) classLoader.loadClass(classNameFQ);
         }
-
-        private SiteConfiguration getSiteConfiguration(final Context context) {
-            SiteConfiguration.Context scContext = new SiteConfiguration.Context() {
-                public PropertiesLoader newPropertiesLoader(
-                        final SiteContext siteCxt,
-                        final String resource,
-                        final Properties properties)
-                {
-                    return context.newPropertiesLoader(siteCxt, resource, properties);
-                }
-
-                public Site getSite() {
-                    return context.getSite();
-                }
-            };
-
-            return SiteConfiguration.valueOf(scContext);
-        }
-    }
+w    }
 }
