@@ -5,7 +5,6 @@ package no.schibstedsok.searchportal.mode.command;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
-import java.util.Iterator;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -74,7 +73,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         final ResultList<ResultItem> fastResult = executeFastCommand();
 
         final int forecastIndex = getForecastIndex();
-        
+
         /* "enrich" the Fast result with Storm weather forecasts based on lat/long. */
         for (ResultItem result : fastResult.getResults()) {
 
@@ -119,10 +118,10 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         } else {
             idx = 0;
         }
-        
+
         return idx;
     }
-    
+
     private ResultItem getCurrentForecast(final int idx, final String la, final String lo, final String altitude) {
 
         BasicResultItem e = null;
@@ -215,11 +214,11 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      * @return
      */
     private Document getForecastDocument(String la, String lo, String altitude) {
-        
+
         if (la == null || lo == null) {
             throw new IllegalArgumentException("One of more arguments equals null: (la, lo) (" + la + ", " + lo + ")");
         }
-            
+
          /* use dot notation */
          la = la.replace(',', '.');
          lo = lo.replace(',', '.');
@@ -263,7 +262,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      public StormweatherCommandConfig getSearchConfiguration() {
          return (StormweatherCommandConfig)super.getSearchConfiguration();
      }
-     
+
     @Override
      public String getSortBy(){
         final ParametersDataObject pdo = datamodel.getParameters();
@@ -272,7 +271,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         }
         return super.getSortBy();
      }
-     
+
     /**
      * If the search is a GEO search, add required GEO search parameters.
      * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#setAdditionalParameters(ISearchParameters)
@@ -281,13 +280,13 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
     protected void setAdditionalParameters(ISearchParameters params) {
         super.setAdditionalParameters(params);
         final ParametersDataObject pdo = datamodel.getParameters();
-       
+
         if(!GeoSearchUtil.isGeoSearch(pdo)){
             return;
         }
-     
+
         final String center = GeoSearchUtil.getCenter(pdo);
- 
+
         params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
         params.setParameter(new SearchParameter("qtf_geosearch:radius", GeoSearchUtil.getRadiusRestriction(pdo)));
         params.setParameter(new SearchParameter("qtf_geosearch:center", center));
