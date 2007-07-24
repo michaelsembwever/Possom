@@ -18,6 +18,7 @@ import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.ModifierDateComparator;
+import no.schibstedsok.searchportal.util.ModifierStringComparator;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
 
         if (null != getNavigators() && searchResult instanceof FastSearchResult) {
-            collectModifiers(getIQueryResult(), (FastSearchResult)searchResult);
+            collectModifiers(getIQueryResult(), (FastSearchResult<? extends ResultItem>)searchResult);
         }
 
         return searchResult;
@@ -282,7 +283,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         return getSearchConfiguration().getNavigators();
     }
 
-    private void collectModifiers(IQueryResult result, FastSearchResult searchResult) {
+    private void collectModifiers(IQueryResult result, FastSearchResult<? extends ResultItem> searchResult) {
 
         for (String navigatorKey : navigatedTo.keySet()) {
 
@@ -290,7 +291,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
     }
 
-    private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
+    private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult<? extends ResultItem> searchResult) {
 
         final Navigator nav = navigatedTo.get(navigatorKey);
         INavigator navigator = null;
@@ -333,6 +334,10 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
                     case YEAR_MONTH:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH);
                         break;
+                    case ALPHABETICAL:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierStringComparator.ALPHABETICAL);
+                    case ALPHABETICAL_DESCENDING:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), Collections.reverseOrder(ModifierStringComparator.ALPHABETICAL));
                     case NONE:
                         // Use the soting the index returns
                         break;
