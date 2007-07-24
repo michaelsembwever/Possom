@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 
 /**
  * This class provies an advanced fast search command with navigation
@@ -60,6 +61,23 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
                     filterStrings.add("+" + field + ":\"" + modifier + "\"");
             }
         }
+
+        for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
+            if (navigator.isNewStyle()) {
+                final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
+
+
+                if (navigatedValue != null) {
+                    final String value =  navigator.isBoundaryMatch() ? "^\"" + navigatedValue.getString() + "\"$" : "\"" + navigatedValue.getString() + "\"";
+
+                    if ("adv".equals(getSearchConfiguration().getFiltertype()))
+                        filterStrings.add(" AND " + navigator.getField() + ':'  + value );
+                    else
+                        filterStrings.add("+" + navigator.getField() + ':'  + value);
+                }
+            }
+        }
+        
 
         return filterStrings;
     }
