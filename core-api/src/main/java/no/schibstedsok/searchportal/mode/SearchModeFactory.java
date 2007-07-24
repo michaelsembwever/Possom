@@ -13,7 +13,11 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.Spi;
 import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;
-import no.schibstedsok.searchportal.site.config.*;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.BytecodeContext;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,10 +53,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
 
-    private static final SearchCommandFactory searchConfigurationFactory = new SearchCommandFactory();
-    private static final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory();
-    private static final ResultHandlerFactory resultHandlerFactory = new ResultHandlerFactory();
-    private static final NavFactory navFactory = new NavFactory();
+    private static final SearchCommandFactory SEARCH_CONFIGURATION_FACTORY = new SearchCommandFactory();
+    private static final QueryTransformerFactory QUERY_TRANSFORMER_FACTORY = new QueryTransformerFactory();
+    private static final ResultHandlerFactory RESULT_HANDLER_FACTORY = new ResultHandlerFactory();
+    private static final NavFactory NAV_FACTORY = new NavFactory();
 
     /**
      * The name of the modes configuration file.
@@ -84,9 +88,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     // Static --------------------------------------------------------
 
     /**
+     * Returns the factory for the site in the context.
      *
-     * @param cxt
-     * @return
+     * @param cxt The context.
+     * @return the factory for the context.
      */
     public static SearchModeFactory valueOf(final Context cxt) {
 
@@ -112,6 +117,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /**
      * Removes mode factory associated with site causing configuration to be reloaded.
+     *
+     * @param site The site to remove.
+     * @return true if the site existed.
      */
     public boolean remove(final Site site) {
 
@@ -157,9 +165,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     // Public --------------------------------------------------------
 
     /**
+     * Returns the mode with given identifier.
      *
-     * @param id
-     * @return
+     * @param id The mode identifier.
+     * @return The mode.
      */
     public SearchMode getMode(final String id) {
 
@@ -186,6 +195,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /* Test use it. **/
 
+    /**
+     * Return the modes created by the factory.
+     *
+     * @return a map of the modes. Mode id is the key.
+     */
     Map<String, SearchMode> getModes() {
 
         return Collections.unmodifiableMap(modes);
@@ -241,11 +255,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
                     final Element childElement = (Element) childNode;
 
-                    if(searchConfigurationFactory.supported(childElement.getTagName(), context)){
+                    if(SEARCH_CONFIGURATION_FACTORY.supported(childElement.getTagName(), context)){
 
                         // commands
                         final SearchConfiguration sc
-                                = searchConfigurationFactory.parseSearchConfiguration(context, childElement, mode);
+                                = SEARCH_CONFIGURATION_FACTORY.parseSearchConfiguration(context, childElement, mode);
 
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
@@ -288,7 +302,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Node navNode = navs.item(l);
 
                 if (navNode instanceof Element && !RESET_NAV_ELEMENT.equals(navNode.getNodeName())) {
-                    NavigationConfig.Nav nav = navFactory.parseNav((Element) navNode,navigation,  context, null);
+                    final NavigationConfig.Nav nav = NAV_FACTORY.parseNav((Element) navNode,navigation,  context, null);
                     navigation.addNav(nav, cfg);
                 }
             }
@@ -297,9 +311,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Node navElement = navs.item(j);
 
                 if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
-                    String resetNavId = ((Element)navElement).getAttribute("modeId");
+                    final String resetNavId = ((Element)navElement).getAttribute("modeId");
                     if (modeId != null) {
-                        NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
+                        final NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
                         if (nav != null) {
                             navigation.addReset(nav);
                         } else {
@@ -386,8 +400,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element qt = (Element) node;
-                        if (queryTransformerFactory.supported(qt.getTagName(), cxt)) {
-                            sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt, cxt));
+                        if (QUERY_TRANSFORMER_FACTORY.supported(qt.getTagName(), cxt)) {
+                            sc.addQueryTransformer(QUERY_TRANSFORMER_FACTORY.parseQueryTransformer(qt, cxt));
                         }
                     }
                 } else if (null != inherit) {
@@ -412,8 +426,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element rh = (Element) node;
-                        if (resultHandlerFactory.supported(rh.getTagName(), cxt)) {
-                            sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh, cxt));
+                        if (RESULT_HANDLER_FACTORY.supported(rh.getTagName(), cxt)) {
+                            sc.addResultHandler(RESULT_HANDLER_FACTORY.parseResultHandler(rh, cxt));
                         }
                     }
                 } else if (null != inherit) {
@@ -461,7 +475,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             final SearchConfiguration sc = construct(element, context);
 
-            assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass()) 
+            assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass())
                     : "Can only inherit from same or superclass configuration. "
                     + element.getAttribute("id") + '(' + sc.getClass().getSimpleName() + ')'
                     + " trying to inherit from " + inherit.getName() + '(' + inherit.getClass().getSimpleName() + ')';
@@ -478,7 +492,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.debug("findClass " + className);
 
-            String classNameFQ = "no.schibstedsok.searchportal.mode.config."+ className+ "Config";
+            final String classNameFQ = "no.schibstedsok.searchportal.mode.config."+ className+ "Config";
             final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
 
             LOG.debug("Found class " + clazz.getName());
@@ -509,8 +523,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     // TODO. Shoud be possible to remove these special cases by implementating static-parameter and option as navigation controller sub classses.
                     if (navNode instanceof Element
                             && ! ("static-parameter".equals(navNode.getNodeName()) || "option".equals(navNode.getNodeName()))) {
-                        NavigationConfig.Nav n = parseNav((Element) navNode, navigation, context, nav);
-                        nav.addChild(n);
+                        nav.addChild(parseNav((Element) navNode, navigation, context, nav));
                     }
 
                 }
@@ -531,16 +544,17 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             }
         }
 
-        protected Class<NavigationConfig.Nav> findClass(final String xmlName, final Context context) throws ClassNotFoundException {
+        protected Class<NavigationConfig.Nav> findClass(final String xmlName, final Context context)
+                throws ClassNotFoundException {
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
             LOG.debug("findClass " + className);
 
             // Special case for "nav".
-            String classNameFQ = xmlName.equals("nav") ?
-                    NavigationConfig.Nav.class.getName() :
-                    "no.schibstedsok.searchportal.mode.navigation."+ className+ "Navigation";
+            final String classNameFQ = xmlName.equals("nav")
+                    ? NavigationConfig.Nav.class.getName()
+                    : "no.schibstedsok.searchportal.mode.navigation."+ className+ "Navigation";
 
             final Class<NavigationConfig.Nav> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
 
@@ -595,7 +609,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.debug("findClass " + className);
 
-            String classNameFQ = "no.schibstedsok.searchportal.result.handler."
+            final String classNameFQ = "no.schibstedsok.searchportal.result.handler."
                     + className
                     + "ResultHandlerConfig";
 
