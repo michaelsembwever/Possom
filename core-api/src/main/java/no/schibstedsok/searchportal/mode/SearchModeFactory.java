@@ -508,7 +508,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Context context,
                 final NavigationConfig.Nav parent) {
             try {
-                final Class<NavigationConfig.Nav> clazz = findClass(element.getTagName(), context);
+                final boolean realNavigator = !element.getAttribute("real-navigator").equals("false");
+
+                final Class<NavigationConfig.Nav> clazz = realNavigator // Temporarily for backwards compat.
+                        ? findClass("fast", context)
+                        : findClass(element.getTagName(), context);
 
                 final Constructor<NavigationConfig.Nav> c
                         = clazz.getConstructor(NavigationConfig.Nav.class, NavigationConfig.Navigation.class, Element.class);
@@ -554,7 +558,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             // Special case for "nav".
             final String classNameFQ = xmlName.equals("nav")
                     ? NavigationConfig.Nav.class.getName()
-                    : "no.schibstedsok.searchportal.mode.navigation."+ className+ "Navigation";
+                    : "no.schibstedsok.searchportal.mode.navigation."+ className+ "NavigationConfig";
 
             final Class<NavigationConfig.Nav> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
 

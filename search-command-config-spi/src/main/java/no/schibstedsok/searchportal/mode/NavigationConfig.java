@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.mode;
 import java.io.Serializable;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -15,6 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 
 /**
  * This is a command to help generating navigation urls in the view. I got tired of all
@@ -30,11 +35,6 @@ import java.util.Set;
  * @version $Id$
  */
 public final class NavigationConfig implements Serializable {
-
-    private static final Logger LOG = Logger.getLogger(NavigationConfig.class);
-
-    private static final String NAVIGATION_ELEMENT = "navigation";
-    private static final String NAV_ELEMENT = "nav";
 
     private final Map<String, Nav> navMap = new HashMap<String, Nav>();
     private final Map<String, Navigation> navigationMap = new HashMap<String, Navigation>();
@@ -184,6 +184,7 @@ public final class NavigationConfig implements Serializable {
         }
     }
 
+    @Nav.ControllerFactory("no.schibstedsok.searchportal.mode.navigation.NoOpNavigationControllerFactoryImpl")
     public static class Nav implements Serializable {
 
         private static final String OPTION_ELEMENT = "option";
@@ -242,7 +243,7 @@ public final class NavigationConfig implements Serializable {
 
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
-            
+
 
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
             options = new ArrayList<Option>(optionElements.size());
@@ -381,6 +382,21 @@ public final class NavigationConfig implements Serializable {
                     + ", options=" + options
                     + ", staticParameters=" + staticParameters
                     + '}';
+        }
+
+        /**
+         *
+         */
+        @Documented
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target({ElementType.TYPE})
+        @Inherited
+        public @interface ControllerFactory {
+            /**
+             *
+             * @return
+             */
+            public String value();
         }
     }
 

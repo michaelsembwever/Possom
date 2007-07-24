@@ -5,13 +5,16 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 import no.schibstedsok.searchportal.mode.NavigationConfig;
+import no.schibstedsok.searchportal.mode.NavigationControllerSpiFactory;
+import no.schibstedsok.searchportal.mode.navigation.NavigationControllerFactory;
 import no.schibstedsok.searchportal.result.BasicNavigationItem;
-import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.NavigationHelper;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -31,8 +34,22 @@ import java.util.List;
 public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
     private static final Logger LOG = Logger.getLogger(NavigationRunningQueryHandler.class);
+    private NavigationControllerSpiFactory controllerFactoryFactory;
 
     public void handleRunningQuery(final Context context) {
+
+        final NavigationControllerSpiFactory.Context cxt = new NavigationControllerSpiFactory.Context() {
+
+            public Site getSite() {
+                return context.getSite();
+            }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                return context.newBytecodeLoader(siteContext, className, jarFileName);
+            }
+        };
+
+        this.controllerFactoryFactory = new NavigationControllerSpiFactory(cxt);
 
         // Update the datamodel
         final NavigationDataObject navDO = context.getDataModel().getNavigation();
@@ -49,49 +66,31 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
      * @param name the id of the navigator to get.
      * @return a list with extended navigators
      */
-    private static NavigationItem getNavigators(final DataModel datamodel, final String name) {
+    private NavigationItem getNavigators(final DataModel datamodel, final String name) {
 
         final NavigationConfig.Nav navEntry = NavigationHelper.getConfig(datamodel).getNavMap().get(name);
 
         if (navEntry != null) {
-            boolean selectionDone = false;
-            StringDataObject selectedValue = datamodel.getParameters().getValue(name);
-            final NavigationItem extendedNavigators = new BasicNavigationItem();
+            final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
 
             ResultList<? extends ResultItem> searchResult = null;
 
-            if (navEntry.getCommandName() != null && datamodel.getSearch(navEntry.getCommandName()) != null) {
-                searchResult = datamodel.getSearch(navEntry.getCommandName()).getResults();
+            final NavigationItem extendedNavigators = factory.get(navEntry).getNavigationItems(datamodel, name);
 
-                if (searchResult instanceof FastSearchResult) {
-                    final FastSearchResult fsr = (FastSearchResult) searchResult;
-                    final List<Modifier> modifiers = fsr.getModifiers(name);
+            boolean selectionDone = false;
 
-                    if (modifiers != null && modifiers.size() > 0) {
-                        for (Modifier modifier : modifiers) {
+            final StringDataObject selectedValue = datamodel.getParameters().getValue(navEntry.getField());
 
-                            final String navigatorName = modifier.getNavigator() == null
-                                    ? null
-                                    : modifier.getNavigator().getName();
-
-                            final String urlFragment = NavigationHelper
-                                    .getUrlFragment(datamodel, navEntry, modifier.getName(), navigatorName);
-
-                            final NavigationItem navigator
-                                    = new BasicNavigationItem(modifier.getName(), urlFragment, modifier.getCount());
-
-                            if (!selectionDone) {
-                                selectedValue = datamodel.getParameters().getValue(navEntry.getField());
-                                if (selectedValue != null && selectedValue.getString().equals(modifier.getName())) {
-                                    navigator.setSelected(true);
-                                    selectionDone = true;
-                                }
-                            }
-                            extendedNavigators.addResult(navigator);
-                        }
-                    }
+            for (final NavigationItem navigationItem : extendedNavigators.getResults()) {
+                if (selectionDone)
+                    break;
+                
+                if (selectedValue != null && selectedValue.getString().equals(navigationItem.getTitle())) {
+                    navigationItem.setSelected(true);
+                    selectionDone = true;
                 }
             }
+
             getOptionNavigators(datamodel, navEntry, searchResult, extendedNavigators, selectedValue);
             return extendedNavigators;
         }

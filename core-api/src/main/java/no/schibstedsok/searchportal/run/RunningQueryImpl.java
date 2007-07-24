@@ -55,6 +55,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Level;
@@ -543,8 +544,24 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         
         // TODO move into Run Handler SPI
 
-        final RunningQueryHandler.Context handlerContext
-                = ContextWrapper.wrap(RunningQueryHandler.Context.class, context);
+        final RunningQueryHandler.Context handlerContext = new RunningQueryHandler.Context() {
+
+            public DataModel getDataModel() {
+                return context.getDataModel();
+            }
+
+            public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
+                return context.newPropertiesLoader(siteCxt, resource, properties);
+            }
+
+            public Site getSite() {
+                return datamodel.getSite().getSite();
+            }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                return context.newBytecodeLoader(siteContext, className, jarFileName);
+            }
+        };
 
         performModifierHandling(handlerContext);
         performEnrichmentHandling(handlerContext);

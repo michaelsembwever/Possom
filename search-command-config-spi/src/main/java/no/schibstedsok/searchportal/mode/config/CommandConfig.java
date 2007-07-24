@@ -63,7 +63,6 @@ public class CommandConfig implements SearchConfiguration {
     private String statisticalName;
 
     /**
-     * @param sc 
      */
     public CommandConfig(){}
 
@@ -80,7 +79,7 @@ public class CommandConfig implements SearchConfiguration {
     }
 
     /**
-     * Returns a (defensive copy) list of {@link QueryTransformer} that should be applied
+     * Returns a (defensive copy) list of {@link QueryTransformerConfig} that should be applied
      * to the query before it is sent to the search command.
      * The list is also unmodifiable.
      *
@@ -350,5 +349,5 @@ public class CommandConfig implements SearchConfiguration {
          * @return
          */
         public String value();
-    }     
+    }
 }
