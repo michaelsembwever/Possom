@@ -12,6 +12,7 @@ import no.schibstedsok.searchportal.result.NavigationHelper;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
@@ -73,8 +74,6 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
         if (navEntry != null) {
             final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
 
-            ResultList<? extends ResultItem> searchResult = null;
-
             final NavigationItem extendedNavigators = factory.get(navEntry).getNavigationItems(datamodel, name);
 
             boolean selectionDone = false;
@@ -91,7 +90,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                 }
             }
 
-            getOptionNavigators(datamodel, navEntry, searchResult, extendedNavigators, selectedValue);
+            getOptionNavigators(datamodel, navEntry, extendedNavigators, selectedValue);
             return extendedNavigators;
         }
 
@@ -100,9 +99,10 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
     private static void getOptionNavigators(
             final DataModel datamodel,final NavigationConfig.Nav navEntry,
-            final ResultList<? extends ResultItem> searchResult,
             final NavigationItem extendedNavigators,
             StringDataObject selectedValue) {
+
+        final ResultList<? extends ResultItem> searchResult = datamodel.getSearch(navEntry.getCommandName()).getResults();
 
         // Only used by getNavigators. Mainly to split code.
         if (extendedNavigators.getResults().size() > 0 && navEntry.getOptions().size() > 0) {
