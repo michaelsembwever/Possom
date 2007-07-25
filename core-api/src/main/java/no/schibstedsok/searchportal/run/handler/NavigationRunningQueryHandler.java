@@ -12,7 +12,6 @@ import no.schibstedsok.searchportal.result.NavigationHelper;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
-import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
@@ -54,48 +53,55 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
         // Update the datamodel
         final NavigationDataObject navDO = context.getDataModel().getNavigation();
-        if(null != navDO.getConfiguration()){
-            for(String id : navDO.getConfiguration().getNavMap().keySet()){
-                navDO.setNavigation(id, getNavigators(context.getDataModel(), id));
-            }
+
+        for (final NavigationConfig.Navigation navigation : navDO.getConfiguration().getNavigationList()) {
+            processNavs(navigation.getNavList(), context.getDataModel());
+        }
+    }
+
+    /**
+     * Process the navs in a top-down fashion so that children can use the result of their parents.
+     *
+     * @param navs
+     * @param dataModel
+     */
+    private void processNavs(final List<NavigationConfig.Nav> navs, DataModel dataModel) {
+        final NavigationDataObject navDO = dataModel.getNavigation();
+
+        for (final NavigationConfig.Nav nav : navs ) {
+            navDO.setNavigation(nav.getId(), getNavigators(dataModel, nav));
+            processNavs(nav.getChildNavs(), dataModel);
         }
     }
 
     /**
      * Returns extended navigators for a name(id)
      *
-     * @param name the id of the navigator to get.
      * @return a list with extended navigators
      */
-    private NavigationItem getNavigators(final DataModel datamodel, final String name) {
+    private NavigationItem getNavigators(final DataModel datamodel, final NavigationConfig.Nav navEntry) {
+        final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
 
-        final NavigationConfig.Nav navEntry = NavigationHelper.getConfig(datamodel).getNavMap().get(name);
+        final NavigationItem extendedNavigators = factory.get(navEntry).getNavigationItems(datamodel, navEntry.getId());
 
-        if (navEntry != null) {
-            final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
+        boolean selectionDone = false;
 
-            final NavigationItem extendedNavigators = factory.get(navEntry).getNavigationItems(datamodel, name);
+        final StringDataObject selectedValue = datamodel.getParameters().getValue(navEntry.getField());
 
-            boolean selectionDone = false;
+        for (final NavigationItem navigationItem : extendedNavigators.getResults()) {
+            if (selectionDone)
+                break;
 
-            final StringDataObject selectedValue = datamodel.getParameters().getValue(navEntry.getField());
-
-            for (final NavigationItem navigationItem : extendedNavigators.getResults()) {
-                if (selectionDone)
-                    break;
-                
-                if (selectedValue != null && selectedValue.getString().equals(navigationItem.getTitle())) {
-                    navigationItem.setSelected(true);
-                    selectionDone = true;
-                }
+            if (selectedValue != null && selectedValue.getString().equals(navigationItem.getTitle())) {
+                navigationItem.setSelected(true);
+                selectionDone = true;
             }
-
-            getOptionNavigators(datamodel, navEntry, extendedNavigators, selectedValue);
-            return extendedNavigators;
         }
 
-        return null;
+        getOptionNavigators(datamodel, navEntry, extendedNavigators, selectedValue);
+        return extendedNavigators;
     }
+
 
     private static void getOptionNavigators(
             final DataModel datamodel,final NavigationConfig.Nav navEntry,
