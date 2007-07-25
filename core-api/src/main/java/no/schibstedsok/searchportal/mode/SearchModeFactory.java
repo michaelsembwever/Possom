@@ -31,6 +31,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -76,6 +77,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
 
     private static final String RESET_NAV_ELEMENT = "reset-nav";
+    private static final String NAV_CONFIG_ELEMENT = "config";
 
     // Attributes ----------------------------------------------------
 
@@ -291,7 +293,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private NavigationConfig parseNavigation(final String modeId, final NodeList navigationElements) {
         final NavigationConfig cfg = new NavigationConfig();
-
+                            
         for (int i = 0; i < navigationElements.getLength(); i++) {
             final Element navigationElement = (Element) navigationElements.item(i);
             final NavigationConfig.Navigation navigation = new NavigationConfig.Navigation(navigationElement);
@@ -301,7 +303,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             for (int l = 0; l < navs.getLength(); l++) {
                 final Node navNode = navs.item(l);
 
-                if (navNode instanceof Element && !RESET_NAV_ELEMENT.equals(navNode.getNodeName())) {
+                if (navNode instanceof Element && ! (RESET_NAV_ELEMENT.equals(navNode.getNodeName()) || NAV_CONFIG_ELEMENT.equals(navNode.getNodeName()))) {
                     final NavigationConfig.Nav nav = NAV_FACTORY.parseNav((Element) navNode,navigation,  context, null);
                     navigation.addNav(nav, cfg);
                 }
@@ -508,11 +510,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Context context,
                 final NavigationConfig.Nav parent) {
             try {
-                final boolean realNavigator = !element.getAttribute("real-navigator").equals("false");
 
-                final Class<NavigationConfig.Nav> clazz = realNavigator // Temporarily for backwards compat.
-                        ? findClass("fast", context)
-                        : findClass(element.getTagName(), context);
+                Class<NavigationConfig.Nav> clazz = null;
+
+                // TODO: Temporary to keep old-style modes.xml working.
+                if ("reset-nav".equals(element.getNodeName()) || "static-parameter".equals(element.getNodeName())) {
+                    clazz = findClass("nav", context);
+                } else {
+                    clazz = findClass(element.getNodeName(), context);
+                }
 
                 final Constructor<NavigationConfig.Nav> c
                         = clazz.getConstructor(NavigationConfig.Nav.class, NavigationConfig.Navigation.class, Element.class);
@@ -524,9 +530,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 for (int i = 0; i < children.getLength(); ++i) {
                     final Node navNode = children.item(i);
 
-                    // TODO. Shoud be possible to remove these special cases by implementating static-parameter and option as navigation controller sub classses.
-                    if (navNode instanceof Element
-                            && ! ("static-parameter".equals(navNode.getNodeName()) || "option".equals(navNode.getNodeName()))) {
+                    if (navNode instanceof Element && !NAV_CONFIG_ELEMENT.equals(navNode.getNodeName())) {
                         nav.addChild(parseNav((Element) navNode, navigation, context, nav));
                     }
 

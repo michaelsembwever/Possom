@@ -4,6 +4,7 @@
 */
 package no.schibstedsok.searchportal.mode.navigation;
 
+import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.fillBeanProperty;
 import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
@@ -12,6 +13,8 @@ import no.schibstedsok.searchportal.mode.NavigationConfig;
 
 /**
  * 
+ * @author Geir H. Pettersen(T-Rank)
+ * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  */
 @NavigationConfig.Nav.ControllerFactory("no.schibstedsok.searchportal.mode.navigation.fast.FastNavigationControllerFactory")
 public class FastNavigationConfig extends NavigationConfig.Nav {
@@ -26,7 +29,7 @@ public class FastNavigationConfig extends NavigationConfig.Nav {
         super(parent, navigation, navElement);
 
         /* TODO: temporarily inherit from navigation to provide backward compatibility. remove command-name from navigation */ 
-        AbstractDocumentFactory.fillBeanProperty(this,navigation, "commandName", ParseType.String, navElement, null);
+        fillBeanProperty(this,navigation, "commandName", ParseType.String, navElement, null);
     }
 
     public String getCommandName() {

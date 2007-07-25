@@ -9,6 +9,11 @@ import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.BasicNavigationItem;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 
+/**
+ * Default navigation controller. Does nothing.
+ *  
+ * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ */
 public class NoOpNavigationControllerFactoryImpl implements NavigationControllerFactory, NavigationController {
     public NavigationController get(final NavigationConfig.Nav nav) {
         return this;

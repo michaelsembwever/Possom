@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * TODO: Move into sesat-search-command-control-spi
+ * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  */
 public class FastNavigationController implements NavigationController {
 
@@ -36,20 +37,24 @@ public class FastNavigationController implements NavigationController {
     public NavigationItem getNavigationItems(final DataModel dataModel, final String name) {
         final ResultList<? extends ResultItem> searchResult = dataModel.getSearch(commandName).getResults();
 
-        final FastSearchResult fsr = (FastSearchResult) searchResult;
-
-        final List<Modifier> modifiers = fsr.getModifiers(name);
-
         final NavigationItem item = new BasicNavigationItem();
 
-        if (modifiers != null && modifiers.size() > 0) {
-            for (final Modifier modifier : modifiers) {
-                final String navigatorName = modifier.getNavigator() == null ? null : modifier.getNavigator().getName();
-                final String url = NavigationHelper.getUrlFragment(dataModel, nav, modifier.getName(), navigatorName);
-                item.addResult(new BasicNavigationItem(modifier.getName(), url, modifier.getCount()));
-            }
-        }
+        if (searchResult instanceof FastSearchResult) {
+            
+            final FastSearchResult fsr = (FastSearchResult) searchResult;
 
+            final List<Modifier> modifiers = fsr.getModifiers(name);
+
+
+            if (modifiers != null && modifiers.size() > 0) {
+                for (final Modifier modifier : modifiers) {
+                    final String navigatorName = modifier.getNavigator() == null ? null : modifier.getNavigator().getName();
+                    final String url = NavigationHelper.getUrlFragment(dataModel, nav, modifier.getName(), navigatorName);
+                    item.addResult(new BasicNavigationItem(modifier.getName(), url, modifier.getCount()));
+                }
+            }
+
+        }
         return item;
     }
 }
