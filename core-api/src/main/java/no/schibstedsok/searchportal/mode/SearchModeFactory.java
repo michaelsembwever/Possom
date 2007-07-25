@@ -76,7 +76,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
     private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
 
-    private static final String RESET_NAV_ELEMENT = "reset-nav";
+    private static final String RESET_NAV_ELEMENT = "reset";
     private static final String NAV_CONFIG_ELEMENT = "config";
 
     // Attributes ----------------------------------------------------
@@ -319,7 +319,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         if (nav != null) {
                             navigation.addReset(nav);
                         } else {
-                            LOG.error("Error in config, <reset-nav modeId=\"" + modeId + "\" />, in mode " + modeId + " not found");
+                            LOG.error("Error in config, <reset modeId=\"" + modeId + "\" />, in mode " + modeId + " not found");
                         }
                     }
                 }
@@ -514,7 +514,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 Class<NavigationConfig.Nav> clazz = null;
 
                 // TODO: Temporary to keep old-style modes.xml working.
-                if ("reset-nav".equals(element.getNodeName()) || "static-parameter".equals(element.getNodeName())) {
+                if ("reset".equals(element.getNodeName()) || "static-parameter".equals(element.getNodeName())) {
                     clazz = findClass("nav", context);
                 } else {
                     clazz = findClass(element.getNodeName(), context);

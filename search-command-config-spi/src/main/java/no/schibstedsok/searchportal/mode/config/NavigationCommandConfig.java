@@ -129,7 +129,7 @@ public final class NavigationCommandConfig extends CommandConfig {
         private List<Nav> navList;
         private Map<String, Nav> navMap;
         private Set<String> resetNavSet;
-        private static final String RESET_NAV_ELEMENT = "reset-nav";
+        private static final String RESET_NAV_ELEMENT = "reset";
 
         public Navigation() {
         }
@@ -159,7 +159,7 @@ public final class NavigationCommandConfig extends CommandConfig {
                     if (nav != null) {
                         addReset(nav);
                     } else {
-                        LOG.error("Error in config, <reset-nav id=\"" + id + "\" />, nav with id=" + id + " not found");
+                        LOG.error("Error in config, <reset id=\"" + id + "\" />, nav with id=" + id + " not found");
                     }
                 }
             }
