@@ -245,13 +245,15 @@ public final class DataModelFilter implements Filter {
         /* Adding cookie myChannels to parameters.
          * TODO: add generic handling of cookies, or make it part of User initailization.
          */
-        for (Cookie cookie : request.getCookies()) {
-            if (TvWaitSearchCommand.MY_CHANNELS_KEY.equals(cookie.getName())) {
-                values.put(TvWaitSearchCommand.MY_CHANNELS_KEY, factory.instantiate(
-                        StringDataObject.class,
-                        new DataObject.Property("string", cookie.getValue())));
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (TvWaitSearchCommand.MY_CHANNELS_KEY.equals(cookie.getName())) {
+                    values.put(TvWaitSearchCommand.MY_CHANNELS_KEY, factory.instantiate(
+                            StringDataObject.class,
+                            new DataObject.Property("string", cookie.getValue())));
+                }
             }
-        }
+         }
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
