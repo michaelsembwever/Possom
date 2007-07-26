@@ -35,7 +35,6 @@ public class OptionNavigationController
     }
 
     public NavigationItem getNavigationItems(final DataModel dataModel) {
-
         final ResultList<? extends ResultItem> searchResult = commandName != null
                 ? dataModel.getSearch(commandName).getResults()
                 : null;
@@ -45,7 +44,7 @@ public class OptionNavigationController
         }
 
 //        removeAll(config.getOptionsToDelete(), dataModel, searchResult, dataModel);
-        addAll(config.getOptionsToAdd(), searchResult, dataModel);
+        addAll(config.getOptionsToAdd(), dataModel);
 
         // Only modifies the result of the parent. Return null.
         return null;
@@ -70,7 +69,6 @@ public class OptionNavigationController
                   if (navigator.getTitle().equals(value)) {
                       match = true;
 
-
                       if (selectedValue == null && isOptionDefaultSelected(searchResult, option)) {
                           navigator.setSelected(true);
                           selectedValue = new StringDataObjectSupport("dummy");
@@ -89,14 +87,16 @@ public class OptionNavigationController
           }
     }
 
-    private void addAll(
-            final Collection<OptionsNavigationConfig.Option> optionsToAdd,
-            final ResultList<? extends ResultItem> searchResult, DataModel dataModel) {
+    private void addAll(final Collection<OptionsNavigationConfig.Option> optionsToAdd, final DataModel dataModel) {
 
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
         for (OptionsNavigationConfig.Option option : optionsToAdd) {
+
+            final ResultList<? extends ResultItem> searchResult = option.getCommandName() != null
+                    ? dataModel.getSearch(option.getCommandName()).getResults()
+                    : null;
 
             String value = option.getValue();
             if (option.getValueRef() != null && searchResult != null) {

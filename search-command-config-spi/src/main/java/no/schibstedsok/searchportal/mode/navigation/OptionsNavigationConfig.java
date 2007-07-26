@@ -107,7 +107,7 @@ public class OptionsNavigationConfig extends NavigationConfig.Nav {
             fillBeanProperty(this, null, "defaultSelect", ParseType.Boolean, e, "false");
             fillBeanProperty(this, null, "defaultSelectValueRef", ParseType.String, e, null);
             fillBeanProperty(this, null, "useHitCount", ParseType.Boolean, e, "false");
-            fillBeanProperty(this, null, "commandName", ParseType.String, e, getParent().getCommandName());
+            fillBeanProperty(this, getParent(), "commandName", ParseType.String, e, null);
             fillBeanProperty(this, null, "tab", ParseType.String, e, getParent().getTab());
         }
 
