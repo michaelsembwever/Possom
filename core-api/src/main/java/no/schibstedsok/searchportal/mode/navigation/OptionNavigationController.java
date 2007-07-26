@@ -34,7 +34,7 @@ public class OptionNavigationController
         return this;
     }
 
-    public NavigationItem getNavigationItems(final DataModel dataModel, final String name) {
+    public NavigationItem getNavigationItems(final DataModel dataModel) {
 
         final ResultList<? extends ResultItem> searchResult = commandName != null
                 ? dataModel.getSearch(commandName).getResults()

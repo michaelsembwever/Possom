@@ -34,7 +34,7 @@ public class FastNavigationController implements NavigationController {
         assert(this.commandName != null);
     }
 
-    public NavigationItem getNavigationItems(final DataModel dataModel, final String name) {
+    public NavigationItem getNavigationItems(final DataModel dataModel) {
         final ResultList<? extends ResultItem> searchResult = dataModel.getSearch(commandName).getResults();
 
         final NavigationItem item = new BasicNavigationItem();
@@ -43,7 +43,7 @@ public class FastNavigationController implements NavigationController {
             
             final FastSearchResult fsr = (FastSearchResult) searchResult;
 
-            final List<Modifier> modifiers = fsr.getModifiers(name);
+            final List<Modifier> modifiers = fsr.getModifiers(nav.getId());
 
 
             if (modifiers != null && modifiers.size() > 0) {

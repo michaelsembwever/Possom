@@ -81,7 +81,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
     private NavigationItem getNavigators(final DataModel datamodel, final NavigationConfig.Nav navEntry) {
         final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
 
-        final NavigationItem items = factory.get(navEntry).getNavigationItems(datamodel, navEntry.getId());
+        final NavigationItem items = factory.get(navEntry).getNavigationItems(datamodel);
 
         boolean selectionDone = false;
 

@@ -19,7 +19,7 @@ public class NoOpNavigationControllerFactoryImpl implements NavigationController
         return this;
     }
 
-    public NavigationItem getNavigationItems(final DataModel dataModel, final String name) {
+    public NavigationItem getNavigationItems(final DataModel dataModel) {
         return new BasicNavigationItem();
     }
 }

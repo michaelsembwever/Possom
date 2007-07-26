@@ -11,5 +11,5 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
  * TODO: Move into sesat-search-command-control-spi once that module is ready for action.
  */
 public interface NavigationController {
-    NavigationItem getNavigationItems(DataModel dataModel, final String name);
+    NavigationItem getNavigationItems(DataModel dataModel);
 }
