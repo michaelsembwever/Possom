@@ -8,7 +8,6 @@ import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.f
 import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.mode.NavigationConfig;
 
 /**

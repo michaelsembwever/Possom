@@ -5,10 +5,10 @@
 package no.schibstedsok.searchportal.mode.navigation;
 
 import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.fillBeanProperty;
+import static no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+
 import no.schibstedsok.searchportal.mode.NavigationConfig;
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPath;
@@ -30,7 +30,6 @@ import java.io.Serializable;
 public class OptionsNavigationConfig extends NavigationConfig.Nav {
 
     private final List<Option> optionsToKeep = new ArrayList<Option>();
-
     private final List<Option> optionsToDelete = new ArrayList<Option>();
     private final List<Option> optionsToAdd = new ArrayList<Option>();
 
@@ -102,14 +101,14 @@ public class OptionsNavigationConfig extends NavigationConfig.Nav {
         private String commandName;
 
         public Option(final Element e) {
-            fillBeanProperty(this, null, "value", AbstractDocumentFactory.ParseType.String, e, null);
-            fillBeanProperty(this, null, "displayName", AbstractDocumentFactory.ParseType.String, e, null);
-            fillBeanProperty(this, null, "valueRef", AbstractDocumentFactory.ParseType.String, e, null);
-            fillBeanProperty(this, null, "defaultSelect", AbstractDocumentFactory.ParseType.Boolean, e, "false");
-            fillBeanProperty(this, null, "defaultSelectValueRef", AbstractDocumentFactory.ParseType.String, e, null);
-            fillBeanProperty(this, null, "useHitCount", AbstractDocumentFactory.ParseType.Boolean, e, "false");
-            fillBeanProperty(this, null, "commandName", AbstractDocumentFactory.ParseType.String, e, getParent().getCommandName());
-            fillBeanProperty(this, null, "tab", AbstractDocumentFactory.ParseType.String, e, getParent().getTab());
+            fillBeanProperty(this, null, "value", ParseType.String, e, null);
+            fillBeanProperty(this, null, "displayName", ParseType.String, e, null);
+            fillBeanProperty(this, null, "valueRef", ParseType.String, e, null);
+            fillBeanProperty(this, null, "defaultSelect", ParseType.Boolean, e, "false");
+            fillBeanProperty(this, null, "defaultSelectValueRef", ParseType.String, e, null);
+            fillBeanProperty(this, null, "useHitCount", ParseType.Boolean, e, "false");
+            fillBeanProperty(this, null, "commandName", ParseType.String, e, getParent().getCommandName());
+            fillBeanProperty(this, null, "tab", ParseType.String, e, getParent().getTab());
         }
 
         public String getValue() {
@@ -175,7 +174,5 @@ public class OptionsNavigationConfig extends NavigationConfig.Nav {
         public void setCommandName(String commandName) {
             this.commandName = commandName;
         }
-
     }
-
 }

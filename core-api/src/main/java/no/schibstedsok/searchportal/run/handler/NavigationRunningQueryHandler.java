@@ -78,22 +78,17 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
         }
     }
 
-    /**
-     * Returns extended navigators for a name(id)
-     *
-     * @return a list with extended navigators
-     */
     private NavigationItem getNavigators(final DataModel datamodel, final NavigationConfig.Nav navEntry) {
         final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
 
-        final NavigationItem extendedNavigators = factory.get(navEntry).getNavigationItems(datamodel, navEntry.getId());
+        final NavigationItem items = factory.get(navEntry).getNavigationItems(datamodel, navEntry.getId());
 
         boolean selectionDone = false;
 
         final StringDataObject selectedValue = datamodel.getParameters().getValue(navEntry.getField());
 
-        if (extendedNavigators != null) {
-            for (final NavigationItem navigationItem : extendedNavigators.getResults()) {
+        if (items != null) {
+            for (final NavigationItem navigationItem : items.getResults()) {
                 if (selectionDone)
                     break;
 
@@ -103,6 +98,6 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                 }
             }
         }
-        return extendedNavigators;
+        return items;
     }
 }

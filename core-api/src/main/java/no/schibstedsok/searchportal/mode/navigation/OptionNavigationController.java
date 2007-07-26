@@ -28,9 +28,9 @@ public class OptionNavigationController
     private OptionsNavigationConfig config;
     private String commandName;
 
-    public NavigationController get(final OptionsNavigationConfig config) {
-        this.config = config;
-        this.commandName = config.getCommandName();
+    public NavigationController get(final OptionsNavigationConfig navigationConfig) {
+        this.config = navigationConfig;
+        this.commandName = navigationConfig.getCommandName();
         return this;
     }
 
@@ -41,7 +41,7 @@ public class OptionNavigationController
                 : null;
 
         if (! config.getOptionsToKeep().isEmpty()) {
-            keepAllBut(config.getOptionsToKeep(), searchResult, dataModel);
+            removeAllBut(config.getOptionsToKeep(), searchResult, dataModel);
         }
 
 //        removeAll(config.getOptionsToDelete(), dataModel, searchResult, dataModel);
@@ -52,7 +52,10 @@ public class OptionNavigationController
     }
 
 
-    private void keepAllBut(final Collection<OptionsNavigationConfig.Option> optionsToKeep, ResultList<? extends ResultItem> searchResult, DataModel dataModel) {
+    private void removeAllBut(
+            final Collection<OptionsNavigationConfig.Option> optionsToKeep,
+            final ResultList<? extends ResultItem> searchResult,
+            final DataModel dataModel) {
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final List<NavigationItem> toRemove = new ArrayList<NavigationItem>();
         StringDataObject selectedValue = dataModel.getParameters().getValue(config.getParent().getField());
@@ -86,7 +89,10 @@ public class OptionNavigationController
           }
     }
 
-    private void addAll(Collection<OptionsNavigationConfig.Option> optionsToAdd, ResultList<? extends ResultItem> searchResult, DataModel dataModel) {
+    private void addAll(
+            final Collection<OptionsNavigationConfig.Option> optionsToAdd,
+            final ResultList<? extends ResultItem> searchResult, DataModel dataModel) {
+
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
@@ -117,10 +123,12 @@ public class OptionNavigationController
         }
     }
 
-    private boolean isOptionDefaultSelected(ResultList<? extends ResultItem> searchResult, OptionsNavigationConfig.Option option) {
+    private boolean isOptionDefaultSelected(
+            final ResultList<? extends ResultItem> result, 
+            final OptionsNavigationConfig.Option option) {
         final String valueRef = option.getDefaultSelectValueRef();
 
         return option.isDefaultSelect()
-                || (searchResult != null &&  valueRef != null && option.getValue().equals(searchResult.getField(valueRef)));
+                || (result != null &&  valueRef != null && option.getValue().equals(result.getField(valueRef)));
     }
 }
