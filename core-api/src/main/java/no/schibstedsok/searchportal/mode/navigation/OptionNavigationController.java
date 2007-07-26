@@ -16,6 +16,7 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *
@@ -43,11 +44,23 @@ public class OptionNavigationController
             removeAllBut(config.getOptionsToKeep(), searchResult, dataModel);
         }
 
-//        removeAll(config.getOptionsToDelete(), dataModel, searchResult, dataModel);
+        removeAll(config.getOptionsToDelete(), dataModel);
         addAll(config.getOptionsToAdd(), dataModel);
 
         // Only modifies the result of the parent. Return null.
         return null;
+    }
+
+    private void removeAll(final Collection<OptionsNavigationConfig.Option> options, final DataModel dataModel) {
+        final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
+        for (final Iterator<NavigationItem> iterator = parentResult.getResults().iterator(); iterator.hasNext();) {
+            final NavigationItem item = iterator.next();
+            for (final OptionsNavigationConfig.Option option : options) {
+                if (item.getTitle().equals(option.getValue())) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 
 
