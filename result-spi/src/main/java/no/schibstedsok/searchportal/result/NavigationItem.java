@@ -18,6 +18,6 @@ public interface NavigationItem extends ResultList<NavigationItem>{
     void setSelected(boolean selected);
     
     boolean isChildSelected();
-    NavigationItem getChildSelected();
+    NavigationItem getSelectedChild();
     NavigationItem getChildByTitle(String title);
 }

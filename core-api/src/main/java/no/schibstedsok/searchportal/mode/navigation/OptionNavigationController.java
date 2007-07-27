@@ -50,7 +50,7 @@ public class OptionNavigationController
         // Only modifies the result of the parent. Return null.
         return null;
     }
-
+                                            
     private void removeAll(final Collection<OptionsNavigationConfig.Option> options, final DataModel dataModel) {
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         for (final Iterator<NavigationItem> iterator = parentResult.getResults().iterator(); iterator.hasNext();) {
@@ -62,7 +62,6 @@ public class OptionNavigationController
             }
         }
     }
-
 
     private void removeAllBut(
             final Collection<OptionsNavigationConfig.Option> optionsToKeep,
@@ -105,7 +104,7 @@ public class OptionNavigationController
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
-        for (OptionsNavigationConfig.Option option : optionsToAdd) {
+        for (final OptionsNavigationConfig.Option option : optionsToAdd) {
 
             final ResultList<? extends ResultItem> searchResult = option.getCommandName() != null
                     ? dataModel.getSearch(option.getCommandName()).getResults()

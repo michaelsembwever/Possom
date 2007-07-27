@@ -270,5 +270,4 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             this.childPropertyDescriptors = descriptors.toArray(new PropertyDescriptor[descriptors.size()]);
         }
     }
-
 }

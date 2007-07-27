@@ -68,6 +68,7 @@ public final class NavigationHelper {
         String tab = datamodel.getParameters().getValue("c").getUtf8UrlEncoded();
 
         sb.append("c=").append(tab);
+
         if (!navEntry.isExcludeQuery()) {
             sb.append("&amp;q=").append(datamodel.getQuery().getUtf8UrlEncoded());
         }

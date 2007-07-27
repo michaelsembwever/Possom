@@ -12,5 +12,4 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
  */
 public interface NavigationController {
     NavigationItem getNavigationItems(DataModel dataModel);
-    
 }

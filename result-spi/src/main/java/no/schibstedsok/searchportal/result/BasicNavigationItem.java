@@ -41,7 +41,7 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
         return selected;
     }
     
-    public NavigationItem getChildSelected() {
+    public NavigationItem getSelectedChild() {
         
         return getChildSelectedImpl();
     }

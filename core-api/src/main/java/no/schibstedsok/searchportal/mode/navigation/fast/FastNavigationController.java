@@ -45,7 +45,6 @@ public class FastNavigationController implements NavigationController {
 
             final List<Modifier> modifiers = fsr.getModifiers(nav.getId());
 
-
             if (modifiers != null && modifiers.size() > 0) {
                 for (final Modifier modifier : modifiers) {
                     final String navigatorName = modifier.getNavigator() == null ? null : modifier.getNavigator().getName();
