@@ -35,17 +35,17 @@ public class OptionNavigationController
         return this;
     }
 
-    public NavigationItem getNavigationItems(final DataModel dataModel) {
+    public NavigationItem getNavigationItems(Context context) {
         final ResultList<? extends ResultItem> searchResult = commandName != null
-                ? dataModel.getSearch(commandName).getResults()
+                ? context.getDataModel().getSearch(commandName).getResults()
                 : null;
 
         if (! config.getOptionsToKeep().isEmpty()) {
-            removeAllBut(config.getOptionsToKeep(), searchResult, dataModel);
+            removeAllBut(config.getOptionsToKeep(), searchResult, context.getDataModel());
         }
 
-        removeAll(config.getOptionsToDelete(), dataModel);
-        addAll(config.getOptionsToAdd(), dataModel);
+        removeAll(config.getOptionsToDelete(), context.getDataModel());
+        addAll(config.getOptionsToAdd(), context.getDataModel());
 
         // Only modifies the result of the parent. Return null.
         return null;

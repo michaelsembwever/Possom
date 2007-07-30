@@ -7,7 +7,6 @@ package no.schibstedsok.searchportal.mode.navigation;
 import no.schibstedsok.searchportal.mode.NavigationConfig;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.BasicNavigationItem;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  * Default navigation controller. Does nothing.
@@ -19,7 +18,7 @@ public class NoOpNavigationControllerFactoryImpl implements NavigationController
         return this;
     }
 
-    public NavigationItem getNavigationItems(final DataModel dataModel) {
+    public NavigationItem getNavigationItems(final Context context) {
         return new BasicNavigationItem();
     }
 }

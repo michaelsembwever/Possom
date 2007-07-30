@@ -6,13 +6,18 @@ import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 import no.schibstedsok.searchportal.mode.NavigationConfig;
 import no.schibstedsok.searchportal.mode.NavigationControllerSpiFactory;
 import no.schibstedsok.searchportal.mode.navigation.NavigationControllerFactory;
+import no.schibstedsok.searchportal.mode.navigation.NavigationController;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import org.apache.log4j.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * To help generating navigation urls in the view. I got tired of all
@@ -46,12 +51,36 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
         this.controllerFactoryFactory = new NavigationControllerSpiFactory(cxt);
 
+        final NavigationController.Context navCxt = new NavigationController.Context() {
+
+            public DataModel getDataModel() {
+                return context.getDataModel();
+            }
+
+            public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
+                return context.newDocumentLoader(siteCxt, resource, builder);
+            }
+
+            public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
+                return context.newPropertiesLoader(siteCxt, resource, properties);
+            }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                return context.newBytecodeLoader(siteContext, className, jarFileName);
+            }
+
+            public Site getSite() {
+                return context.getSite();
+            }
+        };
+
+
         // Update the datamodel
         final NavigationDataObject navDO = context.getDataModel().getNavigation();
 
         if (navDO.getConfiguration() != null) {
             for (final NavigationConfig.Navigation navigation : navDO.getConfiguration().getNavigationList()) {
-                processNavs(navigation.getNavList(), context.getDataModel());
+                processNavs(navigation.getNavList(), context.getDataModel(), navCxt);
             }
         }
     }
@@ -61,12 +90,17 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
      *
      * @param navs
      * @param dataModel
+     * @param navCxt
      */
-    private void processNavs(final List<NavigationConfig.Nav> navs, final DataModel dataModel) {
+    private void processNavs(
+            final List<NavigationConfig.Nav> navs,
+            final DataModel dataModel,
+            final NavigationController.Context navCxt) {
+
         final NavigationDataObject navDO = dataModel.getNavigation();
 
         for (final NavigationConfig.Nav nav : navs) {
-            final NavigationItem items = getNavigators(dataModel, nav);
+            final NavigationItem items = getNavigators(dataModel, nav, navCxt);
 
             // Navs with null id are considered anonymous. These navs typically just modify the result of their
             // parent and will not be found in the navmap.
@@ -74,14 +108,18 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                 navDO.setNavigation(nav.getId(), items);
             }
 
-            processNavs(nav.getChildNavs(), dataModel);
+            processNavs(nav.getChildNavs(), dataModel, navCxt);
         }
     }
 
-    private NavigationItem getNavigators(final DataModel datamodel, final NavigationConfig.Nav navEntry) {
+    private NavigationItem getNavigators(
+            final DataModel datamodel,
+            final NavigationConfig.Nav navEntry,
+            final NavigationController.Context navCxt) {
+
         final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
 
-        final NavigationItem items = factory.get(navEntry).getNavigationItems(datamodel);
+        final NavigationItem items = factory.get(navEntry).getNavigationItems(navCxt);
 
         boolean selectionDone = false;
 

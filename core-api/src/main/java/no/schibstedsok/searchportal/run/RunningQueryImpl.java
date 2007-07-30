@@ -56,10 +56,13 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
 
 /**
  * An object representing a running queryStr.
@@ -560,6 +563,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
                 return context.newBytecodeLoader(siteContext, className, jarFileName);
+            }
+
+            public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
+                return context.newDocumentLoader(siteCxt, resource, builder);
             }
         };
 

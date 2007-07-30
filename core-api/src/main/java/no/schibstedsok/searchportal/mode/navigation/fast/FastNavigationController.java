@@ -34,7 +34,10 @@ public class FastNavigationController implements NavigationController {
         assert(this.commandName != null);
     }
 
-    public NavigationItem getNavigationItems(final DataModel dataModel) {
+    public NavigationItem getNavigationItems(final Context context) {
+
+        final DataModel dataModel = context.getDataModel();
+
         final ResultList<? extends ResultItem> searchResult = dataModel.getSearch(commandName).getResults();
 
         final NavigationItem item = new BasicNavigationItem();
