@@ -10,6 +10,7 @@ package no.schibstedsok.searchportal.run.handler;
 import no.schibstedsok.searchportal.datamodel.DataModelContext;
 import no.schibstedsok.searchportal.site.config.PropertiesContext;
 import no.schibstedsok.searchportal.site.config.BytecodeContext;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.site.SiteContext;
 
 /**
@@ -18,8 +19,8 @@ import no.schibstedsok.searchportal.site.SiteContext;
  * @version $Id$
  */
 public interface RunningQueryHandler {
-
-    interface Context extends DataModelContext, PropertiesContext, SiteContext, BytecodeContext {
+                               
+    interface Context extends DataModelContext, PropertiesContext, SiteContext, BytecodeContext, ResourceContext {
     }
 
     void handleRunningQuery(final Context context);
