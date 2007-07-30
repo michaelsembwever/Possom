@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.tasteline.com/Sesam/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://www.tasteline.com/Sesam/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.tasteline.com/Sesam/">
+      <s:element name="GetSearchResults">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="searchString" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSearchResultsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSearchResultsResult" type="tns:SearchResults"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SearchResults">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="TotalHits" type="s:int"/>
+          <s:element minOccurs="0" maxOccurs="1" name="LinkToSearch" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RecipeHits" type="tns:ArrayOfRecipeHit"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfRecipeHit">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RecipeHit" nillable="true" type="tns:RecipeHit"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RecipeHit">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="RecipeName" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RecipeLink" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RecipePicture" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetSearchResultsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSearchResults"/>
+  </wsdl:message>
+  <wsdl:message name="GetSearchResultsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSearchResultsResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="TastelineSearchLinksSoap">
+    <wsdl:operation name="GetSearchResults">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns the SearchResults for the specified searchString</documentation>
+      <wsdl:input message="tns:GetSearchResultsSoapIn"/>
+      <wsdl:output message="tns:GetSearchResultsSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TastelineSearchLinksSoap" type="tns:TastelineSearchLinksSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="GetSearchResults">
+      <soap:operation soapAction="http://www.tasteline.com/Sesam/GetSearchResults" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TastelineSearchLinks">
+    <wsdl:port name="TastelineSearchLinksSoap" binding="tns:TastelineSearchLinksSoap">
+      <soap:address location="http://www.tasteline.com/Sesam/SesamWS.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
