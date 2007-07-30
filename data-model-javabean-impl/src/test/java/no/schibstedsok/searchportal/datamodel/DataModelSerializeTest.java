@@ -60,6 +60,7 @@ import org.testng.annotations.Test;
  * @author andersjj
  *  @version $Id$
  */
+
 public class DataModelSerializeTest {
     
     private static final Logger LOG = Logger.getLogger(DataModelSerializeTest.class);
@@ -195,7 +196,7 @@ public class DataModelSerializeTest {
         
         datamodel.setBrowser(browserDO);
         
-        final NavigationConfig navigationConfiguration = new NavigationConfig();
+        final NavigationConfig navigationConfiguration = new NavigationConfig(null);
         final Map<String,NavigationItem> navigation = new HashMap<String,NavigationItem>();
         final NavigationItem navigationItem = new BasicNavigationItem(NAVIGATION_TITLE, NAVIGATION_URL, NAVIGATION_HIT_COUNT);
         navigation.put(NAVIGATION_KEY, navigationItem);

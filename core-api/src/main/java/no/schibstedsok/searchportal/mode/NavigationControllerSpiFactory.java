@@ -17,7 +17,7 @@ import no.schibstedsok.searchportal.site.Site;
 /**
  * 
  * @author magnuse
- * @version $Id: $
+ * @version $Id$
  */
 public final class NavigationControllerSpiFactory {
 
@@ -33,8 +33,7 @@ public final class NavigationControllerSpiFactory {
         this.context = context;
     }
 
-
-    public NavigationControllerFactory getController(final NavigationConfig.Nav navConf){
+    public <T extends NavigationConfig.Nav> NavigationControllerFactory<T> getController(final T navConf){
 
         final String controllerName = navConf.getClass().getAnnotation(NavigationConfig.Nav.ControllerFactory.class).value();
 
@@ -56,11 +55,13 @@ public final class NavigationControllerSpiFactory {
 
             final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.valueOf(classContext);
 
-            final Class<? extends NavigationControllerFactory> factory
-                    = (Class<? extends NavigationControllerFactory>) loaderFactory.getClassLoader().loadClass(controllerName);
+            @SuppressWarnings("unchecked")
+            final Class<? extends NavigationControllerFactory<T>> factory 
+                    = (Class<? extends NavigationControllerFactory<T>>) 
+                    loaderFactory.getClassLoader().loadClass(controllerName);
 
-            final Constructor<? extends NavigationControllerFactory> constructor
-                    = factory.getConstructor();
+            final Constructor<? extends NavigationControllerFactory<T>> constructor
+                    = (Constructor<? extends NavigationControllerFactory<T>>) factory.getConstructor();
 
             return constructor.newInstance();
 

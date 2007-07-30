@@ -469,14 +469,11 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
             public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
                 return FileResourceLoader.newBytecodeLoader(site, name, jar);
             }
+            public String getDisplayQuery() {
+                return datamodel.getQuery().getString();
+            }
             public Query getQuery() {
                 return command.getRunningQuery().getQuery();
-            }
-            public String getDisplayQuery() {
-                return command.getRunningQuery().getQuery().getQueryString();
-            }
-            public void addSource(final Modifier modifier) {
-                command.getRunningQuery().addSource(modifier);
             }
             public SearchTab getSearchTab(){
                 return command.getRunningQuery().getSearchTab();

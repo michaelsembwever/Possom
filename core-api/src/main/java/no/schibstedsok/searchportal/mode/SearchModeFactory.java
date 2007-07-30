@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.mode;
 
 
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.searchportal.site.config.AbstractConfigFactory;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
@@ -12,12 +12,9 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.Spi;
-import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
-import no.schibstedsok.searchportal.site.config.BytecodeContext;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,10 +28,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -45,8 +39,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     /**
      * The context any SearchModeFactory must work against. *
      */
-    public interface Context extends BaseContext, ResourceContext, SiteContext, BytecodeContext {
-    }
+    public interface Context extends ResourceContext, AbstractConfigFactory.Context {}
 
     // Constants -----------------------------------------------------
 
@@ -57,7 +50,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final SearchCommandFactory SEARCH_CONFIGURATION_FACTORY = new SearchCommandFactory();
     private static final QueryTransformerFactory QUERY_TRANSFORMER_FACTORY = new QueryTransformerFactory();
     private static final ResultHandlerFactory RESULT_HANDLER_FACTORY = new ResultHandlerFactory();
-    private static final NavFactory NAV_FACTORY = new NavFactory();
+
 
     /**
      * The name of the modes configuration file.
@@ -76,8 +69,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
     private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
 
-    private static final String RESET_NAV_ELEMENT = "reset";
-    private static final String NAV_CONFIG_ELEMENT = "config";
 
     // Attributes ----------------------------------------------------
 
@@ -266,13 +257,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
 
-                    }else if("navigation".equals(childElement.getTagName())){
-                        // navigation
-                        assert null == mode.getNavigationConfiguration() : "NavigationConfiguration already set!";
-
-                        final NodeList navigationElements = childElement.getElementsByTagName("navigation");
-
-                        mode.setNavigationConfiguration(parseNavigation(id, navigationElements));
+//                    }else if("navigation".equals(childElement.getTagName())){
+//                        // navigation
+//                        assert null == mode.getNavigationConfiguration() : "NavigationConfiguration already set!";
+//
+//                        final NodeList navigationElements = childElement.getElementsByTagName("navigation");
+//
+//                        mode.setNavigationConfiguration(parseNavigation(id, navigationElements));
                     }
                 }
 
@@ -289,45 +280,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         // finished
         LOG.debug("Parsing " + MODES_XMLFILE + " finished");
 
-    }
-
-    private NavigationConfig parseNavigation(final String modeId, final NodeList navigationElements) {
-        final NavigationConfig cfg = new NavigationConfig();
-                            
-        for (int i = 0; i < navigationElements.getLength(); i++) {
-            final Element navigationElement = (Element) navigationElements.item(i);
-            final NavigationConfig.Navigation navigation = new NavigationConfig.Navigation(navigationElement);
-
-            final NodeList navs = navigationElement.getChildNodes();
-
-            for (int l = 0; l < navs.getLength(); l++) {
-                final Node navNode = navs.item(l);
-
-                if (navNode instanceof Element && ! (RESET_NAV_ELEMENT.equals(navNode.getNodeName()) || NAV_CONFIG_ELEMENT.equals(navNode.getNodeName()))) {
-                    final NavigationConfig.Nav nav = NAV_FACTORY.parseNav((Element) navNode,navigation,  context, null);
-                    navigation.addNav(nav, cfg);
-                }
-            }
-
-            for (int j = 0; j < navs.getLength(); j++) {
-                final Node navElement = navs.item(j);
-
-                if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
-                    final String resetNavId = ((Element)navElement).getAttribute("modeId");
-                    if (modeId != null) {
-                        final NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
-                        if (nav != null) {
-                            navigation.addReset(nav);
-                        } else {
-                            LOG.error("Error in config, <reset modeId=\"" + modeId + "\" />, in mode " + modeId + " not found");
-                        }
-                    }
-                }
-            }
-
-            cfg.addNavigation(navigation);
-        }
-        return cfg;
     }
 
     private static SearchMode.SearchCommandExecutorConfig parseExecutor(
@@ -359,11 +311,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     // Inner classes -------------------------------------------------
 
 
-    private static final class SearchCommandFactory extends AbstractFactory<SearchConfiguration> {
+    private static final class SearchCommandFactory extends AbstractConfigFactory<SearchConfiguration> {
 
-        SearchCommandFactory() {
-
-        }
+        SearchCommandFactory() {}
 
         SearchConfiguration parseSearchConfiguration(
                 final Context cxt,
@@ -502,76 +452,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-    private static final class NavFactory extends AbstractFactory<NavigationConfig.Nav> {
-
-        NavigationConfig.Nav parseNav(
-                final Element element,
-                final NavigationConfig.Navigation navigation,
-                final Context context,
-                final NavigationConfig.Nav parent) {
-            try {
-
-                Class<NavigationConfig.Nav> clazz = null;
-
-                // TODO: Temporary to keep old-style modes.xml working.
-                if ("reset".equals(element.getNodeName()) || "static-parameter".equals(element.getNodeName())) {
-                    clazz = findClass("nav", context);
-                } else {
-                    clazz = findClass(element.getNodeName(), context);
-                }
-
-                final Constructor<NavigationConfig.Nav> c
-                        = clazz.getConstructor(NavigationConfig.Nav.class, NavigationConfig.Navigation.class, Element.class);
-
-                final NavigationConfig.Nav nav = c.newInstance(parent, navigation, element);
-
-                final NodeList children = element.getChildNodes();
-
-                for (int i = 0; i < children.getLength(); ++i) {
-                    final Node navNode = children.item(i);
-
-                    if (navNode instanceof Element && !NAV_CONFIG_ELEMENT.equals(navNode.getNodeName())) {
-                        nav.addChild(parseNav((Element) navNode, navigation, context, nav));
-                    }
-
-                }
-                return nav;
-            } catch (InstantiationException ex) {
-                throw new InfrastructureException(ex);
-            } catch (IllegalAccessException ex) {
-                throw new InfrastructureException(ex);
-            } catch (ClassNotFoundException e) {
-                LOG.error(e.getMessage(), e);
-                return null;
-            } catch (NoSuchMethodException e) {
-                LOG.error(e.getMessage(), e);
-                return null;
-            } catch (InvocationTargetException e) {
-                LOG.error(e.getMessage(), e);
-                return null;
-            }
-        }
-
-        protected Class<NavigationConfig.Nav> findClass(final String xmlName, final Context context)
-                throws ClassNotFoundException {
-            final String bName = xmlToBeanName(xmlName);
-            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
-
-            LOG.debug("findClass " + className);
-
-            // Special case for "nav".
-            final String classNameFQ = xmlName.equals("nav")
-                    ? NavigationConfig.Nav.class.getName()
-                    : "no.schibstedsok.searchportal.mode.navigation."+ className+ "NavigationConfig";
-
-            final Class<NavigationConfig.Nav> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
-
-            LOG.debug("Found class " + clazz.getName());
-            return clazz;
-        }
-    }
-
-    private static final class QueryTransformerFactory extends AbstractFactory<QueryTransformerConfig> {
+    private static final class QueryTransformerFactory extends AbstractConfigFactory<QueryTransformerConfig> {
 
         QueryTransformerFactory() {
         }
@@ -599,7 +480,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-    private static final class ResultHandlerFactory extends AbstractFactory<ResultHandlerConfig> {
+    private static final class ResultHandlerFactory extends AbstractConfigFactory<ResultHandlerConfig> {
 
         ResultHandlerFactory() {
         }
@@ -624,64 +505,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final Class<ResultHandlerConfig> clazz = loadClass(context, classNameFQ, Spi.RESULT_HANDLER_CONFIG);
             LOG.info("Found class " + clazz.getName());
             return clazz;
-        }
-    }
-
-    private abstract static class AbstractFactory<C>{
-
-        private static final String INFO_CONSTRUCT = "  Construct ";
-
-        AbstractFactory(){}
-
-        boolean supported(final String xmlName, final Context context) {
-
-            try {
-                return null != findClass(xmlName, context);
-            } catch (ClassNotFoundException e) {
-                return false;
-            }
-        }
-
-        protected C construct(final Element element, final Context context) {
-
-            final String xmlName = element.getTagName();
-            LOG.debug(INFO_CONSTRUCT + xmlName);
-
-            try {
-                return findClass(xmlName, context).newInstance();
-            } catch (InstantiationException ex) {
-                throw new InfrastructureException(ex);
-            } catch (IllegalAccessException ex) {
-                throw new InfrastructureException(ex);
-            } catch (ClassNotFoundException e) {
-                LOG.error(e.getMessage(), e);
-                return null;
-            }
-        }
-
-        protected abstract Class<C> findClass(final String xmlName, final Context context)
-                throws ClassNotFoundException;
-
-        @SuppressWarnings("unchecked")
-        protected Class<C> loadClass(final Context context, final String classNameFQ, final Spi spi)
-                throws ClassNotFoundException {
-            final SiteClassLoaderFactory.Context c = new SiteClassLoaderFactory.Context() {
-                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
-                    return context.newBytecodeLoader(site, name, jar);
-                }
-
-                public Site getSite() {
-                    return context.getSite();
-                }
-
-                public Spi getSpi() {
-                    return spi;
-                }
-            };
-
-            final ClassLoader classLoader = SiteClassLoaderFactory.valueOf(c).getClassLoader();
-
-            return (Class<C>) classLoader.loadClass(classNameFQ);
         }
     }
 }

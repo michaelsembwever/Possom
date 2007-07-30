@@ -19,18 +19,20 @@ public final class Modifier implements Comparable<Modifier>, Serializable {
     private static final Comparator<Modifier> HINT_PRIO_COMPARATOR = new Comparator<Modifier>() {
 
         public int compare(final Modifier m1, final Modifier m2) {
-            if (m1.getNavigationHint() == null || m2.getNavigationHint() == null) {
-                return 0;
-            }
-
-            int p1 = m1.getNavigationHint().getPriority();
-            int p2 = m2.getNavigationHint().getPriority();
-             
-             if (p1 == p2) {
-                 return 0;
-             }
-             
-             return p1 > p2 ? 1 : -1;
+            
+            return 0; //FIXME restore
+//            if (m1.getNavigationHint() == null || m2.getNavigationHint() == null) {
+//                return 0;
+//            }
+//
+//            int p1 = m1.getNavigationHint().getPriority();
+//            int p2 = m2.getNavigationHint().getPriority();
+//             
+//             if (p1 == p2) {
+//                 return 0;
+//             }
+//             
+//             return p1 > p2 ? 1 : -1;
         }
     };
 
@@ -71,29 +73,9 @@ public final class Modifier implements Comparable<Modifier>, Serializable {
         return Integer.valueOf(other.getCount()).compareTo(getCount());
     }
 
+    @Override
     public String toString() {
         return name + '(' + getCount() + ')';
-    }
-
-    /**
-     * Holds value of property navigationHint.
-     */
-    private SearchTab.NavigatorHint navigationHint;
-
-    /**
-     * Getter for property navigationHint.
-     * @return Value of property navigationHint.
-     */
-    public SearchTab.NavigatorHint getNavigationHint() {
-        return navigationHint;
-    }
-
-    /**
-     * Setter for property navigationHint.
-     * @param navigationHint New value of property navigationHint.
-     */
-    public void setNavigationHint(final SearchTab.NavigatorHint navigationHint) {
-        this.navigationHint = navigationHint;
     }
 
     public static Comparator<Modifier> getHintPriorityComparator() {

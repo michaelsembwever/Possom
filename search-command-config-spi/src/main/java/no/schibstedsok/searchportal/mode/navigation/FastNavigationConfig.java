@@ -31,10 +31,12 @@ public class FastNavigationConfig extends NavigationConfig.Nav {
         fillBeanProperty(this,navigation, "commandName", ParseType.String, navElement, null);
     }
 
+    @Override
     public String getCommandName() {
         return commandName;
     }
 
+    @Override
     public void setCommandName(String commandName) {
         this.commandName = commandName;
     }

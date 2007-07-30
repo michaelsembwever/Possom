@@ -33,9 +33,6 @@ public interface RunningQuery {
     }
 
     /** TODO comment me. **/
-    void addSource(final Modifier modifier);
-
-    /** TODO comment me. **/
     List getEnrichments();
 
     /**
@@ -60,9 +57,6 @@ public interface RunningQuery {
 
     /** TODO comment me. **/
     SearchTab getSearchTab();
-
-    /** TODO comment me. **/
-    List<Modifier> getSources();
 
     /**
      * Thread run

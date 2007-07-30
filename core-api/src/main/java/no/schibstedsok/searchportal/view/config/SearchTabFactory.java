@@ -7,17 +7,22 @@
 
 package no.schibstedsok.searchportal.view.config;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.site.config.AbstractConfigFactory;
+import no.schibstedsok.searchportal.mode.NavigationConfig;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
@@ -25,11 +30,13 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.Spi;
 import no.schibstedsok.searchportal.view.config.SearchTab.Layout;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -41,12 +48,14 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     /**
      * The context any SearchTabFactory must work against.
      */
-    public interface Context extends BaseContext, ResourceContext, SiteContext {}
+    public interface Context extends ResourceContext, AbstractConfigFactory.Context {}
 
    // Constants -----------------------------------------------------
 
     private static final Map<Site, SearchTabFactory> INSTANCES = new HashMap<Site,SearchTabFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    
+    private static final NavFactory NAV_FACTORY = new NavFactory();    
 
     private static final String MSG_NAV_PREFIX = "navigation_";
 
@@ -66,14 +75,19 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private static final String MSG_DISPLAY_NAV_PREFIX = "navigation_display_";
     private static final String MISSING_NAV = "Mo message prop. for ";
 
+    private static final String RESET_NAV_ELEMENT = "reset";
+    private static final String NAV_CONFIG_ELEMENT = "config";
+    
     // Attributes ----------------------------------------------------
 
     private final Map<String,SearchTab> tabsByName = new HashMap<String,SearchTab>();
     private final Map<String,SearchTab> tabsByKey = new HashMap<String,SearchTab>();
-    private final ReentrantReadWriteLock tabsLock = new ReentrantReadWriteLock();
+    // redundant w/ init() in constructor TODO remove
+    private final ReentrantReadWriteLock tabsLock = new ReentrantReadWriteLock(); 
 
     private final DocumentLoader loader;
     private final Context context;
+    
 
     // Static --------------------------------------------------------
 
@@ -209,6 +223,19 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         return tab;
     }
 
+    public Map<String,SearchTab> getTabsByName(){
+        
+        LOG.trace("getTabsByName()");
+
+        try{
+            tabsLock.readLock().lock();
+            return Collections.unmodifiableMap(tabsByName);
+
+        }finally{
+            tabsLock.readLock().unlock();
+        }        
+
+    }
 
     // Package protected ---------------------------------------------
 
@@ -262,47 +289,28 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
                 // navigation hints
                 final NodeList navigationNodeList = tabE.getElementsByTagName("navigation");
-                final Collection<SearchTab.NavigatorHint> navigations = new ArrayList<SearchTab.NavigatorHint>();
-                for(int j = 0 ; j < navigationNodeList.getLength(); ++j){
+                Element navE = null;
+                for(int j = 0 ; null == navE && j < navigationNodeList.getLength(); ++j){
                     final Element n = (Element) navigationNodeList.item(j);
-                    final String navId = n.getAttribute("id");
-                    LOG.info(INFO_PARSING_NAVIGATION_ID + navId);
-                    final String name = msgs.getMessage(MSG_NAV_PREFIX + navId);
+                    // only interested in the direct children
+                    if(tabE == n.getParentNode()){
 
-                    final String displayName = msgs.hasMessage(MSG_DISPLAY_NAV_PREFIX + navId)
-                        ? msgs.getMessage(MSG_DISPLAY_NAV_PREFIX + navId)
-                        : name;
-
-                    LOG.info(INFO_PARSING_NAVIGATION_NAME + name);
-                    final SearchTab.NavigatorHint.MatchType match
-                            = SearchTab.NavigatorHint.MatchType.valueOf(n.getAttribute("match").toUpperCase());
-                    final String tab = n.getAttribute("tab");
-                    final String urlSuffix = n.getAttribute("url-suffix");
-                    final String image = n.getAttribute("image");
-                    final int priority = parseInt(n.getAttribute("priority"), 0);
-                    final String template = parseString(n.getAttribute("template"), null);
-                    final SearchTab.NavigatorHint navHint = new SearchTab.NavigatorHint(
-                            navId,
-                            name,
-                            displayName,
-                            match,
-                            tab,
-                            urlSuffix,
-                            image,
-                            priority,
-                            template,
-                            this);
-                    navigations.add(navHint);
-                }
-
-                // because navigation hints dynamicaly link back to the leaf site's through the tab attribute
-                //  we need copy in the inherited navigation hints so they are applicable to this site's tabs.
-                if( null != inherit ){
-                    for(SearchTab.NavigatorHint hint : inherit.getNavigators()){
-                        navigations.add(new SearchTab.NavigatorHint(hint, this));
+                        navE = n;
                     }
                 }
-
+                
+                final NavigationConfig navConf = parseNavigation(
+                        mode,
+                        null != navE ? navE.getElementsByTagName("navigation") : new NodeList() {
+                            public Node item(final int arg0) {
+                                throw new IllegalArgumentException("empty nodelist");
+                            }
+                            public int getLength() {
+                                return 0;
+                            }
+                        }, 
+                        null != inherit ? inherit.getNavigationConfiguration() : null);
+                               
                 // the tab's layout
                 final Layout layout = new Layout(null != inherit ? inherit.getLayout() : null)
                         .readLayout((Element)tabE.getElementsByTagName("layout").item(0));
@@ -316,7 +324,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         tabE.getAttribute("rss-result-name"),
                         parseBoolean(tabE.getAttribute("rss-hidden"), false),
                         parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
-                        navigations,
+                        navConf,
                         parseInt(tabE.getAttribute("enrichment-limit"), inherit != null
                             ? inherit.getEnrichmentLimit()
                             : -1),
@@ -382,6 +390,124 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         }
     }
 
+
+    private NavigationConfig parseNavigation(
+            final String modeId, 
+            final NodeList navigationElements,
+            final NavigationConfig inherit) {
+        
+        final NavigationConfig cfg = new NavigationConfig(inherit);
+        
+        for (int i = 0; i < navigationElements.getLength(); i++) {
+            final Element navigationElement = (Element) navigationElements.item(i);
+            final NavigationConfig.Navigation navigation = new NavigationConfig.Navigation(navigationElement);
+
+            final NodeList navs = navigationElement.getChildNodes();
+
+            for (int l = 0; l < navs.getLength(); l++) {
+                final Node navNode = navs.item(l);
+
+                if (navNode instanceof Element 
+                        && ! (RESET_NAV_ELEMENT.equals(navNode.getNodeName()) 
+                        || NAV_CONFIG_ELEMENT.equals(navNode.getNodeName()))) {
+                    
+                    final NavigationConfig.Nav nav = NAV_FACTORY.parseNav((Element) navNode,navigation,  context, null);
+                    navigation.addNav(nav, cfg);
+                }
+            }
+
+            for (int j = 0; j < navs.getLength(); j++) {
+                final Node navElement = navs.item(j);
+
+                if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
+                    final String resetNavId = ((Element)navElement).getAttribute("modeId");
+                    if (modeId != null) {
+                        final NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
+                        if (nav != null) {
+                            navigation.addReset(nav);
+                        } else {
+                            LOG.error("Error in config, <reset modeId=\"" + modeId + "\" />, in mode " + modeId + " not found");
+                        }
+                    }
+                }
+            }
+
+            cfg.addNavigation(navigation);
+        }
+        return cfg;
+    }
+    
     // Inner classes -------------------------------------------------
+    
+    private static final class NavFactory extends AbstractConfigFactory<NavigationConfig.Nav> {
+
+        NavigationConfig.Nav parseNav(
+                final Element element,
+                final NavigationConfig.Navigation navigation,
+                final Context context,
+                final NavigationConfig.Nav parent) {
+            
+            try {
+
+                Class<NavigationConfig.Nav> clazz = null;
+
+                // TODO: Temporary to keep old-style modes.xml working.
+                if ("reset".equals(element.getNodeName()) || "static-parameter".equals(element.getNodeName())) {
+                    clazz = findClass("nav", context);
+                } else {
+                    clazz = findClass(element.getNodeName(), context);
+                }
+
+                final Constructor<NavigationConfig.Nav> c
+                        = clazz.getConstructor(NavigationConfig.Nav.class, NavigationConfig.Navigation.class, Element.class);
+
+                final NavigationConfig.Nav nav = c.newInstance(parent, navigation, element);
+
+                final NodeList children = element.getChildNodes();
+
+                for (int i = 0; i < children.getLength(); ++i) {
+                    final Node navNode = children.item(i);
+
+                    if (navNode instanceof Element && !NAV_CONFIG_ELEMENT.equals(navNode.getNodeName())) {
+                        nav.addChild(parseNav((Element) navNode, navigation, context, nav));
+                    }
+
+                }
+                return nav;
+            } catch (InstantiationException ex) {
+                throw new InfrastructureException(ex);
+            } catch (IllegalAccessException ex) {
+                throw new InfrastructureException(ex);
+            } catch (ClassNotFoundException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
+            } catch (NoSuchMethodException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
+            } catch (InvocationTargetException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
+            }
+        }
+
+        protected Class<NavigationConfig.Nav> findClass(final String xmlName, final Context context)
+                throws ClassNotFoundException {
+            
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+
+            LOG.debug("findClass " + className);
+
+            // Special case for "nav".
+            final String classNameFQ = xmlName.equals("nav")
+                    ? NavigationConfig.Nav.class.getName()
+                    : "no.schibstedsok.searchportal.mode.navigation."+ className+ "NavigationConfig";
+
+            final Class<NavigationConfig.Nav> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
+
+            LOG.debug("Found class " + clazz.getName());
+            return clazz;
+        }
+    }
 
 }

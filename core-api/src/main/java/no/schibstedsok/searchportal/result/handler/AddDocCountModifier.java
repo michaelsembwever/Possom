@@ -12,6 +12,7 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
+ * @deprecated SEARCH-2859
  */
 public final class AddDocCountModifier implements ResultHandler {
 
@@ -29,16 +30,7 @@ public final class AddDocCountModifier implements ResultHandler {
 
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
-
-        final ResultList<ResultItem> result = cxt.getSearchResult();
-        final Navigator navigator = new Navigator();
-        final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(config.getModifierName());
-        if( hint != null ){
-            final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);
-            cxt.addSource(mod);
-        }else{
-            throw new IllegalStateException(ERR_UNKNOWN_MODIFIER_1 + config.getModifierName());
-        }
+        // FIXME work-in-progress on SEARCH-2859
     }
 
 }

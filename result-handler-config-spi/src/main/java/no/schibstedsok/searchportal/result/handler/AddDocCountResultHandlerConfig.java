@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
+ * @deprecated SEARCH-2859
  */
 @Controller("AddDocCountModifier")
 public final class AddDocCountResultHandlerConfig extends AbstractResultHandlerConfig {

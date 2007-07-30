@@ -50,42 +50,30 @@ public final class DateFormatHandlerTest extends SiteTestCase {
         final MockupSearchCommand command = new MockupSearchCommand();
         final BasicResultList<ResultItem> bsr = new BasicResultList<ResultItem>();
         final ResultHandler.Context cxt = new ResultHandler.Context() {
-
             public ResultList<ResultItem> getSearchResult() {
                 return bsr;
             }
-            
             public SearchConfiguration getSearchConfiguration(){
                 return command.getSearchConfiguration();
             }
-
             public SearchTab getSearchTab() {
                 return command.getRunningQuery().getSearchTab();
             }
-
-            public Query getQuery() {
-                return command.getRunningQuery().getQuery();
-            }
-            
             public String getDisplayQuery() {
                 return command.getRunningQuery().getQuery().getQueryString();
             }
-
-            public void addSource(final Modifier modifier) {
-                command.getRunningQuery().addSource(modifier);
+            public Query getQuery() {
+                return command.getRunningQuery().getQuery();
             }
-
             public Site getSite() {
                 return getTestingSite();
             }
-
             public DocumentLoader newDocumentLoader(final SiteContext siteCxt,
                                                     final String resource,
                                                     final DocumentBuilder builder) {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-
             public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
                                                         final String resource,
                                                         final Properties properties) {

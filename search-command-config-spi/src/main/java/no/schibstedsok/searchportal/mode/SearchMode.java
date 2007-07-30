@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -64,7 +65,6 @@ public final class SearchMode implements Serializable {
     private boolean queryAnalysisEnabled = false;
     private String parentMode;
     private String id;
-    private NavigationConfig navigationConfig;
 
     // Static --------------------------------------------------------
 
@@ -187,6 +187,7 @@ public final class SearchMode implements Serializable {
         this.parentMode = parentMode;
     }
 
+    @Override
     public String toString(){
         return id + (parentSearchMode != null ? " --> " + parentSearchMode.toString() : "");
     }
@@ -205,14 +206,6 @@ public final class SearchMode implements Serializable {
      */
     public void setId(String id) {
         this.id = id;
-    }
-
-    public NavigationConfig getNavigationConfiguration(){
-        return navigationConfig;
-    }
-
-    public void setNavigationConfiguration(final NavigationConfig navConfig){
-        navigationConfig = navConfig;
     }
 
     // Inner classes -------------------------------------------------

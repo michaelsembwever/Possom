@@ -7,6 +7,7 @@
 
 package no.schibstedsok.searchportal.view.config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class SearchTab {
+public final class SearchTab implements Serializable{
 
 
     // Constants -----------------------------------------------------
@@ -329,6 +330,7 @@ public final class SearchTab {
         return this.mode;
     }
 
+    @Override
     public String toString(){
         return id + (inherit != null ? " --> " + inherit.toString() : "");
     }
@@ -461,206 +463,7 @@ public final class SearchTab {
             return this.weight;
         }
     }
-//
-//    /** Immutable POJO holding navigation information for a given tab. **/
-//    public static final class NavigatorHint {
-//        
-//        /** Plain constructor. 
-//         * @param id 
-//         * @param name 
-//         * @param displayName 
-//         * @param match 
-//         * @param tabName 
-//         * @param urlSuffix 
-//         * @param image 
-//         * @param priority 
-//         * @param template
-//         * @param tabFactory 
-//         */
-//        public NavigatorHint(
-//                final String id,
-//                final String name,
-//                final String displayName,
-//                final MatchType match,
-//                final String tabName,
-//                final String urlSuffix,
-//                final String image,
-//                final int priority,
-//                final String template,
-//                final SearchTabFactory tabFactory){
-//            
-//            
-//            assert null != tabFactory : "Must supply a tabFactory for getTab() to work";
-//
-//            this.id = id;
-//            this.name = name;
-//            this.displayName = displayName;
-//            this.match = match;
-//            this.tabName = tabName;
-//            this.urlSuffix = urlSuffix;
-//            this.image = image;
-//            this.priority = priority;
-//            this.template = template;
-//            this.tabFactory = tabFactory;
-//        }
-//        
-//        /** Copy constructor. 
-//         * @param copy 
-//         * @param tabFactory 
-//         */
-//        public NavigatorHint(
-//                final NavigatorHint copy,
-//                final SearchTabFactory tabFactory){
-//            
-//            
-//            assert null != tabFactory : "Must supply a tabFactory for getTab() to work";
-//
-//            this.id = copy.id;
-//            this.name = copy.name;
-//            this.displayName = copy.displayName;
-//            this.match = copy.match;
-//            this.tabName = copy.tabName;
-//            this.urlSuffix = copy.urlSuffix;
-//            this.image = copy.image;
-//            this.priority = copy.priority;
-//            this.template = copy.template;
-//            this.tabFactory = tabFactory;
-//        }
-//
-//        /**
-//         * 
-//         */
-//        public enum MatchType {
-//            /**
-//             * 
-//             */
-//            PREFIX,
-//            /**
-//             * 
-//             */
-//            EQUAL,
-//            /**
-//             * 
-//             */
-//            SUFFIX;
-//        }
-//
-//        private final SearchTabFactory tabFactory;
-//
-//        private final String id;
-//        /**
-//         * Getter for property id
-//         * @return Value of property id.
-//         */
-//        public String getId() {
-//            return id;
-//        }
-//   
-//        /**
-//         * Holds value of property tabName.
-//         */
-//        private final String tabName;
-//
-//
-//        /**
-//         * Getter for property tab.
-//         * @return Value of property tab.
-//         */
-//        public String getTabName() {
-//
-//            return this.tabName;
-//        }
-//
-//        /**
-//         * Returns the tab associated with this hint.
-//         * @return 
-//         */
-//        public SearchTab getTab() {
-//            return tabFactory.getTabByName(tabName);
-//        }
-//
-//        /**
-//         * Holds value of property name.
-//         */
-//        private final String name;
-//
-//        /**
-//         * Getter for property name.
-//         * @return Value of property name.
-//         */
-//        public String getName() {
-//            return this.name;
-//        }
-//        /**
-//         * Holds value of property name.
-//         */
-//        private final String displayName;
-//
-//        /**
-//         * Getter for property name.
-//         * @return Value of property name.
-//         */
-//        public String getDisplayName() {
-//            return this.displayName;
-//        }
-//
-//        /**
-//         * Holds value of property match.
-//         */
-//        private final MatchType match;
-//
-//        /**
-//         * Getter for property match.
-//         * @return Value of property match.
-//         */
-//        public MatchType getMatch() {
-//            return this.match;
-//        }
-//
-//        /**
-//         * Holds value of property urlSuffix.
-//         */
-//        private final String urlSuffix;
-//
-//        /**
-//         * Getter for property urlSuffix.
-//         * @return Value of property urlSuffix.
-//         */
-//        public String getUrlSuffix() {
-//            return this.urlSuffix;
-//        }
-//
-//        /**
-//         * Holds value of property image.
-//         */
-//        private String image;
-//
-//        /**
-//         * Getter for property image.
-//         * @return Value of property image.
-//         */
-//        public String getImage() {
-//            return this.image;
-//        }
-//
-//        private final int priority;
-//
-//        /**
-//         * Getter for  property priority.
-//         * @return Value of property priority.
-//         */
-//        public int getPriority() {
-//            return this.priority;
-//        }
-//        
-//        private final String template;
-//        
-//        public String getTemplate(){
-//            return template;
-//        }
-//        
-//    }
-
+    
     /** POJO holding layout information for the given tab. 
      * readLayout(Element) is the only way to mutate the bean and can only be called once.
      **/

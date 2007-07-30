@@ -22,7 +22,9 @@ import no.schibstedsok.searchportal.security.MD5Generator;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
+import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.page.PageDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.ResultItem;
@@ -174,23 +176,9 @@ public final class SearchServlet extends HttpServlet {
 
                 updateContentType(site, response, request);
 
-                // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
-                final StringDataObject c = parametersDO.getValue("c");
-                final StringDataObject page = parametersDO.getValue("page");
-                final String defaultSearchTabKey = datamodel.getSite().getSiteConfiguration().getProperty(SiteConfiguration.DEFAULTTAB_KEY);
-                final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
-                        ? c.getString()
-                        : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
+                final SearchTab searchTab = updateSearchTab(request, dmFactory, genericCxt);
 
-                LOG.info("searchTabKey:" +searchTabKey);
-
-                final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
-
-                if (searchTab == null) {
-                    LOG.error(ERR_MISSING_TAB + searchTabKey + " for site: " + site);
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
-                }else{
+                if (null!= searchTab) {
 
                     // If the rss is hidden, require a partnerId.
                     // The security by obscurity has been somewhat improved by the
@@ -208,8 +196,9 @@ public final class SearchServlet extends HttpServlet {
                     }else{
 
                         performSearch(request, response, genericCxt, searchTab, stopWatch);
-
                     }
+                }else{
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             }
 
@@ -401,23 +390,59 @@ public final class SearchServlet extends HttpServlet {
         return false;
     }
 
-    private static SearchTab findSearchTab(final BaseContext genericCxt, final String searchTabKey){
+    private static SearchTab updateSearchTab(
+            final HttpServletRequest request, 
+            final DataModelFactory dmFactory,
+            final BaseContext genericCxt){
+
+        // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
+        final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
+        final ParametersDataObject parametersDO = datamodel.getParameters();
+        final StringDataObject c = parametersDO.getValue("c");
+        final StringDataObject page = parametersDO.getValue("page");
+        final String defaultSearchTabKey 
+                = datamodel.getSite().getSiteConfiguration().getProperty(SiteConfiguration.DEFAULTTAB_KEY);
+        
+        final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
+                ? c.getString()
+                : null != page && null != page.getString() && 0 < page.getString().length() 
+                    ? "i" 
+                    : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
+
+        LOG.info("searchTabKey:" +searchTabKey);
 
         SearchTab result = null;
         try{
-            result = SearchTabFactory.valueOf(
+            final SearchTabFactory stFactory = SearchTabFactory.valueOf(
                 ContextWrapper.wrap(
                     SearchTabFactory.Context.class,
-                    genericCxt)).getTabByKey(searchTabKey);
-
+                    genericCxt));
+            
+            result = stFactory.getTabByKey(searchTabKey);
+            
+            if(null == datamodel.getPage()){
+                
+                final PageDataObject pageDO = dmFactory.instantiate(
+                        PageDataObject.class,
+                        new DataObject.Property("tabs", stFactory.getTabsByName()),
+                        new DataObject.Property("currentTab", result));
+                
+                datamodel.setPage(pageDO);
+            }else{
+                datamodel.getPage().setCurrentTab(result);
+            }
+            
         }catch(AssertionError ae){
             // it's not normal to catch assert errors but we really want a 404 not 500 response error.
             LOG.error("Caught Assertion: " + ae);
         }
+        if(null==result){
+            LOG.error(ERR_MISSING_TAB + searchTabKey);
+        }
         return result;
     }
 
-    private void performSearch(
+    private static void performSearch(
             final HttpServletRequest request,
             final HttpServletResponse response,
             final SiteContext genericCxt,

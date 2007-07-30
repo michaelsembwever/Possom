@@ -38,6 +38,7 @@
                 <module>result-handler-config-spi</module>
                 <module>search-command-config-spi</module>
                 <module>result-spi</module>
+                <module>view-config-api</module>
                 <module>data-model-api</module>
                 <module>data-model-javabean-impl</module>
                 <module>query-transform-control-spi</module>

@@ -40,7 +40,15 @@ public final class NavigationConfig implements Serializable {
     private final Map<String, Navigation> navigationMap = new HashMap<String, Navigation>();
     private final List<Navigation> navigationList = new ArrayList<Navigation>();
 
-    public NavigationConfig() {}
+    public NavigationConfig(final NavigationConfig inherit) {
+            
+        // inheritence first so that self-configuration can override
+        if(null != inherit){
+            navMap.putAll(inherit.getNavMap());
+            navigationMap.putAll(inherit.getNavigationMap());
+            navigationList.addAll(inherit.getNavigationList());
+        }
+    }
 
     public Map<String, Nav> getNavMap() {
         return Collections.unmodifiableMap(navMap);

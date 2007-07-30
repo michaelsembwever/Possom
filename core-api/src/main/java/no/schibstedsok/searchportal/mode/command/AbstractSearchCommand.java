@@ -342,7 +342,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param clause
      */
     protected void visitImpl(final NotClause clause) {
-        final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
+        final String childsTerm = transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
             appendToQueryRepresentation("NOT ");
             clause.getFirstClause().accept(this);
@@ -480,9 +480,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     }
                     public SearchTab getSearchTab() {
                         return context.getRunningQuery().getSearchTab();
-                    }
-                    public void addSource(final Modifier modifier) {
-                        context.getRunningQuery().addSource(modifier);
                     }
                     public Query getQuery() {
                         return AbstractSearchCommand.this.getQuery();

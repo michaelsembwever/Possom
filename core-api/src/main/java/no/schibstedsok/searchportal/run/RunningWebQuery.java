@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-/*
+/**
  * @version <tt>$Id$</tt>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  */
@@ -135,6 +135,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
     }
 
+    @Override
     public void run() throws InterruptedException{
 
         super.run();
@@ -164,7 +165,6 @@ public final class RunningWebQuery extends RunningQueryImpl {
             }
             // ...and...
             request.setAttribute("enrichments", getEnrichments());
-            request.setAttribute("sources", getSources());
             request.setAttribute("hits",getHits());
         }
     }

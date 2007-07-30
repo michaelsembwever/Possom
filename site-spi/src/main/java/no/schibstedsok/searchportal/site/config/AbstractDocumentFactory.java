@@ -22,6 +22,7 @@ public abstract class AbstractDocumentFactory {
 
 
     // Constants -----------------------------------------------------
+    
     private static final Logger LOG = Logger.getLogger(AbstractDocumentFactory.class);
     private static final String ERR_FILL_PROPERTY = "Could not set javabean property";
     private static final String DEBUG_UNABLE_TO_INHERIT_VALUE_1 = "Could not inherit value ";

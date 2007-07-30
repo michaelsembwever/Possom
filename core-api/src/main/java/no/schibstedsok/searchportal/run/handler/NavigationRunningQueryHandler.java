@@ -17,7 +17,12 @@ import org.apache.log4j.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.util.List;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
+
 import java.util.Properties;
+
+
 
 /**
  * To help generating navigation urls in the view. I got tired of all
@@ -34,7 +39,10 @@ import java.util.Properties;
 public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
     private static final Logger LOG = Logger.getLogger(NavigationRunningQueryHandler.class);
+   
+    private static final String NAVIGATION_OPTION_VALUE = "NavigationOptionValue";
     private NavigationControllerSpiFactory controllerFactoryFactory;
+
 
     public void handleRunningQuery(final Context context) {
 
@@ -117,7 +125,8 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
             final NavigationConfig.Nav navEntry,
             final NavigationController.Context navCxt) {
 
-        final NavigationControllerFactory factory = controllerFactoryFactory.getController(navEntry);
+        final NavigationControllerFactory<NavigationConfig.Nav> factory 
+                = controllerFactoryFactory.getController(navEntry);
 
         final NavigationItem items = factory.get(navEntry).getNavigationItems(navCxt);
 
@@ -134,6 +143,29 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                     navigationItem.setSelected(true);
                     selectionDone = true;
                 }
+//
+// magnus had removed this <<<<<<< .mine
+//                if (value != null) {
+//                    final NavigationItem navigator = new BasicNavigationItem(
+//                            option.getDisplayName(),
+//                            NavigationHelper.getUrlFragment(datamodel, navEntry, value, null),
+//                            -1);
+//                    extendedNavigators.addResult(navigator);
+//                    if (optionSelectedValue == null && isOptionDefaultSelected(option, searchResult)) {
+//                        navigator.setSelected(true);
+//                    } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
+//                        navigator.setSelected(true);
+//                    }
+//                    if (option.isUseHitCount() && null != option.getCommandName()) {
+//                        final SearchDataObject searchDO = datamodel.getSearch(option.getCommandName());
+//                        if(null != searchDO){
+//                            navigator.setHitCount(searchDO.getResults().getHitCount());
+//                        }
+//                    }
+//                    navigator.addField(NAVIGATION_OPTION_VALUE, value);
+//                }
+//=======
+//>>>>>>> .r5560
             }
         }
         return items;

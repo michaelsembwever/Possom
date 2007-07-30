@@ -176,7 +176,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         final MapDataObject<NavigationItem> navigations = new MapDataObjectSupport(Collections.EMPTY_MAP);
         final NavigationDataObject navDO = factory.instantiate(
                 NavigationDataObject.class,
-                new DataObject.Property("configuration", context.getSearchMode().getNavigationConfiguration()),
+                new DataObject.Property("configuration", context.getSearchTab().getNavigationConfiguration()),
                 new DataObject.Property("navigation",navigations),
                 new DataObject.Property("navigations", navigations)); // FIXME bug that both single and mapped needed
 
@@ -509,22 +509,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     /** {@inherit}. **/
-    public List<Modifier> getSources() {
-
-        LOG.trace("getSources()");
-
-        return sources;
-    }
-
-    /** {@inherit}. **/
-    public void addSource(final Modifier modifier) {
-
-        LOG.trace("addSource()");
-
-        sources.add(modifier);
-    }
-
-    /** {@inherit}. **/
     public List<Enrichment> getEnrichments() {
 
         LOG.trace("getEnrichments()");
@@ -602,29 +586,31 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      **/
     private void performModifierHandling(final RunningQueryHandler.Context handlerContext){
 
-        final Map<String,Modifier> map = new HashMap<String,Modifier>();
-        final List<Modifier> toRemove = new ArrayList<Modifier>();
-        for(Modifier m : sources){
-            if(m.getCount() > -1 ){
-                final Modifier prior = map.get(m.getName());
-                if( null == prior ){
-                    m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
-                    map.put(m.getName(), m);
-                }else{
-                    prior.addCount(m.getCount());
-                    toRemove.add(m);
-                }
-            }else{
-                toRemove.add(m);
-            }
-        }
-        sources.removeAll(toRemove);
-
-        if (getSearchTab().isAbsoluteOrdering()) {
-            Collections.sort(sources, Modifier.getHintPriorityComparator());
-        } else {
-            Collections.sort(sources);
-        }
+// FIXME SEARCH-  2859 - Migrate Tab Navigation into new navigation model
+//        final Map<String,Modifier> map = new HashMap<String,Modifier>();
+//        final List<Modifier> toRemove = new ArrayList<Modifier>();
+//        for(Modifier m : sources){
+//            if(m.getCount() >= 0 ){
+//                final Modifier prior = map.get(m.getName());
+//                if( null == prior ){
+////                    m.setNavigation(
+////                            context.getSearchTab().getNavigationConfiguration().getNavigationMap().get(m.getName()));
+//                    map.put(m.getName(), m);
+//                }else{
+//                    prior.addCount(m.getCount());
+//                    toRemove.add(m);
+//                }
+//            }else{
+//                toRemove.add(m);
+//            }
+//        }
+//        sources.removeAll(toRemove);
+//
+//        if (getSearchTab().isAbsoluteOrdering()) {
+//            Collections.sort(sources, Modifier.getHintPriorityComparator());
+//        } else {
+//            Collections.sort(sources);
+//        }
     }
 
     private void performNavigationHandling(final RunningQueryHandler.Context handlerContext){
