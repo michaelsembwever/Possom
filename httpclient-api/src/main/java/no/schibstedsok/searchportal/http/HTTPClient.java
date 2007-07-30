@@ -482,6 +482,15 @@ public final class HTTPClient {
         private volatile long readTimeouts = 0;
         private volatile long failures = 0;
         private static volatile long lastPrint = System.currentTimeMillis() / 60000;
+        
+        static{
+            Runtime.getRuntime().addShutdownHook(new Thread(){
+                @Override
+                public void run(){
+                    printStatistics();
+                }
+            });
+        }
 
         static Statistic getStatistic(final String id) {
 
