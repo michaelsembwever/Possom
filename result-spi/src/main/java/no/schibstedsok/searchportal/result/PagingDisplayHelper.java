@@ -122,9 +122,9 @@ public final class PagingDisplayHelper implements Serializable {
     }
 
     /**
-     * 
-     * @param page 
-     * @return 
+     *
+     * @param page
+     * @return
      */
     public int getOffsetOfPage(final int page) {
         return (page - 1) * (pageSize);
