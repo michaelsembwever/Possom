@@ -33,7 +33,7 @@ public final class ResultPagingNavigationController
         final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
 
         final NavigationItem item = new BasicNavigationItem();
-        final PagingHelper pager = new PagingHelper(hitCount, config.getPageSize(), offset, config.getPagingSize());
+        final PagingHelper pager = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
 
         final TextMessages messages = TextMessages.valueOf(context.getSite());
 

@@ -16,14 +16,14 @@ import org.w3c.dom.Element;
 public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
 
     private int pageSize;
-    private int pagingSize;
+    private int numberOfPages;
     private String commandName;
 
     public ResultPagingNavigationConfig(final NavigationConfig.Nav parent, final NavigationConfig.Navigation navigation, final Element e) {
         super(parent, navigation, e);
 
         fillBeanProperty(this, null, "pageSize", ParseType.Int, e, "10");
-        fillBeanProperty(this, null, "pagingSize", ParseType.Int, e, "10");
+        fillBeanProperty(this, null, "numberOfPages", ParseType.Int, e, "10");
         fillBeanProperty(this, null, "commandName", ParseType.String, e, null);
     }
     public int getPageSize() {
@@ -34,12 +34,12 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
         this.pageSize = pageSize;
     }
 
-    public int getPagingSize() {
-        return pagingSize;
+    public int getNumberOfPages() {
+        return numberOfPages;
     }
 
-    public void setPagingSize(int pagingSize) {
-        this.pagingSize = pagingSize;
+    public void setNumberOfPages(int numberOfPages) {
+        this.numberOfPages = numberOfPages;
     }
 
     public String getCommandName() {
