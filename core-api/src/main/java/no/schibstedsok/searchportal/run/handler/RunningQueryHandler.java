@@ -20,7 +20,7 @@ import no.schibstedsok.searchportal.site.SiteContext;
  */
 public interface RunningQueryHandler {
                                
-    interface Context extends DataModelContext, PropertiesContext, SiteContext, BytecodeContext, ResourceContext {
+    interface Context extends DataModelContext, PropertiesContext, SiteContext, ResourceContext {
     }
 
     void handleRunningQuery(final Context context);

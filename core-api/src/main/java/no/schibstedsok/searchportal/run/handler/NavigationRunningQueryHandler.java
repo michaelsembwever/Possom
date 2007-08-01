@@ -21,6 +21,7 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 
 import java.util.Properties;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 
 
 
@@ -40,7 +41,6 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
     private static final Logger LOG = Logger.getLogger(NavigationRunningQueryHandler.class);
    
-    private static final String NAVIGATION_OPTION_VALUE = "NavigationOptionValue";
     private NavigationControllerSpiFactory controllerFactoryFactory;
 
 
@@ -59,29 +59,7 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
         this.controllerFactoryFactory = new NavigationControllerSpiFactory(cxt);
 
-        final NavigationController.Context navCxt = new NavigationController.Context() {
-
-            public DataModel getDataModel() {
-                return context.getDataModel();
-            }
-
-            public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
-                return context.newDocumentLoader(siteCxt, resource, builder);
-            }
-
-            public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
-                return context.newPropertiesLoader(siteCxt, resource, properties);
-            }
-
-            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
-                return context.newBytecodeLoader(siteContext, className, jarFileName);
-            }
-
-            public Site getSite() {
-                return context.getSite();
-            }
-        };
-
+        final NavigationController.Context navCxt = ContextWrapper.wrap(NavigationController.Context.class, context);
 
         // Update the datamodel
         final NavigationDataObject navDO = context.getDataModel().getNavigation();
@@ -134,38 +112,16 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
         final StringDataObject selectedValue = datamodel.getParameters().getValue(navEntry.getField());
 
-        if (items != null) {
+        if (null != items) {
             for (final NavigationItem navigationItem : items.getResults()) {
-                if (selectionDone)
+                if (selectionDone){
                     break;
+                }
 
                 if (selectedValue != null && selectedValue.getString().equals(navigationItem.getTitle())) {
                     navigationItem.setSelected(true);
                     selectionDone = true;
                 }
-//
-// magnus had removed this <<<<<<< .mine
-//                if (value != null) {
-//                    final NavigationItem navigator = new BasicNavigationItem(
-//                            option.getDisplayName(),
-//                            NavigationHelper.getUrlFragment(datamodel, navEntry, value, null),
-//                            -1);
-//                    extendedNavigators.addResult(navigator);
-//                    if (optionSelectedValue == null && isOptionDefaultSelected(option, searchResult)) {
-//                        navigator.setSelected(true);
-//                    } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
-//                        navigator.setSelected(true);
-//                    }
-//                    if (option.isUseHitCount() && null != option.getCommandName()) {
-//                        final SearchDataObject searchDO = datamodel.getSearch(option.getCommandName());
-//                        if(null != searchDO){
-//                            navigator.setHitCount(searchDO.getResults().getHitCount());
-//                        }
-//                    }
-//                    navigator.addField(NAVIGATION_OPTION_VALUE, value);
-//                }
-//=======
-//>>>>>>> .r5560
             }
         }
         return items;

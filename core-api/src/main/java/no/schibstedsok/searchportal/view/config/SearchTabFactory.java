@@ -270,7 +270,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String[] css = allCss != null ? allCss.split(",") : new String[]{};
                 final String allJavascript = parseString(tabE.getAttribute("javascript"), null);
                 final String[] javascript = allJavascript != null ? allJavascript.split(",") : new String[]{};
-                final boolean displayCss = parseBoolean(tabE.getAttribute("display-css"), true);                
+
                 
                 // enrichment hints
                 final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");

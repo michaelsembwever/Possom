@@ -100,7 +100,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /** TODO comment me. **/
     protected final DataModel datamodel;
     private final Locale locale;
-    private final List<Modifier> sources = new Vector<Modifier>(); // TODO move into new navigation model
+
     /** TODO comment me. **/
     protected final TokenEvaluationEngine engine;
     private final List<Enrichment> enrichments = new ArrayList<Enrichment>(); // TODO into datamodel
@@ -531,28 +531,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         
         // TODO move into Run Handler SPI
 
-        final RunningQueryHandler.Context handlerContext = new RunningQueryHandler.Context() {
-
-            public DataModel getDataModel() {
-                return context.getDataModel();
-            }
-
-            public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
-                return context.newPropertiesLoader(siteCxt, resource, properties);
-            }
-
-            public Site getSite() {
-                return datamodel.getSite().getSite();
-            }
-
-            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
-                return context.newBytecodeLoader(siteContext, className, jarFileName);
-            }
-
-            public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
-                return context.newDocumentLoader(siteCxt, resource, builder);
-            }
-        };
+        final RunningQueryHandler.Context handlerContext = ContextWrapper.wrap(
+                RunningQueryHandler.Context.class,
+                new SiteContext(){
+                    public Site getSite() {
+                        return datamodel.getSite().getSite();
+                    }
+                },
+                context);
 
         performModifierHandling(handlerContext);
         performEnrichmentHandling(handlerContext);

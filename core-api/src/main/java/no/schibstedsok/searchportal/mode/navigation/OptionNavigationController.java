@@ -138,6 +138,7 @@ public class OptionNavigationController
     private boolean isOptionDefaultSelected(
             final ResultList<? extends ResultItem> result, 
             final OptionsNavigationConfig.Option option) {
+        
         final String valueRef = option.getDefaultSelectValueRef();
 
         return option.isDefaultSelect()
