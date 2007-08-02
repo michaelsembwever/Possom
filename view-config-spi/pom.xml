@@ -6,9 +6,9 @@
         <artifactId>search-portal</artifactId>
         <version>2.15-SNAPSHOT</version>
     </parent>
-    <artifactId>sesat-view-config-api</artifactId>
+    <artifactId>sesat-view-config-spi</artifactId>
     <packaging>jar</packaging>
-    <name>SESAT View Config API</name>
+    <name>SESAT View Config SPI</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
