@@ -93,10 +93,25 @@ public abstract class SiteTestCase {
     protected final Site getTestingSite(){
         
         final String basedir = System.getProperty("basedir").replaceAll("/war", "");
-        return Site.valueOf(
+        final Site result = Site.valueOf(
                 getSiteConstructingContext(),
                 basedir.substring(basedir.lastIndexOf('/')+1).replaceAll("/", ""),
                 Locale.getDefault());
+        
+        if(LOG.isDebugEnabled()){
+            final StringBuilder sb = new StringBuilder("Writing out site ancestory\n");
+            for(Site s = result;; s = s.getParent()){
+                sb.append(s.toString());
+                if(null != s.getParent()){ 
+                    sb.append(" --> "); 
+                }else{
+                    break;
+                }
+            }
+            LOG.debug(sb);
+        }
+        
+        return result;
     }    
 
     // Private -------------------------------------------------------

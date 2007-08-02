@@ -26,9 +26,9 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 
-public final class ImportPublishingPageTag extends AbstractImportVelocityTemplateTag {
+public final class PublishingPageTag extends AbstractVelocityTemplateTag {
 
-    private static final Logger LOG = Logger.getLogger(ImportPublishingPageTag.class);
+    private static final Logger LOG = Logger.getLogger(PublishingPageTag.class);
 
     private String page;
     

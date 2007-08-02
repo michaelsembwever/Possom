@@ -188,12 +188,14 @@ public final class Site implements Serializable {
 
     /** {@inheritDoc}
      */
+    @Override
     public String toString(){
         return uniqueName;
     }
 
     /** {@inheritDoc}
      */
+    @Override
     public boolean equals(final Object obj) {
         
         return obj instanceof Site
@@ -203,6 +205,7 @@ public final class Site implements Serializable {
 
     /** {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return uniqueName.hashCode();
     }

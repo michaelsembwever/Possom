@@ -26,6 +26,7 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
     private final List<String> values;
     private final String image;
     private final String template;
+    private final String urlSuffix;
     
     @SuppressWarnings("unchecked")
     public TabNavigationConfig(
@@ -47,6 +48,7 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
         
         image = AbstractDocumentFactory.parseString(navElement.getAttribute("image"), null);
         template = AbstractDocumentFactory.parseString(navElement.getAttribute("template"), null);
+        urlSuffix = AbstractDocumentFactory.parseString(navElement.getAttribute("url-suffix"), null);
     }
 
     public List<String> getCommandNames() {
@@ -71,6 +73,10 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
         return template;
     }
 
+    public String getUrlSuffix(){
+        return urlSuffix;
+    }
+    
     @Override
     public String toString() {
         return "Tab{ id=\"" + getId() + "\" tab=\"" + getTab() + "\"}";

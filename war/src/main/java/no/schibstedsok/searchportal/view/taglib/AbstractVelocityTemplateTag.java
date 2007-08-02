@@ -12,9 +12,7 @@ import com.opensymphony.module.sitemesh.RequestConstants;
 import com.opensymphony.module.sitemesh.util.OutputConverter;
 import java.io.StringWriter;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -22,7 +20,6 @@ import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
-import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channel;
@@ -41,12 +38,12 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  * @version $Id$
  */
 
-public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport {
+public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
 
 
     // Constants -----------------------------------------------------
 
-    private static final Logger LOG = Logger.getLogger(AbstractImportVelocityTemplateTag.class);
+    private static final Logger LOG = Logger.getLogger(AbstractVelocityTemplateTag.class);
     private static final String ERR_MERGE_FAILURE = "Template merging failed";
 
 
@@ -134,16 +131,6 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
                 /* do not overwrite parameters already in the velocity context */
                 if (!context.containsKey(attrName)) {
                     context.put(attrName, cxt.getRequest().getAttribute(attrName));
-                }
-            }
-
-            // populate modifiers
-            final List<Modifier> sources = (List<Modifier>) cxt.findAttribute("sources");
-            if(sources != null){
-                for (Modifier mod : sources) {
-                    if (mod.getName().equals("sesam_hits")) {
-                        context.put("sesam_hits", text.getMessage("numberFormat", mod.getCount()));
-                    }
                 }
             }
 

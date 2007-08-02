@@ -43,6 +43,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Resource getResource(final String name, final int type, final String encoding) throws Exception {
 
         final Resource resource = globalCache.get(type + name);
@@ -90,6 +91,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
          * @param enc The encoding of the resource.
          */
         private Loader(final Resource oldResource, final String name, final int type, final String enc) {
+            
             this.oldResource = oldResource;
             this.name = name;
             this.type = type;

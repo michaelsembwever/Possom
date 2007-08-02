@@ -278,9 +278,10 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty("userdirective", DIRECTIVES);
                 engine.setProperty(
                         "velocimacro.library",
-                        site.getTemplateDir() + "/VM_global_library.vm,"
+                        site.getTemplateDir() + "/VM_sesat_library.vm,"
+                        + site.getTemplateDir() + "/VM_global_library.vm,"
                         + site.getTemplateDir() + "/VM_site_library.vm,"
-                        + site.getTemplateDir() + "/VM_map_library.vm");
+                        + site.getTemplateDir() + "/VM_map_library.vm"); //XXX not happy with this. it isn't SESAT.
                 engine.init();
 
             } catch (Exception e) {

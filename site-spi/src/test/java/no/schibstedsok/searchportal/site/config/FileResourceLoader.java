@@ -103,12 +103,15 @@ public class FileResourceLoader extends AbstractResourceLoader {
         if( projectName.indexOf(':') > 0 ){
             projectName = projectName.substring(0, projectName.indexOf(':'));
         }
+        if( !projectName.endsWith("/")){
+            projectName = projectName + '/';
+        }
         if( projectName.endsWith("sesam/") && !"generic.sesam/".equals(projectName) ){
             projectName = projectName.substring(0, projectName.length() - 1) + ".no/";
         }
 
-        if( "catalogue".equals(projectName)){
-            projectName = "katalog.sesam.no";
+        if( "catalogue/".equals(projectName)){
+            projectName = "katalog.sesam.no/";
         }
         return projectName;
     }
