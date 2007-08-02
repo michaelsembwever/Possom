@@ -38,6 +38,13 @@ import org.apache.velocity.tools.generic.MathTool;
  * Each instance maps to an VelocityEngine instance.
  * All template operations (getting and merging) are done through this class
  *   rather than directly against Velocity's API.
+ * 
+ * <b>Developer Aid</b><br/>
+ * Ola-marius extended the engine so to run in debug mode that outlines (& titles) each rendered template.
+ * See 
+ * <a href="https://dev.schibstedsok.no/confluence/display/TECHDEV/Debugging+Velocity+Templates">
+ *  Debugging Velocity Templates
+ * </a><br/>
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -95,18 +102,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.XPathDirective,"
             + "no.schibstedsok.searchportal.view.velocity.XPathForeachDirective";
 
-
-
     // Attributes ----------------------------------------------------
 
     private final VelocityEngine engine;
 
-
-
-
-
     // Static --------------------------------------------------------
-
 
     public static Template getTemplate(
             final VelocityEngine engine,
@@ -235,6 +235,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                  * <ERROR velocity: ResourceManager : unable to find resource ...>
                  * error messages in sesam.error
                  **/
+                @Override
                 public Template getTemplate(final String name)
                         throws ResourceNotFoundException, ParseErrorException, Exception {
 
@@ -285,7 +286,6 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             } catch (Exception e) {
                 throw new InfrastructureException(e);
             }
-
 
             INSTANCES.put(site, this);
         }finally{
