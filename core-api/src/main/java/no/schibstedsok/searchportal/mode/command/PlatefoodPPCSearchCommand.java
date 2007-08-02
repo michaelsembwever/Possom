@@ -98,7 +98,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
             }
 
             return searchResult;
-            
+
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
@@ -148,9 +148,10 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
 
 
     /** TODO comment me. **/
+    @Override
     protected int getResultsToReturn(){
-        final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
-        final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
+        final int resultsToShow = datamodel.getPage().getCurrentTab().getAdLimit();
+        final int resultsOnTop = datamodel.getPage().getCurrentTab().getAdOnTop();
 
         if (top && !getParameters().containsKey("ss")) {
             return resultsToShow + resultsOnTop;

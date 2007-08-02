@@ -29,6 +29,8 @@ import org.xml.sax.SAXException;
  * This command gets the overture ads to display. It also does some analysis of
  * the query to decide if it is a query that yields a high click frequency for
  * the ads. This is done by evaluating the predicate "exact_ppctoplist".
+ *
+ * @version $Id$
  */
 public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
@@ -84,7 +86,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
             }
 
             return (ResultList<? extends ResultItem>) searchResult;
-            
+
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
@@ -92,7 +94,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (IOException e) {
             throw new InfrastructureException(e);
-            
+
         } catch (SAXException e) {
             throw new InfrastructureException(e);
         }
@@ -131,6 +133,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      *
      * @param clause
      */
+    @Override
     protected void visitImpl(final NotClause clause) {}
 
     /**
@@ -138,12 +141,14 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      *
      * @param clause
      */
-    protected void visitImpl(final AndNotClause clause) {}    
+    @Override
+    protected void visitImpl(final AndNotClause clause) {}
 
     /** TODO comment me. **/
+    @Override
     protected int getResultsToReturn(){
-        final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
-        final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
+        final int resultsToShow = datamodel.getPage().getCurrentTab().getAdLimit();
+        final int resultsOnTop = datamodel.getPage().getCurrentTab().getAdOnTop();
 
         if (top && !getParameters().containsKey("ss")) {
             return resultsToShow + resultsOnTop;
@@ -169,6 +174,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** TODO comment me. **/
+    @Override
     protected String getPartnerId(){
         // FIXME. When the site searches have their own context
         // remove this and use the property partnerId of OverturePPCConfiguration

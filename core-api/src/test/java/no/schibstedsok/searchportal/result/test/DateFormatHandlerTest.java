@@ -3,6 +3,8 @@ package no.schibstedsok.searchportal.result.test;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.SiteTestCase;
@@ -30,25 +32,20 @@ import static org.testng.AssertJUnit.*;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class DateFormatHandlerTest extends SiteTestCase {
+public final class DateFormatHandlerTest extends DataModelTestCase {
 
     private static final Logger LOG = Logger.getLogger(DateFormatHandlerTest.class);
 
     private static final String SOURCE_FIELD = "source_field";
     private static final String FIELD_PREFIX = "prefix";
 
-    /**
-     * 
-     * @param testName 
-     */
-    public DateFormatHandlerTest(String testName) {
-        super(testName);
-    }
-
     private ResultHandler.Context getResultHandlerContext() throws SiteKeyedFactoryInstantiationException{
+
+        final DataModel datamodel = getDataModel();
 
         final MockupSearchCommand command = new MockupSearchCommand();
         final BasicResultList<ResultItem> bsr = new BasicResultList<ResultItem>();
+
         final ResultHandler.Context cxt = new ResultHandler.Context() {
             public ResultList<ResultItem> getSearchResult() {
                 return bsr;
@@ -57,13 +54,13 @@ public final class DateFormatHandlerTest extends SiteTestCase {
                 return command.getSearchConfiguration();
             }
             public SearchTab getSearchTab() {
-                return command.getRunningQuery().getSearchTab();
+                return datamodel.getPage().getCurrentTab();
             }
             public String getDisplayQuery() {
-                return command.getRunningQuery().getQuery().getQueryString();
+                return datamodel.getQuery().getString();
             }
             public Query getQuery() {
-                return command.getRunningQuery().getQuery();
+                return datamodel.getQuery().getQuery();
             }
             public Site getSite() {
                 return getTestingSite();
@@ -82,7 +79,7 @@ public final class DateFormatHandlerTest extends SiteTestCase {
             }
             public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
                 return FileResourceLoader.newBytecodeLoader(site, name, jar);
-            }            
+            }
         };
         cxt.getSearchResult().addResult(createItem("2006-04-27T10:11:12Z"));
         return cxt;
@@ -96,12 +93,12 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testOneWithoutPrefix() throws Exception{
-        
+
         final DateFormatResultHandlerConfig config = new DateFormatResultHandlerConfig();
         config.setSourceField(SOURCE_FIELD);
         final DateFormatHandler rh = new DateFormatHandler(config);
@@ -122,18 +119,18 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testOneWithPrefix() throws Exception{
 
         final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
-        
+
         final DateFormatResultHandlerConfig config = new DateFormatResultHandlerConfig();
         config.setSourceField(SOURCE_FIELD);
         config.setFieldPrefix(FIELD_PREFIX);
-        final DateFormatHandler rh = new DateFormatHandler(config);        
+        final DateFormatHandler rh = new DateFormatHandler(config);
 
         assertEquals(1, resultHandlerContext.getSearchResult().getResults().size());
         BasicResultItem bsri = (BasicResultItem) resultHandlerContext.getSearchResult().getResults().get(0);

@@ -193,17 +193,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public SearchConfiguration getSearchConfiguration() {
         return context.getSearchConfiguration();
     }
-    
-    /**
-     * Returns the query with which this command is associated.
-     *
-     * @return The Query.
-     */
-    public final RunningQuery getRunningQuery() {
-        LOG.trace("getQuery()");
-        return context.getRunningQuery();
-    }
-    
+
     /**
      * Called by thread executor
      *
@@ -418,25 +408,25 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         final StopWatch watch = new StopWatch();
         watch.start();
-        
+
         final String query = getTransformedQuery().trim();
         Integer hitCount = null;
 
         try {
 
-            // we will be executing the command IF there's a valid query or filter, 
+            // we will be executing the command IF there's a valid query or filter,
             // or if the configuration specifies that we should run anyway.
             boolean executeQuery = "*".equals(datamodel.getQuery().getString());
             executeQuery |= query.length() > 0 || getSearchConfiguration().isRunBlank();
             executeQuery |= null != filter && 0 < filter.length();
             executeQuery |= null != additionalFilter && 0 < additionalFilter.length();
-            
+
             LOG.info("executeQuery==" + executeQuery + " ; query:" + query + " ; filter:" + filter);
 
             final ResultList<? extends ResultItem> result = executeQuery
                     ? execute()
                     : new BasicResultList<ResultItem>();
-            
+
             if(!executeQuery){
                 // sent hit count to zero since we have intentionally avoiding searching.
                 result.setHitCount(0);
@@ -479,7 +469,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         return result;
                     }
                     public SearchTab getSearchTab() {
-                        return context.getRunningQuery().getSearchTab();
+                        return datamodel.getPage().getCurrentTab();
                     }
                     public Query getQuery() {
                         return AbstractSearchCommand.this.getQuery();
@@ -789,7 +779,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected String getTransformedQuerySesamSyntax() {
         return transformedQuerySesamSyntax;
     }
-    
+
     /**
      * @return
      */
@@ -798,25 +788,25 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     protected void updateTransformedQuerySesamSyntax(){
-        
+
         final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
         builder.visit(getQuery().getRootClause());
         setTransformedQuerySesamSyntax(builder.getQueryRepresentation());
     }
-    
+
     protected void setTransformedQuerySesamSyntax(final String sesamSyntax){
-        
+
         transformedQuerySesamSyntax = sesamSyntax;
     }
 
     protected final String initialiseTransformedTerms(final Query query){
-        
+
         // initialise transformed terms
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
         mapInitialisor.visit(query.getRootClause());
         return getQueryRepresentation(query);
     }
-    
+
     protected boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
@@ -951,10 +941,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         } else {
             transformedQuery = getQueryRepresentation(query);
         }
-        
+
         updateTransformedQuerySesamSyntax();
     }
-    
+
     // Inner classes -------------------------------------------------
 
 
@@ -1092,7 +1082,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final LeafClause clause) {
-            
+
             final String field = clause.getField();
 
             // ignore terms that are fielded and terms that have been initialised but since nulled
