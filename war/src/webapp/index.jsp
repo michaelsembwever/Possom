@@ -12,7 +12,7 @@
 <%
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
     String locale = site.getLocale().toString();
-    String openSearchUrlStandard = "/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT";
+    String openSearchUrlStandard = "/search/?q=*&amp;c=d&amp;output=opensearch";
 %>
 
 <search:velocity template="/pages/index"/>
