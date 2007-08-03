@@ -7,6 +7,7 @@
 
 package no.schibstedsok.searchportal.result.handler;
 
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import no.schibstedsok.searchportal.result.handler.AbstractResultHandlerConfig.Controller;

@@ -63,6 +63,11 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
+            <artifactId>sesat-result-handler-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>

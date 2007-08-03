@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
+import no.schibstedsok.searchportal.mode.command.*;
 import java.io.Serializable;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
@@ -34,14 +35,12 @@ import no.schibstedsok.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerFactory;
 import no.schibstedsok.searchportal.result.BasicResultList;
-import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
-import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
@@ -58,7 +57,7 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
  * @version <tt>$Id$</tt>
  */
-public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
+abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
 
     // Constants -----------------------------------------------------
 
