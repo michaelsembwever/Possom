@@ -147,14 +147,20 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
     /** TODO comment me. **/
     @Override
     protected int getResultsToReturn(){
-        final int resultsToShow = datamodel.getPage().getCurrentTab().getAdLimit();
-        final int resultsOnTop = datamodel.getPage().getCurrentTab().getAdOnTop();
+        
+        // XXX this is view business not logic. please implement so.
+        if(null != datamodel.getPage()){
+            final int resultsToShow = datamodel.getPage().getCurrentTab().getAdLimit();
+            final int resultsOnTop = datamodel.getPage().getCurrentTab().getAdOnTop();
 
-        if (top && !getParameters().containsKey("ss")) {
-            return resultsToShow + resultsOnTop;
-        } else {
-            return resultsToShow;
+            if (top && !getParameters().containsKey("ss")) {
+                return resultsToShow + resultsOnTop;
+            } else {
+                return resultsToShow;
+            }
         }
+        
+        return super.getResultsToReturn();
     }
 
     /** TODO comment me. **/

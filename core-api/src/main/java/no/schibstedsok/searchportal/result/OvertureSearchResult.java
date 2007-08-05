@@ -7,9 +7,6 @@
  */
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.result.BasicResultList;
-import no.schibstedsok.searchportal.mode.command.SearchCommand;
-
 /**
  *
  * @param T 

@@ -81,10 +81,12 @@ public class BlogSearchResultItem extends BasicResultItem { // Extend BasicResul
 		this.displayDate = displayDate;
 	}
 
+    @Override
     public String getUrl() {
         return url;
     }
 
+    @Override
     public BlogSearchResultItem setUrl(String url) {
         this.url = url;
         return this;
@@ -128,17 +130,6 @@ public class BlogSearchResultItem extends BasicResultItem { // Extend BasicResul
         }
         return body.indexOf("<b>") > -1;
     }
-
-    /**
-     * isHitInComments()
-     * @return true if hit in comments
-     */
-    private boolean isHitInComments() {
-        if(comments == null  || isHitInBody()) {
-            return false;
-        }
-        return comments.indexOf("<b>") > -1;
-     }
 
     /**
      * Get the title of the blog

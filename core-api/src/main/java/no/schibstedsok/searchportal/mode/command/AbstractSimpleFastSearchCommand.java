@@ -426,17 +426,17 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
             } catch (SocketTimeoutException ste) {
     
                 LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-                return new FastSearchResult(this);
+                return new FastSearchResult();
 
             } catch (IOException ioe) {
 
                 LOG.error(getSearchConfiguration().getName() + ERR_FAST_FAILURE, ioe);
-                return new FastSearchResult(this);
+                return new FastSearchResult();
 
             } catch (SearchEngineException fe) {
                 
                 LOG.error( getSearchConfiguration().getName() + ERR_FAST_FAILURE + '[' + fe.getErrorCode() + ']', fe);
-                return new FastSearchResult(this);
+                return new FastSearchResult();
 
             }
 
@@ -673,7 +673,7 @@ import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
         }
 
-        final FastSearchResult searchResult = new FastSearchResult(this);
+        final FastSearchResult searchResult = new FastSearchResult();
         final int cnt = getCurrentOffset(0);
 
         final int maxIndex = Math.min(cnt + getResultsToReturn(), result.getDocCount());

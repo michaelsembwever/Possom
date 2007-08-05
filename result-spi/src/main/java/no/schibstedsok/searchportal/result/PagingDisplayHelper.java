@@ -7,6 +7,8 @@ package no.schibstedsok.searchportal.result;
 import java.io.Serializable;
 
 /**
+ * @deprecated replaced by SEARCH-3159 - Replace PagingDisplayHelper
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */

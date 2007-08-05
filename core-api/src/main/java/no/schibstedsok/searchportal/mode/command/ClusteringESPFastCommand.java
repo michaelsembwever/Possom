@@ -96,7 +96,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         final String clusterField = config.getClusterField();
 //        final String nestedResultsField = config.getNestedResultsField();
         // Following will throw either ClassCastException or NPE of navigators are used
-        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
+        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
         final int maxClusterCount = config.getResultsToReturn();
 
         IDocumentSummaryField currentClusterId;

@@ -78,7 +78,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
 
         try {
             final Document doc = getXmlResult();
-            final PlatefoodSearchResult searchResult = new PlatefoodSearchResult(this, top);
+            final PlatefoodSearchResult searchResult = new PlatefoodSearchResult(top);
 
             if (doc != null) {
                 final Element elem = doc.getDocumentElement();

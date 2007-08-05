@@ -27,19 +27,7 @@ public interface SearchDataObject {
     SearchConfiguration getConfiguration();
     
     void setConfiguration(SearchConfiguration configuration);
-    
-    /**
-     * 
-     * @return 
-     */
-    PagingDisplayHelper getPager();
-    
-    /**
-     * 
-     * @param pager 
-     */
-    void setPager(PagingDisplayHelper pager);
-    
+        
     /**
      * 
      * @return 

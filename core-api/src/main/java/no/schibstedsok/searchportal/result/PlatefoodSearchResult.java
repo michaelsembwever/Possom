@@ -8,8 +8,6 @@
 
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.result.BasicResultList;
-import no.schibstedsok.searchportal.mode.command.SearchCommand;
 
 /**
  *
@@ -26,7 +24,7 @@ public final class PlatefoodSearchResult<T extends ResultItem> extends BasicResu
      * @param cmd 
      * @param top 
      */
-    public PlatefoodSearchResult(final SearchCommand cmd, final boolean top) {
+    public PlatefoodSearchResult( final boolean top) {
         super();
         ppcTopListQuery = top;
     }

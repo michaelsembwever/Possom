@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.result;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import no.schibstedsok.searchportal.view.config.SearchTab;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>

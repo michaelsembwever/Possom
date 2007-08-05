@@ -1,7 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.result.ProductResultItem;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

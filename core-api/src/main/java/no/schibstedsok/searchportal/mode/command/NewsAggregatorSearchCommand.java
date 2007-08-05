@@ -219,7 +219,7 @@ public final class NewsAggregatorSearchCommand extends ClusteringESPFastCommand 
 
             LOG.debug("Parsing cluster: " + clusterId);
             // following will either throw a ClassCastException or NPE
-            final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
+            final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
             final Document doc = getDocument(xmlUrl);
             final Element root = doc.getDocumentElement();
             List<Element> clusters = getDirectChildren(root, ELEMENT_CLUSTER);
@@ -249,7 +249,7 @@ public final class NewsAggregatorSearchCommand extends ClusteringESPFastCommand 
                 final int offset,
                 final String xmlUrl) throws IOException, SAXException {
             // following will throw a ClassCastException or NPE
-            final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
+            final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
             final Document doc = getDocument(xmlUrl);
             final Element root = doc.getDocumentElement();
 

@@ -282,7 +282,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
 
-        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(this);
+        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
         final int cnt = getCurrentOffset(0);
         final int maxIndex = getMaxDocIndex(result, cnt, cfg);
 

@@ -4,8 +4,6 @@ package no.schibstedsok.searchportal.result;
 
 import org.apache.log4j.Logger;
 
-import no.schibstedsok.searchportal.result.ProductResult;
-
 /**
  * A simple implementation of a search result item that may contain products.
  *

@@ -54,7 +54,6 @@ public final class DataModelResultHandler implements ResultHandler{
 
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        final SearchTab tab = cxt.getSearchTab();
         final SearchConfiguration config = cxt.getSearchConfiguration();
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
@@ -78,21 +77,19 @@ public final class DataModelResultHandler implements ResultHandler{
             throw new IllegalStateException(skfie.getMessage(), skfie);
         }
 
-        // Paging helper
-        PagingDisplayHelper pager = null;
-        if (config.isPaging()) {
-            
-            pager = new PagingDisplayHelper(
-                    cxt.getSearchResult().getHitCount(), 
-                    tab.getPageSize(), 
-                    tab.getPagingSize());
-
-            final Object v = null != parameters.get("offset") ? parameters.get("offset") : "0";
-            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
-                    ? ((String[]) v)[0]
-                    : (String) v));
-
-        }
+// will be replaced with SEARCH-3159 - Replace PagingDisplayHelper
+//        // Paging helper
+//        PagingDisplayHelper pager = null;
+//        if (config.isPaging()) {
+//            pager = new PagingDisplayHelper(
+//                    cxt.getSearchResult().getHitCount(), 
+//                    tab.getPageSize(), 
+//                    tab.getPagingSize());
+//            final Object v = null != parameters.get("offset") ? parameters.get("offset") : "0";
+//            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
+//                    ? ((String[]) v)[0]
+//                    : (String) v));
+//        }
         
         // friendly command-specific search string
         final String friendly = null != cxt.getDisplayQuery() && cxt.getDisplayQuery().length() > 0
@@ -109,8 +106,7 @@ public final class DataModelResultHandler implements ResultHandler{
                 SearchDataObject.class,
                 new DataObject.Property("configuration", cxt.getSearchConfiguration()),
                 new DataObject.Property("query", queryDO),
-                new DataObject.Property("results", cxt.getSearchResult()),
-                new DataObject.Property("pager", pager));
+                new DataObject.Property("results", cxt.getSearchResult()));
 
         datamodel.setSearch(config.getName(), searchDO);
     }

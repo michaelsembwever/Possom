@@ -8,6 +8,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.FastSearchResult;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -125,7 +127,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     public ResultList<? extends ResultItem> execute() {
 
         if (!executeQuery) {
-            return new FastSearchResult(this);
+            return new FastSearchResult();
         }
 
         final String waitOn = useAllChannels ? config.getWaitOnAllChannels() : config.getWaitOnMyChannels();
@@ -140,7 +142,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
             } catch (Exception e) {
                 LOG.error(e);
-                return new FastSearchResult(this);
+                return new FastSearchResult();
             }
             
             /* Abort if navigator gave no result */
@@ -180,7 +182,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         }
 
         if (executeQuery == false) {
-            return new FastSearchResult(this);
+            return new FastSearchResult();
         }
 
         ResultList<ResultItem> sr = null;
@@ -492,7 +494,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
             }
 
-            sr = new FastSearchResult<ResultItem>(this);
+            sr = new FastSearchResult<ResultItem>();
             sr.addResults(tmpsr.getResults());
             sr.setHitCount(tmpsr.getHitCount());
         } catch (NeedsRefreshException e) {

@@ -237,7 +237,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
             final int offset,
             final IQueryResult result) throws IllegalType, EmptyValueException {
 
-        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
+        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
         final Map<String, ResultList<ResultItem>> collapseMap = new HashMap<String, ResultList<ResultItem>>();
         searchResult.setHitCount(result.getDocCount());
         int collectedHits = 0;
