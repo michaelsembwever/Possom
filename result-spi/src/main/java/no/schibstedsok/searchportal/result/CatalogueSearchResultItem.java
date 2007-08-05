@@ -2,6 +2,7 @@
  */
 package no.schibstedsok.searchportal.result;
 
+import no.schibstedsok.searchportal.result.*;
 import org.apache.log4j.Logger;
 
 /**

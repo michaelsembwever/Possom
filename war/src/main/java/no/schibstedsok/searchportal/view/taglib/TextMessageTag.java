@@ -14,7 +14,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 
 /**
  *

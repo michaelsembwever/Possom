@@ -32,7 +32,7 @@ import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.site.config.Spi;
 import no.schibstedsok.searchportal.view.config.SearchTab.Layout;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

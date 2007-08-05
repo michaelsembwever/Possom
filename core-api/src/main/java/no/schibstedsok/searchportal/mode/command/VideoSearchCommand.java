@@ -30,7 +30,7 @@ import no.schibstedsok.searchportal.result.BasicResultItem;
 import no.schibstedsok.searchportal.result.BasicResultList;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;

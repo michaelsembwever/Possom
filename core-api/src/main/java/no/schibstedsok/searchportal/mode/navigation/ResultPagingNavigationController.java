@@ -10,7 +10,7 @@ import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.BasicNavigationItem;
 import no.schibstedsok.searchportal.result.NavigationHelper;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 
 /**
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>

@@ -23,7 +23,7 @@ import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channel;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;

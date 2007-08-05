@@ -28,7 +28,7 @@ import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModule;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModuleImpl;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;

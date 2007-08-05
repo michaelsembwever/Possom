@@ -36,7 +36,7 @@ import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.util.TradeDoubler;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.site.config.TextMessages;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Level;
