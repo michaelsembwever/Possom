@@ -28,12 +28,10 @@ import no.schibstedsok.searchportal.datamodel.page.PageDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.*;
-import no.schibstedsok.searchportal.util.TradeDoubler;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import no.schibstedsok.searchportal.site.config.TextMessages;
@@ -349,13 +347,6 @@ public final class SearchServlet extends HttpServlet {
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
     }
-
-    /* TODO Move into a RunningQueryHandler
-     *
-     *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn"
-     *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
-     * @return true if a response.sendRedirect(..) was performed.
-     */
 
     /* TODO Move into a RunningQueryHandler
      *

@@ -22,7 +22,6 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.util.Channel;
 import no.schibstedsok.searchportal.site.config.TextMessages;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import org.apache.log4j.Logger;
@@ -121,7 +120,7 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
                     // we haven't gone through the SiteLocatorFilter so get site manually
                     : SiteConfiguration.valueOf(site).getProperties());
             
-            context.put("channelCategories", Channel.Category.values());
+            //context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes
             for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames()

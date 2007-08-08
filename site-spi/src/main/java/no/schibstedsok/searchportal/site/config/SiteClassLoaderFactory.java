@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * This provides class loaders capable of loading classes from the skins.
  *
  * @author magnuse
+ * @version $Id$
  */
 public final class SiteClassLoaderFactory implements SiteKeyedFactory {
 
@@ -64,9 +65,7 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
 
         final Site site = context.getSite();
 
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(CLASS_LOADER_WANTED + site);
-        }
+        LOG.trace(CLASS_LOADER_WANTED + site);
 
         try {
             INSTANCES_LOCK.readLock().lock();

@@ -54,6 +54,7 @@ final class DataModelFactoryImpl extends DataModelFactory{
 
     // Public --------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public DataModel instantiate() {
 
         try{
@@ -80,6 +81,7 @@ final class DataModelFactoryImpl extends DataModelFactory{
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T instantiate(final Class<T> cls, final Property... properties) {
 
         try{

@@ -1,4 +1,4 @@
-package no.schibstedsok.searchportal.util;
+package no.schibstedsok.searchportal.result;
 
 import no.schibstedsok.searchportal.result.Modifier;
 

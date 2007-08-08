@@ -4,7 +4,6 @@ package no.schibstedsok.searchportal.fast.searchengine.test;
 import no.fast.ds.search.INavigator;
 import no.fast.ds.search.NavigatorType;
 import no.fast.ds.search.IModifier;
-import no.schibstedsok.searchportal.fast.searchengine.test.MockupModifier;
 
 import java.util.Iterator;
 import java.util.Collection;

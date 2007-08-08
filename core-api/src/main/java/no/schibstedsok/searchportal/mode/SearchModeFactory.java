@@ -435,7 +435,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return sc.readSearchConfiguration(element, inherit);
         }
 
-        @SuppressWarnings("unchecked")
         protected Class<SearchConfiguration> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
@@ -489,7 +488,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return construct(rh, context).readResultHandler(rh);
         }
 
-        @SuppressWarnings("unchecked")
         protected Class<ResultHandlerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 

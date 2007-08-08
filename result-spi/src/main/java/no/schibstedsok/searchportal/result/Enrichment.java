@@ -22,7 +22,7 @@ public class Enrichment implements Comparable<Enrichment> {
     public void setAnalysisResult(final float analysisResult) {
         this.analysisResult = analysisResult;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -30,7 +30,7 @@ public class Enrichment implements Comparable<Enrichment> {
     public void setName(final String name) {
         this.name = name;
     }
-    
+
     public int compareTo(final Enrichment e) {
         return (int)(e.analysisResult - analysisResult);
     }

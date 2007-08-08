@@ -9,7 +9,7 @@ package no.schibstedsok.searchportal.result;
 
 /**
  *
- * @param T 
+ * @param T
  * @author magnuse
  * @version $Id$
  */
@@ -18,8 +18,8 @@ public final class OvertureSearchResult<T extends ResultItem> extends BasicResul
     private boolean ppcTopListQuery = false;
 
     /**
-     * 
-     * @param top 
+     *
+     * @param top
      */
     public OvertureSearchResult(final boolean top) {
         super();
@@ -27,8 +27,8 @@ public final class OvertureSearchResult<T extends ResultItem> extends BasicResul
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isTopListQuery() {
         return ppcTopListQuery;

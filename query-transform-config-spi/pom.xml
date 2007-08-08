@@ -46,7 +46,6 @@
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
-
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-query-api</artifactId>

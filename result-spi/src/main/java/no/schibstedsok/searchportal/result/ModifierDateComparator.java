@@ -1,8 +1,6 @@
 // Copyright (2007) Schibsted Søk AS
-package no.schibstedsok.searchportal.util;
+package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand;
-import no.schibstedsok.searchportal.result.Modifier;
 import org.apache.log4j.Logger;
 
 import java.text.DateFormat;
@@ -14,6 +12,7 @@ import java.util.Date;
 
 /**
  * Enum for various reverse date comparators of navigator modifiers.
+ * @version $Id$
  */
 public enum ModifierDateComparator implements Comparator<Modifier> {
 
@@ -23,7 +22,7 @@ public enum ModifierDateComparator implements Comparator<Modifier> {
     DAY_MONTH_YEAR_DESCENDING("d-M-y", SortOrder.DESCENDING),
     YEAR_MONTH("y-M", SortOrder.DESCENDING);
 
-    private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(ModifierDateComparator.class);
     private static final String ERR_PARSE_ERROR = "Unable to parse date {0} or {1}";
 
     private final String format;

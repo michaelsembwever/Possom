@@ -14,6 +14,8 @@ import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import no.geodata.maputil.CoordHelper;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.result.Boomerang;
 import no.schibstedsok.searchportal.site.Site;
@@ -95,9 +97,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.TopDomainDirective,"
             + "no.schibstedsok.searchportal.view.velocity.DateFormattingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.BoldWordDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.ChannelCategoryListDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.NavigatorDirective,"
             + "no.schibstedsok.searchportal.view.velocity.SlashTrimStringDirective,"
             + "no.schibstedsok.searchportal.view.velocity.XPathDirective,"
             + "no.schibstedsok.searchportal.view.velocity.XPathForeachDirective";
@@ -227,7 +227,54 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
         try{
             INSTANCES_LOCK.writeLock().lock();
+
             final Site site = cxt.getSite();
+
+            final SiteConfiguration siteConf = SiteConfiguration.valueOf(ContextWrapper.wrap(
+                    SiteConfiguration.Context.class,
+                    cxt));
+
+            final StringBuilder directives = new StringBuilder(DIRECTIVES);
+
+            for(Site _s = site;; _s = _s.getParent()){
+                
+                final Site s = _s;
+                final String d = siteConf.getProperty("velocity.directives." + s.getName());
+
+                if(null != d && d.length() > 0){
+                    
+                    final SiteClassLoaderFactory.Context classContext = ContextWrapper.wrap(
+                            SiteClassLoaderFactory.Context.class,
+                            new BaseContext() {
+                                public Site getSite(){
+                                    return s;
+                                }
+                                public Spi getSpi() {
+                                    return Spi.VELOCITY_DIRECTIVES;
+                                }
+                            },
+                            cxt);
+
+                    final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.valueOf(classContext);
+
+                    final String[] classes = d.split(",");
+
+                    for(String c : classes){
+                        try{
+                            loaderFactory.getClassLoader().loadClass(c);
+                        }catch(ClassNotFoundException cnfe){
+                            LOG.error("Directive " + c + " not found", cnfe);
+                        }
+                    }
+
+                    directives.append(',' + d);
+                }
+
+                if(null == s.getParent()){
+                    break;
+                }
+            }
+            
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
 
             engine = new VelocityEngine(){
@@ -275,7 +322,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
                 engine.setProperty("input.encoding", "UTF-8");
                 engine.setProperty("output.encoding", "UTF-8");
-                engine.setProperty("userdirective", DIRECTIVES);
+                engine.setProperty("userdirective", directives.toString());
                 engine.setProperty(
                         "velocimacro.library",
                         site.getTemplateDir() + "/VM_sesat_library.vm,"

@@ -8,21 +8,20 @@
 
 package no.schibstedsok.searchportal.result;
 
-
 /**
  *
- * @param T 
+ * @param T
  * @author SSTHKJER
  * @version $Id$
  */
 public final class PlatefoodSearchResult<T extends ResultItem> extends BasicResultList<T> {
-    
+
     private boolean ppcTopListQuery = false;
 
     /**
-     * 
-     * @param cmd 
-     * @param top 
+     *
+     * @param cmd
+     * @param top
      */
     public PlatefoodSearchResult( final boolean top) {
         super();
@@ -30,11 +29,11 @@ public final class PlatefoodSearchResult<T extends ResultItem> extends BasicResu
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isTopListQuery() {
         return ppcTopListQuery;
     }
-    
+
 }

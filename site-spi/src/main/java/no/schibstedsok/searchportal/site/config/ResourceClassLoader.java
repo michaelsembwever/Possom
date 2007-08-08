@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author magnuse
+ * @version $Id$
  */
 public abstract class ResourceClassLoader extends ClassLoader {
 
@@ -50,6 +51,7 @@ public abstract class ResourceClassLoader extends ClassLoader {
      * @return the class.
      * @throws ClassNotFoundException if the class cannot be found in this class loader.
      */
+    @Override
     protected Class<?> findClass(final String className) throws ClassNotFoundException {
 
         try {

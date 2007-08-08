@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class MockupFastSearchEngine implements IFastSearchEngine {
 

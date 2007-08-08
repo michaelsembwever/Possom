@@ -31,7 +31,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -45,7 +44,6 @@ import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.datamodel.user.UserDataObject;
-import no.schibstedsok.searchportal.mode.command.TvWaitSearchCommand;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
@@ -245,15 +243,15 @@ public final class DataModelFilter implements Filter {
         /* Adding cookie myChannels to parameters.
          * TODO: add generic handling of cookies, or make it part of User initailization.
          */
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (TvWaitSearchCommand.MY_CHANNELS_KEY.equals(cookie.getName())) {
-                    values.put(TvWaitSearchCommand.MY_CHANNELS_KEY, factory.instantiate(
-                            StringDataObject.class,
-                            new DataObject.Property("string", cookie.getValue())));
-                }
-            }
-         }
+//        if (request.getCookies() != null) {
+//            for (Cookie cookie : request.getCookies()) {
+//                if (TvWaitSearchCommand.MY_CHANNELS_KEY.equals(cookie.getName())) {
+//                    values.put(TvWaitSearchCommand.MY_CHANNELS_KEY, factory.instantiate(
+//                            StringDataObject.class,
+//                            new DataObject.Property("string", cookie.getValue())));
+//                }
+//            }
+//         }
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),

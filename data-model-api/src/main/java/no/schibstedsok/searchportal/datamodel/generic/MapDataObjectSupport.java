@@ -8,14 +8,9 @@
 
 package no.schibstedsok.searchportal.datamodel.generic;
 
-import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.*;
-import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * This helper class provides a utility implementation of the

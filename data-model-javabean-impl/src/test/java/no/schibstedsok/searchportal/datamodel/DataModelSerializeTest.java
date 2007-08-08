@@ -33,7 +33,6 @@ import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.datamodel.user.UserDataObject;
 import no.schibstedsok.searchportal.mode.NavigationConfig;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.StaticCommandConfig;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.Visitor;
@@ -127,8 +126,8 @@ public class DataModelSerializeTest {
         
         datamodel.getJunkYard().setValue(JUNK_YARD_KEY, JUNK_YARD_VALUE);
         
-        final SearchConfiguration searchConfiguration = new StaticCommandConfig();
-        final ResultList<BasicResultItem> searchResults = new BasicResultList<BasicResultItem>();
+//        final SearchConfiguration searchConfiguration = new StaticCommandConfig();
+       final ResultList<BasicResultItem> searchResults = new BasicResultList<BasicResultItem>();
         searchResults.setHitCount(SEARCH_HIT_COUNT);
      
         final Set<TokenPredicate> tokenPredicateSet = new HashSet<TokenPredicate>();
@@ -176,7 +175,7 @@ public class DataModelSerializeTest {
         
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
-                new DataObject.Property("configuration", searchConfiguration),
+                new DataObject.Property("configuration", null),
                 new DataObject.Property("results", searchResults),
                 new DataObject.Property("query", queryDO));
         datamodel.setSearch(SEARCH_KEY, searchDO);

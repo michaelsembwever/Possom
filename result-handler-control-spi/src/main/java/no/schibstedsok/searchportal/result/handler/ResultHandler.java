@@ -6,6 +6,7 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
@@ -15,32 +16,32 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
  *
  */
 public interface ResultHandler {
-    
+
     /**
      * Contextual demands from a ResultHandler.
      * Slightly unusual in that the context never becomes a member field but is only used inside the
      * handleResult method.
      */
-    public interface Context extends ResourceContext, QueryContext {
+    public interface Context extends ResourceContext, QueryContext, SiteContext {
 
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         ResultList<ResultItem> getSearchResult();
 
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         SearchTab getSearchTab();
-        
+
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         SearchConfiguration getSearchConfiguration();
-        
+
         /**
          * Returns the query as it is after the query transformers have been applied to it.
          *
@@ -50,9 +51,9 @@ public interface ResultHandler {
     }
 
     /**
-     * 
-     * @param cxt 
-     * @param datamodel 
+     *
+     * @param cxt
+     * @param datamodel
      */
     void handleResult(Context cxt, DataModel datamodel);
 }

@@ -166,13 +166,7 @@
         <artifactId>jboss-aop-jdk50-client</artifactId>
         <type>jar</type>
         <version>4.0.5</version>
-      </dependency>       
-      
-      <dependency>
-        <groupId>no.schibstedsok.alfa</groupId>
-        <artifactId>alfa-remote</artifactId>
-        <type>ejb-client</type>
-      </dependency>    
+      </dependency>      
       
       <dependency>
         <groupId>urlrewrite</groupId>
@@ -187,6 +181,16 @@
         <type>jar</type>
         <version>2.0.1</version>
       </dependency>
+
+        <!-- need these here as they don't behave inside our own ResourceClassLoader -->
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>dsapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>esp-searchapi</artifactId>
+        </dependency>
         
     </dependencies> 
     <profiles>

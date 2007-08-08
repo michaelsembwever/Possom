@@ -20,12 +20,10 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,7 +36,6 @@ import no.schibstedsok.searchportal.datamodel.BeanDataModelInvocationHandler.Dat
 import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
 import no.schibstedsok.searchportal.datamodel.access.AccessDisallow;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
-import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
@@ -84,6 +81,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
     // Static --------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     static <T> BeanDataObjectInvocationHandler<T> instanceOf(final Class<T> cls, final Property... properties)
             throws IntrospectionException{
 
@@ -100,7 +98,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
                 try{
                     instancesLock.writeLock().lock();
                     instance = new BeanDataObjectInvocationHandler<T>(cls, properties);
-                    instances.put(properties, new WeakReference(instance));
+                    instances.put(properties, new WeakReference<BeanDataObjectInvocationHandler<?>>(instance));
                 }finally{
                     instancesLock.writeLock().unlock();
                 }
@@ -162,6 +160,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
     }
 
     /** Creates a new instance of ProxyBeanDataObject */
+    @SuppressWarnings("unchecked")
     protected BeanDataObjectInvocationHandler(
             final Class<T> cls,
             final BeanContext context,
@@ -171,7 +170,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         implementOf = cls;
         this.context = context;
         
-        final List<Property> propertiesLeftToAdd = new ArrayList(Arrays.asList(properties));
+        final List<Property> propertiesLeftToAdd = new ArrayList<Property>(Arrays.asList(properties));
 
         if( StringDataObject.class.isAssignableFrom(implementOf) ){
 
@@ -393,6 +392,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     protected Property invokeProperty(final String propertyName, final boolean setter, final Object[] args) {
 
         Property result = null;

@@ -10,14 +10,14 @@ package no.schibstedsok.searchportal.mode;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.Site;
 
 
 /** This factory creates the appropriate command for a given SearchConfiguration.
@@ -54,27 +54,23 @@ public final class SearchCommandFactory {
 
         try{
 
-            final SiteClassLoaderFactory.Context classContext = new SiteClassLoaderFactory.Context() {
-                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
-                    return context.newBytecodeLoader(site, name, jar);
-                }
-
-                public Site getSite() {
-                    return context.getSite();
-                }
-
-                public Spi getSpi() {
-                    return Spi.SEARCH_COMMAND_CONTROL;
-                }
-            };
+            final SiteClassLoaderFactory.Context classContext = ContextWrapper.wrap(
+                    SiteClassLoaderFactory.Context.class,
+                    new BaseContext() {
+                        public Spi getSpi() {
+                            return Spi.SEARCH_COMMAND_CONTROL;
+                        }
+                    },
+                    context
+                );
 
             final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.valueOf(classContext);
 
+            @SuppressWarnings("unchecked")
             final Class<? extends SearchCommand> cls
                     = (Class<? extends SearchCommand>) loaderFactory.getClassLoader().loadClass(controllerName);
 
-            final Constructor<? extends SearchCommand> constructor
-                    = cls.getConstructor(SearchCommand.Context.class);
+            final Constructor<? extends SearchCommand> constructor = cls.getConstructor(SearchCommand.Context.class);
 
             return constructor.newInstance(cxt);
 

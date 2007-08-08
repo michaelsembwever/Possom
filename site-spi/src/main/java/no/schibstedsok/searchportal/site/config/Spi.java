@@ -2,6 +2,7 @@ package no.schibstedsok.searchportal.site.config;
 
 /**
  * @author magnuse
+ * @version $Id$
  */
 public enum Spi {
 
@@ -14,7 +15,7 @@ public enum Spi {
     /** */
     RESULT_HANDLER_CONFIG("result-handler-config"),
     /** */
-    RESULT_HANDLER_CONTROL("result-handler-control,", RESULT_HANDLER_CONFIG),
+    RESULT_HANDLER_CONTROL("result-handler-control", RESULT_HANDLER_CONFIG),
     /** */
     SEARCH_COMMAND_CONFIG("command-config"),
     /** */
@@ -22,7 +23,9 @@ public enum Spi {
     /** */
     RUN_HANDLER("run-handler"),
     /** */
-    RUN_TRANSFORM("run-transform");
+    RUN_TRANSFORM("run-transform"),
+    /** */
+    VELOCITY_DIRECTIVES("velocity-directives");
 
     private final Spi parent;
     private final String canonicalName;
@@ -48,6 +51,7 @@ public enum Spi {
         return parent;
     }
 
+    @Override
     public String toString() {
         return canonicalName;
     }

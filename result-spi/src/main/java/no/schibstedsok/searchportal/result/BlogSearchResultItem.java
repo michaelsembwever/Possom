@@ -1,10 +1,11 @@
 package no.schibstedsok.searchportal.result;
 
+
 public class BlogSearchResultItem extends BasicResultItem { // Extend BasicResultItem
-	
+
 	/* Path to blogtipsicon */
 	private String blogTipsIcon;
-	
+
 	/* Display this date */
 	private String displayDate;
 
@@ -19,7 +20,7 @@ public class BlogSearchResultItem extends BasicResultItem { // Extend BasicResul
     private String comments;
 
     private String body;
-    
+
     private String moreHits;
 
     private String author;
@@ -180,7 +181,7 @@ public class BlogSearchResultItem extends BasicResultItem { // Extend BasicResul
      * Todo: Come up with a better way to find out wether the result is a blog frontpage or not.
      *
      * if blog or comments is not null and we got a parenturl that is not equal to url, then
-     * we have a frontpage ? 
+     * we have a frontpage ?
      * @return if entry is blog frontpage.
      */
     public boolean isFrontPage() {

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
+import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -76,6 +77,7 @@ public final class VelocityTemplateTest extends DataModelTestCase{
             try{
                 final String templateName = file.getAbsolutePath().replaceFirst(base, "");
                 final DataModel datamodel = getDataModel();
+                getDataModelFactory().assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
                 final Site site = datamodel.getSite().getSite();
                 final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
                 final Template template = VelocityEngineFactory.getTemplate(engine, site, templateName);

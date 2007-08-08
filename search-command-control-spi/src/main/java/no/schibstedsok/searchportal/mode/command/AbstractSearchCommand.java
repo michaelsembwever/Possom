@@ -3,11 +3,12 @@ package no.schibstedsok.searchportal.mode.command;
 
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -56,7 +57,7 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
  * @version <tt>$Id$</tt>
  */
-abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
+public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
 
     // Constants -----------------------------------------------------
 
@@ -94,7 +95,7 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
     /**
      *
      */
-    protected final DataModel datamodel;
+    protected transient final DataModel datamodel;
     /**
      *
      */
@@ -249,7 +250,7 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
                 thread.interrupt();
                 thread = null;
             }
-            performResultHandling(new BasicResultList());
+            performResultHandling(new BasicResultList<ResultItem>());
         }
         return !completed;
     }
@@ -343,7 +344,7 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
      * @param clause
      */
     protected void visitImpl(final AndNotClause clause) {
-        final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
+        final String childsTerm = transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
             appendToQueryRepresentation("ANDNOT ");
             clause.getFirstClause().accept(this);
@@ -463,6 +464,9 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
         final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
                 ResultHandler.Context.class,
                 new BaseContext() {
+                    public Site getSite(){
+                        return context.getDataModel().getSite().getSite();
+                    }
                     public ResultList<? extends ResultItem> getSearchResult() {
                         return result;
                     }
@@ -482,7 +486,8 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
         // process listed result handlers
         for (ResultHandlerConfig resultHandlerConfig : getSearchConfiguration().getResultHandlers()) {
 
-            ResultHandlerFactory.getController(resultHandlerConfig).handleResult(resultHandlerContext, datamodel);
+            ResultHandlerFactory.getController(resultHandlerContext, resultHandlerConfig)
+                    .handleResult(resultHandlerContext, datamodel);
         }
 
         // The DataModel result handler is a hardcoded feature of the architecture
@@ -725,7 +730,7 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
     }
 
     /**
-     * Returns null when no field exists. *
+     * Returns null when no field exists.
      */
     protected final String getFieldFilter(final LeafClause clause) {
 
@@ -1045,12 +1050,37 @@ abstract class AbstractSearchCommand extends AbstractReflectionVisitor implement
             }
             final String fieldAs = fieldFilters.get(field);
 
-            if (getSearchConfiguration() instanceof FastCommandConfig) {
-                final FastCommandConfig fsc = (FastCommandConfig) getSearchConfiguration();
-                if ("adv".equals(fsc.getFiltertype()))
+
+            // XXX fast specific stuff. push down to fast command.
+            boolean fastCommandConfig = false;
+            try{
+                fastCommandConfig = Class.forName("no.schibstedsok.searchportal.mode.config.FastCommandConfig")
+                    .isAssignableFrom(getSearchConfiguration().getClass());
+
+            }catch(ClassNotFoundException cnfe){
+                LOG.trace("Configuration is not FastCommandConfig");
+            }
+
+            if (fastCommandConfig) {
+
+                boolean adv = false;
+                try{
+                    final SearchConfiguration fsc = getSearchConfiguration();
+                    final Method m = fsc.getClass().getMethod("getFiltertype", new Class[]{});
+                    adv = "adv".equals(m.invoke(fsc, new Object[]{}));
+
+                }catch(NoSuchMethodException nsme){
+                    LOG.fatal("Expected method in FastCommandConfig. " + nsme.getMessage());
+                }catch(IllegalAccessException iae){
+                    LOG.error(iae.getMessage());
+                }catch(InvocationTargetException ite){
+                    LOG.error(ite.getMessage());
+                }
+                if (adv){
                     filterBuilder.append(" AND " + (fieldAs.length() > 0 ? fieldAs + ':' + term : term));
-                else
+                }else{
                     filterBuilder.append(" +" + (fieldAs.length() > 0 ? fieldAs + ':' + term : term));
+                }
             } else {
                 filterBuilder.append(" +" + (fieldAs.length() > 0 ? fieldAs + ':' + term : term));
             }

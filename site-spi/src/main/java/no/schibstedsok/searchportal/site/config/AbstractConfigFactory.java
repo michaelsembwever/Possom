@@ -2,6 +2,7 @@ package no.schibstedsok.searchportal.site.config;
 
 
 import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -37,8 +38,7 @@ public abstract class AbstractConfigFactory<C> {
         
         try {
             return null != findClass(xmlName, context);
-        }
-        catch (ClassNotFoundException e) {
+        }catch (ClassNotFoundException e) {
             return false;
         }
     }
@@ -75,20 +75,16 @@ public abstract class AbstractConfigFactory<C> {
             final String classNameFQ, 
             final Spi spi) throws ClassNotFoundException {
         
-        final SiteClassLoaderFactory.Context c = new SiteClassLoaderFactory.Context() {
+            final SiteClassLoaderFactory.Context c = ContextWrapper.wrap(
+                    SiteClassLoaderFactory.Context.class,
+                    new BaseContext() {
+                        public Spi getSpi() {
+                            return spi;
+                        }
+                    },
+                    context
+                );
 
-            public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
-                return context.newBytecodeLoader(site, name, jar);
-            }
-
-            public Site getSite() {
-                return context.getSite();
-            }
-
-            public Spi getSpi() {
-                return spi;
-            }
-        };
         final ClassLoader classLoader = SiteClassLoaderFactory.valueOf(c).getClassLoader();
         return (Class<C>) classLoader.loadClass(classNameFQ);
     }

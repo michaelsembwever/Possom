@@ -135,16 +135,8 @@
             <artifactId>commons-collections</artifactId>
         </dependency>
         <dependency>
-            <groupId>fast</groupId>
-            <artifactId>dsapi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>esp-searchapi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>msearch-client</artifactId>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
             <groupId>axis</groupId>
@@ -183,10 +175,6 @@
             <artifactId>servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>jep</groupId>
-            <artifactId>jep</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossall-client</artifactId>
             <type>jar</type>
@@ -209,11 +197,6 @@
             <artifactId>jboss-aop-jdk50-client</artifactId>
             <type>jar</type>
             <version>4.0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>no.schibstedsok.alfa</groupId>
-            <artifactId>alfa-remote</artifactId>
-            <type>ejb-client</type>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
@@ -243,10 +226,9 @@
             <classifier>jdk15</classifier>
         </dependency>
         <dependency>
-            <groupId>org.jscience</groupId>
-            <artifactId>jscience</artifactId>
-            <version>3.3</version>
-            <type>jar</type>
+            <groupId>fast</groupId>
+            <artifactId>dsapi</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

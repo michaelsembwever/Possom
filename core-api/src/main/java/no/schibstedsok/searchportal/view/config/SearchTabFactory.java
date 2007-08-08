@@ -57,8 +57,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     
     private static final NavFactory NAV_FACTORY = new NavFactory();    
 
-    private static final String MSG_NAV_PREFIX = "navigation_";
-
     /**
      * Name of the configuration file.
      */
@@ -69,11 +67,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String INFO_PARSING_TAB = "Parsing tab ";
     private static final String INFO_PARSING_ENRICHMENT = " Parsing enrichment ";
-    private static final String INFO_PARSING_NAVIGATION_ID = " Parsing navigation id ";
-    private static final String INFO_PARSING_NAVIGATION_NAME = " Parsing navigation name ";
-
-    private static final String MSG_DISPLAY_NAV_PREFIX = "navigation_display_";
-    private static final String MISSING_NAV = "Mo message prop. for ";
 
     private static final String RESET_NAV_ELEMENT = "reset";
     private static final String NAV_CONFIG_ELEMENT = "config";
@@ -251,7 +244,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
         if( null != root ){
-            final TextMessages msgs = TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, context));
 
             final NodeList tabList = root.getElementsByTagName("tab");
 

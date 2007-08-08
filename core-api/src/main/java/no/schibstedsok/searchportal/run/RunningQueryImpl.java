@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +44,6 @@ import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
 import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.result.Enrichment;
-import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
@@ -55,14 +53,10 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
 
 /**
  * An object representing a running queryStr.
@@ -173,7 +167,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 new DataObject.Property("string", queryStr),
                 new DataObject.Property("query", parser.getQuery()));
 
-        final MapDataObject<NavigationItem> navigations = new MapDataObjectSupport(Collections.EMPTY_MAP);
+        final MapDataObject<NavigationItem> navigations 
+                = new MapDataObjectSupport<NavigationItem>(Collections.EMPTY_MAP);
         final NavigationDataObject navDO = factory.instantiate(
                 NavigationDataObject.class,
                 new DataObject.Property("configuration", context.getSearchTab().getNavigationConfiguration()),
@@ -625,7 +620,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         };
 
         parameters.put("configuration", props);
-        parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt, siteCxt)));
 
         parameters.put("tab", rqCxt.getSearchTab()); // TODO remove
         parameters.put("c", rqCxt.getSearchTab().getKey()); // TODO remove

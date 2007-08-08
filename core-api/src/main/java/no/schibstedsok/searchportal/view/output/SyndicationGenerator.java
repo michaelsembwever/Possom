@@ -23,10 +23,8 @@ import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
-import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.site.config.TextMessages;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModule;
@@ -41,7 +39,6 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
-import javax.xml.parsers.DocumentBuilder;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -101,7 +98,7 @@ public final class SyndicationGenerator {
     private final String templateDir;
     private final VelocityEngine engine;
     private final String uri;
-    private final Channels channels;
+    //private final Channels channels;
     private String encoding = "UTF-8";
     private String nowStringUTC;
 
@@ -122,7 +119,7 @@ public final class SyndicationGenerator {
         this.site = context.getSite();
 
         this.text = TextMessages.valueOf(getTextMessagesContext());
-        this.channels = Channels.valueOf(getChannelContext());
+        //this.channels = Channels.valueOf(getChannelContext());
 
         this.uri = context.getURL();
 
@@ -312,7 +309,7 @@ public final class SyndicationGenerator {
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             cxt.put("uri", origUri);
 
-            cxt.put("channels", channels);
+            //cxt.put("channels", channels);
 
             // @todo. Specific to sesam.no. Move somewhere else. result-spi? templates? The command?
             if ("c".equals(context.getTab().getKey())) {
@@ -385,20 +382,19 @@ public final class SyndicationGenerator {
         };
     }
 
-    private Channels.Context getChannelContext() {
-        return new Channels.Context() {
-            public Site getSite() {
-                return context.getSite();
-            }
-
-            public DocumentLoader newDocumentLoader(
-                    final SiteContext cxt,
-                    final String resource,
-                    final DocumentBuilder builder) {
-                return context.newDocumentLoader(cxt, resource, builder);
-            }
-        };
-    }
+//    private Channels.Context getChannelContext() {
+//        return new Channels.Context() {
+//            public Site getSite() {
+//                return context.getSite();
+//            }
+//            public DocumentLoader newDocumentLoader(
+//                    final SiteContext cxt,
+//                    final String resource,
+//                    final DocumentBuilder builder) {
+//                return context.newDocumentLoader(cxt, resource, builder);
+//            }
+//        };
+//    }
     
     // Inner classes -------------------------------------------------
 }

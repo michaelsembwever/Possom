@@ -8,6 +8,7 @@ import java.text.MessageFormat;
 
 /**
  * @author magnuse
+ * @version $Id$
  */
 public final class SpiClassLoader extends ResourceClassLoader {
 
@@ -49,6 +50,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return MessageFormat.format(CLASS_LOADER_FOR, site, spi, spi.getParent());
     }
@@ -61,8 +63,8 @@ public final class SpiClassLoader extends ResourceClassLoader {
      * @return the class
      * @throws ClassNotFoundException if the class could not be found in any class loader.
      */
-    public synchronized Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException
-    {
+    @Override
+    public synchronized Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException{
         // First, check if the class has already been loaded
         Class c = findLoadedClass(name);
 
@@ -91,6 +93,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected Class<?> findClass(final String className) throws ClassNotFoundException {
         final Class clazz = super.findClass(className);
         LOG.info(MessageFormat.format("Class {0} loaded by {1}", className, this));
