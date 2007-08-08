@@ -302,7 +302,7 @@ public final class CatalogueSearchResultItem extends BasicResultItem {
     		try{
     			//TODO: move bold indicator to index to avoid hardcoding of product and rules.
     			int packageId = Integer.parseInt(productPackage);
-    			if(packageId == 3 || packageId == 116 || packageId == 120  ||packageId ==121 || packageId ==122 || packageId == 123 ){
+    			if(packageId == 3 || packageId == 116 || packageId == 119 || packageId == 120  ||packageId ==121 || packageId ==122 || packageId == 123 ){
     				return true;
     			}
     		}catch(NumberFormatException e){
