@@ -38,17 +38,7 @@
     <dependencies>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>sesat-site-spi</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>schibstedsok</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>sesat-view-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
@@ -64,17 +54,7 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-            <classifier>jdk15</classifier>
-        </dependency>
 
-        <dependency>
-            <groupId>schibstedsok.newsadmin</groupId>
-            <artifactId>ha-services</artifactId>
-        </dependency>
 
         <!-- Testing -->
         <dependency>
