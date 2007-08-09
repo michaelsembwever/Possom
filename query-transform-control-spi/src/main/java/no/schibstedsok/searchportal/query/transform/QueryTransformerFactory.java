@@ -68,32 +68,13 @@ public final class QueryTransformerFactory {
                 }
             };
 
-            final SiteClassLoaderFactory.Context cfgCxt = new SiteClassLoaderFactory.Context() {
-                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
-                    return context.newBytecodeLoader(site, name, jar);
-                }
-                public Site getSite() {
-                    return context.getSite();
-                }
-                public Spi getSpi() {
-                    return Spi.QUERY_TRANSFORM_CONFIG;
-                }
-            };
-
             final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.valueOf(ctrlCxt).getClassLoader();
-            final ClassLoader cfgClassLoader = SiteClassLoaderFactory.valueOf(cfgCxt).getClassLoader();
 
             @SuppressWarnings("unchecked")
             final Class<? extends QueryTransformer> cls
                     = (Class<? extends QueryTransformer>)ctrlClassLoader.loadClass(controllerName);
 
-            // tricky tricky. took me some time to see this!
-            //  one classLoader for the constructor, another for it's paramaeter! nice one magnus.
-            @SuppressWarnings("unchecked")
-            final Class<QueryTransformerConfig> cfgClass = (Class<QueryTransformerConfig>)
-                    cfgClassLoader.loadClass(QueryTransformerConfig.class.getName());
-
-            final Constructor<? extends QueryTransformer> constructor = cls.getConstructor(cfgClass);
+            final Constructor<? extends QueryTransformer> constructor = cls.getConstructor(QueryTransformerConfig.class);
 
             return constructor.newInstance(config);
 

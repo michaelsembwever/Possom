@@ -71,28 +71,12 @@ public final class ResultHandlerFactory {
                     context
                 );
 
-            final SiteClassLoaderFactory.Context cfgContext = ContextWrapper.wrap(
-                    SiteClassLoaderFactory.Context.class,
-                    new BaseContext() {
-                        public Spi getSpi() {
-                            return Spi.RESULT_HANDLER_CONFIG;
-                        }
-                    },
-                    context
-                );
-
             final ClassLoader ctlLoader = SiteClassLoaderFactory.valueOf(ctlContext).getClassLoader();
-            final ClassLoader cfgLoader = SiteClassLoaderFactory.valueOf(cfgContext).getClassLoader();
 
             @SuppressWarnings("unchecked")
             final Class<? extends ResultHandler> cls = (Class<? extends ResultHandler>)ctlLoader.loadClass(name);
 
-            // one classLoader for the constructor, another for it's paramaeter!
-            @SuppressWarnings("unchecked")
-            final Class<ResultHandlerConfig> cfgClass = (Class<ResultHandlerConfig>)
-                    cfgLoader.loadClass(ResultHandlerConfig.class.getName());
-
-            final Constructor<? extends ResultHandler> constructor = cls.getConstructor(cfgClass);
+            final Constructor<? extends ResultHandler> constructor = cls.getConstructor(ResultHandlerConfig.class);
 
             return constructor.newInstance(config);
 
