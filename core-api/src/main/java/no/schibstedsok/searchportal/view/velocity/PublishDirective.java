@@ -26,7 +26,6 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.Template;
 
 /**
  *

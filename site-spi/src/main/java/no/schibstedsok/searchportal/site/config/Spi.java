@@ -13,13 +13,19 @@ public enum Spi {
     /** */
     QUERY_TRANSFORM_CONTROL("query-transform-control", QUERY_TRANSFORM_CONFIG),
     /** */
-    RESULT_HANDLER_CONFIG("result-handler-config"),
+    RESULT("result"),
+    /** */
+    RESULT_HANDLER_CONFIG("result-handler-config", RESULT),
     /** */
     RESULT_HANDLER_CONTROL("result-handler-control", RESULT_HANDLER_CONFIG),
     /** */
-    SEARCH_COMMAND_CONFIG("command-config"),
+    SEARCH_COMMAND_CONFIG("command-config", RESULT),
     /** */
     SEARCH_COMMAND_CONTROL("command-control", SEARCH_COMMAND_CONFIG),
+    /** */
+    VIEW_CONFIG("view-config"),
+    /** */
+    VIEW_CONTROL("view-control", VIEW_CONFIG),
     /** */
     RUN_HANDLER("run-handler"),
     /** */

@@ -74,13 +74,9 @@
         </dependency> 
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>sesat-view-config-api</artifactId>
+            <artifactId>sesat-view-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
-        <!--dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>commons-ioc</artifactId>
-        </dependency-->
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>search-portal-user-api</artifactId>

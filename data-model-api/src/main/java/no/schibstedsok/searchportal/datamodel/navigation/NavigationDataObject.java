@@ -9,7 +9,7 @@ package no.schibstedsok.searchportal.datamodel.navigation;
 
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
-import no.schibstedsok.searchportal.mode.NavigationConfig;
+import no.schibstedsok.searchportal.view.navigation.NavigationConfig;
 import no.schibstedsok.searchportal.result.NavigationItem;
 
 /** Contains Navigation information.

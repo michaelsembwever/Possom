@@ -24,7 +24,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
-import no.schibstedsok.searchportal.view.config.SearchTabFactory;
+import no.schibstedsok.searchportal.view.SearchTabFactory;
 import org.apache.log4j.Logger;
 
 /** Utility class to remove factory instances for a given Site and its locale derivatives.
@@ -62,6 +62,7 @@ public final class FactoryReloads {
      * The factory class to clean instances from is indicated by the value of ReloadArg. 
      * Also performs a System.gc() to clean out WeakReference caches.
      **/
+    @SuppressWarnings("fallthrough")
     public static void performReloads(
             final SiteContext genericCxt,
             final ReloadArg reload){

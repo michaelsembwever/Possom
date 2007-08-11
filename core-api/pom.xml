@@ -100,6 +100,11 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
+            <artifactId>sesat-view-config-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
             <artifactId>sesat-data-model-api</artifactId>
             <version>${version}</version>
         </dependency>
@@ -116,6 +121,11 @@
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-view-control-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
@@ -215,6 +225,13 @@
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-data-model-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-view-control-spi</artifactId>
             <version>${version}</version>
             <type>test-jar</type>
             <scope>test</scope>

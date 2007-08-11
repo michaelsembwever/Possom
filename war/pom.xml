@@ -66,22 +66,37 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>sesat-core-api</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>schibstedsok</groupId>
             <artifactId>sesat-data-model-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-data-model-javabean-impl</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-query-transform-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-result-handler-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-search-command-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-view-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-core-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

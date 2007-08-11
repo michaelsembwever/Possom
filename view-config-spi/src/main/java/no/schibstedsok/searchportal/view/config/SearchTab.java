@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.NavigationConfig;
+import no.schibstedsok.searchportal.view.navigation.NavigationConfig;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -68,7 +68,7 @@ public final class SearchTab implements Serializable{
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of SearchTab */
-    SearchTab(
+    public SearchTab(
                 final SearchTab inherit,
                 final String id,
                 final String mode,

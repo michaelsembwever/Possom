@@ -34,7 +34,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.config.SearchTabFactory;
+import no.schibstedsok.searchportal.view.SearchTabFactory;
 
 /**
  *

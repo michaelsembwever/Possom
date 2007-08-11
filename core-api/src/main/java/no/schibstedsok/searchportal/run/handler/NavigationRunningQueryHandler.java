@@ -3,24 +3,20 @@ package no.schibstedsok.searchportal.run.handler;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
-import no.schibstedsok.searchportal.mode.NavigationConfig;
-import no.schibstedsok.searchportal.mode.NavigationControllerSpiFactory;
-import no.schibstedsok.searchportal.mode.navigation.NavigationControllerFactory;
-import no.schibstedsok.searchportal.mode.navigation.NavigationController;
+import no.schibstedsok.searchportal.view.navigation.NavigationConfig;
+import no.schibstedsok.searchportal.view.NavigationControllerSpiFactory;
+import no.schibstedsok.searchportal.view.navigation.NavigationControllerFactory;
+import no.schibstedsok.searchportal.view.navigation.NavigationController;
 import no.schibstedsok.searchportal.result.NavigationItem;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.BytecodeLoader;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import org.apache.log4j.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
 import java.util.List;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 
-import java.util.Properties;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 
 

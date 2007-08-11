@@ -23,7 +23,7 @@ import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.config.SearchTabFactory;
+import no.schibstedsok.searchportal.view.SearchTabFactory;
 
 /** Create a Mockup SearchCommand.
  *

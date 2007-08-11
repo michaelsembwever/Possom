@@ -27,7 +27,7 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.result.Decoder;
-import no.schibstedsok.searchportal.result.NavigationHelper;
+import no.schibstedsok.searchportal.view.navigation.NavigationHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
