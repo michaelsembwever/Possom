@@ -137,14 +137,17 @@
             </div>
         </div>
     </div>
+
+
     <div id="articles">
-        <search:publish page="/pages/front"/>
+	<search:velocity template="/fragments/layout/publish/index"/>
     </div>
     </div>
     <div style="clear: both;"></div>
     <div id="footer_space_index">
-        <search:publish page="/pages/footer"/>
+        <search:velocity template="/fragments/layout/publish/footer"/>
     </div>
+
 
     <!-- start gallup -->
     <% if ( "no".equals(locale) ) { %>
