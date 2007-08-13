@@ -37,15 +37,8 @@ public final class Boomerang {
             final String orgUrl,
             final String paramString) {
         
-        final StringBuilder toUrl = new StringBuilder(/*"http://" + site.getName() + BASE_URL)*/);
+        final StringBuilder toUrl = new StringBuilder("http://" + site.getName() + BASE_URL);
         
-        // --> Deprecated LinkPulse code: soon to be demolished
-        final SiteConfiguration siteConf = SiteConfiguration.valueOf(site);
-        toUrl.append( Boolean.parseBoolean(siteConf.getProperty("linkpulse.enable"))
-            ? siteConf.getProperty("linkpulse.url")
-            : "http://" + site.getName() + BASE_URL);
-        // Deprecated LinkPulse code <--
-
         // click attributes comes as a string seperated by ';'
         final StringTokenizer tokeniser = new StringTokenizer(paramString, ";");
         while(tokeniser.hasMoreTokens()){
