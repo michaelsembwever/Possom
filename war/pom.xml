@@ -96,6 +96,16 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
+            <artifactId>sesat-run-handler-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-run-transform-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
             <artifactId>sesat-core-api</artifactId>
             <version>${version}</version>
         </dependency>

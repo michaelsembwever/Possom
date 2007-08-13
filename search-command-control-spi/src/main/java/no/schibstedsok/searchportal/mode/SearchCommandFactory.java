@@ -3,7 +3,6 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.schibstedsok.no/confluence/display/SESAT/SESAT+License
-
  */
 /*
  * SearchCommandFactory.java
@@ -22,8 +21,10 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.BytecodeContext;
+import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;
+import no.schibstedsok.searchportal.site.config.Spi;
 
 
 /** This factory creates the appropriate command for a given SearchConfiguration.

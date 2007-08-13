@@ -37,13 +37,27 @@
 
     <dependencies>
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-httpclient-api</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-site-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>sesat-query-api</artifactId>
+            <artifactId>sesat-search-command-config-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-view-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
@@ -53,25 +67,21 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>commons-ioc</artifactId>
+            <artifactId>sesat-search-command-control-spi</artifactId>
+            <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-view-control-spi</artifactId>
+            <version>${version}</version>
         </dependency>
+        <!-- Testin -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
-
-        <dependency>
-            <groupId>schibstedsok.newsadmin</groupId>
-            <artifactId>ha-services</artifactId>
-        </dependency>
-
-        <!-- Testing -->
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-site-spi</artifactId>
@@ -81,7 +91,7 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>sesat-query-api</artifactId>
+            <artifactId>sesat-data-model-api</artifactId>
             <version>${version}</version>
             <type>test-jar</type>
             <scope>test</scope>

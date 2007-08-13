@@ -31,6 +31,8 @@ public enum Spi {
     /** */
     RUN_TRANSFORM("run-transform"),
     /** */
+    SERVLET_HANDLER("servlet-handler"),
+    /** */
     VELOCITY_DIRECTIVES("velocity-directives");
 
     private final Spi parent;

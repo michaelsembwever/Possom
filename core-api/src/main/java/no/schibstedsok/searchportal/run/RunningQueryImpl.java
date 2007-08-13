@@ -533,7 +533,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 },
                 context);
 
-        performModifierHandling(handlerContext);
         performEnrichmentHandling(handlerContext);
         performNavigationHandling(handlerContext);
     }
@@ -556,40 +555,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         log.append("</enrichments>");
         PRODUCT_LOG.info(log.toString());
 
-    }
-
-    /** Remove modifiers with invalid count.
-     * Sum duplicates together.
-     * Sort by HintPriorityComparator.
-     * TODO migrate to new Navigation model
-     **/
-    private void performModifierHandling(final RunningQueryHandler.Context handlerContext){
-
-// FIXME SEARCH-  2859 - Migrate Tab Navigation into new navigation model
-//        final Map<String,Modifier> map = new HashMap<String,Modifier>();
-//        final List<Modifier> toRemove = new ArrayList<Modifier>();
-//        for(Modifier m : sources){
-//            if(m.getCount() >= 0 ){
-//                final Modifier prior = map.get(m.getName());
-//                if( null == prior ){
-////                    m.setNavigation(
-////                            context.getSearchTab().getNavigationConfiguration().getNavigationMap().get(m.getName()));
-//                    map.put(m.getName(), m);
-//                }else{
-//                    prior.addCount(m.getCount());
-//                    toRemove.add(m);
-//                }
-//            }else{
-//                toRemove.add(m);
-//            }
-//        }
-//        sources.removeAll(toRemove);
-//
-//        if (getSearchTab().isAbsoluteOrdering()) {
-//            Collections.sort(sources, Modifier.getHintPriorityComparator());
-//        } else {
-//            Collections.sort(sources);
-//        }
     }
 
     private void performNavigationHandling(final RunningQueryHandler.Context handlerContext){

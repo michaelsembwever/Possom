@@ -10,7 +10,6 @@ package no.schibstedsok.searchportal.mode;
 
 import no.schibstedsok.searchportal.site.config.AbstractConfigFactory;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
@@ -208,7 +207,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     // Private -------------------------------------------------------
 
-    private void init() {
+    private void init() throws ParserConfigurationException {
 
         loader.abut();
         LOG.debug("Parsing " + MODES_XMLFILE + " started");
@@ -324,7 +323,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SearchConfiguration parseSearchConfiguration(
                 final Context cxt,
                 final Element commandE,
-                final SearchMode mode) {
+                final SearchMode mode) throws ParserConfigurationException {
 
             final String parentName = commandE.getAttribute("inherit");
             final String id = commandE.getAttribute("id");
@@ -398,9 +397,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 return sc;
 
             } catch (SecurityException ex) {
-                throw new InfrastructureException(ex);
+                throw new ParserConfigurationException(ex.getMessage());
             } catch (IllegalArgumentException ex) {
-                throw new InfrastructureException(ex);
+                throw new ParserConfigurationException(ex.getMessage());
             }
         }
 

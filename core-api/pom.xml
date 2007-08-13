@@ -125,6 +125,11 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
+            <artifactId>sesat-run-handler-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
             <version>${version}</version>
         </dependency>
