@@ -252,20 +252,26 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         final Element root = doc.getDocumentElement();
         if( null != root ){
 
-            final NodeList tabList = root.getElementsByTagName("tab");
+            final NodeList tabList = root.getChildNodes();
 
             for(int i = 0 ; i < tabList.getLength(); ++i){
-                
-                final Element tabE = (Element) tabList.item(i);
-                final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
-                final SearchTab tab = TAB_FACTORY.parseTab(tabE, context, inherit);
-                
-                try{
-                    tabsLock.writeLock().lock();
-                    tabsByName.put(tab.getId(), tab);
-                    tabsByKey.put(tab.getKey(), tab);
-                }finally{
-                    tabsLock.writeLock().unlock();
+                if(tabList.item(i) instanceof Element){
+                    final Element tabE = (Element) tabList.item(i);
+                    if("tab".equals(tabE.getTagName())){
+                        final String key = parseString(tabE.getAttribute("key"), "");
+                        final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
+                        final SearchTab tab = TAB_FACTORY.parseTab(tabE, context, inherit);
+
+                        try{
+                            tabsLock.writeLock().lock();
+                            tabsByName.put(tab.getId(), tab);
+                            if(key.length() > 0){
+                                tabsByKey.put(key, tab);
+                            }
+                        }finally{
+                            tabsLock.writeLock().unlock();
+                        }
+                    }
                 }
             }
         }
