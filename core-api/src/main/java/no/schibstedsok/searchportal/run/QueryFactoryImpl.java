@@ -86,7 +86,7 @@ public final class QueryFactoryImpl extends QueryFactory {
                     for (Cookie cookie : cookies) {
                         if ("myNews".equals(cookie.getName().trim())) {
                             LOG.debug("Adding cookie: " + cookie.getName() + "=" + cookie.getValue());
-                            query.addParameter("myNews", cookie.getValue());
+                            datamodel.getJunkYard().getValues().put("myNews", cookie.getValue());
                         }
                     }
                 }
@@ -95,7 +95,7 @@ public final class QueryFactoryImpl extends QueryFactory {
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {
                         if ("myChannels".equals(cookie.getName())) {
-                            query.addParameter("myChannels", cookie.getValue());
+                            datamodel.getJunkYard().getValues().put("myChannels", cookie.getValue());
                         }
                     }
                 }

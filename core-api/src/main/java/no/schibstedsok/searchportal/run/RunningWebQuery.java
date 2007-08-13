@@ -64,23 +64,29 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         super(cxt, query);
 
+        this.request = request;
+        this.response = response;        
+
         if (LOG.isTraceEnabled()) {
             LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
         }
 
+        // XXX The rest is redundant code!! stop using junkyard!
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();        
+        
         // Add all request parameters
         /* SEE "Add all request attributes" below */
-        for (String parameterName : (Set<String>)request.getParameterMap().keySet()) {
+        
+        for (String key : datamodel.getParameters().getValues().keySet()) {
 
-            final String[] parameterValues = request.getParameterValues(parameterName);
-            addParameter(parameterName, parameterValues.length>1 ? parameterValues : parameterValues[0]);
+            final String value = datamodel.getParameters().getValue(key).getString();
+            parameters.put(key,  value);
 
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Added " + parameterName + ", values: " + StringUtils.join(parameterValues, ", "));
+                LOG.trace("Added " + key + ", value: " + value + ", ");
             }
         }
 
-        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         // Hack to keep vg site search working. Dependent on old query
         // parameters. Remove when vg has been reimplented a proper site search.
         if (parameters.containsKey("nav_newspaperNames")) {
@@ -107,7 +113,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
              * this has now been changed. request parameters are first put into the parameters map and
              * are overwritten with request attributes. this is a basic attempt to prevent parameter injection.
              */
-            addParameter(attrName, request.getAttribute(attrName));
+            parameters.put(attrName, request.getAttribute(attrName));
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Added " + attrName + ", value: " + request.getAttribute(attrName));
             }
@@ -115,7 +121,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         for (final String attrName : ATTRS_TO_COPY) {
             if (request.getAttribute(attrName) != null) {
-                addParameter(attrName, request.getAttribute(attrName));
+                parameters.put(attrName, request.getAttribute(attrName));
 
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Added(Manually) " + attrName + ", value: " + request.getAttribute(attrName));
@@ -125,7 +131,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         for (final String header : HEADERS_TO_COPY) {
             if (request.getHeader(header) != null) {
-                addParameter(header, request.getHeader(header));
+                parameters.put(header, request.getHeader(header));
 
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Added HTTP header " + header + ", value: " + request.getHeader(header));
@@ -133,10 +139,8 @@ public final class RunningWebQuery extends RunningQueryImpl {
             }
         }
 
-        this.request = request;
-        this.response = response;
-        addParameter("request", request);
-        addParameter("response", response);
+        parameters.put("request", request);
+        parameters.put("response", response);
 
 
     }

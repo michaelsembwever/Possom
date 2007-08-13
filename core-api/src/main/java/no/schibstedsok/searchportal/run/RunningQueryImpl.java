@@ -477,12 +477,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
     }
 
-
-    /** TODO comment me. **/
-    protected void addParameter(final String key, final Object obj) {
-        datamodel.getJunkYard().getValues().put(key, obj);
-    }
-
     /** {@inherit}. **/
     public Locale getLocale() {
 
