@@ -25,7 +25,6 @@
         <title>Sesam</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="/css/front.css" rel="stylesheet" type="text/css" />
-        <link href="/css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="<%= openSearchUrlStandard %>%>" />
@@ -137,8 +136,6 @@
             </div>
         </div>
     </div>
-
-
     <div id="articles">
 	<search:velocity template="/fragments/layout/publish/index"/>
     </div>
@@ -147,7 +144,6 @@
     <div id="footer_space_index">
         <search:velocity template="/fragments/layout/publish/footer"/>
     </div>
-
 
     <!-- start gallup -->
     <% if ( "no".equals(locale) ) { %>
