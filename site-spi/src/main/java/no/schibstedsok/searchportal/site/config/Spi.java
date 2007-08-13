@@ -19,11 +19,11 @@ public enum Spi {
     /** */
     RESULT_HANDLER_CONTROL("result-handler-control", RESULT_HANDLER_CONFIG),
     /** */
-    SEARCH_COMMAND_CONFIG("command-config", RESULT),
+    SEARCH_COMMAND_CONFIG("search-command-config", RESULT),
     /** */
-    SEARCH_COMMAND_CONTROL("command-control", SEARCH_COMMAND_CONFIG),
+    SEARCH_COMMAND_CONTROL("search-command-control", SEARCH_COMMAND_CONFIG),
     /** */
-    VIEW_CONFIG("view-config"),
+    VIEW_CONFIG("view-config", RESULT),
     /** */
     VIEW_CONTROL("view-control", VIEW_CONFIG),
     /** */

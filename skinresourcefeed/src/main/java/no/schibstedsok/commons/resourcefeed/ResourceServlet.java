@@ -280,9 +280,10 @@ public final class ResourceServlet extends HttpServlet {
 
                 final String path = (String) iterator.next();
 
-                // Req. for jars can be done without the version suffix. A request for query-transform.jar might
-                // return the file query-transform-2.11-SNAPSHOT.jar.
-                if (path.contains(baseName)) {
+                // Remove path, site name and version suffix.
+                final String jarName = path.substring(path.lastIndexOf('/') + 1).replaceAll("-(\\d+\\.?)+(-SNAPSHOT)?.jar$", "").replaceAll("^([\\p{Alnum}]+\\.?)+-", "");
+
+                if (jarName.equals(baseName)) {
                     final URL url = servletConfig.getServletContext().getResource(path);
                     return url.openConnection().getInputStream();
                 }
