@@ -156,14 +156,17 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         
         isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
 
-        // check if any possible parents of this clause match the company predicate.
-        boolean insideCompany = context.getApplications().contains(Application.YELLOW);
-        insideCompany &= ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT)
+        // check if the clause or any possible parents of this clause match the company predicate.
+        boolean isOrInsideCompany = context.getApplications().contains(Application.YELLOW);
+        isOrInsideCompany &= 
+                clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)
+                || clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)
+                || ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT)
                 || ParentFinder.insideOf(parents, TokenPredicate.COMPANY_KEYWORD);
 
         if(hasCompany || hasFullname){
 
-            onlyGeo &= !insideFullname && !insideCompany;
+            onlyGeo &= !insideFullname && !isOrInsideCompany;
 
         }else{
 
@@ -176,7 +179,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             where.append(context.getTransformedTerms().get(clause));
 
         }else{
-            if((hasCompany && !insideCompany && isNameOrNumber) || multipleCompany || multipleFullname ){
+            if((hasCompany && !isOrInsideCompany && isNameOrNumber) || multipleCompany || multipleFullname ){
                 // this is a company query but this clause isn't the company but a loose name.
                 // abort this hitta search, see SEARCH-966 - hitta enrichment
                 // OR there are multiple fullnames or company names.
