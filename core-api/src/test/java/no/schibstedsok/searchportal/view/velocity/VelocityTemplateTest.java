@@ -24,12 +24,17 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.ResourceLoadException;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -84,7 +89,22 @@ public final class VelocityTemplateTest extends DataModelTestCase{
                 final DataModel datamodel = getDataModel();
                 getDataModelFactory().assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
                 final Site site = datamodel.getSite().getSite();
-                final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
+                final VelocityEngine engine = VelocityEngineFactory.valueOf(
+                        new VelocityEngineFactory.Context(){
+                            public Site getSite() {
+                                return site;
+                            }
+                            public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
+                                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+                            }
+                            public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
+                                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+                            }
+                            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                                return FileResourceLoader.newBytecodeLoader(siteContext, className, jarFileName);
+                            }
+                        })
+                        .getEngine();
                 final Template template = VelocityEngineFactory.getTemplate(engine, site, templateName);
                 final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
                 context.put("datamodel", datamodel);
