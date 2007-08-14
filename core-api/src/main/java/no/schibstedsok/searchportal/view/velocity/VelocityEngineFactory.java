@@ -333,7 +333,24 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                         + site.getTemplateDir() + "/VM_global_library.vm,"
                         + site.getTemplateDir() + "/VM_site_library.vm,"
                         + site.getTemplateDir() + "/VM_map_library.vm"); //XXX not happy with this. it isn't SESAT.
+                
+                final SiteClassLoaderFactory.Context classContext = ContextWrapper.wrap(
+                        SiteClassLoaderFactory.Context.class,
+                        new BaseContext() {
+                            public Site getSite(){
+                                return site;
+                            }
+                            public Spi getSpi() {
+                                return Spi.VELOCITY_DIRECTIVES;
+                            }
+                        },
+                        cxt);
+
+                final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.valueOf(classContext).getClassLoader();
+                final ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(ctrlClassLoader);
                 engine.init();
+                Thread.currentThread().setContextClassLoader(origLoader);
 
             } catch (Exception e) {
                 throw new InfrastructureException(e);

@@ -36,6 +36,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -248,15 +249,16 @@ public final class DataModelFilter implements Filter {
         /* Adding cookie myChannels to parameters.
          * TODO: add generic handling of cookies, or make it part of User initailization.
          */
-//        if (request.getCookies() != null) {
-//            for (Cookie cookie : request.getCookies()) {
-//                if (TvWaitSearchCommand.MY_CHANNELS_KEY.equals(cookie.getName())) {
-//                    values.put(TvWaitSearchCommand.MY_CHANNELS_KEY, factory.instantiate(
-//                            StringDataObject.class,
-//                            new DataObject.Property("string", cookie.getValue())));
-//                }
-//            }
-//         }
+        if (request.getCookies() != null) {
+            final String MY_CHANNELS_KEY = "myChannels";
+            for (Cookie cookie : request.getCookies()) {
+                if (MY_CHANNELS_KEY.equals(cookie.getName())) {
+                    values.put(MY_CHANNELS_KEY, factory.instantiate(
+                            StringDataObject.class,
+                            new DataObject.Property("string", cookie.getValue())));
+                }
+            }
+        }
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
