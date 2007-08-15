@@ -34,8 +34,8 @@
             <td class="cell_three" valign="top" colspan="2">
         </c:otherwise>
         </c:choose>
+                <search:include include="error-msg"/>
                 <search:include include="middle-col-one"/>
-                <search:include include="spellcheck"/>
                 <search:include include="middle-col-two"/>
                 <search:include include="middle-col-three"/>
                 <search:include include="middle-col-four"/>
