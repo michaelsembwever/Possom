@@ -140,7 +140,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                 = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
 
         boolean geo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
-                || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
+                || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL)
+                || ParentFinder.insideOf(parents, TokenPredicate.GEOLOCAL)
+                || ParentFinder.insideOf(parents, TokenPredicate.GEOGLOBAL);
 
         boolean onlyGeo = geo && clause.getField() == null;
 
