@@ -81,31 +81,6 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     private static final boolean VELOCITY_DEBUG = Boolean.getBoolean("VELOCITY_DEBUG");
 
-    private static final String DIRECTIVES =
-            "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.CapitalizeWordsDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.ChopStringDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.PublishDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.AccountingDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.RolesDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.ShareHoldersDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.RolesMobilePeopleExportDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.XmlEscapeDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.MailEncodeDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.WikiDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.UpperCaseDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.WeekdayDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.MD5ParameterDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.FinnImgLinkDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.TopDomainDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.DateFormattingDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.BoldWordDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.SlashTrimStringDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.XPathDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.XPathForeachDirective";
-
     // Attributes ----------------------------------------------------
 
     private final VelocityEngine engine;
@@ -238,46 +213,19 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                     SiteConfiguration.Context.class,
                     cxt));
 
-            final StringBuilder directives = new StringBuilder(DIRECTIVES);
+            final StringBuilder directives = new StringBuilder();
 
-            for(Site _s = site;; _s = _s.getParent()){
-                
-                final Site s = _s;
-                final String d = siteConf.getProperty("velocity.directives." + s.getName());
+            for(int i=0; i < 10; ++i){
+                final String d = siteConf.getProperty("velocity.directives." + i);
 
                 if(null != d && d.length() > 0){
-                    
-                    final SiteClassLoaderFactory.Context classContext = ContextWrapper.wrap(
-                            SiteClassLoaderFactory.Context.class,
-                            new BaseContext() {
-                                public Site getSite(){
-                                    return s;
-                                }
-                                public Spi getSpi() {
-                                    return Spi.VELOCITY_DIRECTIVES;
-                                }
-                            },
-                            cxt);
 
-                    final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.valueOf(classContext);
-
-                    final String[] classes = d.split(",");
-
-                    for(String c : classes){
-                        try{
-                            loaderFactory.getClassLoader().loadClass(c);
-                        }catch(ClassNotFoundException cnfe){
-                            LOG.error("Directive " + c + " not found", cnfe);
-                        }
-                    }
-
-                    directives.append(',' + d);
-                }
-
-                if(null == s.getParent()){
-                    break;
+                    directives.append(d + ',');
                 }
             }
+
+            // truncate last ','
+            directives.setLength(directives.length()-1);
             
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
 
