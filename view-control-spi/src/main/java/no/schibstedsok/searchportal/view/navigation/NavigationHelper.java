@@ -65,12 +65,12 @@ public final class NavigationHelper {
         final StringBuilder sb = new StringBuilder();
 
         if (!navEntry.isExcludeQuery()) {
-            sb.append("&amp;q=").append(datamodel.getQuery().getUtf8UrlEncoded());
+            addParameter(sb, "q", datamodel.getQuery().getUtf8UrlEncoded());
         }
         if (value != null && value.length() > 0) {
-            sb.append("&amp;").append(enc(navEntry.getField())).append('=').append(enc(value));
+            addParameter(sb, enc(navEntry.getField()), enc(value));
             if (navEntry.isRealNavigator() && navigatorName != null) {
-                sb.append("&amp;").append("nav_").append(enc(navEntry.getId())).append('=').append(enc(navigatorName));
+                addParameter(sb, "nav_" + enc(navEntry.getId()), enc(navigatorName));
             }
         }
         if (!navEntry.isOut()) {
@@ -86,7 +86,15 @@ public final class NavigationHelper {
         }
         return sb.toString();
     }
-    
+
+    private static void addParameter(final StringBuilder sb, final String parameter, final String value) {
+        if (sb.length() > 0) {
+            sb.append("&amp;");
+        }
+
+        sb.append(parameter).append('=').append(value);
+    }
+
     public static NavigationConfig getConfig(final DataModel datamodel){
 
         return datamodel.getNavigation().getConfiguration();
@@ -167,7 +175,7 @@ public final class NavigationHelper {
             final String value) {
 
         if (!nav.getNavigation().getResetNavSet().contains(id)) {
-            sb.append("&amp;").append(enc(id)).append('=').append(enc(value));
+            addParameter(sb, enc(id), enc(value));
             return true;
         }
         return false;
