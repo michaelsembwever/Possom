@@ -48,10 +48,10 @@ public final class ResultPagingNavigationController
         }
 
         // Add navigation items for the individual pages.
-        for (int i = pager.getOffsetOfPage(pager.getFirstVisiblePage()); i <= pager.getLastVisiblePage(); ++i) {
+        for (int i = pager.getFirstVisiblePage(); i <= pager.getLastVisiblePage(); ++i) {
             final String pageOffset = Integer.toString(pager.getOffsetOfPage(i));
             final String url = NavigationHelper.getUrlFragment(context.getDataModel(), config, pageOffset, null);
-            item.addResult(new BasicNavigationItem(pageOffset, url, config.getPageSize()));
+            item.addResult(new BasicNavigationItem(Integer.toString(i), url, config.getPageSize()));
         }
 
         // Add navigation item for next page.
