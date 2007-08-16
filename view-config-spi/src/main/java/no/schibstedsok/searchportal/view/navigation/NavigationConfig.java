@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -63,10 +64,20 @@ public final class NavigationConfig implements Serializable {
     }
 
     public void addNavigation(final Navigation navigation) {
-        navigationList.add(navigation);
+
         if (navigation.getId() != null) {
+            if (navigationMap.containsKey(navigation.getId())) {
+                for (Iterator<Navigation> iterator = navigationList.iterator(); iterator.hasNext();) {
+                    final Navigation n = iterator.next();
+                    if (navigation.getId().equals(n.getId())) {
+                        iterator.remove();
+                    }
+                }
+            }
+
             navigationMap.put(navigation.getId(), navigation);
         }
+        navigationList.add(navigation);
     }
 
     private static List<Element> getDirectChildren(final Element element, final String elementName) {
