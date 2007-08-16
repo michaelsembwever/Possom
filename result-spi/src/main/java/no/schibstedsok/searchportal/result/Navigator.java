@@ -32,7 +32,6 @@ public final class Navigator implements Serializable {
 
     public enum Sort {
         COUNT(),
-        CHANNEL(),
         YEAR(),
         MONTH_YEAR(),
         DAY_MONTH_YEAR(),
@@ -40,6 +39,7 @@ public final class Navigator implements Serializable {
         YEAR_MONTH,
         ALPHABETICAL,
         ALPHABETICAL_DESCENDING,
+        CUSTOM,
         NONE
     }
 
