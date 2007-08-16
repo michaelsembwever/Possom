@@ -99,27 +99,9 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
             final NavigationConfig.Nav navEntry,
             final NavigationController.Context navCxt) {
 
-        final NavigationControllerFactory<NavigationConfig.Nav> factory 
+        final NavigationControllerFactory<NavigationConfig.Nav> factory
                 = controllerFactoryFactory.getController(navEntry);
 
-        final NavigationItem items = factory.get(navEntry).getNavigationItems(navCxt);
-
-        boolean selectionDone = false;
-
-        final StringDataObject selectedValue = datamodel.getParameters().getValue(navEntry.getField());
-
-        if (null != items) {
-            for (final NavigationItem navigationItem : items.getResults()) {
-                if (selectionDone){
-                    break;
-                }
-
-                if (selectedValue != null && selectedValue.getString().equals(navigationItem.getTitle())) {
-                    navigationItem.setSelected(true);
-                    selectionDone = true;
-                }
-            }
-        }
-        return items;
+        return factory.get(navEntry).getNavigationItems(navCxt);
     }
 }
