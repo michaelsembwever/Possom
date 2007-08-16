@@ -64,6 +64,10 @@ public final class NavigationHelper {
 
         final StringBuilder sb = new StringBuilder();
 
+        String tab = datamodel.getParameters().getValue("c").getUtf8UrlEncoded();
+
+        sb.append("c=").append(tab);
+
         if (!navEntry.isExcludeQuery()) {
             addParameter(sb, "q", datamodel.getQuery().getUtf8UrlEncoded());
         }
