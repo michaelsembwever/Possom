@@ -447,13 +447,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     final Node navElement = navs.item(j);
 
                     if (RESET_NAV_ELEMENT.equals(navElement.getNodeName())) {
-                        final String resetNavId = ((Element)navElement).getAttribute("modeId");
-                        if (modeId != null) {
-                            final NavigationConfig.Nav nav = navigation.getNavMap().get(resetNavId);
+                        final String resetNavId = ((Element)navElement).getAttribute("id");
+                        if (resetNavId != null) {
+                            final NavigationConfig.Nav nav = cfg.getNavMap().get(resetNavId);
                             if (nav != null) {
                                 navigation.addReset(nav);
                             } else {
-                                LOG.error("Error in config, <reset modeId=\"" + modeId + "\" />, in mode " + modeId + " not found");
+                                LOG.error("Error in config, <reset id=\"" + resetNavId + "\" />, in mode " + modeId + " not found");
                             }
                         }
                     }

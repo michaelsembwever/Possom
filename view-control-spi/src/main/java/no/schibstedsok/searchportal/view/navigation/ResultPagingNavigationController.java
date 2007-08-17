@@ -63,7 +63,7 @@ public final class ResultPagingNavigationController
             final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() + 1));
             final String url = NavigationHelper.getUrlFragment(context.getDataModel(), config, pageOffset, null);
             item.addResult(new BasicNavigationItem(messages.getMessage("next"), url, config.getPageSize()));
-        }
+        }                               
 
         return item;
     }
