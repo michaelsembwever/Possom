@@ -3,7 +3,6 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.schibstedsok.no/confluence/display/SESAT/SESAT+License
-
  */
 /*
  * SynonymQueryTransformer.java
@@ -33,10 +32,11 @@ import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
-/** XXX This will get largely rewritten when alternation rotation comes into play.
- * https://jira.sesam.no/jira/browse/SEARCH-863
+
+/**
  *
  * @author maek
+ * @version $Id$
  */
 public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
@@ -118,16 +118,16 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
         for (final TokenPredicate p : getPredicates()) {
 
-                final Query query = getContext().getQuery();
-                final List<OperationClause> parents
-                        = query.getParentFinder().getParents(query.getRootClause(), clause);
+            final Query query = getContext().getQuery();
+            final List<OperationClause> parents
+                    = query.getParentFinder().getParents(query.getRootClause(), clause);
 
-                for(OperationClause oc : parents){
-                    if(oc.getKnownPredicates().contains(p) || oc.getPossiblePredicates().contains(p)){
-                        LOG.debug("adding to matchingPredicates " + p);
-                        matchingPredicates.add(p);
-                    }
+            for(OperationClause oc : parents){
+                if(oc.getKnownPredicates().contains(p) || oc.getPossiblePredicates().contains(p)){
+                    LOG.debug("adding to matchingPredicates " + p);
+                    matchingPredicates.add(p);
                 }
+            }
         }
 
         clause.getFirstClause().accept(this);
@@ -141,14 +141,13 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         LOG.trace("visitImpl(" + clause + ')');
 
         if (!matchingPredicates.isEmpty() && !expanded.contains(clause)) {
-            for (final TokenPredicate p : matchingPredicates) {
 
-                if (isSynonym(builder.toString() + clause.getTerm())) {
+            if (isSynonym(builder.toString() + clause.getTerm())) {
 
-                    LOG.debug("adding to builder " + clause.getTerm());
-                    builder.append(clause.getTerm());
-                    leafs.add(clause);
-                } //else {
+                LOG.debug("adding to builder " + clause.getTerm());
+                builder.append(clause.getTerm());
+                leafs.add(clause);
+            } //else {
 //                    if (!leafs.isEmpty()) {
 //
 //                        expandSynonym(leafs, getSynonym(builder.toString()));
@@ -158,7 +157,6 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 //                        builder.setLength(0);
 //                    }
 //                }
-            }
         }
 
         for (TokenPredicate predicate : getPredicates()) {
@@ -185,23 +183,23 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
     private void expandSynonym(final List<LeafClause> replace, final String synonym) {
 
-        LOG.trace("expandSynonym(" + replace + ", " + synonym + ")");
+        LOG.trace("expandSynonym(" + replace + ", " + synonym + ')');
         final LeafClause first = replace.get(0);
         final LeafClause last = replace.get(replace.size() - 1);
 
         if (first != last) {
-            getContext().getTransformedTerms().put(first, "(" + first.getTerm());
-            getContext().getTransformedTerms().put(last, last.getTerm()+ " " + synonym + ")");
+            getContext().getTransformedTerms().put(first, '(' + first.getTerm());
+            getContext().getTransformedTerms().put(last, last.getTerm() + ' ' + synonym + ')');
         } else {
-            getContext().getTransformedTerms().put(last, "(" + last.getTerm()+ " " + synonym + ")");
+            getContext().getTransformedTerms().put(last, '(' + last.getTerm()+ ' ' + synonym + ')');
         }
     }
 
     private void expandSynonym(final LeafClause replace, final String synonym) {
 
-        LOG.trace("expandSynonym(" + replace + ", " + synonym + ")");
+        LOG.trace("expandSynonym(" + replace + ", " + synonym + ')');
         final String originalTerm = getContext().getTransformedTerms().get(replace);
-        getContext().getTransformedTerms().put(replace, "(" + originalTerm + " " + synonym + ")");
+        getContext().getTransformedTerms().put(replace, '(' + originalTerm + ' ' + synonym + ')');
     }
 
     private Collection<TokenPredicate> getPredicates() {
