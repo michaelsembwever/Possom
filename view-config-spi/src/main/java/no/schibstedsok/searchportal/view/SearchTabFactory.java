@@ -409,7 +409,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseBoolean(tabE.getAttribute("display-css"), true),
                         parseBoolean(tabE.getAttribute("execute-on-blank"), inherit != null
                         ? inherit.isExecuteOnBlank()
-                        : true),
+                        : false),
                         layout);
 
                 

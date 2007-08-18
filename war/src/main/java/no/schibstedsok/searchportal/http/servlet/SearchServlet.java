@@ -427,6 +427,9 @@ public final class SearchServlet extends HttpServlet {
                 datamodel.getPage().setCurrentTab(result);
             }
             
+            // this is legacy. shorter to write in templates than $datamodel.page.currentTab
+            request.setAttribute("tab", datamodel.getPage().getCurrentTab());
+            
         }catch(AssertionError ae){
             // it's not normal to catch assert errors but we really want a 404 not 500 response error.
             LOG.error("Caught Assertion: " + ae);
@@ -487,21 +490,21 @@ public final class SearchServlet extends HttpServlet {
                 final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
 
                 if( !datamodel.getQuery().getQuery().isBlank() || searchTab.isExecuteOnBlank() ){
+                    
                     query.run();
-                }
+                    stopWatch.stop();
+                    LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());
 
-                stopWatch.stop();
-                LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());
+                    if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
 
-                if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
-
-                    STATISTICS_LOG.info(
-                        "<search-servlet"
-                            + (null != output ? " output=\"" + output.getXmlEscaped() + "\">" : ">")
-                            + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>"
-                            + "<time>" + stopWatch + "</time>"
-                            + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
-                        + "</search-servlet>");
+                        STATISTICS_LOG.info(
+                            "<search-servlet"
+                                + (null != output ? " output=\"" + output.getXmlEscaped() + "\">" : ">")
+                                + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>"
+                                + "<time>" + stopWatch + "</time>"
+                                + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
+                            + "</search-servlet>");
+                    }
                 }
 
 

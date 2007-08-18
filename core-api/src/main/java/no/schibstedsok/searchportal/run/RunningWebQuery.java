@@ -177,7 +177,6 @@ public final class RunningWebQuery extends RunningQueryImpl {
             // ...and...
             request.setAttribute("enrichments", getEnrichments());
             request.setAttribute("hits",getHits());
-            request.setAttribute("tab", datamodel.getPage().getCurrentTab());
         }
     }
 }
