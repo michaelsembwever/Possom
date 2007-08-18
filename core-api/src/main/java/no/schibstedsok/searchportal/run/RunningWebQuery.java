@@ -173,9 +173,11 @@ public final class RunningWebQuery extends RunningQueryImpl {
                     LOG.trace("Added " + entry.getKey() + ", value: " + request.getAttribute(entry.getKey()));
                 }
             }
+            
             // ...and...
             request.setAttribute("enrichments", getEnrichments());
             request.setAttribute("hits",getHits());
+            request.setAttribute("tab", datamodel.getPage().getCurrentTab());
         }
     }
 }

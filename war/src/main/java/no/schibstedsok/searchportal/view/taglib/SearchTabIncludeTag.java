@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
@@ -67,7 +68,8 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
     public void doTag() throws JspException {
         
         final PageContext cxt = (PageContext) getJspContext();
-        final SearchTab tab = (SearchTab) cxt.findAttribute("tab");
+        final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
+        final SearchTab tab = datamodel.getPage().getCurrentTab();
         final String template = LAYOUT_DIRECTORY + tab.getLayout().getInclude(include);
         try{
             cxt.getOut().println("<!-- " + include + " -->");

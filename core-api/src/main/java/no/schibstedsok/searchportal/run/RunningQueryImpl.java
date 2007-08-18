@@ -31,6 +31,7 @@ import no.schibstedsok.searchportal.datamodel.access.ControlLevel;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.navigation.NavigationDataObject;
 import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
@@ -125,15 +126,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         assert null == datamodel.getQuery();
 
-        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
-
-        LOG.trace("RunningQuery(cxt," + query + "," + parameters + ")");
+        LOG.trace("RunningQuery(cxt," + query + ')');
 
         final String queryStr = trimDuplicateSpaces(query);
 
         locale = datamodel.getSite().getSite().getLocale();
-
-        initParameters(cxt);
 
         final SiteContext siteCxt = new SiteContext(){
             public Site getSite() {
@@ -171,6 +168,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 new DataObject.Property("string", queryStr),
                 new DataObject.Property("query", parser.getQuery()));
 
+        @SuppressWarnings("unchecked")
         final MapDataObject<NavigationItem> navigations 
                 = new MapDataObjectSupport<NavigationItem>(Collections.EMPTY_MAP);
         final NavigationDataObject navDO = factory.instantiate(
@@ -220,7 +218,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         final StringBuilder analysisReport
                 = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
 
-        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
+        final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
 
         try {
 
@@ -238,7 +236,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             final Collection<Callable<ResultList<? extends ResultItem>>> commands
                     = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
 
-            final boolean isRss = parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).equals("rss");
+            final boolean isRss = parameters.get(PARAM_OUTPUT) != null 
+                    && parameters.get(PARAM_OUTPUT).getString().equals("rss");
 
             final SearchCommandFactory.Context scfContext = new SearchCommandFactory.Context() {
                 public Site getSite() {
@@ -294,7 +293,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                             if (context.getSearchMode().isAnalysis()
-                                    && "0".equals(parameters.get("offset"))
+                                    && (null == parameters.get("offset") || "0".equals(parameters.get("offset")))
                                     && (null == parameters.get("collapse") || "".equals(parameters.get("collapse")))
                                     && eHint.getWeight() > 0) {
 
@@ -459,7 +458,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }
 
                 if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
-                    final String output = (String) parameters.get("output");
+                    final String output = null != parameters.get("output") 
+                            ? parameters.get("output").getString() 
+                            : null;
 
                     noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
                             + (null != output ? "\" output=\"" + output : "") + "\">"
@@ -561,31 +562,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final NavigationRunningQueryHandler navHandler = new NavigationRunningQueryHandler();
         navHandler.handleRunningQuery(handlerContext);
-    }
-
-    /** Used by the constructor. **/
-    private void initParameters(final RunningQuery.Context rqCxt){
-
-        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
-
-        parameters.put("query", this);
-        parameters.put("locale", locale);
-        if( null == parameters.get("offset") ){
-            parameters.put("offset", "0");
-        }
-
-        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
-
-        final SiteContext siteCxt = new SiteContext(){
-            public Site getSite() {
-                return datamodel.getSite().getSite();
-            }
-        };
-
-        parameters.put("configuration", props);
-
-        parameters.put("tab", rqCxt.getSearchTab()); // TODO remove
-        parameters.put("c", rqCxt.getSearchTab().getKey()); // TODO remove
     }
 
     // Inner classes -------------------------------------------------
