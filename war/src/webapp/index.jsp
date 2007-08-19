@@ -7,7 +7,7 @@
         %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
-<%@ page import="no.schibstedsok.searchportal.site.Site"%>
+<%@ page import="no.sesat.searchportal.site.Site"%>
 
 <%
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);

@@ -1,12 +1,12 @@
 <%--
---%><%@ page import="no.schibstedsok.searchportal.view.config.SearchTab"%><%--
---%><%@ page import="no.schibstedsok.searchportal.view.output.SyndicationGenerator"%><%--
---%><%@ page import="no.schibstedsok.searchportal.site.Site"%><%--
---%><%@ page import="no.schibstedsok.searchportal.datamodel.DataModel" %><%--
---%><%@ page import="no.schibstedsok.searchportal.site.SiteContext" %><%--
+--%><%@ page import="no.sesat.searchportal.view.config.SearchTab"%><%--
+--%><%@ page import="no.sesat.searchportal.view.output.SyndicationGenerator"%><%--
+--%><%@ page import="no.sesat.searchportal.site.Site"%><%--
+--%><%@ page import="no.sesat.searchportal.datamodel.DataModel" %><%--
+--%><%@ page import="no.sesat.searchportal.site.SiteContext" %><%--
 --%><%@ page import="javax.xml.parsers.DocumentBuilder" %><%--
 --%><%@ page import="java.util.Properties" %><%--
---%><%@ page import="no.schibstedsok.searchportal.site.config.*" %><%--
+--%><%@ page import="no.sesat.searchportal.site.config.*" %><%--
 --%><%@page contentType="text/xml"%><%@page pageEncoding="UTF-8"%><%--
 --%><%
 
@@ -31,7 +31,7 @@
         public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
             return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
         }
-        public no.schibstedsok.searchportal.site.config.PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
+        public no.sesat.searchportal.site.config.PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
             return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
         }
 

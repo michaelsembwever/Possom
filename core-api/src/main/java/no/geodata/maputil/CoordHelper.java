@@ -2,7 +2,7 @@
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
- * If not, see https://dev.schibstedsok.no/confluence/display/SESAT/SESAT+License
+ * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
 */
 /*
  * CoordHelper.java
@@ -13,9 +13,9 @@
 
 package no.geodata.maputil;
 
-import no.schibstedsok.searchportal.result.BasicResultItem;
+import no.sesat.searchportal.result.BasicResultItem;
 import java.util.*;
-import no.schibstedsok.searchportal.result.ResultItem;
+import no.sesat.searchportal.result.ResultItem;
 import org.apache.log4j.Logger;
 
 /**

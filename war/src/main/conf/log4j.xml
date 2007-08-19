@@ -146,64 +146,64 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
 
-    <logger name="no.schibstedsok.Access" additivity="false">
+    <logger name="no.sesat.Access" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="ACCESS_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.searchportal.Dump">
+    <logger name="no.sesat.searchportal.Dump">
         <level value="ALL"/>
         <appender-ref ref="DUMP_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.Sales" additivity="false">
+    <logger name="no.sesat.Sales" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="SALES_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.Marketing" additivity="false">
+    <logger name="no.sesat.Marketing" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="MARKETING_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.Statistics" additivity="false">
+    <logger name="no.sesat.Statistics" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="STATISTICS_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.searchportal.analyzer.Analysis" additivity="false">
+    <logger name="no.sesat.searchportal.analyzer.Analysis" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="ANALYSIS_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.schibstedsok.Product" additivity="false">
+    <logger name="no.sesat.Product" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="PRODUCT_APPEND_ASYNC"/>
     </logger>
 
     <!-- Loggers involved in core initialisation of the engine -->
-    <logger name="no.schibstedsok.searchportal.site.Site">
+    <logger name="no.sesat.searchportal.site.Site">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.query.token.RegExpEvaluatorFactory">
+    <logger name="no.sesat.searchportal.query.token.RegExpEvaluatorFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.query.token.VeryFastTokenEvaluatorFactory">
+    <logger name="no.sesat.searchportal.query.token.VeryFastTokenEvaluatorFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory">
+    <logger name="no.sesat.searchportal.query.analyser.AnalysisRuleFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.mode.SearchModeFactory">
+    <logger name="no.sesat.searchportal.mode.SearchModeFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.view.config.SearchTabFactory">
+    <logger name="no.sesat.searchportal.view.config.SearchTabFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.view.i18n.TextMessages">
+    <logger name="no.sesat.searchportal.view.i18n.TextMessages">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory">
+    <logger name="no.sesat.searchportal.view.velocity.VelocityEngineFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
 

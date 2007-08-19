@@ -1,5 +1,5 @@
-<%@ page import="no.schibstedsok.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
-<%@ page import="no.schibstedsok.searchportal.datamodel.DataModel" %>
+<%@ page import="no.sesat.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
+<%@ page import="no.sesat.searchportal.datamodel.DataModel" %>
 
 
 <%
