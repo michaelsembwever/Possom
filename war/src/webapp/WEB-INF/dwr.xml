@@ -2,28 +2,28 @@
 <dwr>
     <allow>
         <create creator="none" javascript="DataModelWrapper">
-          <param name="class" value="no.sesat.searchportal.http.dwr.DataModelWrapper"/>
+          <param name="class" value="no.sesat.search.http.dwr.DataModelWrapper"/>
           <include method="getDataModel"/>
           <include method="getSearch"/>
           <include method="getResults"/>
           <include method="getResultItem"/>
         </create>
         <convert converter="bean" match="$Proxy*"/>
-        <convert converter="bean" match="no.sesat.searchportal.datamodel.*"/>
-        <convert converter="object" match="no.sesat.searchportal.result.BasicResultItem">
+        <convert converter="bean" match="no.sesat.search.datamodel.*"/>
+        <convert converter="object" match="no.sesat.search.result.BasicResultItem">
             <param name="force" value="true"/>
         </convert>
-        <!--convert converter="object" match="no.sesat.searchportal.site.config.SiteConfiguration"/>
-        <convert converter="object" match="no.sesat.searchportal.site.Site"/>
-        <convert converter="object" match="no.sesat.searchportal.result.ResultList"/>
-        <convert converter="object" match="no.sesat.searchportal.result.BasicResultItem"/>
-        <convert converter="object" match="no.sesat.searchportal.result.ResultItem"/>
-        <convert converter="object" match="no.sesat.searchportal.result.BasicResultList"/>
-        <convert converter="object" match="no.sesat.searchportal.result.FastSearchResult"/>
-        <convert converter="object" match="no.sesat.searchportal.mode.config.*"/>
-        <convert converter="object" match="no.sesat.searchportal.mode.command.*"/>
-        <convert converter="object" match="no.sesat.searchportal.mode.command.WebSearchCommand"/>
-        <convert converter="object" match="no.sesat.searchportal.query.Query"/>
+        <!--convert converter="object" match="no.sesat.search.site.config.SiteConfiguration"/>
+        <convert converter="object" match="no.sesat.search.site.Site"/>
+        <convert converter="object" match="no.sesat.search.result.ResultList"/>
+        <convert converter="object" match="no.sesat.search.result.BasicResultItem"/>
+        <convert converter="object" match="no.sesat.search.result.ResultItem"/>
+        <convert converter="object" match="no.sesat.search.result.BasicResultList"/>
+        <convert converter="object" match="no.sesat.search.result.FastSearchResult"/>
+        <convert converter="object" match="no.sesat.search.mode.config.*"/>
+        <convert converter="object" match="no.sesat.search.mode.command.*"/>
+        <convert converter="object" match="no.sesat.search.mode.command.WebSearchCommand"/>
+        <convert converter="object" match="no.sesat.search.query.Query"/>
         <convert converter="object" match="java.util.Locale"/>
         <convert converter="object" match="java.util.List"/-->
     </allow>

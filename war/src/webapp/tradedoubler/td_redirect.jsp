@@ -1,5 +1,5 @@
-<%@ page import="no.sesat.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
-<%@ page import="no.sesat.searchportal.datamodel.DataModel" %>
+<%@ page import="no.sesat.search.util.TradeDoubler,java.net.URLEncoder" %>
+<%@ page import="no.sesat.search.datamodel.DataModel" %>
 
 
 <%

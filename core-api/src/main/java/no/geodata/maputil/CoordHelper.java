@@ -13,9 +13,9 @@
 
 package no.geodata.maputil;
 
-import no.sesat.searchportal.result.BasicResultItem;
+import no.sesat.search.result.BasicResultItem;
 import java.util.*;
-import no.sesat.searchportal.result.ResultItem;
+import no.sesat.search.result.ResultItem;
 import org.apache.log4j.Logger;
 
 /**

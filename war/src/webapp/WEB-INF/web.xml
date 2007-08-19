@@ -8,12 +8,12 @@
     
     <filter>
         <filter-name>SiteLocatorFilter</filter-name>
-        <filter-class>no.sesat.searchportal.http.filters.SiteLocatorFilter</filter-class>
+        <filter-class>no.sesat.search.http.filters.SiteLocatorFilter</filter-class>
     </filter>
     
     <filter>
         <filter-name>UrlSkinRewriteFilter</filter-name>
-        <filter-class>no.sesat.searchportal.http.filters.UrlRewriteFilter</filter-class>
+        <filter-class>no.sesat.search.http.filters.UrlRewriteFilter</filter-class>
     </filter>
     
     <filter>
@@ -23,7 +23,7 @@
     
     <filter>
         <filter-name>DataModelFilter</filter-name>
-        <filter-class>no.sesat.searchportal.http.filters.DataModelFilter</filter-class>
+        <filter-class>no.sesat.search.http.filters.DataModelFilter</filter-class>
     </filter>
     
     <filter>
@@ -33,7 +33,7 @@
 
     <filter>
         <filter-name>md5ProtectParameters</filter-name>
-        <filter-class>no.sesat.searchportal.http.filters.MD5ProtectedParametersFilter</filter-class>
+        <filter-class>no.sesat.search.http.filters.MD5ProtectedParametersFilter</filter-class>
         <init-param>
             <param-name>secret</param-name>
             <param-value>S3SAM rockz</param-value>
@@ -46,7 +46,7 @@
 
     <filter>
         <filter-name>CacheFilter</filter-name>
-        <filter-class>no.sesat.searchportal.http.filters.SesamCacheFilter</filter-class>
+        <filter-class>no.sesat.search.http.filters.SesamCacheFilter</filter-class>
         <init-param>
             <param-name>time</param-name>
             <param-value>600</param-value>
@@ -60,7 +60,7 @@
     
     <filter>
         <filter-name>UserFilter</filter-name>
-        <filter-class>no.sesat.searchportal.http.filters.UserFilter</filter-class>
+        <filter-class>no.sesat.search.http.filters.UserFilter</filter-class>
     </filter>
     
     <!-- Filter Mappings -->
@@ -113,13 +113,13 @@
 
     <servlet>
         <servlet-name>VelocityDebug</servlet-name>
-        <servlet-class>no.sesat.searchportal.http.servlet.VelocityDebugServlet</servlet-class>
+        <servlet-class>no.sesat.search.http.servlet.VelocityDebugServlet</servlet-class>
     </servlet>
 
 
     <servlet>
         <servlet-name>search servlet</servlet-name>
-        <servlet-class>no.sesat.searchportal.http.servlet.SearchServlet</servlet-class>
+        <servlet-class>no.sesat.search.http.servlet.SearchServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
@@ -139,7 +139,7 @@
 
     <servlet>
         <servlet-name>MapServlet</servlet-name>
-        <servlet-class>no.sesat.searchportal.http.servlet.MapServlet</servlet-class>
+        <servlet-class>no.sesat.search.http.servlet.MapServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     
@@ -150,12 +150,12 @@
 
     <servlet>
         <servlet-name>Boomerang</servlet-name>
-        <servlet-class>no.sesat.searchportal.http.servlet.BoomerangServlet</servlet-class>
+        <servlet-class>no.sesat.search.http.servlet.BoomerangServlet</servlet-class>
     </servlet>
 
     <servlet>
         <servlet-name>SendMail</servlet-name>
-        <servlet-class>no.sesat.searchportal.http.servlet.SendMailServlet</servlet-class>
+        <servlet-class>no.sesat.search.http.servlet.SendMailServlet</servlet-class>
     </servlet>
     
     <servlet>

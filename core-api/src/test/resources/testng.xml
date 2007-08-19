@@ -4,7 +4,7 @@
     
     <test name="UnitTests" junit="true">
         <classes>
-            <class name="no.sesat.searchportal.util.test.PagingDisplayHelperUnitTest"/>
+            <class name="no.sesat.search.util.test.PagingDisplayHelperUnitTest"/>
         </classes>
     
     </test>

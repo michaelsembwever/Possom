@@ -5,7 +5,7 @@
   <uri>/WEB-INF/SearchPortal</uri>
   <tag>
     <name>velocity</name>
-    <tag-class>no.sesat.searchportal.view.taglib.VelocityTemplateTag</tag-class>
+    <tag-class>no.sesat.search.view.taglib.VelocityTemplateTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>template</name>
@@ -21,7 +21,7 @@
   </tag>
   <tag>
     <name>include</name>
-    <tag-class>no.sesat.searchportal.view.taglib.SearchTabIncludeTag</tag-class>
+    <tag-class>no.sesat.search.view.taglib.SearchTabIncludeTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>include</name>
@@ -32,7 +32,7 @@
   </tag>
   <tag>
     <name>publish</name>
-    <tag-class>no.sesat.searchportal.view.taglib.PublishingPageTag</tag-class>
+    <tag-class>no.sesat.search.view.taglib.PublishingPageTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>page</name>
@@ -49,7 +49,7 @@
   </tag>
   <tag>
     <name>boomerang</name>
-    <tag-class>no.sesat.searchportal.view.taglib.BoomerangTag</tag-class>
+    <tag-class>no.sesat.search.view.taglib.BoomerangTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>url</name>
@@ -66,7 +66,7 @@
   </tag>
   <tag>
     <name>text</name>
-    <tag-class>no.sesat.searchportal.view.taglib.TextMessageTag</tag-class>
+    <tag-class>no.sesat.search.view.taglib.TextMessageTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>key</name>

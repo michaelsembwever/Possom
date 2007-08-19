@@ -45,7 +45,7 @@
                 </executions>
                 <configuration>
                     <sourceDirectory>${basedir}/src/main/javacc</sourceDirectory>
-                    <packageName>no.sesat.searchportal.query.parser</packageName>
+                    <packageName>no.sesat.search.query.parser</packageName>
                 </configuration>
             </plugin>
          </plugins>

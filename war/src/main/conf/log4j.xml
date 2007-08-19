@@ -151,7 +151,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <appender-ref ref="ACCESS_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.sesat.searchportal.Dump">
+    <logger name="no.sesat.search.Dump">
         <level value="ALL"/>
         <appender-ref ref="DUMP_APPEND_ASYNC"/>
     </logger>
@@ -171,7 +171,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <appender-ref ref="STATISTICS_APPEND_ASYNC"/>
     </logger>
 
-    <logger name="no.sesat.searchportal.analyzer.Analysis" additivity="false">
+    <logger name="no.sesat.search.analyzer.Analysis" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="ANALYSIS_APPEND_ASYNC"/>
     </logger>
@@ -182,28 +182,28 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </logger>
 
     <!-- Loggers involved in core initialisation of the engine -->
-    <logger name="no.sesat.searchportal.site.Site">
+    <logger name="no.sesat.search.site.Site">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.query.token.RegExpEvaluatorFactory">
+    <logger name="no.sesat.search.query.token.RegExpEvaluatorFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.query.token.VeryFastTokenEvaluatorFactory">
+    <logger name="no.sesat.search.query.token.VeryFastTokenEvaluatorFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.query.analyser.AnalysisRuleFactory">
+    <logger name="no.sesat.search.query.analyser.AnalysisRuleFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.mode.SearchModeFactory">
+    <logger name="no.sesat.search.mode.SearchModeFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.view.config.SearchTabFactory">
+    <logger name="no.sesat.search.view.config.SearchTabFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.view.i18n.TextMessages">
+    <logger name="no.sesat.search.view.i18n.TextMessages">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    <logger name="no.sesat.searchportal.view.velocity.VelocityEngineFactory">
+    <logger name="no.sesat.search.view.velocity.VelocityEngineFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
 

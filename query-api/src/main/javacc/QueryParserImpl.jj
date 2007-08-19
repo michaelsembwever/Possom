@@ -7,12 +7,12 @@ options {
 
 PARSER_BEGIN(QueryParserImpl)
 
-package no.sesat.searchportal.query.parser;
+package no.sesat.search.query.parser;
 
 import java.io.StringReader;
 import java.util.List;
 import java.util.ArrayList;
-import no.sesat.searchportal.query.*;
+import no.sesat.search.query.*;
 
 /** This class is NOT synchronized. You must use a separate instance for each query. 
  *
