@@ -8,12 +8,9 @@
 package no.sesat.search.mode.executor;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
