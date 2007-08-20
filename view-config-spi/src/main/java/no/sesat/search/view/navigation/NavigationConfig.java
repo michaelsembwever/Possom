@@ -367,6 +367,10 @@ public final class NavigationConfig implements Serializable {
             this.backText = backText;
         }
 
+        public boolean isVirtual() {
+            return false;
+        }
+
         @Override
         public String toString() {
 

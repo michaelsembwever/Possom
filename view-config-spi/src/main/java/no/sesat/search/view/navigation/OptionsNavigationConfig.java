@@ -58,6 +58,10 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
         }
     }
 
+    public boolean isVirtual() {
+        return true;
+    }
+
     private void processOptions(NodeList optionNodes) {
         for (int i = 0; i < optionNodes.getLength(); i++) {
             final Element optionElement = (Element) optionNodes.item(i);
