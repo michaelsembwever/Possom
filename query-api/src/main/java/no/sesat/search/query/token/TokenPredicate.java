@@ -26,7 +26,7 @@ public enum TokenPredicate implements Predicate {
     ALWAYSTRUE (Type.GENERIC),
 
     // Fast TokenPredicates
-    //  full list can be found at sch-login01.osl.basefarm.net:/www/sesat/home/ssmojaco/analyselister
+    //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
     ANIMAL (Type.FAST),
     BLOCKET (Type.FAST), // FIXME!! What is blocket? we do not put specific names into this list
