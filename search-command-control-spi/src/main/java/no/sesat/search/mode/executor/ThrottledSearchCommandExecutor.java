@@ -25,6 +25,7 @@ import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
+import org.apache.log4j.Logger;
 
 /**
  * An extension to the ParallelSearchCommandExecutor that supports individual thread pools for each skin's different
@@ -35,7 +36,7 @@ import no.sesat.search.result.ResultList;
  * @version <tt>$Id$</tt>
  */
 final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor {
-
+    
     private static final Map<SearchConfiguration,ExecutorService> EXECUTORS 
             = new HashMap<SearchConfiguration,ExecutorService>();
     
@@ -58,11 +59,20 @@ final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor
                 final ThreadPoolExecutor executor = getExecutorService(command);
                 
                 if(command.isCancelled()){
+                    
+                    LOG.warn("\n");
+                    LOG.warn("FREEZING THREAD POOL EXECUTOR " + command.getSearchConfiguration());
+                    LOG.warn(" at " + executor.getActiveCount());
+                    LOG.warn("\n");
 
                     // we freeze thread pool at current size (excluding the just failed callable)
                     executor.setMaximumPoolSize(Math.max(1, executor.getActiveCount()));
 
                 }else if(Integer.MAX_VALUE > executor.getMaximumPoolSize()){
+                    
+                    LOG.warn("\n");
+                    LOG.warn("Restoring ThreadPoolExecutor " + command.getSearchConfiguration());
+                    LOG.warn("\n");
 
                     // command was successful unfreeze thread pool
                     executor.setMaximumPoolSize(Integer.MAX_VALUE);
