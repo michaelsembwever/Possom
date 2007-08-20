@@ -103,7 +103,8 @@ final class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor 
             
     static class DebugThreadPoolExecutor extends ThreadPoolExecutor{
         
-        final Collection<Runnable> EXECUTING = new ConcurrentSkipListSet<Runnable>();
+        //final Collection<Runnable> EXECUTING = new ConcurrentSkipListSet<Runnable>(); // jdk1.6
+        final Collection<Runnable> EXECUTING = new Vector<Runnable>();
         
         DebugThreadPoolExecutor(int corePoolSize,
                               int maximumPoolSize,
