@@ -31,6 +31,8 @@ import org.apache.log4j.Logger;
  * An extension to the ParallelSearchCommandExecutor that supports individual thread pools for each skin's different
  *  commands.
  * Since each command's SearchConfiguration is a singleton (against the given the skin, mode, and id).
+ * 
+ * Any SearchCommand that misbehaves has it's corresponding pool frozen to the active number of threads.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
