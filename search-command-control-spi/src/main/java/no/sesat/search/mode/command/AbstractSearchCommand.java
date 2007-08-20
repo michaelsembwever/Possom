@@ -250,7 +250,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         if (!completed) {
             LOG.error(ERR_HANDLING_CANCELLATION
                     + getSearchConfiguration().getName()
-                    + " [" + getClass().getSimpleName() + "]");
+                    + " [" + getClass().getSimpleName() + ']');
 
             if (null != thread) {
                 thread.interrupt();
@@ -259,6 +259,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             performResultHandling(new BasicResultList<ResultItem>());
         }
         return !completed;
+    }
+    
+    public synchronized boolean isCancelled(){
+        return null == thread && !completed;
     }
 
     // AbstractReflectionVisitor overrides ----------------------------------------------

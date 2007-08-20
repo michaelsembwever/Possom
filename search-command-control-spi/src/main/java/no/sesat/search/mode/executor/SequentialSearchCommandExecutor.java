@@ -8,8 +8,10 @@
  */
 package no.sesat.search.mode.executor;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import no.sesat.search.mode.command.SearchCommand;
 
 /**
  * A simple SearchCommandExecutor that executes the tasks sequentially
@@ -17,11 +19,17 @@ import java.util.concurrent.Executors;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class SequentialSearchCommandExecutor extends AbstractSearchCommandExecutor {
+final class SequentialSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    
+    public SequentialSearchCommandExecutor(){}
 
-    protected ExecutorService getExecutorService() {
+    protected ExecutorService getExecutorService(final SearchCommand command) {
         return EXECUTOR;
+    }
+    
+    protected List<ExecutorService> getExecutorServices() {
+        return null;
     }
 }

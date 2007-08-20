@@ -10,9 +10,12 @@ package no.sesat.search.mode.executor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import org.apache.log4j.Logger;
@@ -46,19 +49,39 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     // Public --------------------------------------------------------
 
 
-    public Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> invokeAll(
-            Collection<Callable<ResultList<? extends ResultItem>>> callables, 
-            int timeoutInMillis) throws InterruptedException  {
+    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+            final Collection<SearchCommand> callables) throws InterruptedException  {
 
         LOG.debug(DEBUG_INVOKEALL + getClass().getSimpleName());
         
-        final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results 
-                = new HashMap<Future<ResultList<?>>,Callable<ResultList<?>>>(); 
+        final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results 
+                = new HashMap<Future<ResultList<?>>,SearchCommand>(); 
         
-        final ExecutorService es = getExecutorService();
-                
-        for (Callable<ResultList<?>> c : callables) {
+        for (SearchCommand c : callables) {
+            
+            final ExecutorService es = getExecutorService(c);
             results.put(es.submit(c), c);
+        }
+
+        return results;
+    }
+    
+    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitForAll(
+            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
+            final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException{
+        
+        // Give the commands a chance to finish its work
+        //  Note the current time and subtract any elapsed time from the timeout value
+        //   (as the timeout value is intended overall and not for each).
+        final long invokedAt = System.currentTimeMillis();
+        for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
+
+            task.get(timeoutInMillis - (System.currentTimeMillis() - invokedAt), TimeUnit.MILLISECONDS);
+        }
+        
+        // Ensure any cancellations are properly handled
+        for(SearchCommand command : results.values()){
+            command.handleCancellation();
         }
         
         return results;
@@ -67,9 +90,13 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     public void stop() {
         
         LOG.warn("Shutting down thread pool");
-        getExecutorService().shutdownNow();
+        for(ExecutorService service : getExecutorServices()){
+            service.shutdownNow();
+        }
     }
 
-    protected abstract ExecutorService getExecutorService();
+    protected abstract ExecutorService getExecutorService(SearchCommand searchCommand);
+    
+    protected abstract Collection<ExecutorService> getExecutorServices();
 
 }

@@ -9,8 +9,10 @@ package no.sesat.search.mode.executor;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
@@ -36,8 +38,11 @@ public interface SearchCommandExecutor {
      * @return the list of Futures holding the results.
      * @throws InterruptedException
      */
-    Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> invokeAll(
-            Collection<Callable<ResultList<? extends ResultItem>>> callables, 
-            int timeoutInMillis) throws InterruptedException;
+    Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+            Collection<SearchCommand> callables) throws InterruptedException;
+    
+    Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitForAll(
+            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
+            final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException;
 
 }

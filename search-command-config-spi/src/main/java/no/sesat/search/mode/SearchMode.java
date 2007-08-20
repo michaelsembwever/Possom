@@ -41,9 +41,8 @@ public final class SearchMode implements Serializable {
         /**
          *
          */
-        @Controller("ParallelSearchCommandExecutor")
+        @Controller("ThrottledSearchCommandExecutor")
         PARALLEL;
-
         /**
          *
          */

@@ -15,16 +15,11 @@ package no.sesat.search.mode.command;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import no.sesat.search.mode.SearchCommandFactory;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.executor.SearchCommandExecutorFactory;
-import no.sesat.search.result.ResultItem;
 import no.sesat.search.run.RunningQuery;
-import no.sesat.search.result.ResultList;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
@@ -126,8 +121,8 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
         rqCxt.getDataModel().getJunkYard().getValues().put("query", rq);
 
-        final Collection<Callable<ResultList<? extends ResultItem>>> commands 
-                = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
+        final Collection<SearchCommand> commands 
+                = new ArrayList<SearchCommand>();
 
         final SearchCommandFactory.Context commandFactoryContext = new SearchCommandFactory.Context() {
             public Site getSite() {
@@ -154,8 +149,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         }
         try{
 
-            SearchCommandExecutorFactory.getController(rqCxt.getSearchMode().getExecutor())
-                    .invokeAll(commands, Integer.MAX_VALUE);
+            SearchCommandExecutorFactory.getController(rqCxt.getSearchMode().getExecutor()).invokeAll(commands);
             
         } catch (InterruptedException ex) {
             throw new AssertionError(ex);

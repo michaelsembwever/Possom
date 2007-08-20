@@ -208,6 +208,7 @@ public class CommandConfig implements SearchConfiguration {
     }
 
     /** {@inheritDoc} **/
+    @Override
     public String toString(){
         return getClass().getSimpleName() + " [" + name + "]";
     }

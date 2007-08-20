@@ -97,4 +97,8 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
     public boolean handleCancellation() {
         return false;
     }
+    
+    public boolean isCancelled(){
+        return false;
+    }
 }

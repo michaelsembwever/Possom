@@ -43,4 +43,7 @@ public interface SearchCommand extends Callable<ResultList<? extends ResultItem>
      * @return if cleaning was actually performed
      **/
     boolean handleCancellation();
+    
+    boolean isCancelled();
+    
 }

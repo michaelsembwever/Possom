@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +42,7 @@ import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.SearchCommandFactory;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.SearchMode;
+import no.sesat.search.mode.executor.SearchCommandExecutor;
 import no.sesat.search.mode.executor.SearchCommandExecutorFactory;
 import no.sesat.search.query.parser.AbstractQueryParserContext;
 import no.sesat.search.query.Query;
@@ -233,8 +233,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_CONSTRUCTION);
 
-            final Collection<Callable<ResultList<? extends ResultItem>>> commands
-                    = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
+            final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
 
             final boolean isRss = parameters.get(PARAM_OUTPUT) != null 
                     && parameters.get(PARAM_OUTPUT).getString().equals("rss");
@@ -358,28 +357,23 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
+            
+            Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = null;
 
-            final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results =
-                    SearchCommandExecutorFactory
-                    .getController(context.getSearchMode().getExecutor())
-                    .invokeAll(commands, TIMEOUT);
+            try{
+                
+                final SearchCommandExecutor executor = SearchCommandExecutorFactory
+                    .getController(context.getSearchMode().getExecutor());  
+                
+                results = executor.waitForAll(executor.invokeAll(commands), TIMEOUT);
 
-            // Give the commands a chance to finish its work
-            //  Note the current time and subtract any elapsed time from the timeout value
-            //   (as the timeout value is intended overall and not for each).
-            final long invokedAt = System.currentTimeMillis();
-            for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
-                try{
-                    task.get(TIMEOUT - (System.currentTimeMillis() - invokedAt), TimeUnit.MILLISECONDS);
-
-                }catch(TimeoutException te){
-                    LOG.error(ERR_COMMAND_TIMEOUT + task);
-                }
+            }catch(TimeoutException te){
+                LOG.error(ERR_COMMAND_TIMEOUT + te.getMessage());
             }
 
-            // Ensure any cancellations are properly handled
-            for(Callable<ResultList<? extends ResultItem>> command : commands){
-                allCancelled &= ((SearchCommand)command).handleCancellation();
+            // Check that we have atleast one valid execution
+            for(SearchCommand command : commands){
+                allCancelled &= command.isCancelled();
             }
 
             // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
@@ -399,8 +393,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if (searchResult != null) {
 
                                 // Information we need about and for the enrichment
-                                final SearchConfiguration config
-                                        = ((SearchCommand)results.get(task)).getSearchConfiguration();
+                                final SearchConfiguration config = results.get(task).getSearchConfiguration();
 
                                 final String name = config.getName();
                                 final SearchTab.EnrichmentHint eHint

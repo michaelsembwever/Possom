@@ -8,10 +8,12 @@
 package no.sesat.search.mode.executor;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,6 +21,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
@@ -28,7 +31,7 @@ import no.sesat.search.result.ResultList;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
+final class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
             // Alternative to find memory leakages
@@ -45,39 +48,42 @@ public final class ParallelSearchCommandExecutor extends AbstractSearchCommandEx
     }
     
     @Override
-    public Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> invokeAll(
-            Collection<Callable<ResultList<? extends ResultItem>>> callables, 
-            int timeoutInMillis) throws InterruptedException  {
+    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+            Collection<SearchCommand> callables) throws InterruptedException  {
 
         
-        if(LOG.isDebugEnabled() && getExecutorService() instanceof ThreadPoolExecutor){
-            
-            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)getExecutorService();
-            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
-            
-            if(tpe instanceof ParallelSearchCommandExecutor.DebugThreadPoolExecutor){
-                
-                final ParallelSearchCommandExecutor.DebugThreadPoolExecutor dtpe 
-                        = (ParallelSearchCommandExecutor.DebugThreadPoolExecutor)tpe;
-                
-                LOG.debug("Still executing...");
-                
-                synchronized( dtpe.EXECUTING ){
-                    for(Runnable r : dtpe.EXECUTING){
-                        try {
-                            LOG.debug(" " + ((FutureTask)r).get());
-                            
-                        } catch (InterruptedException ex) {
-                            LOG.debug(ex);
-                        } catch (ExecutionException ex) {
-                            LOG.debug(ex);
+        if(LOG.isDebugEnabled()){
+            for(SearchCommand command : callables){
+                if( getExecutorService(command) instanceof ThreadPoolExecutor){
+
+                    final ThreadPoolExecutor tpe = (ThreadPoolExecutor)getExecutorService(command);
+                    LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+
+                    if(tpe instanceof ParallelSearchCommandExecutor.DebugThreadPoolExecutor){
+
+                        final ParallelSearchCommandExecutor.DebugThreadPoolExecutor dtpe 
+                                = (ParallelSearchCommandExecutor.DebugThreadPoolExecutor)tpe;
+
+                        LOG.debug("Still executing...");
+
+                        synchronized( dtpe.EXECUTING ){
+                            for(Runnable r : dtpe.EXECUTING){
+                                try {
+                                    LOG.debug(" " + ((FutureTask)r).get());
+
+                                } catch (InterruptedException ex) {
+                                    LOG.debug(ex);
+                                } catch (ExecutionException ex) {
+                                    LOG.debug(ex);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
         
-        return super.invokeAll(callables, timeoutInMillis);
+        return super.invokeAll(callables);
     }    
 
     /**
@@ -85,13 +91,19 @@ public final class ParallelSearchCommandExecutor extends AbstractSearchCommandEx
      * @return 
      */
     @Override
-    protected ExecutorService getExecutorService(){
+    protected ExecutorService getExecutorService(final SearchCommand command){
         return EXECUTOR;
     }
     
+    @Override
+    protected Collection<ExecutorService> getExecutorServices(){
+        
+        return null;
+    }
+            
     static class DebugThreadPoolExecutor extends ThreadPoolExecutor{
         
-        final Vector<Runnable> EXECUTING = new Vector<Runnable>();
+        final Collection<Runnable> EXECUTING = new ConcurrentSkipListSet<Runnable>();
         
         DebugThreadPoolExecutor(int corePoolSize,
                               int maximumPoolSize,
@@ -102,12 +114,14 @@ public final class ParallelSearchCommandExecutor extends AbstractSearchCommandEx
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         }
         
+        @Override
         protected void beforeExecute(final Thread t, final Runnable r) {
             super.beforeExecute(t, r);
             
             EXECUTING.add(r);
         }
 
+        @Override
         protected void afterExecute(final Runnable r, final Throwable t) {
             super.afterExecute(r, t);
             
