@@ -1,9 +1,8 @@
 /* Copyright (2006-2007) Schibsted Søk AS
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
- * You should have received a copy of the SESAT License along with this program.  
+ * You should have received a copy of the SESAT License along with this program.
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
-
  *
  * DataModelFilter.java
  *
@@ -125,11 +124,11 @@ public final class DataModelFilter implements Filter {
                 final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
                 datamodel.setParameters(parametersDO);
-                
+
                 if(null == datamodel.getSite() || !datamodel.getSite().getSite().equals(site)){
                     datamodel.setSite(getSiteDO(request, factory));
                 }
-                
+
                 // DataModel's ControlLevel will be REQUEST_CONSTRUCTION (from getDataModel(..))
                 //  Increment it onwards to VIEW_CONSTRUCTION.
                 // SearchServlet will assign it back to REQUEST_CONSTRUCTION if neccessary.
@@ -222,7 +221,7 @@ public final class DataModelFilter implements Filter {
     }
 
     private static SiteDataObject getSiteDO(final ServletRequest request, final DataModelFactory factory) {
-        
+
         final Site site = (Site) request.getAttribute(Site.NAME_KEY);
         final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
 
@@ -237,7 +236,7 @@ public final class DataModelFilter implements Filter {
             final DataModelFactory factory,
             final HttpServletRequest request){
 
-        // XXX Note that we do not support String[] parameter values! this is different to pre SESAT days
+        // Note that we do not support String[] parameter values! this is different to pre SESAT days
         final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
         for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
             final String key = e.nextElement();
@@ -245,7 +244,7 @@ public final class DataModelFilter implements Filter {
                 StringDataObject.class,
                 new DataObject.Property("string", getParameterSafely(request, key))));
         }
-        
+
         /* Adding cookie myChannels to parameters.
          * TODO: add generic handling of cookies, or make it part of User initailization.
          */
@@ -271,43 +270,44 @@ public final class DataModelFilter implements Filter {
 
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
-        
+
         for(String key : datamodel.getJunkYard().getValues().keySet()){
             datamodel.getJunkYard().setValue(key, null);
         }
-        
+
         /* Moving this into SearchServlet so the results can be accessed in later requests */
-        
+
         //for(String key : datamodel.getSearches().keySet()){
         //    datamodel.setSearch(key, null);
         //}
         //datamodel.setParameters(null);
         //datamodel.setQuery(null);
-       
+
         assert isSerializable(datamodel) : "Datamodel is not serializable!";
         factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
     }
 
     private static boolean isSerializable(final DataModel datamodel) {
+
         boolean retval = false;
-        
+
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream os = new ObjectOutputStream(baos);
-        
+
             LOG.info("Serializing datamodel");
             os.writeObject(datamodel);
             retval = true;
-            
+
         } catch (NotSerializableException e) {
             LOG.error("Failed to serialize datamodel: " + e);
         } catch (IOException e) {
             LOG.error("Failed to serialize datamodel:" + e);
         }
-        
+
         return retval;
     }
-    
+
     /** A safer way to get parameters for the query string.
      * Handles ISO-8859-1 and UTF-8 URL encodings.
      *
@@ -331,11 +331,11 @@ public final class DataModelFilter implements Filter {
                 break;
             }
         }
-        
+
         if (null != value && null != queryStringValue) {
 
             try {
-                
+
                 final String encodedReqValue = URLEncoder.encode(value, "UTF-8")
                         .replaceAll("[+]", "%20")
                         .replaceAll("[*]", "%2A");

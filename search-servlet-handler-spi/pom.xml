@@ -11,12 +11,12 @@
     <name>SESAT Search Servlet Transform SPI</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
-        Read https://dev.sesat.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
+        Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
     </description>
     <scm>
-        <connection>scm:svn:https://dev.sesat.no/svn/search-portal/trunk/search-servlet-transform-spi</connection>
-        <url>https://dev.sesat.no/svn/search-portal/sesam.no/trunk/search-servlet-transform-spi</url>
-        <developerConnection>scm:svn:https://dev.sesat.no/svn/search-portal/trunk/search-servlet-transform-spi</developerConnection>
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/search-servlet-transform-spi</connection>
+        <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/search-servlet-transform-spi</url>
+        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/search-servlet-transform-spi</developerConnection>
     </scm>
 
     <build>
