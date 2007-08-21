@@ -3,8 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
- */
-/*
+ *
  * SearchCommandFactory.java
  *
  * Created on January 5, 2006, 10:17 AM
@@ -38,19 +37,19 @@ public final class SearchCommandFactory {
 
     private final Context context;
 
-    /**
+    /** Create a factory to work within the given context.
      *
-     * @param context
+     * @param context to work within
      */
     public SearchCommandFactory(final Context context) {
         this.context = context;
     }
 
 
-    /** Create the appropriate command given the configuration inside the context.
+    /** Create the appropriate command that's to work within the given SearchCommand.Context.
      *
-     * @param cxt
-     * @return
+     * @param cxt to work within
+     * @return SearchCommand appropriate for the given context
      */
     public SearchCommand getController(final SearchCommand.Context cxt){
 
