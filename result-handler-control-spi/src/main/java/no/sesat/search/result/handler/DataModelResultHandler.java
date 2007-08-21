@@ -21,7 +21,6 @@ import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.mode.config.SearchConfiguration;
-import no.sesat.search.result.PagingDisplayHelper;
 import no.sesat.search.view.config.SearchTab;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
@@ -82,20 +81,6 @@ public final class DataModelResultHandler implements ResultHandler{
             throw new IllegalStateException(skfie.getMessage(), skfie);
         }
 
-// will be replaced with SEARCH-3159 - Replace PagingDisplayHelper
-//        // Paging helper
-//        PagingDisplayHelper pager = null;
-//        if (config.isPaging()) {
-//            pager = new PagingDisplayHelper(
-//                    cxt.getSearchResult().getHitCount(), 
-//                    tab.getPageSize(), 
-//                    tab.getPagingSize());
-//            final Object v = null != parameters.get("offset") ? parameters.get("offset") : "0";
-//            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
-//                    ? ((String[]) v)[0]
-//                    : (String) v));
-//        }
-        
         // friendly command-specific search string
         final String friendly = null != cxt.getDisplayQuery() && cxt.getDisplayQuery().length() > 0
                         ? cxt.getDisplayQuery()

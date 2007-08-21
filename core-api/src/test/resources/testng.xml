@@ -3,10 +3,6 @@
 <suite name="Search Engine Unit Tests" verbose="10" parallel="false">
     
     <test name="UnitTests" junit="true">
-        <classes>
-            <class name="no.sesat.search.util.test.PagingDisplayHelperUnitTest"/>
-        </classes>
-    
     </test>
    
 </suite>

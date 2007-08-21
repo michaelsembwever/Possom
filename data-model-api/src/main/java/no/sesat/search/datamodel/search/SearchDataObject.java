@@ -12,7 +12,6 @@ import static no.sesat.search.datamodel.access.ControlLevel.*;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
 import no.sesat.search.mode.config.SearchConfiguration;
-import no.sesat.search.result.PagingDisplayHelper;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
