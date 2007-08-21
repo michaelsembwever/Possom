@@ -84,7 +84,7 @@ public final class ResultPagingNavigationController
 
         public int getFirstVisiblePage() {
 
-            int firstPage = 0;
+            int firstPage;
             int n = (offset/pageSize);
             if (n > 5)
                 if ( ( getNumberOfPages() - getCurrentPage() ) < 5) {

@@ -7,14 +7,16 @@
 
 package no.sesat.search.view.navigation;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Set;
-
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import org.apache.log4j.Logger;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * All public methods require take a datamodel argument. This datamodel must in VIEW_CONSTRUCTION state.
@@ -41,13 +43,31 @@ public final class NavigationHelper {
      * @param value     the specific field you are using
      * @return a url fragemt to use
      */
+    public static String getUrlParameters(
+            final DataModel datamodel,
+            final String navigator,
+            final String value) {
+
+        final NavigationConfig.Nav navEntry = getConfig(datamodel).getNavMap().get(navigator);
+        return getUrlFragment(getUrlParameters(datamodel, navEntry, value, null));
+    }
+
     public static String getUrlFragment(
             final DataModel datamodel,
             final String navigator,
             final String value) {
 
         final NavigationConfig.Nav navEntry = getConfig(datamodel).getNavMap().get(navigator);
-        return getUrlFragment(datamodel, navEntry, value, null);
+        return getUrlFragment(getUrlParameters(datamodel, navEntry, value, null));
+    }
+
+    public static String getUrlFragment(
+            final DataModel datamodel,
+            final NavigationConfig.Nav navEntry,
+            final String value,
+            final String navigatorName) {
+
+        return getUrlFragment(getUrlParameters(datamodel, navEntry, value, navigatorName));
     }
 
     /**
@@ -56,47 +76,59 @@ public final class NavigationHelper {
      * @param navigatorName
      * @return
      */
-    public static String getUrlFragment(
+    public static Map<String, String> getUrlParameters(
             final DataModel datamodel,
             final NavigationConfig.Nav navEntry,
             final String value,
             final String navigatorName) {
 
-        final StringBuilder sb = new StringBuilder();
+        final Map<String, String> parameters = new HashMap<String, String>();
 
-        String tab = datamodel.getParameters().getValue("c").getUtf8UrlEncoded();
-
-        sb.append("c=").append(tab);
+        if (navEntry.getTab() != null) {
+            addParameter(parameters, "c", navEntry.getTab());
+        }
 
         if (!navEntry.isExcludeQuery()) {
-            addParameter(sb, "q", datamodel.getQuery().getUtf8UrlEncoded());
+            addParameter(parameters, "q", datamodel.getQuery().getUtf8UrlEncoded());
         }
         if (value != null && value.length() > 0) {
-            addParameter(sb, enc(navEntry.getField()), enc(value));
+            addParameter(parameters, enc(navEntry.getField()), enc(value));
             if (navEntry.isRealNavigator() && navigatorName != null) {
-                addParameter(sb, "nav_" + enc(navEntry.getId()), enc(navigatorName));
+                addParameter(parameters, "nav_" + enc(navEntry.getId()), enc(navigatorName));
             }
         }
         if (!navEntry.isOut()) {
-            addParentFragment(datamodel, sb, navEntry);
+            addParentFragment(datamodel, parameters, navEntry);
             for (NavigationConfig.Navigation navigation : getConfig(datamodel).getNavigationList()) {
                 if (navigation != navEntry.getNavigation()) {
-                    addNavigationFragments(datamodel, navigation, sb, navEntry);
+                    addNavigationFragments(datamodel, navigation, parameters, navEntry);
                 }
             }
         }
         for (String key : navEntry.getStaticParameters().keySet()) {
-            addFragment(sb, navEntry, key, navEntry.getStaticParameters().get(key));
+            addFragment(parameters, navEntry, key, navEntry.getStaticParameters().get(key));
         }
-        return sb.toString();
+
+        if (!parameters.containsKey("c")) {
+            addParameter(parameters, "c", datamodel.getParameters().getValue("c").getUtf8UrlEncoded());
+        }
+
+        return parameters;
     }
 
-    private static void addParameter(final StringBuilder sb, final String parameter, final String value) {
-        if (sb.length() > 0) {
-            sb.append("&amp;");
+    public static String getUrlFragment(final Map<String, String> parameters) {
+        final StringBuilder builder = new StringBuilder();
+
+        for (final String parameterName : parameters.keySet()) {
+            builder.append(parameterName).append("=").append(parameters.get(parameterName));
+            builder.append("&amp;");
         }
 
-        sb.append(parameter).append('=').append(value);
+        return builder.toString().substring(0, builder.lastIndexOf("&"));
+    }
+
+    private static void addParameter(final Map parameters, final String parameter, final String value) {
+        parameters.put(parameter, value);
     }
 
     public static NavigationConfig getConfig(final DataModel datamodel){
@@ -127,12 +159,12 @@ public final class NavigationHelper {
     private static void addNavigationFragments(
             final DataModel datamodel,
             final NavigationConfig.Navigation navigation,
-            final StringBuilder sb,
+            final Map parameters,
             final NavigationConfig.Nav navEntry) {
 
         final Set<String> fieldFilterSet = new HashSet<String>();
         for (NavigationConfig.Nav nav : navigation.getNavList()) {
-            addNavigationFragment(datamodel, fieldFilterSet, nav, sb, navEntry);
+            addNavigationFragment(datamodel, fieldFilterSet, nav, parameters, navEntry);
         }
     }
 
@@ -140,21 +172,23 @@ public final class NavigationHelper {
             final DataModel datamodel,
             final Set<String> fieldFilterSet,
             final NavigationConfig.Nav nav,
-            final StringBuilder sb,
+            final Map parameters,
             final NavigationConfig.Nav navEntry) {
 
         StringDataObject fieldValue = datamodel.getParameters().getValue(nav.getField());
         if (!fieldFilterSet.contains(nav.getField())) {
-            addPreviousField(datamodel, fieldValue, sb, navEntry, nav.getField());
+            if (! nav.isOut()) {
+                addPreviousField(datamodel, fieldValue, parameters, navEntry, nav.getField());
+            }
             fieldFilterSet.add(nav.getField());
             for (String staticKey : nav.getStaticParameters().keySet()) {
                 fieldValue = datamodel.getParameters().getValue(staticKey);
                 if (!fieldFilterSet.contains(staticKey)) {
-                    addPreviousField(datamodel, fieldValue, sb, navEntry, staticKey);
+                    addPreviousField(datamodel, fieldValue, parameters, navEntry, staticKey);
                 }
             }
             for (NavigationConfig.Nav childNav : nav.getChildNavs()) {
-                addNavigationFragment(datamodel, fieldFilterSet, childNav, sb, navEntry);
+                addNavigationFragment(datamodel, fieldFilterSet, childNav, parameters, navEntry);
             }
         }
     }
@@ -162,26 +196,26 @@ public final class NavigationHelper {
     private static void addPreviousField(
             final DataModel datamodel,
             StringDataObject fieldValue,
-            final StringBuilder sb,
+            final Map parameters,
             final NavigationConfig.Nav navEntry,
             final String fieldName) {
 
-        if (fieldValue != null && addFragment(sb, navEntry, fieldName, fieldValue.getString())) {
+        if (fieldValue != null && addFragment(parameters, navEntry, fieldName, fieldValue.getString())) {
             fieldValue = datamodel.getParameters().getValue("nav_" + fieldName);
             if (fieldValue != null) {
-                addFragment(sb, navEntry, "nav_" + fieldName, fieldValue.getString());
+                addFragment(parameters, navEntry, "nav_" + fieldName, fieldValue.getString());
             }
         }
     }
 
     private static boolean addFragment(
 
-            final StringBuilder sb,final NavigationConfig.Nav nav,
+            final Map parameters, final NavigationConfig.Nav nav,
             final String id,
             final String value) {
 
         if (!nav.getNavigation().getResetNavSet().contains(id)) {
-            addParameter(sb, enc(id), enc(value));
+            addParameter(parameters, enc(id), enc(value));
             return true;
         }
         return false;
@@ -189,14 +223,14 @@ public final class NavigationHelper {
 
     private static void addParentFragment(
             final DataModel datamodel,
-            final StringBuilder sb,
+            final Map parameters,
             final NavigationConfig.Nav navEntry) {
 
         NavigationConfig.Nav parentNav = navEntry.getParent();
         if (parentNav != null) {
             StringDataObject fieldValue = datamodel.getParameters().getValue(parentNav.getField());
-            addPreviousField(datamodel, fieldValue, sb, navEntry, parentNav.getField());
-            addParentFragment(datamodel, sb, parentNav);
+            addPreviousField(datamodel, fieldValue, parameters, navEntry, parentNav.getField());
+            addParentFragment(datamodel, parameters, parentNav);
         }
     }
 

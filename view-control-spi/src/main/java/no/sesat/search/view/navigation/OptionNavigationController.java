@@ -8,18 +8,19 @@
  */
 package no.sesat.search.view.navigation;
 
-import no.sesat.search.result.NavigationItem;
-import no.sesat.search.result.ResultItem;
-import no.sesat.search.result.ResultList;
-import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.generic.StringDataObjectSupport;
+import no.sesat.search.result.BasicNavigationItem;
+import no.sesat.search.result.NavigationItem;
+import no.sesat.search.result.ResultItem;
+import no.sesat.search.result.ResultList;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -121,9 +122,15 @@ public class OptionNavigationController
                 }
             }
             if (value != null) {
+                final Map<String, String> urlParameters = NavigationHelper.getUrlParameters(dataModel, config.getParent(), value, null);
+
+                if (option.getTab() != null) {
+                    urlParameters.put("c", option.getTab());
+                }
+
                 final NavigationItem navigator = new BasicNavigationItem(
                         option.getDisplayName(),
-                        NavigationHelper.getUrlFragment(dataModel, config.getParent(), value, null),
+                        NavigationHelper.getUrlFragment(urlParameters),
                         -1);
                 parentResult.addResult(navigator);
                 if (optionSelectedValue == null && isOptionDefaultSelected(searchResult, option)) {
