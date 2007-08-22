@@ -59,7 +59,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
+/** The base abstraction for Search Commands providing a large framework for commands to run against.
+ *                                                                                                          <br/><br/>
+ * While the SearchCommand interface defines basic execution behavour this abstraction defines:<ul>
+ * <li>delegation of the call method to the execute method so to provide a default implementation for handling
+ *      cancellations, thread renaming during execution, and avoidance of execution on blank queries,
+ * <li>internal visitor pattern to express the query string in the index's required manner,</li>
+ * <li>helper methods for the internal visitor pattern,</li>
+ * <li>delegation to the appropriate query to use (sometimes not the user's query),</li>
+ * <li>handling and control of the query transformations as defined in the commands config,</li>
+ * <li>handling and control of the result handlers as defined in the commands config,</li>
+ * <li>helper methods, beyond the query transformers, for filter (and advanced-filter) construction,</li>
+ * <li>basic implementation (visitor pattern) for constructing a user presentable version of the transformed query.</li>
+ * </ul>
+ *                                                                                                          <br/><br/>
+ * 
+ * <b>TODO</b> There is work planned to separate and encapsulate alot of this functionality into individual classes. 
+ *                   https://jira.sesam.no/jira/browse/SEARCH-2149                                            <br/><br/>
+ * 
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
  * @version <tt>$Id$</tt>
  */
