@@ -8,12 +8,14 @@
  */
 package no.sesat.search.view.navigation;
 
+import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.datamodel.search.SearchDataObject;
+import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
-import no.sesat.search.result.BasicNavigationItem;
-import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.site.config.TextMessages;
+
 
 /**
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
@@ -29,7 +31,14 @@ public final class ResultPagingNavigationController
     }
 
     public NavigationItem getNavigationItems(Context context) {
-        final ResultList<? extends ResultItem> searchResult = context.getDataModel().getSearch(config.getCommandName()).getResults();
+
+        final SearchDataObject search = context.getDataModel().getSearch(config.getCommandName());
+
+        if (search == null) {
+            throw new IllegalArgumentException("Could not find search result for command " + config.getCommandName());
+        }
+
+        final ResultList<? extends ResultItem> searchResult = search.getResults();
 
         final int hitCount = searchResult.getHitCount();
         final StringDataObject offsetString = context.getDataModel().getParameters().getValue("offset");
