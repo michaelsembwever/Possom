@@ -9,7 +9,7 @@
  * Created on 19 January 2006, 13:51
  */
 
-package no.schibstedsok.commons.resourcefeed;
+package no.sesat.commons.resourcefeed;
 
 
 import org.apache.log4j.Logger;
