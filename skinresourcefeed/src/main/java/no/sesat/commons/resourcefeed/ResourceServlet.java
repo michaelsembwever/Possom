@@ -22,13 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Arrays;
-import java.util.Iterator;
 
 /** Resource Provider.
  * Serves configuration files (properties, xml), css, gifs, jpgs, javascript,
@@ -57,6 +55,7 @@ public final class ResourceServlet extends HttpServlet {
 
     private long defaultLastModified = 0;
     private String[] ipaddressesAllowed = new String[]{};
+    private Set<String> paths;
 
     private ServletConfig servletConfig;
 
@@ -90,27 +89,28 @@ public final class ResourceServlet extends HttpServlet {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void init(final ServletConfig config) {
 
         this.servletConfig = config;
 
         defaultLastModified = System.currentTimeMillis();
-        LOG.info(DEBUG_DEFAULT_MODIFCATION_TIMESTAMP + defaultLastModified);
+        LOG.warn(DEBUG_DEFAULT_MODIFCATION_TIMESTAMP + defaultLastModified);
 
         final String allowed = config.getInitParameter("ipaddresses.allowed");
-        LOG.info("allowing ipaddresses " + allowed);
+        LOG.warn("allowing ipaddresses " + allowed);
         if (null != allowed && allowed.length() >0) {
             ipaddressesAllowed = allowed.split(",");
         }
 
         final String restricted = config.getInitParameter("resources.restricted");
-        LOG.info("restricted resources " + restricted);
+        LOG.warn("restricted resources " + restricted);
         if (null != restricted && restricted.length()>0) {
             RESTRICTED.addAll(Arrays.asList(restricted.split(",")));
         }
 
         final String paths = config.getInitParameter("content.paths");
-        LOG.info("content path mappings " + paths);
+        LOG.warn("content path mappings " + paths);
         if (null != paths && paths.length()>0) {
             final String[] pathArr = paths.split(",");
             for (String path : pathArr) {
@@ -118,6 +118,13 @@ public final class ResourceServlet extends HttpServlet {
                 CONTENT_PATHS.put(pair[0], pair[1]);
             }
         }
+        
+        this.paths = servletConfig.getServletContext().getResourcePaths("/WEB-INF/lib");
+        final StringBuilder sb = new StringBuilder("ResourcePaths are");
+        for(String s : this.paths){
+            sb.append(' ' + s);
+        }
+        LOG.warn(sb.toString());
     }
 
     /**
@@ -229,7 +236,8 @@ public final class ResourceServlet extends HttpServlet {
 
         try  {
             is = configName.endsWith(".jar")
-                    ? getJarStream(configName) : ResourceServlet.class.getResourceAsStream(configName);
+                    ? getJarStream(configName) 
+                    : ResourceServlet.class.getResourceAsStream(configName);
 
             if (is != null) {
 
@@ -270,26 +278,22 @@ public final class ResourceServlet extends HttpServlet {
         }
     }
 
-    private InputStream getJarStream(final String resource) {
-        final Set paths = servletConfig.getServletContext().getResourcePaths("/WEB-INF/lib");
-
+    private InputStream getJarStream(final String resource) throws IOException {
+        
         final String baseName = resource.replace(".jar", "").replace("/", "");
 
-        try {
-            for (final Iterator iterator = paths.iterator(); iterator.hasNext();) {
+        for (String path : paths) {
 
-                final String path = (String) iterator.next();
+            // Remove path, site name and version suffix.
+            final String jarName = path
+                    .substring(path.lastIndexOf('/') + 1)
+                    .replaceAll("-(\\d+\\.?)+(-SNAPSHOT)?.jar$", "")
+                    .replaceAll("^([\\p{Alnum}]+\\.?)+-", "");
 
-                // Remove path, site name and version suffix.
-                final String jarName = path.substring(path.lastIndexOf('/') + 1).replaceAll("-(\\d+\\.?)+(-SNAPSHOT)?.jar$", "").replaceAll("^([\\p{Alnum}]+\\.?)+-", "");
-
-                if (jarName.equals(baseName)) {
-                    final URL url = servletConfig.getServletContext().getResource(path);
-                    return url.openConnection().getInputStream();
-                }
+            if (jarName.equals(baseName)) {
+                LOG.warn("Loading jarfile " + path);
+                return servletConfig.getServletContext().getResource(path).openConnection().getInputStream();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
         return null;
