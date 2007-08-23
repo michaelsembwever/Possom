@@ -120,11 +120,10 @@ public final class ResourceServlet extends HttpServlet {
         }
         
         this.paths = servletConfig.getServletContext().getResourcePaths("/WEB-INF/lib");
-        final StringBuilder sb = new StringBuilder("ResourcePaths are");
+        LOG.warn("ResourcePaths are");
         for(String s : this.paths){
-            sb.append(' ' + s);
+            LOG.warn(' ' + s);
         }
-        LOG.warn(sb.toString());
     }
 
     /**
