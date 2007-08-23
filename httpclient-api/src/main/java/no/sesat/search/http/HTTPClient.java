@@ -414,7 +414,8 @@ public final class HTTPClient {
 
         protected URLConnection openConnection(final URL u) throws IOException {
 
-            URL url;
+            final URL url;
+            final String host;
 
             if ("jar".equals(u.getProtocol())) {
                 // Doesn't work with jar urls?
@@ -425,15 +426,17 @@ public final class HTTPClient {
                 url = new URL(
                         "jar:" 
                         + containedURL.toString().replace("://" + containedURL.getHost(), "://" + physicalHost));
+                host = containedURL.getHost();
+                
             } else {
                 url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
-
+                host = u.getHost();
             }
 
 
             final URLConnection connection = url.openConnection();
 
-            connection.addRequestProperty("host", u.getHost());
+            connection.addRequestProperty("host", host);
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
 
