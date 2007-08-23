@@ -282,7 +282,7 @@ public final class ResourceServlet extends HttpServlet {
     private InputStream getJarStream(final String resource) throws IOException {
         
         final String baseName = resource.replace(".jar", "").replace("/", "");
-        LOG.debug("getJarStream(" + resource + ") [baseName:" + baseName + ')');
+        LOG.debug("getJarStream(" + resource + ") [baseName:" + baseName + ']');
 
         for (String path : paths) {
 
