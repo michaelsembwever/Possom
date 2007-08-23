@@ -238,32 +238,30 @@ public final class DataModelFilter implements Filter {
 
         // Note that we do not support String[] parameter values! this is different to pre SESAT days
         final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
-        for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
+        
+        for(@SuppressWarnings("unchecked")
+                Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
+            
             final String key = e.nextElement();
             values.put(key, factory.instantiate(
                 StringDataObject.class,
                 new DataObject.Property("string", getParameterSafely(request, key))));
         }
 
-        /* Adding cookie myChannels to parameters.
-         * TODO: add generic handling of cookies, or make it part of User initailization.
-         */
+        // Adding all cookies into parameters.
         if (request.getCookies() != null) {
-            final String MY_CHANNELS_KEY = "myChannels";
             for (Cookie cookie : request.getCookies()) {
-                if (MY_CHANNELS_KEY.equals(cookie.getName())) {
-                    values.put(MY_CHANNELS_KEY, factory.instantiate(
-                            StringDataObject.class,
-                            new DataObject.Property("string", cookie.getValue())));
-                }
+                values.put(cookie.getName(), factory.instantiate(
+                        StringDataObject.class,
+                        new DataObject.Property("string", cookie.getValue())));
             }
         }
+        
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
                 new DataObject.Property("contextPath", request.getContextPath()),
                 new DataObject.Property("uniqueId", SiteLocatorFilter.getRequestId(request)));
-
 
         return parametersDO;
     }

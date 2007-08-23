@@ -49,6 +49,10 @@ public abstract class AbstractDirective extends Directive {
     protected String getArgument(final InternalContextAdapter context, final Node node, final int i){
         return node.jjtGetChild(i).value(context).toString();
     }
+    
+    protected Object getObjectArgument(final InternalContextAdapter context, final Node node, final int i){
+        return node.jjtGetChild(i).value(context);
+    }
 
     // Private -------------------------------------------------------
 

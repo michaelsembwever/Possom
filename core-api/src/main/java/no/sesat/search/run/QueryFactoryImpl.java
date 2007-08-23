@@ -90,15 +90,6 @@ public final class QueryFactoryImpl extends QueryFactory {
                         }
                     }
                 }
-            } else if ("t".equals(cParam) || "wt".equals(cParam)) {
-                final Cookie[] cookies = request.getCookies();
-                if (cookies != null) {
-                    for (Cookie cookie : cookies) {
-                        if ("myChannels".equals(cookie.getName())) {
-                            datamodel.getJunkYard().getValues().put("myChannels", cookie.getValue());
-                        }
-                    }
-                }
             }
         }
         return query;
