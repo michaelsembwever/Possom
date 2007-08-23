@@ -145,7 +145,7 @@
     
     <servlet>
         <servlet-name>Log</servlet-name>
-        <servlet-class>no.sesat.log4j.LoggingServlet</servlet-class>
+        <servlet-class>no.schibstedsok.log4j.LoggingServlet</servlet-class>
     </servlet>
 
     <servlet>
