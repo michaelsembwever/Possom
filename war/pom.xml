@@ -194,6 +194,12 @@
       </dependency>      
       
       <dependency>
+        <groupId>no.schibstedsok.alfa</groupId>
+        <artifactId>alfa-remote</artifactId>
+        <type>ejb-client</type>
+      </dependency>
+
+      <dependency>
         <groupId>urlrewrite</groupId>
         <artifactId>urlrewrite</artifactId>
         <type>jar</type>
