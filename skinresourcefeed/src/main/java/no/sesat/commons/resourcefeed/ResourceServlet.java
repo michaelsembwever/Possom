@@ -233,6 +233,7 @@ public final class ResourceServlet extends HttpServlet {
                 throws ServletException, IOException {
 
         InputStream is = null;
+        LOG.debug("serveResource(" + configName + ", request, response)");
 
         try  {
             is = configName.endsWith(".jar")
@@ -281,6 +282,7 @@ public final class ResourceServlet extends HttpServlet {
     private InputStream getJarStream(final String resource) throws IOException {
         
         final String baseName = resource.replace(".jar", "").replace("/", "");
+        LOG.debug("getJarStream(" + resource + ") [baseName:" + baseName + ')');
 
         for (String path : paths) {
 
@@ -289,7 +291,9 @@ public final class ResourceServlet extends HttpServlet {
                     .substring(path.lastIndexOf('/') + 1)
                     .replaceAll("-(\\d+\\.?)+(-SNAPSHOT)?.jar$", "")
                     .replaceAll("^([\\p{Alnum}]+\\.?)+-", "");
-
+            
+            LOG.debug("Checking against " + jarName);
+            
             if (jarName.equals(baseName)) {
                 LOG.warn("Loading jarfile " + path);
                 return servletConfig.getServletContext().getResource(path).openConnection().getInputStream();
