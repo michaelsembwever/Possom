@@ -1,7 +1,7 @@
 /* Copyright (2005-2007) Schibsted Søk AS
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
- * You should have received a copy of the SESAT License along with this program.  
+ * You should have received a copy of the SESAT License along with this program.
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
  *
  * UrlResourceLoader.java
@@ -89,7 +89,11 @@ public class UrlResourceLoader extends AbstractResourceLoader {
      * @param resource the class to load bytecode for.
      * @return a bytecode loader for resource.
      */
-    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource, final String jar) {
+    public static BytecodeLoader newBytecodeLoader(
+            final SiteContext siteCxt,
+            final String resource,
+            final String jar) {
+
         final BytecodeLoader bcLoader = new UrlResourceLoader(siteCxt);
         bcLoader.initBytecodeLoader(resource, jar);
         return bcLoader;
@@ -208,6 +212,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return resource.substring(7,resource.indexOf('/',8));
     }
 
+    @Override
     protected final String readResourceDebug(final URL url){
 
         return "Read Configuration from " + url;
