@@ -7,6 +7,7 @@
  */
 package no.sesat.search.http;
 
+import java.util.jar.JarFile;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -17,8 +18,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -27,6 +31,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.JarURLConnection;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -34,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import sun.net.www.protocol.jar.URLJarFile;
 
 /**
  * Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
@@ -422,11 +430,73 @@ public final class HTTPClient {
                 // url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
 
                 final URL containedURL = new URL(u.getFile());
-
-                url = new URL(
-                        "jar:" 
-                        + containedURL.toString().replace("://" + containedURL.getHost(), "://" + physicalHost));
+                final String innerPath = containedURL.toString()
+                        .replace("://" + containedURL.getHost(), "://" + physicalHost);
+                
+                url = new URL("jar:" + innerPath);
                 host = containedURL.getHost();
+                // maybe this gets cached?
+                final URLConnection c = new URL(innerPath).openConnection();
+                c.addRequestProperty("host", host);
+                c.getContentLength();
+                
+//                URLJarFile.setCallBack(
+//                        new sun.net.www.protocol.jar.URLJarFileCallBack(){
+//                            private int BUF_SIZE = 2048;
+//                            @SuppressWarnings("unchecked")
+//                            public JarFile retrieve(URL url) throws IOException {
+//                                // next to verbose copy from URLJarFile
+//                                JarFile result = null;
+//        
+//                                /* get the stream before asserting privileges */
+//                                final URLConnection connection = url.openConnection();
+//                                connection.addRequestProperty("host", host);
+//            
+//                                connection.setConnectTimeout(CONNECT_TIMEOUT);
+//                                connection.setReadTimeout(READ_TIMEOUT);
+//                                final InputStream in =  connection.getInputStream();
+//
+//                                try { 
+//                                    result = (JarFile)
+//                                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
+//                                        public Object run() throws IOException {
+//                                            OutputStream     out = null;
+//                                            File tmpFile = null;
+//                                            try {
+//                                                tmpFile = File.createTempFile("jar_cache", null);
+//                                                tmpFile.deleteOnExit();
+//                                                out  = new FileOutputStream(tmpFile);
+//                                                int read = 0;
+//                                                byte[] buf = new byte[BUF_SIZE];
+//                                                while ((read = in.read(buf)) != -1) {
+//                                                    out.write(buf, 0, read);
+//                                                }
+//                                                out.close();
+//                                                out = null;
+//                                                return new URLJarFile(tmpFile);
+//                                                
+//                                            } catch (IOException e) {
+//                                                if (tmpFile != null) {
+//                                                    tmpFile.delete();
+//                                                }
+//                                                throw e;
+//                                            } finally {
+//                                                if (in != null) {
+//                                                    in.close();
+//                                                }
+//                                                if (out != null) {
+//                                                    out.close();
+//                                                }
+//                                            }
+//                                        }
+//                                    });
+//                                } catch (PrivilegedActionException pae) {
+//                                    throw (IOException) pae.getException();
+//                                }
+//
+//                                return result;
+//                            }
+//                });
                 
             } else {
                 url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
@@ -436,12 +506,15 @@ public final class HTTPClient {
 
             final URLConnection connection = url.openConnection();
 
+            // the following won't work because jars are loaded with a new openConnection call 
+            //  against the underlying http url
             connection.addRequestProperty("host", host);
+            
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
 
             if (LOG.isTraceEnabled()) {
-                LOG.trace(MessageFormat.format(DEBUG_USING_URL, url, u.getHost()));
+                LOG.trace(MessageFormat.format(DEBUG_USING_URL, url, host));
             }
 
             return connection;
