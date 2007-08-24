@@ -435,8 +435,10 @@ public final class HTTPClient {
                 
                 url = new URL("jar:" + innerPath);
                 host = containedURL.getHost();
+                
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
                 // maybe this gets cached?
-                final URLConnection c = new URL(innerPath).openConnection();
+                final URLConnection c = new URL(innerPath.substring(0, innerPath.lastIndexOf('!'))).openConnection();
                 c.addRequestProperty("host", host);
                 c.getContentLength();
                 
