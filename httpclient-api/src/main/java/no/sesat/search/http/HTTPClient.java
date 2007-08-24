@@ -436,69 +436,69 @@ public final class HTTPClient {
                 url = new URL("jar:" + innerPath);
                 host = containedURL.getHost();
                 
-                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
-                // maybe this gets cached?
-                final URLConnection c = new URL(innerPath.substring(0, innerPath.lastIndexOf('!'))).openConnection();
-                c.addRequestProperty("host", host);
-                c.getContentLength();
-                
-//                URLJarFile.setCallBack(
-//                        new sun.net.www.protocol.jar.URLJarFileCallBack(){
-//                            private int BUF_SIZE = 2048;
-//                            @SuppressWarnings("unchecked")
-//                            public JarFile retrieve(URL url) throws IOException {
-//                                // next to verbose copy from URLJarFile
-//                                JarFile result = null;
-//        
-//                                /* get the stream before asserting privileges */
-//                                final URLConnection connection = url.openConnection();
-//                                connection.addRequestProperty("host", host);
-//            
-//                                connection.setConnectTimeout(CONNECT_TIMEOUT);
-//                                connection.setReadTimeout(READ_TIMEOUT);
-//                                final InputStream in =  connection.getInputStream();
-//
-//                                try { 
-//                                    result = (JarFile)
-//                                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
-//                                        public Object run() throws IOException {
-//                                            OutputStream     out = null;
-//                                            File tmpFile = null;
-//                                            try {
-//                                                tmpFile = File.createTempFile("jar_cache", null);
-//                                                tmpFile.deleteOnExit();
-//                                                out  = new FileOutputStream(tmpFile);
-//                                                int read = 0;
-//                                                byte[] buf = new byte[BUF_SIZE];
-//                                                while ((read = in.read(buf)) != -1) {
-//                                                    out.write(buf, 0, read);
-//                                                }
-//                                                out.close();
-//                                                out = null;
-//                                                return new URLJarFile(tmpFile);
-//                                                
-//                                            } catch (IOException e) {
-//                                                if (tmpFile != null) {
-//                                                    tmpFile.delete();
-//                                                }
-//                                                throw e;
-//                                            } finally {
-//                                                if (in != null) {
-//                                                    in.close();
-//                                                }
-//                                                if (out != null) {
-//                                                    out.close();
-//                                                }
-//                                            }
-//                                        }
-//                                    });
-//                                } catch (PrivilegedActionException pae) {
-//                                    throw (IOException) pae.getException();
-//                                }
-//
-//                                return result;
-//                            }
-//                });
+                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774                
+                // XXX !!Danger!! Not at all synchronized! 
+                //    Makes a new callback only applicable to this url, required that callbacks are not overlapped :-/
+                URLJarFile.setCallBack(
+                        new sun.net.www.protocol.jar.URLJarFileCallBack(){
+                            private int BUF_SIZE = 2048;
+                            @SuppressWarnings("unchecked")
+                            public JarFile retrieve(final URL url) throws IOException {
+                                
+                                // next to verbose copy from URLJarFile
+                                JarFile result = null;
+        
+                                /* get the stream before asserting privileges */
+                                final URLConnection connection = url.openConnection();
+                                
+                                connection.addRequestProperty("host", host);
+                                connection.setConnectTimeout(CONNECT_TIMEOUT);
+                                connection.setReadTimeout(READ_TIMEOUT);
+                                
+                                final InputStream in =  connection.getInputStream();
+
+                                try { 
+                                    result = (JarFile)
+                                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                                        public Object run() throws IOException {
+                                            OutputStream     out = null;
+                                            File tmpFile = null;
+                                            try {
+                                                tmpFile = File.createTempFile("jar_cache", null);
+                                                tmpFile.deleteOnExit();
+                                                out  = new FileOutputStream(tmpFile);
+                                                int read = 0;
+                                                byte[] buf = new byte[BUF_SIZE];
+                                                while ((read = in.read(buf)) != -1) {
+                                                    out.write(buf, 0, read);
+                                                }
+                                                out.close();
+                                                out = null;
+                                                return new URLJarFile(tmpFile);
+                                                
+                                            } catch (IOException e) {
+                                                if (tmpFile != null) {
+                                                    tmpFile.delete();
+                                                }
+                                                throw e;
+                                            } finally {
+                                                if (in != null) {
+                                                    in.close();
+                                                }
+                                                if (out != null) {
+                                                    out.close();
+                                                }
+                                            }
+                                        }
+                                    });
+                                } catch (PrivilegedActionException pae) {
+                                    throw (IOException) pae.getException();
+                                }
+                                URLJarFile.setCallBack(null);
+
+                                return result;
+                            }
+                });
                 
             } else {
                 url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
