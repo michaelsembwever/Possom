@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import sun.net.www.protocol.jar.URLJarFile;
+import sun.net.www.protocol.jar.URLJarFileCallBack;
 
 /**
  * Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
@@ -422,7 +423,8 @@ public final class HTTPClient {
 
         protected URLConnection openConnection(final URL u) throws IOException {
 
-            final URL url;
+            URL url;
+            final URLConnection connection;
             final String host;
 
             if ("jar".equals(u.getProtocol())) {
@@ -436,78 +438,26 @@ public final class HTTPClient {
                 url = new URL("jar:" + innerPath);
                 host = containedURL.getHost();
                 
-                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774                
+                // HACK around http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774                
                 // XXX !!Danger!! Not at all synchronized! 
-                //    Makes a new callback only applicable to this url, required that callbacks are not overlapped :-/
-                URLJarFile.setCallBack(
-                        new sun.net.www.protocol.jar.URLJarFileCallBack(){
-                            private int BUF_SIZE = 2048;
-                            @SuppressWarnings("unchecked")
-                            public JarFile retrieve(final URL url) throws IOException {
-                                
-                                // next to verbose copy from URLJarFile
-                                JarFile result = null;
-        
-                                /* get the stream before asserting privileges */
-                                final URLConnection connection = url.openConnection();
-                                
-                                connection.addRequestProperty("host", host);
-                                connection.setConnectTimeout(CONNECT_TIMEOUT);
-                                connection.setReadTimeout(READ_TIMEOUT);
-                                
-                                final InputStream in =  connection.getInputStream();
+                //    Makes a new callback only applicable to this url, 
+                //       required that callbacks are not overlapped or repeated!!
+                URLJarFile.setCallBack(new URLJarFileCallBackImpl(host));
+                // EndOfHACK
+                
+                // HACK Third solution. Use own URLStreamHandler
+                connection = url.openConnection();
 
-                                try { 
-                                    result = (JarFile)
-                                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                                        public Object run() throws IOException {
-                                            OutputStream     out = null;
-                                            File tmpFile = null;
-                                            try {
-                                                tmpFile = File.createTempFile("jar_cache", null);
-                                                tmpFile.deleteOnExit();
-                                                out  = new FileOutputStream(tmpFile);
-                                                int read = 0;
-                                                byte[] buf = new byte[BUF_SIZE];
-                                                while ((read = in.read(buf)) != -1) {
-                                                    out.write(buf, 0, read);
-                                                }
-                                                out.close();
-                                                out = null;
-                                                return new URLJarFile(tmpFile);
-                                                
-                                            } catch (IOException e) {
-                                                if (tmpFile != null) {
-                                                    tmpFile.delete();
-                                                }
-                                                throw e;
-                                            } finally {
-                                                if (in != null) {
-                                                    in.close();
-                                                }
-                                                if (out != null) {
-                                                    out.close();
-                                                }
-                                            }
-                                        }
-                                    });
-                                } catch (PrivilegedActionException pae) {
-                                    throw (IOException) pae.getException();
-                                }
-                                URLJarFile.setCallBack(null);
-
-                                return result;
-                            }
-                });
+                // EndOfHACK
                 
             } else {
                 url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
                 host = u.getHost();
+                connection = url.openConnection();
             }
 
 
-            final URLConnection connection = url.openConnection();
-
+            
             // the following won't work because jars are loaded with a new openConnection call 
             //  against the underlying http url
             connection.addRequestProperty("host", host);
@@ -520,6 +470,77 @@ public final class HTTPClient {
             }
 
             return connection;
+        }
+        
+        /**
+         * HACK around http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774 
+         * XXX !!Danger!! Not at all synchronized!
+         * Makes a new callback only applicable to this url, required that callbacks are not overlapped or repeated!!
+         **/
+        private class URLJarFileCallBackImpl implements URLJarFileCallBack {
+            private final String host;
+
+            private URLJarFileCallBackImpl(String host) {
+                this.host = host;
+            }
+
+            private int BUF_SIZE = 2048;
+
+            @SuppressWarnings(value = "unchecked")
+            public JarFile retrieve(final URL url) throws IOException {
+
+                // next to verbose copy from URLJarFile
+                JarFile result = null;
+
+                /* get the stream before asserting privileges */
+                final URLConnection connection = url.openConnection();
+
+                connection.addRequestProperty("host", host);
+                connection.setConnectTimeout(CONNECT_TIMEOUT);
+                connection.setReadTimeout(READ_TIMEOUT);
+
+                final InputStream in = connection.getInputStream();
+
+                try {
+                    result = (JarFile) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                        public Object run() throws IOException {
+                            OutputStream     out = null;
+                            File tmpFile = null;
+                            try {
+                                tmpFile = File.createTempFile("jar_cache", null);
+                                tmpFile.deleteOnExit();
+                                out  = new FileOutputStream(tmpFile);
+                                int read = 0;
+                                byte[] buf = new byte[BUF_SIZE];
+                                while ((read = in.read(buf)) != -1) {
+                                    out.write(buf, 0, read);
+                                }
+                                out.close();
+                                out = null;
+                                return new URLJarFile(tmpFile);
+
+                            } catch (IOException e) {
+                                if (tmpFile != null) {
+                                    tmpFile.delete();
+                                }
+                                throw e;
+                            } finally {
+                                if (in != null) {
+                                    in.close();
+                                }
+                                if (out != null) {
+                                    out.close();
+                                }
+                            }
+                        }
+                    });
+                }catch (PrivilegedActionException pae) {
+                    throw (IOException) pae.getException();
+                }
+                //URLJarFile.setCallBack(null);
+
+                return result;
+            }
         }
     }
 
