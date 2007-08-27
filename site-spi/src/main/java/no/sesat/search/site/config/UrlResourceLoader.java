@@ -111,9 +111,10 @@ public class UrlResourceLoader extends AbstractResourceLoader {
             boolean updatedCache = false;
             try {
 
-                LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + url + " is " + success);
-
                 success = HTTPClient.instance(url, "localhost").exists("");
+
+                LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + url + " is " + success);
+                
                 PRESENCE_CACHE.putInCache(url.toString(), success);
                 updatedCache = true;
 
