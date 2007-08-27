@@ -36,6 +36,7 @@ public final class Navigator implements Serializable {
         MONTH_YEAR(),
         DAY_MONTH_YEAR(),
         DAY_MONTH_YEAR_DESCENDING,
+        YEAR_MONTH_DAY_DESCENDING,
         YEAR_MONTH,
         ALPHABETICAL,
         ALPHABETICAL_DESCENDING,
