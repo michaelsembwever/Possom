@@ -446,8 +446,7 @@ public final class HTTPClient {
                 // EndOfHACK
                 
                 // HACK Third solution. Use own URLStreamHandler
-                connection = url.openConnection();
-
+                connection = url.openConnection();//new JarURLConnection(url, null);
                 // EndOfHACK
                 
             } else {
