@@ -25,6 +25,7 @@ public enum ModifierDateComparator implements Comparator<Modifier> {
     MONTH_YEAR("M-y", SortOrder.ASCENDING),
     DAY_MONTH_YEAR("d-M-y", SortOrder.ASCENDING),
     DAY_MONTH_YEAR_DESCENDING("d-M-y", SortOrder.DESCENDING),
+    YEAR_MONTH_DAY_DESCENDING("y-M-d", SortOrder.DESCENDING),
     YEAR_MONTH("y-M", SortOrder.DESCENDING);
 
     private static final Logger LOG = Logger.getLogger(ModifierDateComparator.class);
