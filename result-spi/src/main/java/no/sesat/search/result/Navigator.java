@@ -26,7 +26,6 @@ public final class Navigator implements Serializable {
     private String displayName;
     private Sort sort;
 
-    private final boolean newStyle;
     private final boolean boundaryMatch;
 
 
@@ -47,12 +46,11 @@ public final class Navigator implements Serializable {
     /**
      *
      */
-    public Navigator(final String name, final String field, final String displayName, final Sort sort, final boolean newStyle, final boolean boundaryMatch) {
+    public Navigator(final String name, final String field, final String displayName, final Sort sort, final boolean boundaryMatch) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;
         this.sort = sort;
-        this.newStyle = newStyle;
         this.boundaryMatch = boundaryMatch;
     }
 
@@ -60,7 +58,6 @@ public final class Navigator implements Serializable {
      *
      */
     public Navigator() {
-        newStyle = false;
         boundaryMatch = false;
     }
 
@@ -157,11 +154,6 @@ public final class Navigator implements Serializable {
      */
     public void setId(final String id) {
         this.id = id;
-    }
-    
-    public boolean isNewStyle()
-    {
-        return newStyle;
     }
     
     public boolean isBoundaryMatch() {

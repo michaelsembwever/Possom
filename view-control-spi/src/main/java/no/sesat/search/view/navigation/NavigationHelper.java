@@ -97,9 +97,6 @@ public final class NavigationHelper {
         }
         if (value != null && value.length() > 0) {
             addParameter(parameters, enc(navEntry.getField()), enc(value));
-            if (navEntry.isRealNavigator() && navigatorName != null) {
-                addParameter(parameters, "nav_" + enc(navEntry.getId()), enc(navigatorName));
-            }
         }
         if (!navEntry.isOut()) {
             addParentFragment(datamodel, parameters, navEntry);
@@ -204,11 +201,8 @@ public final class NavigationHelper {
             final NavigationConfig.Nav navEntry,
             final String fieldName) {
 
-        if (fieldValue != null && addFragment(parameters, navEntry, fieldName, fieldValue.getString())) {
-            fieldValue = datamodel.getParameters().getValue("nav_" + fieldName);
-            if (fieldValue != null) {
-                addFragment(parameters, navEntry, "nav_" + fieldName, fieldValue.getString());
-            }
+        if (fieldValue != null) {
+            addFragment(parameters, navEntry, fieldName, fieldValue.getString());
         }
     }
 

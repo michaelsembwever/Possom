@@ -317,17 +317,13 @@ public class CommandConfig implements SearchConfiguration {
                     LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]" + ", sort=" + sortAttr);
                     final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
 
-                    // Temporary attribute while there still are navigators using the old code.
-                    final boolean newStyle = navE.getAttribute("new-style").equals("true");
-
-                    final boolean boundaryMatch = navE.getAttribute("boundary-match").equals("true"); 
+                    final boolean boundaryMatch = navE.getAttribute("boundary-match").equals("true");
                     
                     final Navigator nav = new Navigator(
                             name,
                             navE.getAttribute("field"),
                             navE.getAttribute("display-name"),
                             sort,
-                            newStyle,
                             boundaryMatch);
                     nav.setId(id);
                     final Collection<Navigator> childNavigators = parseNavigators(navE);
