@@ -395,7 +395,7 @@ public final class SearchTab implements Serializable{
     // Inner classes -------------------------------------------------
 
     /** Immutable POJO holding Enrichment properties from a given tab. **/
-    public static final class EnrichmentHint  {
+    public static final class EnrichmentHint implements Serializable {
 
         /**
          * 
@@ -472,7 +472,7 @@ public final class SearchTab implements Serializable{
     /** POJO holding layout information for the given tab. 
      * readLayout(Element) is the only way to mutate the bean and can only be called once.
      **/
-    public static final class Layout{
+    public static final class Layout implements Serializable {
         
         private String origin;
         private String main;
