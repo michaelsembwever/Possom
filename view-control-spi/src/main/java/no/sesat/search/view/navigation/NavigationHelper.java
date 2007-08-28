@@ -70,6 +70,10 @@ public final class NavigationHelper {
         return getUrlFragment(getUrlParameters(datamodel, navEntry, value, navigatorName));
     }
 
+    public static String removeQuery(final String url) {
+        return url.replaceAll("(&amp;)?q=[^&]*", ""); 
+    }
+
     /**
      * @param navEntry
      * @param value
