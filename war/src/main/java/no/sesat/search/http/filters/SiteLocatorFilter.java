@@ -164,14 +164,13 @@ public final class SiteLocatorFilter implements Filter {
 
                     if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
-                        // This URL does not belong to search-front-html
+                        // This URL does not belong to search-portal
                         final String url;
 
                         if (resource.startsWith(PUBLISH_DIR)) { // publishing system
                             // the publishing system is responsible for this.
                             final Properties props = SiteConfiguration.valueOf(site).getProperties();
                             url = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL)
-                                .replaceFirst("localhost",props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST))
                                 + '/' + resource;
 
                         }  else  {
@@ -386,13 +385,15 @@ public final class SiteLocatorFilter implements Filter {
 
         final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
-        URL u = HTTPClient.getURL(new URL(url), "localhost");
+        final URL u = new URL(url);
 
         if (UrlResourceLoader.doesUrlExist(u)) {
             // return a relative url to ensure it can survice through an out-of-cluster server.
             return '/' + site.getConfigContext() + '/' + datedResource;
+            
         } else if (site.getParent() != null) {
             return recursivelyFindResource(resource, site.getParent());
+            
         } else {
             return null;
         }

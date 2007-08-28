@@ -58,8 +58,8 @@ public final class ImportPublish {
         final String fileExtension = page.endsWith(".xml") ? "" : ".html"; 
         
         final URL u = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + fileExtension);
-        final String hostHeader = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST);
-        final String cacheKey = '[' + hostHeader + ']' + u.toString();
+        final String physicalHost = props.getProperty(SiteConfiguration.PUBLISH_PHYSICAL_HOST);
+        final String cacheKey = '[' + physicalHost + ']' + u.toString();
         
         String content = "";
         try{
@@ -68,7 +68,7 @@ public final class ImportPublish {
         } catch (NeedsRefreshException nre) {
         
             boolean updatedCache = false;
-            final HTTPClient client = HTTPClient.instance(hostHeader, u);
+            final HTTPClient client = HTTPClient.instance(u, physicalHost);
             
             try{
                 final BufferedReader reader = client.getBufferedReader("");
@@ -111,6 +111,7 @@ public final class ImportPublish {
         return builder.parse(new InputSource(new StringReader(importPage(page, datamodel))));
        
     }   
+    
     // Constructors --------------------------------------------------
     
     /** Creates a new instance of NewClass */

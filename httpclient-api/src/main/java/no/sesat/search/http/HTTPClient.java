@@ -47,11 +47,12 @@ import sun.net.www.protocol.jar.URLJarFileCallBack;
 /**
  * Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
  * Keeps statistics on connection times and failures.
- * TODO Provide Quality of Service through ramp up/down and throttling functionality.
  * XXX redesign into multiple classes with less static methods.
  * <p/>
- * Supports protocols http, https, ftp, and file.
+ * Supports protocols http, https, ftp, jar, and file.
  * If no protocol is specified in the host it defaults to http.
+ * Provides support for URL Jars loaded with request properties as Sun's JVM does not.
+ * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mck</a>
@@ -67,32 +68,14 @@ public final class HTTPClient {
     private static final Logger LOG = Logger.getLogger(HTTPClient.class);
     private static final String DEBUG_USING_URL = "Using url {0} and Host-header {1} ";
 
+    // Attributes ----------------------------------------------------
+    
     private final String id;
     private URLConnection urlConn;
     private final URL u;
+    private final PhysicalHostStreamHandler handler;
 
-    private HTTPClient(final URL u) {
-        this(u, null);
-    }
-                                                                                           
-    private HTTPClient(final URL u, final String physicalHost) {
-        try {
-            this.u = new URL(u, "", new PhysicalHostStreamHandler(physicalHost));
-            this.id = u.getHost() + ':' + u.getPort();
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private HTTPClient(final String hostHeader, final URL u) {
-        try {
-            this.u = new URL(u, "", new HostHeaderStreamHandler(hostHeader));
-            this.id = u.getHost() + ':' + u.getPort();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    // Static --------------------------------------------------------
 
     /**
      * Returns client for specified host and port.
@@ -103,7 +86,8 @@ public final class HTTPClient {
      * @return a client.
      */
     public static HTTPClient instance(final String host, final int port) {
-        return instance(ensureProtocol(host), port, null);
+        
+        return instance(ensureProtocol(host), port, host);
     }
 
     /**
@@ -116,9 +100,11 @@ public final class HTTPClient {
      *
      * @return a client.
      */
-    public static HTTPClient instance(final String host, final int port, final String hostHeader) {
+    public static HTTPClient instance(final String host, final int port, final String physicalHost) {
+        
         try {
-            return new HTTPClient(hostHeader, new URL(ensureProtocol(host) + ':' + port));
+            return new HTTPClient(new URL(ensureProtocol(host) + ':' + port), physicalHost);
+            
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -126,6 +112,9 @@ public final class HTTPClient {
 
     /**
      * Returns client instance for the specified URL. The URL can either be complete or just contain the host.
+     * 
+     * Note that only the host and port and used since the url must be supplied again against the HTTPClient instance.
+     * 
      * The path can be supplied later when using the querying methods like
      * {@link HTTPClient#getBufferedStream(String path)}.
      *
@@ -133,7 +122,7 @@ public final class HTTPClient {
      * @return a client.
      */
     public static HTTPClient instance(final URL url) {
-        return new HTTPClient(url);
+        return new HTTPClient(url, url.getHost());
     }
 
     /**
@@ -149,32 +138,23 @@ public final class HTTPClient {
     public static HTTPClient instance(final URL url, final String physicalHost) {
         return new HTTPClient(url, physicalHost);
     }
-
-    /**
-     * Returns client for the url. The client will use the supplied host haeder for all requests.
-     *
-     * @param hostHeader host haeder to use.
-     * @param url url.
-     * @return a client.
-     */
-    public static HTTPClient instance(final String hostHeader, final URL url) {
-        return new HTTPClient(hostHeader, url);
+    
+    // Constructors --------------------------------------------------
+                                                                                              
+    private HTTPClient(final URL url, final String physicalHost) {
+        
+        try {
+            handler = new PhysicalHostStreamHandler(physicalHost);
+            u = new URL(url, "", handler);
+            id = u.getHost() + ':' + u.getPort();
+            
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    /**
-     * Convenience method to create a URL with an attached URLStreamHandler. This stream handler will replace the host
-     * of the supplied URL with the supplied physical host. The original host will be used as a host header.
-     *
-     * @param url the original url.
-     * @param physicalHost the physical host to use.
-     * @return a url with the host replaces.
-     *
-     * @throws MalformedURLException on error.
-     */
-    public static URL getURL(final URL url, final String physicalHost) throws MalformedURLException {
-        return new URL(url, "", new PhysicalHostStreamHandler(physicalHost));
-    }
-
+    // Public --------------------------------------------------------
+    
     /**
      * @param path
      * @return
@@ -346,6 +326,24 @@ public final class HTTPClient {
         return interceptIOException(id, conn, ioe);
     }
 
+    /**
+     * @param conn
+     * @param time
+     */
+    public static void addConnectionStatistic(final URLConnection conn, final long time) {
+
+        final String id = conn.getURL().getHost() + ':'
+                + (-1 != conn.getURL().getPort() ? conn.getURL().getPort() : 80);
+
+        Statistic.getStatistic(id).addInvocation(time);
+    }
+        
+    // Package protected ---------------------------------------------
+    
+    // Protected -----------------------------------------------------
+    
+    // Private -------------------------------------------------------
+    
     private static IOException interceptIOException(
             final String id,
             final URLConnection urlConn,
@@ -370,22 +368,9 @@ public final class HTTPClient {
         return ioe;
     }
 
-
-    /**
-     * @param conn
-     * @param time
-     */
-    public static void addConnectionStatistic(final URLConnection conn, final long time) {
-
-        final String id = conn.getURL().getHost() + ':'
-                + (-1 != conn.getURL().getPort() ? conn.getURL().getPort() : 80);
-
-        Statistic.getStatistic(id).addInvocation(time);
-    }
-
     private URLConnection loadUrlConnection(final String path) throws IOException {
         if (null == urlConn) {
-            urlConn = new URL(u, path).openConnection();
+            urlConn = new URL(u, path, handler).openConnection();
         }
         return urlConn;
     }
@@ -413,12 +398,18 @@ public final class HTTPClient {
         }
     }
 
+    // Inner classes -------------------------------------------------
+    
     private static class PhysicalHostStreamHandler extends URLStreamHandler {
 
         private final String physicalHost;
 
         public PhysicalHostStreamHandler(final String physicalHost) {
             this.physicalHost = physicalHost;
+        }
+        
+        String getPhysicalHost(){
+            return physicalHost;
         }
 
         protected URLConnection openConnection(final URL u) throws IOException {
@@ -455,10 +446,6 @@ public final class HTTPClient {
                 connection = url.openConnection();
             }
 
-
-            
-            // the following won't work because jars are loaded with a new openConnection call 
-            //  against the underlying http url
             connection.addRequestProperty("host", host);
             
             connection.setConnectTimeout(CONNECT_TIMEOUT);
@@ -479,7 +466,7 @@ public final class HTTPClient {
         private class URLJarFileCallBackImpl implements URLJarFileCallBack {
             private final String host;
 
-            private URLJarFileCallBackImpl(String host) {
+            private URLJarFileCallBackImpl(final String host) {
                 this.host = host;
             }
 
@@ -540,34 +527,6 @@ public final class HTTPClient {
 
                 return result;
             }
-        }
-    }
-
-    private static class HostHeaderStreamHandler extends URLStreamHandler {
-
-        private final String hostHeader;
-
-        public HostHeaderStreamHandler(final String hostHeader) {
-            this.hostHeader = hostHeader != null ? hostHeader : "";
-        }
-
-        protected URLConnection openConnection(final URL u) throws IOException {
-
-            final URL url = new URL(u.getProtocol(), u.getHost(), u.getPort(), u.getFile());
-            final URLConnection connection = url.openConnection();
-
-            if (! ("".equals(hostHeader) || u.getHost().equals(hostHeader))) {
-                connection.addRequestProperty("host", hostHeader);
-            }
-
-            connection.setConnectTimeout(CONNECT_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-
-            if (LOG.isTraceEnabled()) {
-                LOG.trace(MessageFormat.format(DEBUG_USING_URL, url, hostHeader));
-            }
-
-            return connection;
         }
     }
 
