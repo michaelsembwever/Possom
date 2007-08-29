@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  */
 public interface SearchConfiguration extends Serializable {
     /**
-     * Returns a (defensive copy) list of {@link no.sesat.search.query.transform.QueryTransformer} that should be applied to
+     * Returns a (defensive copy) list of {@link no.sesat.search.query.transform.QueryTransformerConfig} that should be applied to
      * the query before the query is sent to search indices.
      *
      * @return The list of query.
@@ -30,14 +30,14 @@ public interface SearchConfiguration extends Serializable {
     List<QueryTransformerConfig> getQueryTransformers();
 
     /**
-     * Adds a {@link no.sesat.search.query.transform.QueryTransformer} to the list of transformeres.
+     * Adds a {@link no.sesat.search.query.transform.QueryTransformerConfig} to the list of transformeres.
      *
      * @param transformer The query transformer to add.
      */
     void addQueryTransformer(QueryTransformerConfig transformer);
 
     /**
-     * Returns a list of {@link no.sesat.search.result.handler.ResultHandler} that should act on the search
+     * Returns a list of {@link no.sesat.search.result.handler.ResultHandlerConfig} that should act on the search
      * result.
      *
      * @return The list of handlers.
@@ -45,7 +45,7 @@ public interface SearchConfiguration extends Serializable {
     List<ResultHandlerConfig> getResultHandlers();
 
     /**
-     * Adds a {@link no.sesat.search.result.handler.ResultHandler} to the list of handlers.
+     * Adds a {@link no.sesat.search.result.handler.ResultHandlerConfig} to the list of handlers.
      *
      * @param handler The handler to add.
      */
@@ -68,7 +68,7 @@ public interface SearchConfiguration extends Serializable {
     /**
      * Returns true if paging shoud be enabled to this configuration. This
      * is typically only set to true for one of the configurations in a
-     * {@link no.sesat.search.mode.config.SearchMode}
+     * {@link no.sesat.search.mode.SearchMode}
      *
      * @return true if paging is enabled.
      */
