@@ -25,7 +25,7 @@ public abstract class ResourceClassLoader extends ClassLoader {
 
     private final Context context;
 
-    private Collection<String> notFound = Collections.synchronizedCollection(new HashSet<String>());
+    private Collection<String> notFound = new HashSet<String>();
     private ReadWriteLock notFoundLock = new ReentrantReadWriteLock();
 
     /**
