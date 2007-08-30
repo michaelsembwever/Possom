@@ -40,7 +40,7 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     /**
      *
      */
-    public static final String PUBLISH_PHYSICAL_HOST = "publishing.system.physicaHost";
+    public static final String PUBLISH_PHYSICAL_HOST = "publishing.system.physicalHost";
     private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
 
     /**
