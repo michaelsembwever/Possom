@@ -14,6 +14,7 @@ import no.sesat.search.result.handler.ResultHandlerConfig;
 
 import java.util.List;
 import java.util.Map;
+import no.sesat.search.mode.SearchModeFactory.Context;
 import org.w3c.dom.Element;
 
 /**
@@ -142,5 +143,5 @@ public interface SearchConfiguration extends Serializable {
      * @param inherit 
      * @return 
      */
-    SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit); 
+    SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context); 
 }

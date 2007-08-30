@@ -321,7 +321,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SearchCommandFactory() {}
 
         SearchConfiguration parseSearchConfiguration(
-                final Context cxt,
+                final SearchModeFactory.Context cxt,
                 final Element commandE,
                 final SearchMode mode) throws ParserConfigurationException {
 
@@ -428,7 +428,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         private SearchConfiguration parseSearchConfigurationImpl(
                 final Element element,
                 final SearchConfiguration inherit,
-                final Context context) {
+                final SearchModeFactory.Context context) {
 
             final SearchConfiguration sc = construct(element, context);
 
@@ -437,7 +437,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     + element.getAttribute("id") + '(' + sc.getClass().getSimpleName() + ')'
                     + " trying to inherit from " + inherit.getName() + '(' + inherit.getClass().getSimpleName() + ')';
 
-            return sc.readSearchConfiguration(element, inherit);
+            return sc.readSearchConfiguration(element, inherit, context);
         }
 
         protected Class<SearchConfiguration> findClass(final String xmlName, final Context context)
@@ -461,7 +461,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         QueryTransformerFactory() {
         }
 
-        QueryTransformerConfig parseQueryTransformer(final Element qt, final Context context) {
+        QueryTransformerConfig parseQueryTransformer(final Element qt, final SearchModeFactory.Context context) {
             return construct(qt, context).readQueryTransformer(qt);
         }
 
@@ -489,7 +489,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         ResultHandlerFactory() {
         }
 
-        ResultHandlerConfig parseResultHandler(final Element rh, final Context context) {
+        ResultHandlerConfig parseResultHandler(final Element rh, final SearchModeFactory.Context context) {
             return construct(rh, context).readResultHandler(rh);
         }
 

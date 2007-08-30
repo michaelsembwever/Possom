@@ -3,7 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
-
+ *
  * SearchTab.java
  *
  * Created on 20 April 2006, 07:55
@@ -406,20 +406,24 @@ public final class SearchTab implements Serializable{
          */
         public EnrichmentHint(
                 final String rule,
+                final int baseScore,
                 final int threshold,
                 final float weight,
                 final String command){
 
             this.rule = rule;
+            this.baseScore = baseScore;
             this.threshold = threshold;
             this .weight = weight;
             this.command = command;
         }
 
-        /**
-         * Holds value of property rule.
-         */
+
         private final String rule;
+        private final int baseScore;
+        private final int threshold;
+        private final String command;
+        private final float weight;
 
         /**
          * Getter for property rule.
@@ -428,11 +432,14 @@ public final class SearchTab implements Serializable{
         public String getRule() {
             return this.rule;
         }
-
+        
         /**
-         * Holds value of property threshold.
+         * Getter for property baseScore.
+         * @return Value of property baseScore.
          */
-        private final int threshold;
+        public int getBaseScore() {
+            return this.baseScore;
+        }
 
         /**
          * Getter for property threshold.
@@ -443,22 +450,12 @@ public final class SearchTab implements Serializable{
         }
 
         /**
-         * Holds value of property command.
-         */
-        private final String command;
-
-        /**
          * Getter for property command.
          * @return Value of property command.
          */
         public String getCommand() {
             return this.command;
         }
-
-        /**
-         * Holds value of property weight.
-         */
-        private final float weight;
 
         /**
          * Getter for property weight.

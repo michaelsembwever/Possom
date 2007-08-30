@@ -3,9 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
-
- */
-/*
+ *
  * ViewFactory.java
  *
  * Created on 19. april 2006, 20:48
@@ -47,6 +45,7 @@ import org.w3c.dom.NodeList;
 /**
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * @version $Id$
  */
 public final class SearchTabFactory extends AbstractDocumentFactory implements SiteKeyedFactory{
 
@@ -55,7 +54,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
      */
     public interface Context extends ResourceContext, AbstractConfigFactory.Context {}
 
-   // Constants -----------------------------------------------------
+    // Constants -----------------------------------------------------
 
     private static final Map<Site, SearchTabFactory> INSTANCES = new HashMap<Site,SearchTabFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
@@ -341,11 +340,12 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     final Element e = (Element) enrichmentNodeList.item(j);
                     final String rule = e.getAttribute("rule");
                     LOG.info(INFO_PARSING_ENRICHMENT + rule);
-                    final int threshold = parseInt(e.getAttribute("threshold"), -1);
-                    final float weight = parseFloat(e.getAttribute("weight"), -1);
+                    final int baseScore = parseInt(e.getAttribute("base-score"), 0);
+                    final int threshold = parseInt(e.getAttribute("threshold"), 0);
+                    final float weight = parseFloat(e.getAttribute("weight"), 0);
                     final String command = e.getAttribute("command");
                     final SearchTab.EnrichmentHint enrichment
-                            = new SearchTab.EnrichmentHint(rule, threshold, weight, command);
+                            = new SearchTab.EnrichmentHint(rule, baseScore, threshold, weight, command);
                     enrichments.add(enrichment);
                 }
 

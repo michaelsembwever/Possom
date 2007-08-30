@@ -9,7 +9,6 @@
 package no.sesat.search.run;
 
 
-import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
@@ -253,12 +251,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations()) {
 
                 final SearchConfiguration config = searchConfiguration;
-                final String configName = config.getName();
+                final String confName = config.getName();
 
                 try{
 
                     // If output is rss, only run the one command that will produce the rss output.
-                    if (!isRss || context.getSearchTab().getRssResultName().equals(configName)) {
+                    if (!isRss || context.getSearchTab().getRssResultName().equals(confName)) {
 
                         hits.put(config.getName(), Integer.valueOf(0));
 
@@ -284,45 +282,48 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 }
                         );
 
-                        final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
+                        final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(confName);
 
                         if (eHint != null && !datamodel.getQuery().getQuery().isBlank()) {
-
-                            final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                             if (context.getSearchMode().isAnalysis()
                                     && (null == parameters.get("offset") || "0".equals(parameters.get("offset")))
                                     && (null == parameters.get("collapse") || "".equals(parameters.get("collapse")))
                                     && eHint.getWeight() > 0) {
 
-                                int score = 0;
+                                int score = eHint.getBaseScore();
+                                
+                                if(null != eHint.getRule()){
+                                    
+                                    final AnalysisRule rule = rules.getRule(eHint.getRule());
 
-                                if (null == scoresByRule.get(eHint.getRule())) {
+                                    if (null == scoresByRule.get(eHint.getRule())) {
 
-                                    final StringBuilder analysisRuleReport = new StringBuilder();
+                                        final StringBuilder analysisRuleReport = new StringBuilder();
 
-                                    score = rule.evaluate(datamodel.getQuery().getQuery(),
-                                            ContextWrapper.wrap(
-                                                AnalysisRule.Context.class,
-                                                new BaseContext(){
-                                                    public String getRuleName(){
-                                                        return eHint.getRule();
-                                                    }
-                                                    public Appendable getReportBuffer(){
-                                                        return analysisRuleReport;
-                                                    }
-                                                },
-                                                searchCmdCxt));
+                                        score += rule.evaluate(datamodel.getQuery().getQuery(),
+                                                ContextWrapper.wrap(
+                                                    AnalysisRule.Context.class,
+                                                    new BaseContext(){
+                                                        public String getRuleName(){
+                                                            return eHint.getRule();
+                                                        }
+                                                        public Appendable getReportBuffer(){
+                                                            return analysisRuleReport;
+                                                        }
+                                                    },
+                                                    searchCmdCxt));
 
-                                    scoresByRule.put(eHint.getRule(), score);
-                                    analysisReport.append(analysisRuleReport);
+                                        scoresByRule.put(eHint.getRule(), score);
+                                        analysisReport.append(analysisRuleReport);
 
-                                    if (LOG.isDebugEnabled()) {
-                                        LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                                        if (LOG.isDebugEnabled()) {
+                                            LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                                        }
+
+                                    } else {
+                                        score = scoresByRule.get(eHint.getRule());
                                     }
-
-                                } else {
-                                    score = scoresByRule.get(eHint.getRule());
                                 }
 
                                 scores.put(config.getName(), score);
@@ -341,7 +342,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         }
                     }
                 }catch(RuntimeException re){
-                    LOG.error("Failed to add command " + configName, re);
+                    LOG.error("Failed to add command " + confName, re);
                 }
             }
             ANALYSIS_LOG.info(analysisReport.toString() + " </analyse>");
@@ -449,7 +450,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         //                }
                 }
 
-                if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
+                if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0 
+                        && !"NOCOUNT".equals(parameters.get("IGNORE"))){
+                    
                     final String output = null != parameters.get("output") 
                             ? parameters.get("output").getString() 
                             : null;

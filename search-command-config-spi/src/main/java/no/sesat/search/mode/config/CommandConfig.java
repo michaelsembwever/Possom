@@ -22,9 +22,11 @@ import no.sesat.search.result.handler.ResultHandlerConfig;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.result.Navigator;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
+import no.sesat.search.site.config.ResourceLoader;
 import no.sesat.search.site.config.SiteClassLoaderFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -252,7 +254,8 @@ public class CommandConfig implements SearchConfiguration {
      */
     public CommandConfig readSearchConfiguration(
             final Element element, 
-            final SearchConfiguration inherit){
+            final SearchConfiguration inherit,
+            final Context context){
         
         setName(element.getAttribute("id"));
         
