@@ -168,9 +168,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 new DataObject.Property("string", queryStr),
                 new DataObject.Property("query", parser.getQuery()));
 
-        @SuppressWarnings("unchecked")
         final MapDataObject<NavigationItem> navigations 
-                = new MapDataObjectSupport<NavigationItem>(Collections.EMPTY_MAP);
+                = new MapDataObjectSupport<NavigationItem>(Collections.<String, NavigationItem>emptyMap());
         final NavigationDataObject navDO = factory.instantiate(
                 NavigationDataObject.class,
                 new DataObject.Property("configuration", context.getSearchTab().getNavigationConfiguration()),

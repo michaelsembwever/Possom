@@ -461,7 +461,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
         return parentFactory != null
             ? parentFactory.getGlobalPredicates()
-            : Collections.EMPTY_MAP;
+            : Collections.<String, Predicate>emptyMap();
     }
     
     /** Returns this site's and all parent site's global predicates in one map. **/

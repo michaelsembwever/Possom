@@ -588,7 +588,7 @@ public final class SearchTab implements Serializable{
                 final String valueElementName){
             
             final Map<String,String> map 
-                    = new HashMap<String,String>(null != inherited ? inherited : Collections.EMPTY_MAP);
+                    = new HashMap<String,String>(null != inherited ? inherited : Collections.<String, String>emptyMap());
             
             for(int i = 0; i< list.getLength(); ++i){
                 final Element include = (Element) list.item(i);
