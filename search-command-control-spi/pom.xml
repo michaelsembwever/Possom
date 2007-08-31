@@ -86,6 +86,11 @@
             <artifactId>ha-services</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>msearch-client</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>schibstedsok</groupId>
