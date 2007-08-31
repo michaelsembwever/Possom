@@ -78,7 +78,7 @@ public final class HTTPClient {
     // Static --------------------------------------------------------
 
     /**
-     * Returns client for specified host and port.
+     * Returns client for specified host and port for HTTP protocol.
      *
      * @param host The host to use. If no protocol is given then http is assumed.
      * @param port The port to use.
@@ -87,12 +87,16 @@ public final class HTTPClient {
      */
     public static HTTPClient instance(final String host, final int port) {
         
-        return instance(ensureProtocol(host), port, host);
+        assert !host.contains("://") : "Not allowed to specify protocol, use another instance method.";
+        
+        return instance(host, port, host);
     }
 
     /**
-     * Returns client for specified host, port and host header. Useful if you need to use a virtual host different
+     * Returns client for specified host, port and physical host (if the host is virtual). 
+     * Useful if you need to use a virtual host different
      * from the physical host.
+     * Defaults to the http protocol if the host argument doesn't specify it.
      *
      * @param host the physical host to use.
      * @param port the port to use.
