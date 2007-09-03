@@ -63,7 +63,7 @@ public final class HTTPClient {
     // Constants -----------------------------------------------------
 
     private static final int CONNECT_TIMEOUT = 1000; // milliseconds
-    private static final int READ_TIMEOUT = 1000; // millisceonds
+    private static final int READ_TIMEOUT = 3000; // millisceonds
 
     private static final Logger LOG = Logger.getLogger(HTTPClient.class);
     private static final String DEBUG_USING_URL = "Using url {0} and Host-header {1} ";
@@ -126,7 +126,7 @@ public final class HTTPClient {
      * @return a client.
      */
     public static HTTPClient instance(final URL url) {
-        return new HTTPClient(url, url.getHost());
+        return new HTTPClient(url, "file".equals(url.getProtocol()) ? "localhost" : url.getHost());
     }
 
     /**
