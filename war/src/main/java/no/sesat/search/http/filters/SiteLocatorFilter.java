@@ -522,7 +522,7 @@ public final class SiteLocatorFilter implements Filter {
         
         stopWatch.stop();
         
-        ACCESS_LOG.info("<response code=\"" + code + "\" time=\"" + stopWatch + "\">");
+        ACCESS_LOG.info("<response code=\"" + code + "\" time=\"" + stopWatch + "\"/>");
     }
     
     // probably apache commons could simplify this
