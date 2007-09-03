@@ -3,9 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
-
- */
-/*
+ *
  * SiteLocatorFilter.java
  *
  * Created on 9 February 2006, 11:30
@@ -525,7 +523,7 @@ public final class SiteLocatorFilter implements Filter {
         ACCESS_LOG.info("<response code=\"" + code + "\" time=\"" + stopWatch + "\"/>");
     }
     
-    // probably apache commons could simplify this
+    // probably apache commons could simplify this // duplicated in SearchServlet
     private static String getCookieValue(final HttpServletRequest request, final String cookieName){
     
         String value = "";

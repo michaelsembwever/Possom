@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Map;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -108,13 +109,8 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletResponse response)
                 throws ServletException, IOException {
 
-        final String url = request.getRequestURI()
-                + (null != request.getQueryString() ? '?' + request.getQueryString() : "");
-
-        ACCESS_LOG.info("<search-servlet>"
-                + "<real-url>" + StringEscapeUtils.escapeXml(url) + "</real-url>"
-                + "</search-servlet>");
-
+        logAccessRequest(request);
+        
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
         final Site site = datamodel.getSite().getSite();
@@ -518,6 +514,47 @@ public final class SearchServlet extends HttpServlet {
         }
     }
 
+    // next to duplicate from SiteLocatorFilter
+    private static void logAccessRequest(final HttpServletRequest request){
+       
+        final String url = request.getRequestURI()
+                + (null != request.getQueryString() ? '?' + request.getQueryString() : "");
+        final String referer = request.getHeader("Referer");
+        final String method = request.getMethod();
+        final String ip = request.getRemoteAddr();
+        final String userAgent = request.getHeader("User-Agent");
+        final String sesamId = getCookieValue(request, "SesamID");
+        final String sesamUser = getCookieValue(request, "SesamUser");
+            
+        ACCESS_LOG.info("<search-servlet>"
+                + "<real-url method=\"" + method + "\">" + StringEscapeUtils.escapeXml(url) + "</real-url>"
+                + (null != referer ? "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>" : "")
+                + "<browser ipaddress=\"" + ip + "\">" + StringEscapeUtils.escapeXml(userAgent) + "</browser>"
+                + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
+                + "</request>");
+    }
+    
+    // probably apache commons could simplify this // duplicated in SiteLocatorFilter
+    private static String getCookieValue(final HttpServletRequest request, final String cookieName){
+    
+        String value = "";
+        // Look in attributes (it could have already been updated this request)
+        if( null != request ){
+
+            // Look through cookies
+            if( null != request.getCookies() ){
+                for( Cookie c : request.getCookies()){
+                    if( c.getName().equals( cookieName ) ){
+                        value = c.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+
+        return value;
+    }
+    
     // Inner classes -------------------------------------------------
 
 }
