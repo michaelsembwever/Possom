@@ -427,10 +427,13 @@ public final class SearchTab implements Serializable{
 
         /**
          * Getter for property rule.
-         * @return Value of property rule.
+         * @return Value of property rule. Returns null if value equals empty 
+         * String("").
          */
         public String getRule() {
-            return this.rule;
+            
+        	if(this.rule.equalsIgnoreCase(""))return null;
+        	else return this.rule;
         }
         
         /**
