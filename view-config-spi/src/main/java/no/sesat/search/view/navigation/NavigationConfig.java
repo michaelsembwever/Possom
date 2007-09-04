@@ -42,7 +42,7 @@ public final class NavigationConfig implements Serializable {
     private final List<Navigation> navigationList = new ArrayList<Navigation>();
 
     public NavigationConfig(final NavigationConfig inherit) {
-            
+
         // inheritence first so that self-configuration can override
         if(null != inherit){
             navMap.putAll(inherit.getNavMap());
@@ -215,6 +215,7 @@ public final class NavigationConfig implements Serializable {
         private String backText;
         private boolean out;
         private boolean realNavigator;
+        private int maxsize;
 
         private Map<String, String> staticParameters;
         private List<Nav> childNavs;
@@ -260,6 +261,9 @@ public final class NavigationConfig implements Serializable {
                     .fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, navElement, "true");
 
             AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
+
+            AbstractDocumentFactory
                     .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
 
 
@@ -301,6 +305,14 @@ public final class NavigationConfig implements Serializable {
 
         public void setRealNavigator(final boolean realNavigator) {
             this.realNavigator = realNavigator;
+        }
+
+        public int getMaxsize() {
+            return maxsize;
+        }
+
+        public void setMaxsize(final int maxsize) {
+            this.maxsize = maxsize;
         }
 
         public Map<String, String> getStaticParameters() {
