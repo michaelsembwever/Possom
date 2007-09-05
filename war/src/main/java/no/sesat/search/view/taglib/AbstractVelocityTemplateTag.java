@@ -129,7 +129,8 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             //context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes
-            for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames()
+            for (@SuppressWarnings("unchecked")
+                    Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames()
                     ; e.hasMoreElements();) {
 
                 final String attrName = e.nextElement();
