@@ -4,7 +4,7 @@
 
 <%-- The skinnable error message --%>
 <c:catch var="error">
-    <search:velocity template="/pages/500"/>
+Error
 </c:catch>
 
 <%-- At the bare minimum display the following --%>
