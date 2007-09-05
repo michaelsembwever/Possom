@@ -39,12 +39,12 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
 
         super(parent, navigation, navElement);
 
-        final String commandNames = AbstractDocumentFactory.parseString(navElement.getAttribute("command-names"), null);
+        final String commandNames = AbstractDocumentFactory.parseString(navElement.getAttribute("command-names").replaceAll("\\s", ""), null);
         this.commandNames =  null != commandNames 
                 ? Collections.unmodifiableList(Arrays.asList(commandNames.split(",")))
                 : Collections.EMPTY_LIST;
-        
-        final String values = AbstractDocumentFactory.parseString(navElement.getAttribute("values"), null);
+                      
+        final String values = AbstractDocumentFactory.parseString(navElement.getAttribute("values").replaceAll("\\s", ""), null);
         this.values = null != values 
                 ? Collections.unmodifiableList(Arrays.asList(values.split(",")))
                 : null;
