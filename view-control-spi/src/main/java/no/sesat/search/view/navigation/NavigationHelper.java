@@ -144,16 +144,24 @@ public final class NavigationHelper {
     }
 
     public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
+        
         if (dm.getParameters().getValue(nav.getId()) != null
                 && !nav.getChildNavs().isEmpty()
                 && !nav.getChildNavs().get(0).isVirtual()) {
+            
             return getFirstNotSelected(dm, nav.getChildNavs().get(0));
+            
         } else {
-            if (nav.getId() != null && dm.getNavigation().getNavigation(nav.getId()).getResults().size() == 1 && !nav.getChildNavs().isEmpty()) {
-                return getFirstNotSelected(dm, nav.getChildNavs().get(0)); 
-            } else {
-                return nav;
-            }
+            
+            final int navResultSize = null != nav.getId() 
+                    && null != dm.getNavigation().getNavigation(nav.getId())
+                    && null != dm.getNavigation().getNavigation(nav.getId()).getResults()
+                    ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
+                    : 0;
+                    
+            return 1 == navResultSize && !nav.getChildNavs().isEmpty()
+                    ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
+                    : nav;
         }
     }
     
