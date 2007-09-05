@@ -41,7 +41,6 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.http.HTTPClient;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -76,7 +75,9 @@ public final class SiteLocatorFilter implements Filter {
     
     private static final String UNKNOWN = "unknown";
 
-     
+    
+    private static final String CONFIGURATION_RESOURCE= "/conf/" + Site.CONFIGURATION_FILE;
+
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
             Collections.unmodifiableCollection(Arrays.asList(new String[]{
@@ -121,6 +122,7 @@ public final class SiteLocatorFilter implements Filter {
     /** Will redirect to correct (search-config) url for resources (css,images, javascript).
      *
      * @param request The servlet request we are processing
+     * @param r The servlet response
      * @param chain The filter chain we are processing
      *
      * @exception IOException if an input/output error occurs
@@ -143,7 +145,18 @@ public final class SiteLocatorFilter implements Filter {
             : r;
 
         try{
-                
+            if(request instanceof HttpServletRequest) {
+                final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+                final HttpServletResponse  httpServletResponse = (HttpServletResponse) response;
+                if (httpServletRequest.getRequestURI().endsWith(CONFIGURATION_RESOURCE)){
+                    /* We are looping, looking for a site search which does not exsist */
+                    LOG.debug("We are looping, looking for a site search which does not exist");
+                    httpServletResponse.reset();
+                    httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+            }
+
             doBeforeProcessing(request, response);
             logAccessRequest(request);
 
@@ -344,8 +357,6 @@ public final class SiteLocatorFilter implements Filter {
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
 
         }
-
-
     }
 
     // Package protected ---------------------------------------------

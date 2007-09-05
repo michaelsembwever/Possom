@@ -77,7 +77,12 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
             LOG.trace("SiteConfiguration(cxt)");
             
             site = cxt.getSite();
-            
+
+            /* Check if required configuration resource exist, it not throw an exception */
+            /* TODO: Using UrlResourceLoader directly, should use context to support other resource loaders */
+            if (!UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(Site.CONFIGURATION_FILE, site))) {
+                throw new ResourceLoadException("Could not load '" + Site.CONFIGURATION_FILE + "' for site '" + site.getName());
+            }
             cxt.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(cxt.getSite(), this);
