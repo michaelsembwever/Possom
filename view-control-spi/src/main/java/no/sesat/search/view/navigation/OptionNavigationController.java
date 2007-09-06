@@ -108,6 +108,9 @@ public class OptionNavigationController
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
+
+        boolean selectionDone = false;
+
         for (final OptionsNavigationConfig.Option option : optionsToAdd) {
 
             final ResultList<? extends ResultItem> searchResult = option.getCommandName() != null
@@ -133,10 +136,12 @@ public class OptionNavigationController
                         NavigationHelper.getUrlFragment(urlParameters),
                         -1);
                 parentResult.addResult(navigator);
-                if (optionSelectedValue == null && isOptionDefaultSelected(searchResult, option)) {
+                if (!selectionDone && optionSelectedValue == null && isOptionDefaultSelected(searchResult, option)) {
                     navigator.setSelected(true);
+                    selectionDone = true;
                 } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
                     navigator.setSelected(true);
+                    selectionDone = true;
                 }
                 if (option.isUseHitCount() && option.getCommandName() != null) {
                     navigator.setHitCount(dataModel.getSearch(option.getCommandName()).getResults().getHitCount());
