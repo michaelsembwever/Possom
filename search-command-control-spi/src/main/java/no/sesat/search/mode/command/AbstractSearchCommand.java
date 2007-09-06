@@ -1131,7 +1131,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * @return The query.
          */
         String getQueryRepresentation() {
-            return sb.toString();
+            return sb.toString().trim();
         }
 
         /**
