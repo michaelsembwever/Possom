@@ -345,7 +345,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         private final String who;
         private final String where;
         public WhoWhereSplit(final String who, final String where){
-            this.who = who;
+            
+            // who needs to be wildcarded if it's blank and where is non-blank
+            this.who = who.length() == 0 && where.length() > 0 ? "*" : who;
             this.where = where;
         }
         /**
