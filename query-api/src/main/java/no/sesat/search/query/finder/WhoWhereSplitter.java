@@ -3,7 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
-
+ *
  * WhoWhereSplitter.java
  *
  * Created on 22 February 2007, 14:04
@@ -346,8 +346,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         private final String where;
         public WhoWhereSplit(final String who, final String where){
             
-            // who needs to be wildcarded if it's blank and where is non-blank
-            this.who = who.length() == 0 && where.length() > 0 ? "*" : who;
+            this.who = who;
             this.where = where;
         }
         /**
