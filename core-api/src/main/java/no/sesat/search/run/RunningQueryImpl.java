@@ -285,11 +285,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(confName);
 
                         if (eHint != null && !datamodel.getQuery().getQuery().isBlank()) {
+                            
+                            final boolean firstPage = null == parameters.get("offset") 
+                                    || "0".equals(parameters.get("offset").getString());
+                            
+                            // XXX 'collapse' is not a sesat standard. standardise or move out.
+                            final boolean collapse = null == parameters.get("collapse") 
+                                    || "".equals(parameters.get("collapse").getString());
 
-                            if (context.getSearchMode().isAnalysis()
-                                    && (null == parameters.get("offset") || "0".equals(parameters.get("offset")))
-                                    && (null == parameters.get("collapse") || "".equals(parameters.get("collapse")))
-                                    && eHint.getWeight() > 0) {
+                            if (context.getSearchMode().isAnalysis() && firstPage && collapse && eHint.getWeight() > 0){
 
                                 int score = eHint.getBaseScore();
                                 
