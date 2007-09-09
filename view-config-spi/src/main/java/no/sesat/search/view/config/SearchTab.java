@@ -467,6 +467,12 @@ public final class SearchTab implements Serializable{
         public float getWeight() {
             return this.weight;
         }
+
+        @Override
+        public String toString() {
+            return rule + '[' + command + ']';
+        }
+
     }
     
     /** POJO holding layout information for the given tab. 
