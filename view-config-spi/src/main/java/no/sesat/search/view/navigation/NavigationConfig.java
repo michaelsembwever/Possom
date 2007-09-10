@@ -220,7 +220,6 @@ public final class NavigationConfig implements Serializable {
         private String tab;
         private String backText;
         private boolean out;
-        private boolean realNavigator;
         private int maxsize;
 
         private Map<String, String> staticParameters;
@@ -264,9 +263,6 @@ public final class NavigationConfig implements Serializable {
                     .fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navElement, "false");
 
             AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, navElement, "true");
-
-            AbstractDocumentFactory
                     .fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
 
             AbstractDocumentFactory
@@ -303,14 +299,6 @@ public final class NavigationConfig implements Serializable {
 
         public List<Nav> getChildNavs() {
             return childNavs;
-        }
-
-        public boolean isRealNavigator() {
-            return realNavigator;
-        }
-
-        public void setRealNavigator(final boolean realNavigator) {
-            this.realNavigator = realNavigator;
         }
 
         public int getMaxsize() {
