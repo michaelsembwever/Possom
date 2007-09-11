@@ -12,6 +12,8 @@
 
 package no.sesat.search.query.finder;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,7 +90,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     private boolean multipleCompany = false;
     private boolean multipleFullname = false;
     private boolean validQuery = true;
-    private FullnameOrCompanyFinder fullnameOrCompanyFinder = new FullnameOrCompanyFinder();
+    
+    private final FullnameOrCompanyFinder fullnameOrCompanyFinder = new FullnameOrCompanyFinder();
+    private final Set<OperationClause> invalidatedPlaces = new HashSet<OperationClause>();
 
     // Static --------------------------------------------------------
     
@@ -139,10 +143,13 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         final List<OperationClause> parents  
                 = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
 
+        final List<OperationClause> validGeoParents = new ArrayList<OperationClause>(parents);
+        validGeoParents.removeAll(invalidatedPlaces);
+        
         boolean geo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
                 || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL)
-                || ParentFinder.insideOf(parents, TokenPredicate.GEOLOCAL)
-                || ParentFinder.insideOf(parents, TokenPredicate.GEOGLOBAL);
+                || ParentFinder.insideOf(validGeoParents, TokenPredicate.GEOLOCAL)
+                || ParentFinder.insideOf(validGeoParents, TokenPredicate.GEOGLOBAL);
 
         boolean onlyGeo = geo && clause.getField() == null;
 
@@ -187,7 +194,18 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                 // OR there are multiple fullnames or company names.
                 validQuery = false;
             }else{
+                
                 who.append(context.getTransformedTerms().get(clause));
+                
+                // invalidate any parent geo term since part of it has now been used in the who field
+                for(OperationClause parent : parents){
+                    
+                    if(parent.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
+                            || parent.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL)){
+                        
+                        invalidatedPlaces.add(parent);
+                    }
+                }
             }
         }
     }
