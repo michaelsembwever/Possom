@@ -159,16 +159,9 @@ public final class NavigationHelper {
                     ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
                     : 0;
                     
-// TODO: Specification is a mess, so this becomes ugly. See history in prio-198 & SEARCH-3320. Special case for Oslo.
-// New JIRA created to resolve this: 
-//            return 1 == navResultSize && !nav.getChildNavs().isEmpty()
-//                    ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
-//                    : nav;
-
             return 1 == navResultSize && !nav.getChildNavs().isEmpty()
-                        && (nav.isAutoNavigation() || dm.getNavigation().getNavigation(nav.getId()).getResults().get(0).getTitle().equalsIgnoreCase("oslo")) 
                     ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
-                    : nav;
+                    : nav;                                                                                                                                       x§
         }
     }
     
