@@ -41,7 +41,7 @@ import org.xml.sax.SAXParseException;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-abstract class AbstractResourceLoader
+public abstract class AbstractResourceLoader
         implements Runnable, DocumentLoader, PropertiesLoader, BytecodeLoader {
 
     private enum Polymorphism{

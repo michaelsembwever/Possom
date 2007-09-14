@@ -165,7 +165,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     // Protected -----------------------------------------------------
 
     @Override
-    protected final URL getResource(final Site site) {
+    protected URL getResource(final Site site) {
         return getURL(getResource(), site);
     }
 

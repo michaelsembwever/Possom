@@ -91,6 +91,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         super(cxt);
     }
 
+    @Override
     public boolean urlExists(final URL url) {
 
         try {
@@ -120,6 +121,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return projectName;
     }
 
+    @Override
     protected final URL getResource(final Site site) {
          
         LOG.debug("getResource(" + site + ')');
@@ -163,6 +165,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return resource;
     }
 
+    @Override
     protected InputStream getInputStreamFor(URL url) {
         try {
             return url.openConnection().getInputStream();
