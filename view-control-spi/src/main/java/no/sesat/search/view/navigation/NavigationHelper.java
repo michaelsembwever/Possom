@@ -161,7 +161,7 @@ public final class NavigationHelper {
                     
             return 1 == navResultSize && !nav.getChildNavs().isEmpty()
                     ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
-                    : nav;                                                                                                                                       x§
+                    : nav;
         }
     }
     
