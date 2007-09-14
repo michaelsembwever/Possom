@@ -12,7 +12,6 @@
 package no.sesat.search.site;
 
 import no.schibstedsok.commons.ioc.BaseContext;
-import no.sesat.search.site.config.BytecodeLoader;
 
 /** Defines the context for consumers of Site objects.
  *
