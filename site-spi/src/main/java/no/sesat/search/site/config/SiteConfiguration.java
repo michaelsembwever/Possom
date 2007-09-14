@@ -53,8 +53,7 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     public static final String ALLOW_LIST = "site.allow";
     public static final String DISALLOW_LIST = "site.disallow";
     
-    public interface Context extends BaseContext, PropertiesContext, SiteContext {
-    }
+    public interface Context extends BaseContext, PropertiesContext, SiteContext {}
 
     private final Properties properties = new Properties();
 
@@ -78,11 +77,6 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
             
             site = cxt.getSite();
 
-            /* Check if required configuration resource exist, it not throw an exception */
-            /* TODO: Using UrlResourceLoader directly, should use context to support other resource loaders */
-            if (!UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(Site.CONFIGURATION_FILE, site))) {
-                throw new ResourceLoadException("Could not load '" + Site.CONFIGURATION_FILE + "' for site '" + site.getName());
-            }
             cxt.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(cxt.getSite(), this);
@@ -144,6 +138,10 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
         final SiteConfiguration stc = SiteConfiguration.valueOf(new SiteConfiguration.Context() {
             public Site getSite() {
                 return site;
+            }
+
+            public boolean doesResourceExist(final String resource) {
+                return UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(resource, site));
             }
 
             public PropertiesLoader newPropertiesLoader(

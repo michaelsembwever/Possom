@@ -252,8 +252,12 @@ public abstract class AbstractResourceLoader
         switch(resourceType.getPolymorphism()){
             case UP_HEIRARCHY:
                 // Properties inherent through the fallback process. Keys are *not* overridden.
+                boolean resourceFound = false;
                 for(Site site = getContext().getSite(); site != null; site = site.getParent()){
-                    loadResource(getResource(site));
+                    resourceFound |= loadResource(getResource(site));
+                }
+                if (!resourceFound) {
+                    throw new ResourceLoadException("Could not find resource");
                 }
                 break;
                 
