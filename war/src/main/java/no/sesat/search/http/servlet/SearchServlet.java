@@ -398,7 +398,7 @@ public final class SearchServlet extends HttpServlet {
                 ? c.getString()
                 : null != page && null != page.getString() && 0 < page.getString().length() 
                     ? "i" 
-                    : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
+                    : null != defaultSearchTabKey && 0 < defaultSearchTabKey.length() ? defaultSearchTabKey: "c";
 
         LOG.info("searchTabKey:" +searchTabKey);
 
