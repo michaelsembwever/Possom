@@ -232,9 +232,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
 
-            final boolean isRss = parameters.get(PARAM_OUTPUT) != null 
-                    && parameters.get(PARAM_OUTPUT).getString().equals("rss");
-
             final SearchCommandFactory.Context scfContext = new SearchCommandFactory.Context() {
                 public Site getSite() {
                     return context.getDataModel().getSite().getSite();
@@ -256,7 +253,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 try{
 
                     // If output is rss, only run the one command that will produce the rss output.
-                    if (!isRss || context.getSearchTab().getRssResultName().equals(confName)) {
+                    if (!isRss() || context.getSearchTab().getRssResultName().equals(confName)) {
 
                         hits.put(config.getName(), Integer.valueOf(0));
 
@@ -534,7 +531,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 context);
 
         performEnrichmentHandling(handlerContext);
-        performNavigationHandling(handlerContext);
+
+        if (!isRss()) {
+            performNavigationHandling(handlerContext);
+        }
     }
 
     private void performEnrichmentHandling(final RunningQueryHandler.Context handlerContext){
@@ -561,6 +561,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final NavigationRunningQueryHandler navHandler = new NavigationRunningQueryHandler();
         navHandler.handleRunningQuery(handlerContext);
+    }
+
+    private boolean isRss() {
+        final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
+        return parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).getString().equals("rss");
     }
 
     // Inner classes -------------------------------------------------
