@@ -15,6 +15,8 @@ package no.sesat.search.view.navigation;
 
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.result.NavigationItem;
+import no.sesat.search.result.BasicNavigationItem;
 import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
@@ -164,7 +166,12 @@ public final class NavigationHelper {
                     : nav;
         }
     }
-    
+
+    public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
+        final NavigationItem item = dm.getNavigation().getNavigation(navId);
+        return item != null ? item.getChildByTitle(value) : new BasicNavigationItem();
+    }
+
     // Constructors --------------------------------------------------
     // Public --------------------------------------------------------
     // Package protected ---------------------------------------------
