@@ -3,8 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
- */
-/*
+ *
  * NavigationHelper.java
  *
  * Created on 12/06/2007, 17:13:43
@@ -118,7 +117,7 @@ public final class NavigationHelper {
             addFragment(parameters, navEntry, key, navEntry.getStaticParameters().get(key));
         }
 
-        if (!parameters.containsKey("c")) {
+        if (!parameters.containsKey("c") && null != datamodel.getParameters().getValue("c")) {
             addParameter(parameters, "c", datamodel.getParameters().getValue("c").getUtf8UrlEncoded());
         }
 
