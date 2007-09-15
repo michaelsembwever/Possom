@@ -169,7 +169,18 @@ public final class NavigationHelper {
 
     public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
         final NavigationItem item = dm.getNavigation().getNavigation(navId);
-        return item != null ? item.getChildByTitle(value) : new BasicNavigationItem();
+
+        if (item != null && item.getChildByTitle(value) != null) {
+
+            return item.getChildByTitle(value);
+        } else {
+            final BasicNavigationItem navigationItem = new BasicNavigationItem();
+            
+            navigationItem.setHitCount(0);
+            navigationItem.setTitle(value);
+           
+            return navigationItem;
+        }
     }
 
     // Constructors --------------------------------------------------
