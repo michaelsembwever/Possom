@@ -160,11 +160,20 @@ public final class NavigationHelper {
                     ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
                     : 0;
                     
-            return 1 == navResultSize && !nav.getChildNavs().isEmpty()
+// TODO: Specification is a mess, so this becomes ugly. See history in prio-198 & SEARCH-3320.
+// TODO: Haven't found a general way to solve this. Special case for Oslo.
+// TODO: New JIRA created to resolve this: SEARCH-3451
+//            return 1 == navResultSize && !nav.getChildNavs().isEmpty()
+//                    ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
+//                    : nav;
+
+
+            return 1 == navResultSize && !nav.getChildNavs().isEmpty() && (nav.isAutoNavigation() || isOslo(dm, nav))
                     ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
                     : nav;
         }
     }
+
 
     public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
         final NavigationItem item = dm.getNavigation().getNavigation(navId);
@@ -273,5 +282,9 @@ public final class NavigationHelper {
         return str;
     }
     
+    private static boolean isOslo(DataModel dm, NavigationConfig.Nav nav) {
+        return dm.getNavigation().getNavigation(nav.getId()).getResults().get(0).getTitle().equalsIgnoreCase("oslo");
+    }
+
     // Inner classes -------------------------------------------------
 }

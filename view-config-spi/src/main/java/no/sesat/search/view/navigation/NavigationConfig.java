@@ -227,6 +227,7 @@ public final class NavigationConfig implements Serializable {
         private final Navigation navigation;
         private final Nav parent;
         private boolean excludeQuery = false;
+        private boolean autoNavigation;
 
         public Nav(final Nav parent, final Navigation navigation, final Element navElement) {
 
@@ -267,6 +268,8 @@ public final class NavigationConfig implements Serializable {
 
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "autoNavigation", ParseType.Boolean, navElement, "true");
 
 
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
@@ -386,6 +389,15 @@ public final class NavigationConfig implements Serializable {
                     + ", field='" + field + '\''
                     + ", staticParameters=" + staticParameters
                     + '}';
+        }
+
+
+        public boolean isAutoNavigation() {
+            return autoNavigation;
+        }
+
+        public void setAutoNavigation(boolean autoNavigation) {
+            this.autoNavigation = autoNavigation;
         }
 
         /**
