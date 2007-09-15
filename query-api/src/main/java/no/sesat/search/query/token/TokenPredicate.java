@@ -55,6 +55,7 @@ public enum TokenPredicate implements Predicate {
     EXACT_LAST (Type.FAST),
     MATERIAL (Type.FAST),
     PRIOCOMPANYNAME (Type.FAST),
+    EXACT_PRIOCOMPANYNAME (Type.FAST),
     PRODUCT_BICYCLE (Type.FAST),
     PRODUCT_CAR (Type.FAST),
     PRODUCT_CHILDREN (Type.FAST),
