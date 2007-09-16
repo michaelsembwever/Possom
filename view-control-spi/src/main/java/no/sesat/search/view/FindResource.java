@@ -20,7 +20,8 @@ import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.UrlResourceLoader;
 import org.apache.log4j.Logger;
 
-/**
+/** https://jira.sesam.no/jira/browse/SEARCH-3452
+ * Move 302 resource redirects to internal resource directives
  *
  * @author mick
  * @version $Id$
