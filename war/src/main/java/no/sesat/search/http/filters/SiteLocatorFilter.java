@@ -22,7 +22,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.text.MessageFormat;
-import java.net.URL;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -41,6 +40,7 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.view.FindResource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -70,7 +70,6 @@ public final class SiteLocatorFilter implements Filter {
     private static final String DEBUG_REDIRECTING_TO = " redirect to ";
     private static final String WARN_FAULTY_BROWSER = "Site in datamodel does not match requested site. User agent is ";
 
-    private static final String HTTP = "http://";
     private static final String PUBLISH_DIR = "/img/";
     
     private static final String UNKNOWN = "unknown";
@@ -97,8 +96,6 @@ public final class SiteLocatorFilter implements Filter {
             return props.getProperty(Site.PARENT_SITE_KEY);
         }
     };
-
-    private static final long START_TIME = System.currentTimeMillis();
 
     // Attributes ----------------------------------------------------
 
@@ -176,33 +173,8 @@ public final class SiteLocatorFilter implements Filter {
                     if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
                         // This URL does not belong to search-portal
-                        final String url;
-
-                        if (resource.startsWith(PUBLISH_DIR)) { // publishing system
-                            // the publishing system is responsible for this.
-                            final Properties props = SiteConfiguration.valueOf(site).getProperties();
-                            url = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL)
-                                + '/' + resource;
-
-                        }  else  {
-                            // strip the version number out of the resource
-                            final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
-
-                            // Find resource in current site or any of its
-                            // ancestors
-                            url = recursivelyFindResource(noVersionRsc, site);
-
-                            if (url == null) {
-                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
-
-                                if(resource.endsWith(".css")){
-                                    LOG.info(ERR_NOT_FOUND + resource);
-                                }else{
-                                    LOG.error(ERR_NOT_FOUND + resource);
-                                }
-                            }
-                        }
-
+                        final String url = FindResource.find(site, resource);
+                        
                         if (url != null) {
                             // Cache the client-resource redirects on a short (session-equivilant) period
                             res.setHeader("Cache-Control", "Public"); 
@@ -210,6 +182,18 @@ public final class SiteLocatorFilter implements Filter {
                             // send the redirect to where the resource really resides
                             res.sendRedirect(url);
                             LOG.trace(resource + DEBUG_REDIRECTING_TO + url);
+                            
+                            
+                        }else if (resource.startsWith(PUBLISH_DIR)){
+                            // XXX Why do we avoid sending 404 for publish resources?
+                            
+                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                            if(resource.endsWith(".css")){
+                                LOG.info(ERR_NOT_FOUND + resource);
+                            }else{
+                                LOG.error(ERR_NOT_FOUND + resource);
+                            }                            
                         }
 
                     } else  {
@@ -384,30 +368,6 @@ public final class SiteLocatorFilter implements Filter {
         }
     }
 
-    private String recursivelyFindResource(final String resource, final Site site) throws IOException {
-
-        // Problem with this approach is that skins can be updated without the server restarting (& updating START_TIME)
-        // TODO an alternative approach would be to collect the lastModified timestamp of the resource and use it.
-        final String datedResource = resource
-                .replaceAll("/", "/" + START_TIME + "/")
-                .replaceFirst("/" + START_TIME + "/", "");
-
-        final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
-
-        final URL u = new URL(url);
-
-        if (UrlResourceLoader.doesUrlExist(u)) {
-            // return a relative url to ensure it can survice through an out-of-cluster server.
-            return '/' + site.getConfigContext() + '/' + datedResource;
-            
-        } else if (site.getParent() != null) {
-            return recursivelyFindResource(resource, site.getParent());
-            
-        } else {
-            return null;
-        }
-    }
-
     static String getRequestId(final ServletRequest servletRequest){
 
         return null != servletRequest.getAttribute("UNIQUE_ID")
@@ -430,7 +390,7 @@ public final class SiteLocatorFilter implements Filter {
         }
 
         request.setAttribute(Site.NAME_KEY, site);
-        request.setAttribute("startTime", START_TIME);
+        request.setAttribute("startTime", FindResource.START_TIME);
         MDC.put(Site.NAME_KEY, site.getName());
         MDC.put("UNIQUE_ID", getRequestId(request));
         
@@ -486,7 +446,9 @@ public final class SiteLocatorFilter implements Filter {
             
         }else{
             
-            for( Enumeration<String> en = request.getParameterNames(); en.hasMoreElements(); ){
+            for(@SuppressWarnings("unchecked")
+                    Enumeration<String> en = request.getParameterNames(); en.hasMoreElements(); ){
+                
                 final String param = en.nextElement();
                 url.append(param + '=' + request.getParameter(param));
                 if(en.hasMoreElements()){
