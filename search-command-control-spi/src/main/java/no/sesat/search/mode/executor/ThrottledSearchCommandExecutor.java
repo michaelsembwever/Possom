@@ -100,6 +100,7 @@ final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor
             
                 EXECUTORS_LOCK.writeLock().lock();
                 
+                // TODO make these settings configurable through modes.xml
                 service = new ThreadPoolExecutor(
                         0, 
                         Integer.MAX_VALUE, 
