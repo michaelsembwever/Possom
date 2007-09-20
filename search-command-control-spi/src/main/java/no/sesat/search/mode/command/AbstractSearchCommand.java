@@ -241,9 +241,13 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.trace("call()");
 
             performQueryTransformation();
+            checkForCancellation();
+            
             final ResultList<? extends ResultItem> result = performExecution();
+            checkForCancellation();
+            
             performResultHandling(result);
-
+            checkForCancellation();
 
             completed = true;
             thread = null;
@@ -976,6 +980,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         updateTransformedQuerySesamSyntax();
     }
 
+    private void checkForCancellation(){
+        if( isCancelled() ){ throw new SearchCommandException("cancelled", new InterruptedException()); }
+    }
+    
     // Inner classes -------------------------------------------------
 
 
