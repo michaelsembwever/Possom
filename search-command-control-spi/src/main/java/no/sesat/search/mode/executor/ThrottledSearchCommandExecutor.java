@@ -101,7 +101,7 @@ final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor
                 EXECUTORS_LOCK.writeLock().lock();
                 
                 service = new ThreadPoolExecutor(
-                        1, 
+                        0, 
                         Integer.MAX_VALUE, 
                         60L, 
                         TimeUnit.SECONDS, 
