@@ -362,16 +362,19 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = null;
 
             try{
-                
                 final SearchCommandExecutor executor = SearchCommandExecutorFactory
-                    .getController(context.getSearchMode().getExecutor());  
-                
-                results = executor.waitForAll(executor.invokeAll(commands), TIMEOUT);
+                        .getController(context.getSearchMode().getExecutor()); 
 
+                try{
+                    results = executor.invokeAll(commands);
+                
+                }finally{
+                    results = executor.waitForAll(results, TIMEOUT);
+                }
             }catch(TimeoutException te){
                 LOG.error(ERR_COMMAND_TIMEOUT + te.getMessage());
             }
-
+            
             // Check that we have atleast one valid execution
             for(SearchCommand command : commands){
                 allCancelled &= command.isCancelled();
