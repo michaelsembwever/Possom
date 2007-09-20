@@ -18,8 +18,8 @@ import java.util.List;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
 
-/**
- * TODO: Move into sesat-search-command-control-spi
+/** The NavigationController for cross-vertical navigation.
+ * Allowed to map to multiple commands and is selected if any of those commands are current.
  * @version $Id$
  */
 public final class TabNavigationController implements NavigationController {
@@ -41,12 +41,19 @@ public final class TabNavigationController implements NavigationController {
         final NavigationItem item = new BasicNavigationItem();
         
         // hitcount
-        item.setHitCount(0);
+        item.setHitCount(-1);
+        
         for(String commandName : commandNames){
             
             final SearchDataObject searchDO = dataModel.getSearch(commandName);
             if(null != searchDO){
-                item.setHitCount(item.getHitCount() + searchDO.getResults().getHitCount());            
+                
+                final int hitCount = searchDO.getResults().getHitCount();
+                
+                // do not accumulate "-1" hitcounts
+                item.setHitCount( -1 == item.getHitCount() && -1 == hitCount
+                        ? -1
+                        : Math.max(0, item.getHitCount()) + Math.max(0, hitCount));
             }
         }
         
