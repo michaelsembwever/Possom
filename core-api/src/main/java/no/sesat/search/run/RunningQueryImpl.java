@@ -359,7 +359,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
             
-            Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = null;
+            @SuppressWarnings("unchecked")
+            Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = Collections.EMPTY_MAP;
 
             try{
                 final SearchCommandExecutor executor = SearchCommandExecutorFactory
