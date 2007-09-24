@@ -3,8 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
- */
-/*
+ **
  * DataModelResultHandler.java
  *
  * Created on May 26, 2006, 4:11 PM
@@ -13,7 +12,6 @@
 
 package no.sesat.search.result.handler;
 
-import java.util.Map;
 import java.util.Properties;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
@@ -21,7 +19,6 @@ import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.mode.config.SearchConfiguration;
-import no.sesat.search.view.config.SearchTab;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
@@ -59,7 +56,6 @@ public final class DataModelResultHandler implements ResultHandler{
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchConfiguration config = cxt.getSearchConfiguration();
-        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         // results
         LOG.debug(DEBUG_ADD_RESULT + config.getName());

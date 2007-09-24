@@ -3,8 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
- */
-/*
+ *
  * DataModelFactory.java
  *
  * Created on 23 January 2007, 09:27
@@ -51,7 +50,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
     private static final String DATA_MODEL_FACTORY_IMPL = "sesam.datamodel.impl";
 
     private static final Logger LOG = Logger.getLogger(DataModelFactory.class);
-
+    
     // Attributes ----------------------------------------------------
 
     private final Context context;

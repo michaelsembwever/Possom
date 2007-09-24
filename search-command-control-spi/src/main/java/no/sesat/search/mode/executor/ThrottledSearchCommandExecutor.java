@@ -62,19 +62,15 @@ final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor
                 
                 if(command.isCancelled()){
                     
-                    LOG.warn("");
-                    LOG.warn("FREEZING THREAD POOL EXECUTOR " + command.getSearchConfiguration());
-                    LOG.warn(" at " + Math.max(1, executor.getActiveCount()));
-                    LOG.warn("");
+                    LOG.warn("FREEZING (at " + Math.max(1, executor.getActiveCount()) 
+                            + ") THREAD POOL EXECUTOR " + command.getSearchConfiguration() + '\n');
 
                     // we freeze thread pool at current size (excluding the just failed callable)
                     executor.setMaximumPoolSize(Math.max(1, executor.getActiveCount()));
 
                 }else if(Integer.MAX_VALUE > executor.getMaximumPoolSize()){
                     
-                    LOG.warn("");
-                    LOG.warn("Restoring ThreadPoolExecutor " + command.getSearchConfiguration());
-                    LOG.warn("");
+                    LOG.warn("Restoring ThreadPoolExecutor " + command.getSearchConfiguration() + '\n');
 
                     // command was successful unfreeze thread pool
                     executor.setMaximumPoolSize(Integer.MAX_VALUE);

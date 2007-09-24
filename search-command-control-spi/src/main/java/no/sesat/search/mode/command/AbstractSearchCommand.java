@@ -11,6 +11,7 @@ package no.sesat.search.mode.command;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
@@ -58,6 +59,7 @@ import org.apache.log4j.MDC;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import no.sesat.search.datamodel.access.DataModelAccessException;
 
 /** The base abstraction for Search Commands providing a large framework for commands to run against.
  *                                                                                                          <br/><br/>
@@ -237,22 +239,36 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         try {
+            try {
 
-            LOG.trace("call()");
+                LOG.trace("call()");
 
-            performQueryTransformation();
-            checkForCancellation();
+                performQueryTransformation();
+                checkForCancellation();
+
+                final ResultList<? extends ResultItem> result = performExecution();
+                checkForCancellation();
+
+                performResultHandling(result);
+                checkForCancellation();
+
+                completed = true;
+                thread = null;
+                return result;
+
+            } catch(UndeclaredThrowableException ute){
+
+                if(ute.getCause() instanceof DataModelAccessException && isCancelled()){
+
+                    // This is partially expected because the datamodel's 
+                    //  controlLevel would have moved on through the process stack.
+                    LOG.trace("Cancelled command threw underlying exception", ute.getCause());
+                    return new BasicResultList<ResultItem>();
+
+                }
+                throw ute;
+            }
             
-            final ResultList<? extends ResultItem> result = performExecution();
-            checkForCancellation();
-            
-            performResultHandling(result);
-            checkForCancellation();
-
-            completed = true;
-            thread = null;
-            return result;
-
         } catch (RuntimeException rte) {
             LOG.error(ERROR_RUNTIME, rte);
             return new BasicResultList<ResultItem>();
