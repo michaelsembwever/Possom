@@ -290,7 +290,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             final boolean collapse = null == parameters.get("collapse") 
                                     || "".equals(parameters.get("collapse").getString());
 
-                            if (context.getSearchMode().isAnalysis() && firstPage && collapse && eHint.getWeight() > 0){
+                            if (context.getSearchMode().isAnalysis() && (firstPage||eHint.isAlwaysvisible()) && collapse && eHint.getWeight() > 0){
 
                                 int score = eHint.getBaseScore();
                                 
