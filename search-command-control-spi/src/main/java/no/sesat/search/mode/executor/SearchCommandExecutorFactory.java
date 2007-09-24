@@ -15,6 +15,10 @@ package no.sesat.search.mode.executor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.sesat.search.mode.SearchMode;
 import no.sesat.search.mode.SearchMode.SearchCommandExecutorConfig.Controller;
 
@@ -27,6 +31,10 @@ public final class SearchCommandExecutorFactory {
 
     // Constants -----------------------------------------------------
 
+    private static final Map<Class<? extends SearchCommandExecutor>,SearchCommandExecutor> INSTANCES
+                = new HashMap<Class<? extends SearchCommandExecutor>,SearchCommandExecutor>();
+
+    private static final ReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     // Attributes ----------------------------------------------------
 
@@ -49,17 +57,39 @@ public final class SearchCommandExecutorFactory {
     public static SearchCommandExecutor getController(final SearchMode.SearchCommandExecutorConfig config){
 
         try{
-
+            
             final String name = "no.sesat.search.mode.executor."
                     + SearchMode.SearchCommandExecutorConfig.class.getDeclaredField(config.name())
                     .getAnnotation(Controller.class).value();
 
+            @SuppressWarnings("unchecked")
             final Class<? extends SearchCommandExecutor> cls
                     = (Class<? extends SearchCommandExecutor>)config.getClass().getClassLoader().loadClass(name);
+            
+            SearchCommandExecutor result = null;
+            
+            try{
+                INSTANCES_LOCK.readLock().lock();
+                result = INSTANCES.get(cls);   
+                
+            } finally {
+                INSTANCES_LOCK.readLock().unlock();
+            }
+            try{
+                INSTANCES_LOCK.writeLock().lock();
+            
+                if(null == result){
+                    final Constructor<? extends SearchCommandExecutor> constructor = cls.getConstructor();
 
-            final Constructor<? extends SearchCommandExecutor> constructor = cls.getConstructor();
-
-            return constructor.newInstance();
+                    result = constructor.newInstance();
+                    
+                    INSTANCES.put(cls, result);
+                }
+            }finally{
+                INSTANCES_LOCK.writeLock().unlock();
+            }
+            
+            return result;
 
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException(ex);

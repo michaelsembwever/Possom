@@ -49,7 +49,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     /**
      * Creates a new instance of AbstractSearchCommandExecutor
      */
-    public AbstractSearchCommandExecutor() {
+    AbstractSearchCommandExecutor() {
     }
 
     // Public --------------------------------------------------------
@@ -65,7 +65,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
         
         for (SearchCommand c : callables) {
             
-            final ExecutorService es = getExecutorService(c);
+            final ExecutorService es = getExecutorService();
             results.put(es.submit(c), c);
         }
 
@@ -96,13 +96,9 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     public void stop() {
         
         LOG.warn("Shutting down thread pool");
-        for(ExecutorService service : getExecutorServices()){
-            service.shutdownNow();
-        }
+        getExecutorService().shutdownNow();
     }
 
-    protected abstract ExecutorService getExecutorService(SearchCommand searchCommand);
-    
-    protected abstract Collection<ExecutorService> getExecutorServices();
+    protected abstract ExecutorService getExecutorService();
 
 }
