@@ -409,13 +409,15 @@ public final class SearchTab implements Serializable{
                 final int baseScore,
                 final int threshold,
                 final float weight,
-                final String command){
+                final String command,
+                final boolean alwaysvisible){
 
             this.rule = rule;
             this.baseScore = baseScore;
             this.threshold = threshold;
             this .weight = weight;
             this.command = command;
+            this.alwaysvisible=alwaysvisible;
         }
 
 
@@ -424,6 +426,7 @@ public final class SearchTab implements Serializable{
         private final int threshold;
         private final String command;
         private final float weight;
+        private final boolean alwaysvisible; 
 
         /**
          * Getter for property rule.
@@ -471,6 +474,16 @@ public final class SearchTab implements Serializable{
         @Override
         public String toString() {
             return rule + '[' + command + ']';
+        }
+        
+        /**
+         * Getter for property alwaysvisible.
+         *  alwaysvisible = means that there is no "firstPage" limitation if the
+         *  enrichments should be visible or not. 
+         * @return Value of property alwaysvisible.
+         */
+        public boolean isAlwaysvisible(){
+        	return this.alwaysvisible;
         }
 
     }
