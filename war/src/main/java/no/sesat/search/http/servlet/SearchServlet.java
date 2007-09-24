@@ -531,7 +531,7 @@ public final class SearchServlet extends HttpServlet {
                 + (null != referer ? "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>" : "")
                 + "<browser ipaddress=\"" + ip + "\">" + StringEscapeUtils.escapeXml(userAgent) + "</browser>"
                 + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
-                + "</request>");
+                + "</search-servlet>");
     }
     
     // probably apache commons could simplify this // duplicated in SiteLocatorFilter
