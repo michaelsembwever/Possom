@@ -130,21 +130,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // Static --------------------------------------------------------
 
-    /**
-     */
-    protected static final ResultList<? extends ResultItem> getSearchResult(
-            final String id,
-            final DataModel datamodel) throws InterruptedException {
-
-        synchronized (datamodel.getSearches()) {
-            while (null == datamodel.getSearch(id)) {
-                // next line releases the monitor so it is possible to call this method from different threads
-                datamodel.getSearches().wait();
-            }
-        }
-        return datamodel.getSearch(id).getResults();
-    }
-
     // Constructors --------------------------------------------------
 
     /**
@@ -277,11 +262,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             // restore thread name
             Thread.currentThread().setName(t);
         }
-
     }
 
     /**
-     * TODO comment me. *
+     * Handles cancelling the command.
+     *  Inserts an "-1" result list. And does the result handling on it.
+     * Returns true if cancellation action was taken.
      */
     public synchronized boolean handleCancellation() {
 
@@ -299,6 +285,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return !completed;
     }
     
+    /** Has the command been cancelled.
+     * Calling this method only makes sense once the call() method has been.
+     **/
     public synchronized boolean isCancelled(){
         return null == thread && !completed;
     }
@@ -425,6 +414,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // Protected -----------------------------------------------------
 
+    /** Get the results from another search command waiting if neccessary.
+     */
+    protected final ResultList<? extends ResultItem> getSearchResult(
+            final String id,
+            final DataModel datamodel) throws InterruptedException {
+
+        synchronized (datamodel.getSearches()) {
+            while (null == datamodel.getSearch(id)) {
+                // we're not going to hang around waiting if we've been already left out in the cold
+                checkForCancellation();
+                // next line releases the monitor so it is possible to call this method from different threads
+                datamodel.getSearches().wait(1000);
+            }
+        }
+        return datamodel.getSearch(id).getResults();
+    }
 
     /**
      * Returns the leaf representation with the special characters making it a fielded leaf escaped.
@@ -540,10 +545,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // The DataModel result handler is a hardcoded feature of the architecture
         DATAMODEL_HANDLER.handleResult(resultHandlerContext, datamodel);
-        // also ping everybody that might be waiting on these results: "dinner's served!"
-        synchronized (datamodel.getSearches()) {
-            datamodel.getSearches().notifyAll();
-        }
+        
     }
 
     /**
@@ -996,6 +998,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         updateTransformedQuerySesamSyntax();
     }
 
+    /** If the command has been cancelled will throw the appropriate SearchCommandException.
+     * Calling this method only makes sense once the call() method has been, 
+     *   otherwise it is guaranteed to throw the exception.
+     **/
     private void checkForCancellation(){
         if( isCancelled() ){ throw new SearchCommandException("cancelled", new InterruptedException()); }
     }

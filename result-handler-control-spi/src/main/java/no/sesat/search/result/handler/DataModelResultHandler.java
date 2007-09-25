@@ -95,6 +95,11 @@ public final class DataModelResultHandler implements ResultHandler{
                 new DataObject.Property("results", cxt.getSearchResult()));
 
         datamodel.setSearch(config.getName(), searchDO);
+        
+        // also ping everybody that might be waiting on these results: "dinner's served!"
+        synchronized (datamodel.getSearches()) {
+            datamodel.getSearches().notifyAll();
+        }
     }
 
     // Y overrides ---------------------------------------------------
