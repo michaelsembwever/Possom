@@ -191,8 +191,12 @@ public final class SearchServlet extends HttpServlet {
 
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
-                    }else{
+                    } else if (null != output && "rss".equals(output.getString()) && "".equals(searchTab.getRssResultName())) {
 
+                        LOG.warn("RSS not supported for requested vertical " + searchTab.toString());
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                    } else {
                         performSearch(request, response, genericCxt, searchTab, stopWatch);
                     }
                 }else{
