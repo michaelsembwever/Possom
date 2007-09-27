@@ -213,7 +213,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="com.opensymphony.oscache"><level value="INFO"/></logger>
 
     <root>
-        <level value="ALL"/>
+        <level value="@log.level@"/>
         <appender-ref ref="LOG_APPEND_ASYNC"/>
     </root>
 </log4j:configuration>
