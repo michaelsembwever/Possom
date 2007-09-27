@@ -13,7 +13,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="File" value="@log.directory@/@log.file@.log"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
         <param name="Append" value="true"/>
-        <param name="Threshold" value="@log.level@"/>
+        <param name="Threshold" value="@log.level@"/> <!-- note comment next to root logger -->
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
@@ -213,6 +213,10 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="com.opensymphony.oscache"><level value="INFO"/></logger>
 
     <root>
+        <!-- IMPORTANT: production cannot handle writing to sesam.log at a lower threshold than WARN
+          -  IMPORTANT:  setting sesam.log's appender to WARN is not enough 
+          -  IMPORTANT:  so it must also be set here at the logger level.
+        -->
         <level value="@log.level@"/>
         <appender-ref ref="LOG_APPEND_ASYNC"/>
     </root>
