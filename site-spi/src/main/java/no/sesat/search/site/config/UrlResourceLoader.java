@@ -36,20 +36,13 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
     // Constants -----------------------------------------------------
 
-    private static final GeneralCacheAdministrator PRESENCE_CACHE;
-
-    // Updates are guaranteed to happen within the specified period but can happen more often.
-    private static final int REFRESH_PERIOD = 600;
+    private static final GeneralCacheAdministrator PRESENCE_CACHE = new GeneralCacheAdministrator();
+    private static final int REFRESH_PERIOD = 60; // one minute
 
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
 
-    static {
-        final Properties cacheProperties = new Properties();
-        cacheProperties.setProperty("cache.capacity", "-1");
-        PRESENCE_CACHE = new GeneralCacheAdministrator(cacheProperties);
-    }
 
     // Attributes ----------------------------------------------------
 
@@ -110,11 +103,8 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
         boolean success = false;
 
-        // Spread the updates over half of the refresh period.
-        final int refreshPeriod = (int) (REFRESH_PERIOD + (REFRESH_PERIOD + 1) * Math.random()) / 2;
-
         try{
-            success = (Boolean)PRESENCE_CACHE.getFromCache(url.toString(), refreshPeriod);
+            success = (Boolean)PRESENCE_CACHE.getFromCache(url.toString(), REFRESH_PERIOD);
 
         }catch(NeedsRefreshException nre){
 
