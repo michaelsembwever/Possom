@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (2005-2007) Schibsted Søk AS
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -41,6 +39,8 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
     
     private static final ReadWriteLock THROTTLES_LOCK = new ReentrantReadWriteLock();
     
+    private static volatile long lastThrottleLog = System.currentTimeMillis() / 60000;
+    
     public ThrottledSearchCommandExecutor(){}
     
 
@@ -65,6 +65,12 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
                 throttle.incrementPedal();
             }
         }
+
+        if (LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastThrottleLog) {
+
+            logThrottles();
+            lastThrottleLog = System.currentTimeMillis() / 60000;
+        }        
         
         return super.invokeAll(allowedCallables);
     }
@@ -132,6 +138,19 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
         
         return throttle;
     }
+    
+    private static void logThrottles(){
+        
+        final StringBuilder sb = new StringBuilder();
+        THROTTLES_LOCK.readLock().lock();
+        for(Map.Entry<SearchConfiguration,Throttle> entry : THROTTLES.entrySet()){
+            sb.append('\n' + entry.getKey().toString() + " executing " + entry.getValue().getPedal());
+        }
+        THROTTLES_LOCK.readLock().unlock();
+        
+        LOG.debug(sb.toString());
+    }
+            
         
     private static final class Throttle{
     
