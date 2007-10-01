@@ -29,7 +29,11 @@ import no.sesat.search.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
 
-/**
+/** Base definition of a factory used to create a datamodel, its datanodes, and its dataobjects.
+ * Also provides the SiteKeyedFactory implementation, via static methods, 
+ *  to store the current instances in the jvm per site.
+ * Each site defines the final DataModelFactory implementation through the "sesam.datamodel.impl" property
+ *  in its configuration.properties.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
@@ -57,7 +61,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
     // Static --------------------------------------------------------
 
-    /**
+    /** Instance applicable to the provided context.
      * 
      * @param cxt 
      * @return 
@@ -76,7 +80,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.readLock().unlock();
         }
 
-        if (instance == null) {
+        if (null == instance) {
             try{
                 INSTANCES_LOCK.writeLock().lock();
 
@@ -92,11 +96,6 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
         return instance;
     }
 
-    /**
-     * 
-     * @param site 
-     * @return 
-     */
     public boolean remove(final Site site){
 
         try{
@@ -174,6 +173,8 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
             final String clsName = siteConf.getProperty(DATA_MODEL_FACTORY_IMPL);
             LOG.info("constructing for " + cxt.getSite() + " instance of " + clsName);
+            
+            @SuppressWarnings("unchecked")
             final Class<DataModelFactory> cls = (Class<DataModelFactory>) Class.forName(clsName);
 
             return cls.getDeclaredConstructor(Context.class).newInstance(cxt);
