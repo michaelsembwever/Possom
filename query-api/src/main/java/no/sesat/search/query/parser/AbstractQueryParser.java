@@ -219,17 +219,31 @@ public abstract class AbstractQueryParser implements QueryParser {
         return query;
     }
 
-    /**
+    /** HACK because phone numbers and organisation numbers need to finish
+     * with a space. SEARCH-672
      * 
      * @param query 
      * @return 
      */
     protected final String numberNeedsTrailingSpace(String query){
         
-        // HACK because phone numbers and organisation numbers need to finish
-        // with a space. SEARCH-672
         if( query.length() > 0 && Character.isDigit( query.charAt(query.length()-1) ) ){
             query = query + ' ';
+            ReInit(new StringReader(query));
+        }
+        return query;
+    }
+    
+    /** HACK because a floating hyphon is interpretted as a NotClause.
+     * Sesam syntax requires the hyphon to be adjacent, without whitespace, to the next term. SEARCH-3390
+     * 
+     * @param query 
+     * @return 
+     */
+    protected final String fixFloatingHyphon(String query){
+        
+        if(0 <= query.indexOf(" - ")){
+            query = query.replaceAll("( )+-( )+", "- ");
             ReInit(new StringReader(query));
         }
         return query;

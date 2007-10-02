@@ -34,6 +34,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
         qs = balance(qs, '(', ')');
         qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
+        qs = fixFloatingHyphon(qs);
         token_source.SwitchTo(DEFAULT);
         //LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
@@ -46,6 +47,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
         qs = balance(qs, '(', ')');
         qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
+        qs = fixFloatingHyphon(qs);
         token_source.SwitchTo(lexicalState);
     }
 
