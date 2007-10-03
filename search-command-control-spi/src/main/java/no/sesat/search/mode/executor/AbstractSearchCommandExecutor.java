@@ -1,3 +1,9 @@
+/* Copyright (2007) Schibsted Søk AS
+ * This file is part of SESAT.
+ * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
+ * You should have received a copy of the SESAT License along with this program.  
+ * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
+ */
 /*
  * AbstractSearchCommandExecutor.java
  *
@@ -43,7 +49,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     /**
      * Creates a new instance of AbstractSearchCommandExecutor
      */
-    public AbstractSearchCommandExecutor() {
+    AbstractSearchCommandExecutor() {
     }
 
     // Public --------------------------------------------------------
@@ -59,7 +65,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
         
         for (SearchCommand c : callables) {
             
-            final ExecutorService es = getExecutorService(c);
+            final ExecutorService es = getExecutorService();
             results.put(es.submit(c), c);
         }
 
@@ -90,13 +96,9 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     public void stop() {
         
         LOG.warn("Shutting down thread pool");
-        for(ExecutorService service : getExecutorServices()){
-            service.shutdownNow();
-        }
+        getExecutorService().shutdownNow();
     }
 
-    protected abstract ExecutorService getExecutorService(SearchCommand searchCommand);
-    
-    protected abstract Collection<ExecutorService> getExecutorServices();
+    protected abstract ExecutorService getExecutorService();
 
 }

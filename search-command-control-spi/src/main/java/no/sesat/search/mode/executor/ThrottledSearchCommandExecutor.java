@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (2005-2007) Schibsted Søk AS
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
@@ -8,16 +8,12 @@
  */
 package no.sesat.search.mode.executor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,7 +21,6 @@ import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
-import org.apache.log4j.Logger;
 
 /**
  * An extension to the ParallelSearchCommandExecutor that supports individual thread pools for each skin's different
@@ -37,14 +32,48 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor {
+final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor {
+   
+    private static final Map<SearchConfiguration,Throttle> THROTTLES 
+            = new HashMap<SearchConfiguration,Throttle>();
     
-    private static final Map<SearchConfiguration,ExecutorService> EXECUTORS 
-            = new HashMap<SearchConfiguration,ExecutorService>();
+    private static final ReadWriteLock THROTTLES_LOCK = new ReentrantReadWriteLock();
     
-    private static final ReadWriteLock EXECUTORS_LOCK = new ReentrantReadWriteLock();
+    private static volatile long lastThrottleLog = System.currentTimeMillis() / 60000;
     
     public ThrottledSearchCommandExecutor(){}
+    
+
+    @Override
+    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+            Collection<SearchCommand> callables) throws InterruptedException  {
+        
+        final Collection<SearchCommand> allowedCallables = new ArrayList<SearchCommand>(callables);
+        
+        for(SearchCommand command : callables){
+            
+            final Throttle throttle = getThrottle(command.getSearchConfiguration());
+            
+            if(throttle.isThrottled()){
+                
+                LOG.error(command.getSearchConfiguration() + " is throttled and will not be executed");
+                allowedCallables.remove(command);
+                command.handleCancellation();
+                
+            }else{
+                
+                throttle.incrementPedal();
+            }
+        }
+
+        if (LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastThrottleLog) {
+
+            logThrottles();
+            lastThrottleLog = System.currentTimeMillis() / 60000;
+        }        
+        
+        return super.invokeAll(allowedCallables);
+    }
 
     @Override
     public Map<Future<ResultList<? extends ResultItem>>, SearchCommand> waitForAll(
@@ -57,69 +86,104 @@ final class ThrottledSearchCommandExecutor extends AbstractSearchCommandExecutor
         }finally{
             
             for(SearchCommand command : results.values()){
-                
-                final ThreadPoolExecutor executor = getExecutorService(command);
-                
+
+                final Throttle throttle = getThrottle(command.getSearchConfiguration());
+                                
                 if(command.isCancelled()){
                     
-                    LOG.warn("");
-                    LOG.warn("FREEZING THREAD POOL EXECUTOR " + command.getSearchConfiguration());
-                    LOG.warn(" at " + Math.max(1, executor.getActiveCount()));
-                    LOG.warn("");
+                    LOG.warn("FREEZING (at " + Math.max(1, throttle.getPedal()) 
+                            + ") THREAD POOL EXECUTOR " + command.getSearchConfiguration() + '\n');
 
                     // we freeze thread pool at current size (excluding the just failed callable)
-                    executor.setMaximumPoolSize(Math.max(1, executor.getActiveCount()));
+                    throttle.throttle();
 
-                }else if(Integer.MAX_VALUE > executor.getMaximumPoolSize()){
+                }else if(throttle.isThrottled()){
                     
-                    LOG.warn("");
-                    LOG.warn("Restoring ThreadPoolExecutor " + command.getSearchConfiguration());
-                    LOG.warn("");
+                    LOG.warn("Restoring ThreadPoolExecutor " + command.getSearchConfiguration() + '\n');
 
                     // command was successful unfreeze thread pool
-                    executor.setMaximumPoolSize(Integer.MAX_VALUE);
+                    throttle.unthrottle();
                 }
+
+                throttle.decrementPedal();
             }
         }
     }
-
-    protected ThreadPoolExecutor getExecutorService(final SearchCommand command) {
+    
+    protected Throttle getThrottle(final SearchConfiguration config) {
         
-        ThreadPoolExecutor service;
+        Throttle throttle;
         try{
             
-            EXECUTORS_LOCK.readLock().lock();
-            service = (ThreadPoolExecutor)EXECUTORS.get(command.getSearchConfiguration());
+            THROTTLES_LOCK.readLock().lock();
+            throttle = THROTTLES.get(config);
         
         }finally{
-            EXECUTORS_LOCK.readLock().unlock();
+            THROTTLES_LOCK.readLock().unlock();
         }
         
-        if(null == service){
+        if(null == throttle){
             try{
             
-                EXECUTORS_LOCK.writeLock().lock();
+                THROTTLES_LOCK.writeLock().lock();
                 
-                service = new ThreadPoolExecutor(
-                        1, 
-                        Integer.MAX_VALUE, 
-                        60L, 
-                        TimeUnit.SECONDS, 
-                        new SynchronousQueue<Runnable>());
+                throttle = new Throttle();
                 
-                EXECUTORS.put(command.getSearchConfiguration(), service);
+                THROTTLES.put(config, throttle);
                 
             }finally{
-                EXECUTORS_LOCK.writeLock().unlock();
+                THROTTLES_LOCK.writeLock().unlock();
             }
         }
         
-        return service;
+        return throttle;
     }
     
-    protected Collection<ExecutorService> getExecutorServices() {
-        return EXECUTORS.values();
-    }
+    private static void logThrottles(){
         
+        final StringBuilder sb = new StringBuilder();
+        THROTTLES_LOCK.readLock().lock();
+        for(Map.Entry<SearchConfiguration,Throttle> entry : THROTTLES.entrySet()){
+            sb.append('\n' + entry.getKey().toString() + " executing " + entry.getValue().getPedal());
+        }
+        THROTTLES_LOCK.readLock().unlock();
+        
+        LOG.debug(sb.toString());
+    }
+            
+        
+    private static final class Throttle{
     
+        private int limit = Integer.MAX_VALUE;
+
+        private volatile int pedal = 0;
+
+        boolean isThrottled(){
+            return pedal >= limit;
+        }
+
+        int getLimit(){
+            return limit;
+        }
+
+        void throttle(){
+            this.limit = Math.max(1, pedal);
+        }
+
+        void unthrottle(){
+            limit = Integer.MAX_VALUE;
+        }
+
+        void incrementPedal(){
+            ++pedal;
+        }
+
+        void decrementPedal(){
+            --pedal;
+        }
+
+        int getPedal(){
+            return pedal;
+        }
+    }
 }

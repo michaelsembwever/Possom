@@ -1,4 +1,9 @@
-/*
+/* Copyright (2007) Schibsted Søk AS
+ * This file is part of SESAT.
+ * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
+ * You should have received a copy of the SESAT License along with this program.  
+ * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
+ *
  * NavigationHelper.java
  *
  * Created on 12/06/2007, 17:13:43
@@ -9,6 +14,8 @@ package no.sesat.search.view.navigation;
 
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.result.NavigationItem;
+import no.sesat.search.result.BasicNavigationItem;
 import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
@@ -110,7 +117,7 @@ public final class NavigationHelper {
             addFragment(parameters, navEntry, key, navEntry.getStaticParameters().get(key));
         }
 
-        if (!parameters.containsKey("c")) {
+        if (!parameters.containsKey("c") && null != datamodel.getParameters().getValue("c")) {
             addParameter(parameters, "c", datamodel.getParameters().getValue("c").getUtf8UrlEncoded());
         }
 
@@ -138,19 +145,52 @@ public final class NavigationHelper {
     }
 
     public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
+        
         if (dm.getParameters().getValue(nav.getId()) != null
                 && !nav.getChildNavs().isEmpty()
                 && !nav.getChildNavs().get(0).isVirtual()) {
+            
             return getFirstNotSelected(dm, nav.getChildNavs().get(0));
+            
         } else {
-            if (nav.getId() != null && dm.getNavigation().getNavigation(nav.getId()).getResults().size() == 1 && !nav.getChildNavs().isEmpty()) {
-                return getFirstNotSelected(dm, nav.getChildNavs().get(0)); 
-            } else {
-                return nav;
-            }
+            
+            final int navResultSize = null != nav.getId() 
+                    && null != dm.getNavigation().getNavigation(nav.getId())
+                    && null != dm.getNavigation().getNavigation(nav.getId()).getResults()
+                    ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
+                    : 0;
+                    
+// TODO: Specification is a mess, so this becomes ugly. See history in prio-198 & SEARCH-3320.
+// TODO: Haven't found a general way to solve this. Special case for Oslo.
+// TODO: New JIRA created to resolve this: SEARCH-3451
+//            return 1 == navResultSize && !nav.getChildNavs().isEmpty()
+//                    ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
+//                    : nav;
+
+
+            return 1 == navResultSize && !nav.getChildNavs().isEmpty() && (nav.isAutoNavigation() || isOslo(dm, nav))
+                    ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
+                    : nav;
         }
     }
-    
+
+
+    public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
+        final NavigationItem item = dm.getNavigation().getNavigation(navId);
+
+        if (item != null && item.getChildByTitle(value) != null) {
+
+            return item.getChildByTitle(value);
+        } else {
+            final BasicNavigationItem navigationItem = new BasicNavigationItem();
+            
+            navigationItem.setHitCount(0);
+            navigationItem.setTitle(value);
+           
+            return navigationItem;
+        }
+    }
+
     // Constructors --------------------------------------------------
     // Public --------------------------------------------------------
     // Package protected ---------------------------------------------
@@ -242,5 +282,9 @@ public final class NavigationHelper {
         return str;
     }
     
+    private static boolean isOslo(DataModel dm, NavigationConfig.Nav nav) {
+        return dm.getNavigation().getNavigation(nav.getId()).getResults().get(0).getTitle().equalsIgnoreCase("oslo");
+    }
+
     // Inner classes -------------------------------------------------
 }

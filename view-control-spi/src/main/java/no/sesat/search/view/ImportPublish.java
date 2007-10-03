@@ -1,3 +1,9 @@
+/* Copyright (2007) Schibsted Søk AS
+ * This file is part of SESAT.
+ * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
+ * You should have received a copy of the SESAT License along with this program.  
+ * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
+ */
 /*
  * ImportPublish.java
  *
@@ -23,6 +29,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+import org.apache.log4j.Logger;
 
 /**
  * General support to import page fragments from publishing system.
@@ -37,7 +44,9 @@ public final class ImportPublish {
 
     private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
     private static final int REFRESH_PERIOD = 60; // one minute
-    
+
+    private static final Logger LOG = Logger.getLogger(ImportPublish.class);
+
     // Attributes ----------------------------------------------------
     
     // Static --------------------------------------------------------
@@ -108,9 +117,13 @@ public final class ImportPublish {
         
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new InputSource(new StringReader(importPage(page, datamodel))));
-       
-    }   
+        try {
+            return builder.parse(new InputSource(new StringReader(importPage(page, datamodel))));
+        } catch (SAXException e) {
+            LOG.error("XML Parse exception. ", e);
+            return builder.newDocument();
+        }
+    }
     
     // Constructors --------------------------------------------------
     

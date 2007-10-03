@@ -344,8 +344,10 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     final int threshold = parseInt(e.getAttribute("threshold"), 0);
                     final float weight = parseFloat(e.getAttribute("weight"), 0);
                     final String command = e.getAttribute("command");
+                    final boolean alwaysvisible = parseBoolean(e.getAttribute("always-visable"),false);
+                    
                     final SearchTab.EnrichmentHint enrichment
-                            = new SearchTab.EnrichmentHint(rule, baseScore, threshold, weight, command);
+                            = new SearchTab.EnrichmentHint(rule, baseScore, threshold, weight, command, alwaysvisible);
                     enrichments.add(enrichment);
                 }
 

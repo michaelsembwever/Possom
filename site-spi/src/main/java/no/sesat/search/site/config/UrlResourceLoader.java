@@ -99,7 +99,18 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return bcLoader;
     }
 
+    /** Calls doesUrlExist(url, "localhost") **/
     public static boolean doesUrlExist(final URL url){
+        return doesUrlExist(url, "localhost");
+    }
+
+    /** Checks that the url (requested with the given host header) exists.
+     *
+     * @param url the url whom's existence is checked
+     * @param hostHeader  the host header to use on the request (typically localhost)
+     * @return true if in existence
+     **/
+    public static boolean doesUrlExist(final URL url, final String hostHeader){
 
         boolean success = false;
 
@@ -111,7 +122,10 @@ public class UrlResourceLoader extends AbstractResourceLoader {
             boolean updatedCache = false;
             try {
 
-                success = HTTPClient.instance(url, "localhost").exists("");
+                success = (null != hostHeader 
+                        ? HTTPClient.instance(url, hostHeader) 
+                        : HTTPClient.instance(url) )
+                        .exists("");
 
                 LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + url + " is " + success);
                 
@@ -150,7 +164,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
 
     @Override
-    public final boolean urlExists(final URL url) {
+    public boolean urlExists(final URL url) {
 
         return doesUrlExist(url);
     }
@@ -165,7 +179,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     // Protected -----------------------------------------------------
 
     @Override
-    protected final URL getResource(final Site site) {
+    protected URL getResource(final Site site) {
         return getURL(getResource(), site);
     }
 
@@ -195,7 +209,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     }
 
     @Override
-    protected final InputStream getInputStreamFor(final URL url) {
+    protected InputStream getInputStreamFor(final URL url) {
 
         HTTPClient client = null;
         try {

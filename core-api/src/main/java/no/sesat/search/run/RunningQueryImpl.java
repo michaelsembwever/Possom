@@ -232,9 +232,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
 
-            final boolean isRss = parameters.get(PARAM_OUTPUT) != null 
-                    && parameters.get(PARAM_OUTPUT).getString().equals("rss");
-
             final SearchCommandFactory.Context scfContext = new SearchCommandFactory.Context() {
                 public Site getSite() {
                     return context.getDataModel().getSite().getSite();
@@ -256,7 +253,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 try{
 
                     // If output is rss, only run the one command that will produce the rss output.
-                    if (!isRss || context.getSearchTab().getRssResultName().equals(confName)) {
+                    if (!isRss() || context.getSearchTab().getRssResultName().equals(confName)) {
 
                         hits.put(config.getName(), Integer.valueOf(0));
 
@@ -285,11 +282,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(confName);
 
                         if (eHint != null && !datamodel.getQuery().getQuery().isBlank()) {
+                            
+                            final boolean firstPage = null == parameters.get("offset") 
+                                    || "0".equals(parameters.get("offset").getString());
+                            
+                            // XXX 'collapse' is not a sesat standard. standardise or move out.
+                            final boolean collapse = null == parameters.get("collapse") 
+                                    || "".equals(parameters.get("collapse").getString());
 
-                            if (context.getSearchMode().isAnalysis()
-                                    && (null == parameters.get("offset") || "0".equals(parameters.get("offset")))
-                                    && (null == parameters.get("collapse") || "".equals(parameters.get("collapse")))
-                                    && eHint.getWeight() > 0) {
+                            if (context.getSearchMode().isAnalysis() && (firstPage||eHint.isAlwaysvisible()) && collapse && eHint.getWeight() > 0){
 
                                 int score = eHint.getBaseScore();
                                 
@@ -358,19 +359,23 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
             
-            Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = null;
+            @SuppressWarnings("unchecked")
+            Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = Collections.EMPTY_MAP;
 
             try{
-                
                 final SearchCommandExecutor executor = SearchCommandExecutorFactory
-                    .getController(context.getSearchMode().getExecutor());  
-                
-                results = executor.waitForAll(executor.invokeAll(commands), TIMEOUT);
+                        .getController(context.getSearchMode().getExecutor()); 
 
+                try{
+                    results = executor.invokeAll(commands);
+                
+                }finally{
+                    results = executor.waitForAll(results, TIMEOUT);
+                }
             }catch(TimeoutException te){
                 LOG.error(ERR_COMMAND_TIMEOUT + te.getMessage());
             }
-
+            
             // Check that we have atleast one valid execution
             for(SearchCommand command : commands){
                 allCancelled &= command.isCancelled();
@@ -530,7 +535,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 context);
 
         performEnrichmentHandling(handlerContext);
-        performNavigationHandling(handlerContext);
+
+        if (!isRss()) {
+            performNavigationHandling(handlerContext);
+        }
     }
 
     private void performEnrichmentHandling(final RunningQueryHandler.Context handlerContext){
@@ -557,6 +565,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final NavigationRunningQueryHandler navHandler = new NavigationRunningQueryHandler();
         navHandler.handleRunningQuery(handlerContext);
+    }
+
+    private boolean isRss() {
+        final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
+        return parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).getString().equals("rss");
     }
 
     // Inner classes -------------------------------------------------

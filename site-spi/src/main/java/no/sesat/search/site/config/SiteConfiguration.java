@@ -53,8 +53,7 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     public static final String ALLOW_LIST = "site.allow";
     public static final String DISALLOW_LIST = "site.disallow";
     
-    public interface Context extends BaseContext, PropertiesContext, SiteContext {
-    }
+    public interface Context extends BaseContext, PropertiesContext, SiteContext {}
 
     private final Properties properties = new Properties();
 
@@ -77,7 +76,7 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
             LOG.trace("SiteConfiguration(cxt)");
             
             site = cxt.getSite();
-            
+
             cxt.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(cxt.getSite(), this);
@@ -139,6 +138,10 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
         final SiteConfiguration stc = SiteConfiguration.valueOf(new SiteConfiguration.Context() {
             public Site getSite() {
                 return site;
+            }
+
+            public boolean doesResourceExist(final String resource) {
+                return UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(resource, site));
             }
 
             public PropertiesLoader newPropertiesLoader(

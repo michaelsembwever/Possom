@@ -191,8 +191,12 @@ public final class SearchServlet extends HttpServlet {
 
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
-                    }else{
+                    } else if (null != output && "rss".equals(output.getString()) && "".equals(searchTab.getRssResultName())) {
 
+                        LOG.warn("RSS not supported for requested vertical " + searchTab.toString());
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                    } else {
                         performSearch(request, response, genericCxt, searchTab, stopWatch);
                     }
                 }else{
@@ -398,7 +402,7 @@ public final class SearchServlet extends HttpServlet {
                 ? c.getString()
                 : null != page && null != page.getString() && 0 < page.getString().length() 
                     ? "i" 
-                    : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
+                    : null != defaultSearchTabKey && 0 < defaultSearchTabKey.length() ? defaultSearchTabKey: "c";
 
         LOG.info("searchTabKey:" +searchTabKey);
 
@@ -531,7 +535,7 @@ public final class SearchServlet extends HttpServlet {
                 + (null != referer ? "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>" : "")
                 + "<browser ipaddress=\"" + ip + "\">" + StringEscapeUtils.escapeXml(userAgent) + "</browser>"
                 + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
-                + "</request>");
+                + "</search-servlet>");
     }
     
     // probably apache commons could simplify this // duplicated in SiteLocatorFilter

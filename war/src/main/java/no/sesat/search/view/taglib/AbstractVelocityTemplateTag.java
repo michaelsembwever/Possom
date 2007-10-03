@@ -65,6 +65,16 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
+    protected final Site getSiteManually(final PageContext cxt) {
+        Site site = null;
+        try {
+         site = SiteLocatorFilter.getSite(cxt.getRequest());
+        }catch (Exception e) {
+            LOG.error("Failed to fetch site manually, failing back to '" + Site.DEFAULT.getName() + "': " + e, e);
+            site = Site.DEFAULT;
+        }
+        return site;
+    }
 
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
@@ -93,7 +103,7 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             final Site site = null != datamodel && null != datamodel.getSite()
                     ? datamodel.getSite().getSite()
                     // we haven't gone through the SiteLocatorFilter so get site manually
-                    : SiteLocatorFilter.getSite(cxt.getRequest());
+                    : getSiteManually(cxt);
 
             assert null != site : "doTag() got null Site";
 
@@ -129,7 +139,8 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             //context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes
-            for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames()
+            for (@SuppressWarnings("unchecked")
+                    Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames()
                     ; e.hasMoreElements();) {
 
                 final String attrName = e.nextElement();

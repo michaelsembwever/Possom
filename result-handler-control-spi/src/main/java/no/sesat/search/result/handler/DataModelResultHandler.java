@@ -3,8 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
- */
-/*
+ *
  * DataModelResultHandler.java
  *
  * Created on May 26, 2006, 4:11 PM
@@ -13,7 +12,11 @@
 
 package no.sesat.search.result.handler;
 
-import java.util.Properties;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.generic.DataObject;
@@ -21,12 +24,10 @@ import no.sesat.search.datamodel.query.QueryDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.site.Site;
-import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
-import no.sesat.search.site.config.PropertiesLoader;
 import org.apache.log4j.Logger;
 
-/** Handles the insertion of the results (& pager) into the datamodel.
+/** Handles the insertion of the results into the datamodel.
  * This class must remain safe under multi-threaded conditions.
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -37,12 +38,18 @@ public final class DataModelResultHandler implements ResultHandler{
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(DataModelResultHandler.class);
-    private static final String DEBUG_CREATED_RESULTS = "Creating results Hashtable";
     private static final String DEBUG_ADD_RESULT = "Adding the result ";
 
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
+    
+    /** !Concurrent-safe! weak cache of DataModelFactories
+     *  since hitting DataModelFactory.valueOf(..) hard becomes a bottleneck.
+     * read https://jira.sesam.no/jira/browse/SEARCH-3541 for more.
+     */
+    private static final Map<Site,Reference<DataModelFactory>> FACTORY_CACHE
+            = new ConcurrentHashMap<Site,Reference<DataModelFactory>>();
 
     // Constructors --------------------------------------------------
 
@@ -60,22 +67,7 @@ public final class DataModelResultHandler implements ResultHandler{
         // results
         LOG.debug(DEBUG_ADD_RESULT + config.getName());
 
-        final DataModelFactory factory;
-        try{
-            factory = DataModelFactory.valueOf(new DataModelFactory.Context(){
-                public Site getSite() {
-                    return datamodel.getSite().getSite();
-                }
-                public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
-                                                            final String resource,
-                                                            final Properties properties) {
-                    return cxt.newPropertiesLoader(siteCxt, resource, properties);
-                }
-            });
-        }catch(SiteKeyedFactoryInstantiationException skfie){
-            LOG.error(skfie.getMessage(), skfie);
-            throw new IllegalStateException(skfie.getMessage(), skfie);
-        }
+        final DataModelFactory factory = getDataModelFactory(cxt);
 
         // friendly command-specific search string
         final String friendly = null != cxt.getDisplayQuery() && cxt.getDisplayQuery().length() > 0
@@ -95,6 +87,11 @@ public final class DataModelResultHandler implements ResultHandler{
                 new DataObject.Property("results", cxt.getSearchResult()));
 
         datamodel.setSearch(config.getName(), searchDO);
+        
+        // also ping everybody that might be waiting on these results: "dinner's served!"
+        synchronized (datamodel.getSearches()) {
+            datamodel.getSearches().notifyAll();
+        }
     }
 
     // Y overrides ---------------------------------------------------
@@ -104,6 +101,38 @@ public final class DataModelResultHandler implements ResultHandler{
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
+    
+    private DataModelFactory getDataModelFactory(final Context cxt){
+        
+        final Site site = cxt.getSite();
+        
+        DataModelFactory factory = null != FACTORY_CACHE.get(site)
+                ? FACTORY_CACHE.get(site).get()
+                : null;
+        
+        if(null == factory){
+            factory = getDataModelFactoryImpl(cxt);
+            FACTORY_CACHE.put(site, new WeakReference<DataModelFactory>(factory));
+        }
+        
+        return factory;
+    }
+    
+    private DataModelFactory getDataModelFactoryImpl(final Context cxt){
+        
+        try{
+            // application bottleneck https://jira.sesam.no/jira/browse/SEARCH-3541
+            //  DataModelFactory.valueOf(cxt) uses a ReentrantReadWriteLock in high-concurrency environment like here.
+            // this is why we keep a local weak cache of the factories.
+            //  the alternative would be to pollute DataModelFactory will this performance consideration and
+            //  replace the ReentrantReadWriteLock that provides a synchronised api with a ConcurrentHashMap.
+            return DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt));
+
+        }catch(SiteKeyedFactoryInstantiationException skfie){
+            LOG.error(skfie.getMessage(), skfie);
+            throw new IllegalStateException(skfie.getMessage(), skfie);
+        }        
+    }
 
     // Inner classes -------------------------------------------------
 

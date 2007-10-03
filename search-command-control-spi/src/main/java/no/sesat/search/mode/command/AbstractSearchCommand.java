@@ -11,6 +11,7 @@ package no.sesat.search.mode.command;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
@@ -58,6 +59,7 @@ import org.apache.log4j.MDC;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import no.sesat.search.datamodel.access.DataModelAccessException;
 
 /** The base abstraction for Search Commands providing a large framework for commands to run against.
  *                                                                                                          <br/><br/>
@@ -127,21 +129,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private volatile Thread thread = null;
 
     // Static --------------------------------------------------------
-
-    /**
-     */
-    protected static final ResultList<? extends ResultItem> getSearchResult(
-            final String id,
-            final DataModel datamodel) throws InterruptedException {
-
-        synchronized (datamodel.getSearches()) {
-            while (null == datamodel.getSearch(id)) {
-                // next line releases the monitor so it is possible to call this method from different threads
-                datamodel.getSearches().wait();
-            }
-        }
-        return datamodel.getSearch(id).getResults();
-    }
 
     // Constructors --------------------------------------------------
 
@@ -237,18 +224,36 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         try {
+            try {
 
-            LOG.trace("call()");
+                LOG.trace("call()");
 
-            performQueryTransformation();
-            final ResultList<? extends ResultItem> result = performExecution();
-            performResultHandling(result);
+                performQueryTransformation();
+                checkForCancellation();
 
+                final ResultList<? extends ResultItem> result = performExecution();
+                checkForCancellation();
 
-            completed = true;
-            thread = null;
-            return result;
+                performResultHandling(result);
+                checkForCancellation();
 
+                completed = true;
+                thread = null;
+                return result;
+
+            } catch(UndeclaredThrowableException ute){
+
+                if(ute.getCause() instanceof DataModelAccessException && isCancelled()){
+
+                    // This is partially expected because the datamodel's 
+                    //  controlLevel would have moved on through the process stack.
+                    LOG.trace("Cancelled command threw underlying exception", ute.getCause());
+                    return new BasicResultList<ResultItem>();
+
+                }
+                throw ute;
+            }
+            
         } catch (RuntimeException rte) {
             LOG.error(ERROR_RUNTIME, rte);
             return new BasicResultList<ResultItem>();
@@ -257,11 +262,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             // restore thread name
             Thread.currentThread().setName(t);
         }
-
     }
 
     /**
-     * TODO comment me. *
+     * Handles cancelling the command.
+     *  Inserts an "-1" result list. And does the result handling on it.
+     * Returns true if cancellation action was taken.
      */
     public synchronized boolean handleCancellation() {
 
@@ -279,6 +285,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return !completed;
     }
     
+    /** Has the command been cancelled.
+     * Calling this method only makes sense once the call() method has been.
+     **/
     public synchronized boolean isCancelled(){
         return null == thread && !completed;
     }
@@ -405,6 +414,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // Protected -----------------------------------------------------
 
+    /** Get the results from another search command waiting if neccessary.
+     */
+    protected final ResultList<? extends ResultItem> getSearchResult(
+            final String id,
+            final DataModel datamodel) throws InterruptedException {
+
+        synchronized (datamodel.getSearches()) {
+            while (null == datamodel.getSearch(id)) {
+                // we're not going to hang around waiting if we've been already left out in the cold
+                checkForCancellation();
+                // next line releases the monitor so it is possible to call this method from different threads
+                datamodel.getSearches().wait(1000);
+            }
+        }
+        return datamodel.getSearch(id).getResults();
+    }
 
     /**
      * Returns the leaf representation with the special characters making it a fielded leaf escaped.
@@ -520,10 +545,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // The DataModel result handler is a hardcoded feature of the architecture
         DATAMODEL_HANDLER.handleResult(resultHandlerContext, datamodel);
-        // also ping everybody that might be waiting on these results: "dinner's served!"
-        synchronized (datamodel.getSearches()) {
-            datamodel.getSearches().notifyAll();
-        }
+        
     }
 
     /**
@@ -976,6 +998,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         updateTransformedQuerySesamSyntax();
     }
 
+    /** If the command has been cancelled will throw the appropriate SearchCommandException.
+     * Calling this method only makes sense once the call() method has been, 
+     *   otherwise it is guaranteed to throw the exception.
+     **/
+    private void checkForCancellation(){
+        if( isCancelled() ){ throw new SearchCommandException("cancelled", new InterruptedException()); }
+    }
+    
     // Inner classes -------------------------------------------------
 
 
@@ -1131,7 +1161,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * @return The query.
          */
         String getQueryRepresentation() {
-            return sb.toString();
+            return sb.toString().trim();
         }
 
         /**

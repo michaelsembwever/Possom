@@ -1,4 +1,9 @@
-/** Copyright (2005-2006) Schibsted Søk AS **/
+/** Copyright (2005-2007) Schibsted Søk AS 
+ * This file is part of SESAT.
+ * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
+ * You should have received a copy of the SESAT License along with this program.  
+ * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
+**/
 options {
   STATIC=false;
   JAVA_UNICODE_ESCAPE=true;
@@ -29,6 +34,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
         qs = balance(qs, '(', ')');
         qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
+        qs = fixFloatingHyphon(qs);
         token_source.SwitchTo(DEFAULT);
         //LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
@@ -41,6 +47,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
         qs = balance(qs, '(', ')');
         qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
+        qs = fixFloatingHyphon(qs);
         token_source.SwitchTo(lexicalState);
     }
 

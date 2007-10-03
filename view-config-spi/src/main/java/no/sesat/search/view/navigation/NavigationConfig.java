@@ -1,3 +1,9 @@
+/* Copyright (2007) Schibsted Søk AS
+ * This file is part of SESAT.
+ * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
+ * You should have received a copy of the SESAT License along with this program.  
+ * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
+ */
 package no.sesat.search.view.navigation;
 
 import java.io.Serializable;
@@ -42,7 +48,7 @@ public final class NavigationConfig implements Serializable {
     private final List<Navigation> navigationList = new ArrayList<Navigation>();
 
     public NavigationConfig(final NavigationConfig inherit) {
-            
+
         // inheritence first so that self-configuration can override
         if(null != inherit){
             navMap.putAll(inherit.getNavMap());
@@ -214,13 +220,14 @@ public final class NavigationConfig implements Serializable {
         private String tab;
         private String backText;
         private boolean out;
-        private boolean realNavigator;
+        private int maxsize;
 
         private Map<String, String> staticParameters;
         private List<Nav> childNavs;
         private final Navigation navigation;
         private final Nav parent;
         private boolean excludeQuery = false;
+        private boolean autoNavigation;
 
         public Nav(final Nav parent, final Navigation navigation, final Element navElement) {
 
@@ -257,10 +264,12 @@ public final class NavigationConfig implements Serializable {
                     .fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navElement, "false");
 
             AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "realNavigator", ParseType.Boolean, navElement, "true");
+                    .fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
 
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
+            AbstractDocumentFactory
+                    .fillBeanProperty(this, null, "autoNavigation", ParseType.Boolean, navElement, "true");
 
 
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
@@ -295,12 +304,12 @@ public final class NavigationConfig implements Serializable {
             return childNavs;
         }
 
-        public boolean isRealNavigator() {
-            return realNavigator;
+        public int getMaxsize() {
+            return maxsize;
         }
 
-        public void setRealNavigator(final boolean realNavigator) {
-            this.realNavigator = realNavigator;
+        public void setMaxsize(final int maxsize) {
+            this.maxsize = maxsize;
         }
 
         public Map<String, String> getStaticParameters() {
@@ -380,6 +389,15 @@ public final class NavigationConfig implements Serializable {
                     + ", field='" + field + '\''
                     + ", staticParameters=" + staticParameters
                     + '}';
+        }
+
+
+        public boolean isAutoNavigation() {
+            return autoNavigation;
+        }
+
+        public void setAutoNavigation(boolean autoNavigation) {
+            this.autoNavigation = autoNavigation;
         }
 
         /**

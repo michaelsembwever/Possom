@@ -41,7 +41,7 @@ import org.xml.sax.SAXParseException;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-abstract class AbstractResourceLoader
+public abstract class AbstractResourceLoader
         implements Runnable, DocumentLoader, PropertiesLoader, BytecodeLoader {
 
     private enum Polymorphism{
@@ -252,8 +252,12 @@ abstract class AbstractResourceLoader
         switch(resourceType.getPolymorphism()){
             case UP_HEIRARCHY:
                 // Properties inherent through the fallback process. Keys are *not* overridden.
+                boolean resourceFound = false;
                 for(Site site = getContext().getSite(); site != null; site = site.getParent()){
-                    loadResource(getResource(site));
+                    resourceFound |= loadResource(getResource(site));
+                }
+                if (!resourceFound) {
+                    throw new ResourceLoadException("Could not find resource");
                 }
                 break;
                 
