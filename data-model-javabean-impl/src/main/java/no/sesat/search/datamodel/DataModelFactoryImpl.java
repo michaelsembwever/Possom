@@ -3,8 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
- */
-/*
+ *
  * DataModelFactoryImpl.java
  *
  * Created on 27 January 2007, 22:49
@@ -20,6 +19,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
+import no.sesat.commons.reflect.ConcurrentProxy;
 import no.sesat.search.datamodel.access.ControlLevel;
 import no.sesat.search.datamodel.generic.DataNode;
 import no.sesat.search.datamodel.generic.DataObject;
@@ -79,7 +79,7 @@ final class DataModelFactoryImpl extends DataModelFactory{
             final InvocationHandler handler = new BeanDataModelInvocationHandler(
                     new BeanDataModelInvocationHandler.PropertyInitialisor(DataModel.class, properties));
             
-            return (DataModel) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
+            return (DataModel) ConcurrentProxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
             
         }catch(IntrospectionException ie){
             throw new IllegalStateException("Need to introspect DataModel properties before instantiation");
@@ -102,7 +102,7 @@ final class DataModelFactoryImpl extends DataModelFactory{
                 throw new IllegalArgumentException(ERR_ONLY_DATA_NODE_OR_OBJECT);
             }
 
-            return (T)Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
+            return (T)ConcurrentProxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
 
         }catch(IntrospectionException ie){
             throw new IllegalArgumentException(ERR_ONLY_JAVA_BEAN_DATA_OBJECT);
