@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  *
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * @author <a href="mailto:mick@wever.org">Mck Semb Wever</a>
  * @version $Id$
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator {
