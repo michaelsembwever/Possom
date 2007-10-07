@@ -68,7 +68,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
      * @throws ClassNotFoundException if the class could not be found in any class loader.
      */
     @Override
-    public synchronized Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException{
+    public Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException{
         
         // First, check if the class has already been loaded
         Class c = findLoadedClass(name);
@@ -91,7 +91,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
             resolveClass(c);
         }
 
-        return c;
+        return resolve ? findLoadedClass(name) : c;
     }
 
     /** {@inheritDoc} */
