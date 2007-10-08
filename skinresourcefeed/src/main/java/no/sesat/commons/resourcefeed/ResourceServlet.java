@@ -3,7 +3,7 @@
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.  
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
-
+ *
  * ResourceServlet.java
  *
  * Created on 19 January 2006, 13:51
@@ -153,11 +153,18 @@ public final class ResourceServlet extends HttpServlet {
 
         // Get resource name. Also strip the version number out of the resource
         final String configName = request.getPathInfo().replaceAll("/(\\d)+/","/");
+        
+        assert null != configName : "Invalid resource " + request.getPathInfo();
+        assert 0 < configName.trim().length() : "Invalid resource " + request.getPathInfo();
+        assert 0 < configName.lastIndexOf('.') : "Invalid resource extension " + request.getPathInfo();
 
         if (configName != null && configName.trim().length() > 0) {
 
-
             final String extension = configName.substring(configName.lastIndexOf('.') + 1).toLowerCase();
+            
+            assert null != extension : "Invalid resource extension" + request.getPathInfo();
+            assert 0 < extension.trim().length() : "Invalid resource extension " + request.getPathInfo();
+            
             final String ipAddr = null != request.getAttribute(REMOTE_ADDRESS_KEY)
                 ? (String) request.getAttribute(REMOTE_ADDRESS_KEY)
                 : request.getRemoteAddr();
