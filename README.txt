@@ -1,4 +1,16 @@
 =======================================
+About SESAT
+=======================================
+
+More information about SESAT can be found at
+http://sesat.no
+http://dev.schibstedsok.no
+http://sesam.no/omoss
+
+SESAT is licensed under GNU's Affero General Public License version 3 (or later).
+See LICENSE.txt for full license.
+
+=======================================
 Getting Started
 =======================================
 
