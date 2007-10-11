@@ -146,6 +146,10 @@
     <servlet>
         <servlet-name>Log</servlet-name>
         <servlet-class>no.schibstedsok.log4j.LoggingServlet</servlet-class>
+        <init-param>
+            <param-name>ipaddresses.allowed</param-name>
+            <param-value>80.91.33.,81.93.165.</param-value>
+        </init-param>
     </servlet>
 
     <servlet>
