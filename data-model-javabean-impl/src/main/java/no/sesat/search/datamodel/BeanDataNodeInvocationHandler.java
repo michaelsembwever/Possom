@@ -152,6 +152,12 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             assert isSerializable(obj) : "Object not serializable: " + obj;
             final BeanDataObjectInvocationHandler<?> childsNewHandler
                     = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
+            
+            /// XXX Application bottleneck. See https://jira.sesam.no/jira/browse/SEARCH-3591
+            ///       BeanContextSupport.add synchronises against the static variable BeanContext.globalHierarchyLock
+            ///        so every thread in the jvm must queue one at a time here :'(
+            ///       Worse is that this synchronisation is requested behavor by BeanContext.add
+            
             context.add(childsNewHandler.getBeanContextChild());
 
         }
