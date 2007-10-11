@@ -179,14 +179,16 @@ public final class ResourceServlet extends HttpServlet {
                 // ok, check configuration resources are private.
                 LOG.trace(DEBUG_CLIENT_IP + ipAddr);
 
-                if (RESTRICTED.contains(extension) && !isIpAllowed(ipAddr)) {
+                final boolean restricted = RESTRICTED.contains(extension);
+                
+                if (restricted && !isIpAllowed(ipAddr)) {
 
                     response.setContentType("text/html;charset=UTF-8");
                     response.getOutputStream().print(ERR_RESTRICTED_AREA);
                     LOG.warn(ipAddr + ERR_TRIED_TO_ACCESS);
 
                 }  else  {
-                    serveResource(configName, request, response);
+                    serveResource(configName, restricted, request, response);
                 }
             }  else  {
                 // not allowed to cross-reference resources.
@@ -234,6 +236,7 @@ public final class ResourceServlet extends HttpServlet {
 
     private void serveResource(
             final String configName,
+            final boolean restricted,
             final HttpServletRequest request,
             final HttpServletResponse response)
                 throws ServletException, IOException {
@@ -250,11 +253,13 @@ public final class ResourceServlet extends HttpServlet {
 
                 // Write response headers before response data according to javadoc for HttpServlet.html#doGet(..)
 
-                // Allow this URL to be cached indefinitely.
+                // Allow any public URL to be cached indefinitely.
                 //  Each jvm restart alters the number that appears in the URL being enough to ensure
                 //  nothing is cached across deployment versions.
-                response.setHeader("Cache-Control", "Public");
-                response.setDateHeader("Expires", Long.MAX_VALUE);
+                if(!restricted){
+                    response.setHeader("Cache-Control", "Public");
+                    response.setDateHeader("Expires", Long.MAX_VALUE);
+                }
 
                 // Avoid writing out the response body if it's a HEAD request or a GET that the browser has cache for
                 boolean writeBody = !"HEAD".equals(request.getMethod());
