@@ -37,7 +37,9 @@ import java.util.Map;
 @DataObject
 public final class MapDataObjectSupport<V> implements MapDataObject<V>{
 
-    private final Map<String,V> map = new ConcurrentHashMap<String,V>(){
+    // Most MapDataObjectSupport instances only contain an item or two.
+    // Max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
+    private final Map<String,V> map = new ConcurrentHashMap<String,V>(5, 0.75f, 2){
 
         @Override
         public V put(final String key, final V value){
