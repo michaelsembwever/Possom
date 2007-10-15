@@ -24,7 +24,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
-import java.beans.beancontext.BeanContextSupport;
+//import java.beans.beancontext.BeanContextSupport;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import no.sesat.search.datamodel.BeanDataModelInvocationHandler.DataModelBeanContextSupport;
 
 /**
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
@@ -157,8 +158,15 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             ///       BeanContextSupport.add synchronises against the static variable BeanContext.globalHierarchyLock
             ///        so every thread in the jvm must queue one at a time here :'(
             ///       Worse is that this synchronisation is requested behavor by BeanContext.add
-            
-            context.add(childsNewHandler.getBeanContextChild());
+            BeanContext parentContext = context;
+            while(null != parentContext.getBeanContext()){
+                parentContext = parentContext.getBeanContext();
+            }
+            ((BeanContextSupport)context).add(
+                    childsNewHandler.getBeanContextChild(),
+                    parentContext instanceof DataModelBeanContextSupport 
+                    ? ((DataModelBeanContextSupport)parentContext).dataModelLock
+                    : BeanContext.globalHierarchyLock);
 
         }
     }
