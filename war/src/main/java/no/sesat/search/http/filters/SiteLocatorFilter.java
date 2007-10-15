@@ -22,6 +22,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -354,17 +357,37 @@ public final class SiteLocatorFilter implements Filter {
             final ServletRequest request,
             final ServletResponse response) throws IOException, ServletException{
         
-        final Object lock = request instanceof HttpServletRequest 
-                ? ((HttpServletRequest)request).getSession() 
-                : request;
+        Lock lock = request instanceof HttpServletRequest 
+                ? (Lock) ((HttpServletRequest)request).getSession().getAttribute("userLock")
+                : new ReentrantLock();
+        
+        if(null == lock){
+            lock = new ReentrantLock();
+            ((HttpServletRequest)request).getSession().setAttribute("userLock", lock);
+        }
         
         // datamodel is NOT request-safe. all the user's requests must execute in sequence!
-        synchronized( lock ){   
-                        
-            // request will be processed by search-portal
-            LOG.info("Incoming! Duck!");
-            chain.doFilter(request, response);
-            
+        //  ten seconds is enough to wait.
+        boolean done = false;
+        try{
+            if( lock.tryLock(10, TimeUnit.SECONDS) ){  
+                try{
+                    // request will be processed by search-portal
+                    LOG.info("Incoming! Duck!");
+                    chain.doFilter(request, response);
+                    done = true;
+                }finally{
+                    lock.unlock();
+                }
+            }
+        }catch(InterruptedException ie){
+            LOG.warn("The duck got trucked", ie);
+        }
+        
+        if(!done && response instanceof HttpServletResponse){
+            // failed to get lock in time
+            LOG.warn(" -- response 409");
+            ((HttpServletResponse)response).sendError(HttpServletResponse.SC_CONFLICT);
         }
     }
 
