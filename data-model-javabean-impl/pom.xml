@@ -66,6 +66,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 
     <dependencies>
         <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>commons-reflect</artifactId>
+        </dependency>
+        <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>sesat-data-model-api</artifactId>
             <version>${version}</version>

@@ -28,132 +28,231 @@ import org.apache.commons.collections.Predicate;
  * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public enum TokenPredicate implements Predicate {
 
     // Common predicates.
+    
+    /** @deprecated this is silly. there are better ways to accomplish this, eg enrichment's baseScore. */
     ALWAYSTRUE (Type.GENERIC),
 
     // Fast TokenPredicates
     //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
+    
+    /** */
     ANIMAL (Type.FAST),
-    BLOCKET (Type.FAST), // FIXME!! What is blocket? we do not put specific names into this list
+    /** @deprecated FIXME!! What is blocket? we do not put specific names into this list */
+    BLOCKET (Type.FAST),
+    /** @todo rename to COMPANY_CATEGORY **/
     CATEGORY (Type.FAST),
+    /** */
     CELEBRITY (Type.FAST),
+    /** */
     CLASSIFIED_CATEGORY (Type.FAST),
+    /** */
     COMPANY_CHAIN (Type.FAST),
+    /** @todo rename to just COMPANY */
     COMPANYENRICHMENT (Type.FAST),
+    /** */
     EXACT_COMPANYENRICHMENT (Type.FAST),
+    /** */
     COMPANY_KEYWORD (Type.FAST),
+    /** */
     COMPANY_KEYWORD_RESERVED (Type.FAST),
-//    COMPANYRANK (Type.FAST), // not used!
-//    EXACT_COMPANYRANK (Type.FAST), // not used!
+    /** */
     DISEASE (Type.FAST),
+    /** */
     ENGLISHWORDS (Type.FAST),
+    /** */
     GEOLOCAL (Type.FAST),
+    /** */
     GEOGLOBAL (Type.FAST),
+    /** */
     EXACT_GEOLOCAL (Type.FAST),
+    /** */
     EXACT_GEOGLOBAL (Type.FAST),
+    /** */
     FIRSTNAME (Type.FAST),
+    /** */
     FOOD (Type.FAST),
+    /** */
     EXACT_FIRST (Type.FAST),
+    /** */
     FULLNAME (Type.FAST),
+    /** */
     EXACT_FULLNAME (Type.FAST),
+    /** */
     LASTNAME (Type.FAST),
+    /** */
     EXACT_LAST (Type.FAST),
+    /** */
     MATERIAL (Type.FAST),
+    /** */
     PRIOCOMPANYNAME (Type.FAST),
+    /** */
     EXACT_PRIOCOMPANYNAME (Type.FAST),
+    /** */
     PRODUCT_BICYCLE (Type.FAST),
+    /** */
     PRODUCT_CAR (Type.FAST),
+    /** */
     PRODUCT_CHILDREN (Type.FAST),
+    /** */
     PRODUCT_CLOTHING (Type.FAST),
+    /** */
     PRODUCT_CONSTRUCTION (Type.FAST),
+    /** */
     PRODUCT_COSTUME (Type.FAST),
+    /** */
     PRODUCT_ELECTRONIC (Type.FAST),
+    /** */
     PRODUCT_FURNITURE (Type.FAST),
+    /** */
     PRODUCT_GARDEN (Type.FAST),
+    /** */
     PRODUCT_HOBBY (Type.FAST),
+    /** */
     PRODUCT_HOUSEHOLD (Type.FAST),
+    /** */
     PRODUCT_JEWELRY (Type.FAST),
+    /** */
     PRODUCT_MOTOR (Type.FAST),
+    /** */
     PRODUCT_MUSIC (Type.FAST),
+    /** */
     PRODUCT_SHOE (Type.FAST),
+    /** */
     PRODUCT_SPORT (Type.FAST),
+    /** */
     PRODUCT_WATCH (Type.FAST),
+    /** */
     PRODUCT_WEAPON (Type.FAST),
+    /** */
     OCEAN (Type.FAST),
+    /** */
     EXACT_TOP3 (Type.FAST),
+    /** */
     EXACT_PPCTOPLIST (Type.FAST),
+    /** */
     STOCKMARKETTICKERS (Type.FAST),
+    /** */
     STOCKMARKETFIRMS (Type.FAST),
+    /** */
     EXACT_STOCKMARKETTICKERS (Type.FAST),
+    /** */
     EXACT_STOCKMARKETFIRMS (Type.FAST),
+    /** */
     STYLE (Type.FAST),
+    /** */
     TNS (Type.FAST),
+    /** */
     TRADEMARK (Type.FAST),
+    /** */
     WIKIPEDIA (Type.FAST),
+    /** */
     EXACT_WIKI (Type.FAST),
-
+    /** */
     IMAGES (Type.FAST),
+    /** */
     EXACT_IMAGE (Type.FAST),
-
+    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
     PRISJAKT_CATEGORIES_AND_MANUFACTURERS (Type.FAST),
+    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
     PRISJAKT_CATEGORIES (Type.FAST),
+    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
     PRISJAKT_MANUFACTURERS (Type.FAST),
+    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
     PRISJAKT_PRODUCTS (Type.FAST),
+    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
     PRISJAKT_SHOPS (Type.FAST),
 
 
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
+    /** */
     CATALOGUE_MAGIC (Type.REGEX),
+    /** */
     CLASSIFIED_MAGIC (Type.REGEX),
+    /** */
     EXACT_CLASSIFIED_MAGIC (Type.REGEX),
+    /** */
     CULTURE_MAGIC (Type.REGEX),
+    /** */
     MOVIE_MAGIC (Type.REGEX),
+    /** */
     NEWS_MAGIC (Type.REGEX),
+    /** */
     OCEAN_MAGIC (Type.REGEX),
+    /** */
     PICTURE_MAGIC (Type.REGEX),
+    /** */
     VIDEO_MAGIC (Type.REGEX),
+    /** */
     RECEIPE_MAGIC (Type.REGEX),
+    /** */
     SKIINFO_MAGIC (Type.REGEX),
+    /** */
     STOCK_MAGIC (Type.REGEX),
+    /** */
     TV_MAGIC (Type.REGEX),
+    /** */
     WEATHER_MAGIC (Type.REGEX),
+    /** */
     WEBTV_MAGIC (Type.REGEX),
+    /** */
     WHITE_MAGIC (Type.REGEX),
+    /** */
     WIKIPEDIA_MAGIC (Type.REGEX),
+    /** */
     YELLOW_MAGIC (Type.REGEX),
+    /** */
     MAP_MAGIC(Type.REGEX),
     
 
     // RegExp TokenPredicates -- trigger words/phrases
     CATALOGUE_TRIGGER (Type.REGEX),
+    /** */
     CLASSIFIED_TRIGGER (Type.FAST),
+    /** */
     LOAN_TRIGGER (Type.REGEX),
+    /** */
     NEWS_TRIGGER (Type.REGEX),
+    /** */
     OCEAN_TRIGGER(Type.REGEX),
+    /** */
     PICTURE_TRIGGER (Type.REGEX),
+    /** */
     VIDEO_TRIGGER (Type.REGEX),
+    /** */
     SKIINFO_TRIGGER (Type.REGEX),
+    /** */
     SUDOKU_TRIGGER (Type.REGEX),
+    /** */
     TV_TRIGGER (Type.REGEX),
+    /** */
     WEATHER_TRIGGER (Type.REGEX),
+    /** */
+    /** */
     WIKIPEDIA_TRIGGER (Type.REGEX),
 
     // RegExp TokenPredicates -- prefixes
+    /** */
     SITEPREFIX (Type.REGEX),
 
     // RegExp TokenPredicates -- suffixes
+    /** */
     COMPANYSUFFIX (Type.REGEX),
 
     // RegExp TokenPredicates -- general expression
+    /** */
     ORGNR (Type.REGEX),
+    /** */
     PHONENUMBER (Type.REGEX),
+    /** */
     ONLYSKIINFO (Type.REGEX),
+    /** */
     EMPTYQUERY (Type.REGEX),
 
     /** JepTokenPredicate. **/

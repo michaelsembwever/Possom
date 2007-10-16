@@ -165,6 +165,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <servlet>
         <servlet-name>Log</servlet-name>
         <servlet-class>no.schibstedsok.log4j.LoggingServlet</servlet-class>
+        <init-param>
+            <param-name>ipaddresses.allowed</param-name>
+            <param-value>80.91.33.,81.93.165.</param-value>
+        </init-param>
     </servlet>
 
     <servlet>
@@ -246,6 +250,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/jsp/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>409</error-code>
+        <location>/WEB-INF/jsp/409.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>

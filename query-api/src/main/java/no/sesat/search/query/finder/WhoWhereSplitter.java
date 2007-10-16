@@ -262,6 +262,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
      * 
      * @param clause 
      */
+    @SuppressWarnings("fallthrough")
     protected void visitImpl(final XorClause clause) {
 
         switch(clause.getHint()){

@@ -27,7 +27,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
-import java.beans.beancontext.BeanContextSupport;
+//import java.beans.beancontext.BeanContextSupport;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -89,8 +89,15 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
     protected BeanContext context;
 
-    transient private Map<Method,InvocationTarget> invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>();
-    transient private Map<Method,Method> supportMethodCache = new ConcurrentHashMap<Method,Method>();
+    // Most DataObjects dont have more than 3 properties.
+    // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
+    transient private Map<Method,InvocationTarget> invocationTargetCache 
+            = new ConcurrentHashMap<Method,InvocationTarget>(5, 0.75f, 2);
+    
+    // many DataObjects never use a support object so initialCapacity is zero.
+    // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
+    transient private Map<Method,Method> supportMethodCache 
+            = new ConcurrentHashMap<Method,Method>(0, 0.75f, 2);
 
     // Static --------------------------------------------------------
 
