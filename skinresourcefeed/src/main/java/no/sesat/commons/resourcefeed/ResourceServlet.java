@@ -325,10 +325,10 @@ public final class ResourceServlet extends HttpServlet {
 	 boolean allowed =
                  ipAddr.startsWith("127.") || ipAddr.startsWith("10.") || ipAddr.startsWith("0:0:0:0:0:0:0:1%0");
 
-         for(String s : ipaddressesAllowed){
-             allowed |= ipAddr.startsWith(s);
-         }
-         return allowed;
+     for(String s : ipaddressesAllowed){
+         allowed |= ipAddr.startsWith(s);
+     }
+     return allowed;
 
     }
 
