@@ -36,8 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.user.UserCookie;
-import no.schibstedsok.searchportal.user.service.UserService;
+import no.sesat.search.user.UserCookie;
+import no.sesat.search.user.service.BasicUserService;
 import org.apache.log4j.Logger;
 
 /** Responsible for Persistent User Login.
@@ -170,16 +170,16 @@ public final class UserFilter implements Filter {
                 try{
 
                     final InitialContext ctx = new InitialContext(properties);
-                    final UserService service = (UserService) ctx.lookup(jndi);
+                    final BasicUserService service = (BasicUserService) ctx.lookup(jndi);
 
                     // perform the login
                     final String automatedLoginKey = cookie.getValue();
 
-                    final UserCookie userCookie = service.getUserByAutomaticId(automatedLoginKey);
-                    datamodel.getUser().setUser(userCookie.getUser());
-
-                    // update the UserCookie ready for next automaticLogin
-                    response.addCookie(createUserCookie(userCookie.getAutomaticId()));
+//                    final UserCookie userCookie = service.getUserByAutomaticId(automatedLoginKey);
+//                    datamodel.getUser().setUser(userCookie.getUser());
+//
+//                    // update the UserCookie ready for next automaticLogin
+//                    response.addCookie(createUserCookie(userCookie.getAutomaticId()));
 
                 }catch(NamingException ne){
                     LOG.error(ne.getMessage(), ne);
@@ -199,17 +199,17 @@ public final class UserFilter implements Filter {
         if( cookie == null ){
             // The user is not logged in
             // Place the cookie, so we can test cookies are enabled
-            response.addCookie(createUserCookie("0"));
+//            response.addCookie(createUserCookie("0"));
         }
     }
 
-    private static Cookie createUserCookie(final String content){
-
-        final Cookie cookie = new Cookie(USER_COOKIE_KEY, content);
-        cookie.setPath(USER_COOKIE_PATH);
-        cookie.setMaxAge(Integer.MAX_VALUE);
-
-        return cookie;
-    }
+//    private static Cookie createUserCookie(final String content){
+//
+//        final Cookie cookie = new Cookie(USER_COOKIE_KEY, content);
+//        cookie.setPath(USER_COOKIE_PATH);
+//        cookie.setMaxAge(Integer.MAX_VALUE);
+//
+//        return cookie;
+//    }
 
 }

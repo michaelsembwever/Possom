@@ -13,8 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- */
-/*
+ **
  * UserDataObject.java
  *
  * Created on 23 January 2007, 12:36
@@ -24,10 +23,8 @@
 package no.sesat.search.datamodel.user;
 
 import java.io.Serializable;
-import java.util.Map;
-import no.sesat.search.datamodel.generic.DataNode;
 import no.sesat.search.datamodel.generic.DataObject;
-import no.schibstedsok.searchportal.user.User;
+import no.sesat.search.user.BasicUser;
 
 /**
  *
@@ -44,13 +41,13 @@ public interface UserDataObject extends Serializable {
      * 
      * @return 
      */
-    User getUser();
+    BasicUser getUser();
     
     /**
      * 
      * @param user 
      */
-    void setUser(User user);
+    void setUser(BasicUser user);
 
 //    Map<String,LocationDataObject> getLocations();
 //

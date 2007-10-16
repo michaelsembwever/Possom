@@ -20,13 +20,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
       <parent>
-          <groupId>schibstedsok</groupId>
+          <groupId>sesat</groupId>
           <artifactId>search-portal</artifactId>
           <version>2.16-SNAPSHOT</version>
       </parent>
     <artifactId>sesat-data-model-api</artifactId>
     <packaging>jar</packaging>
-    <name>SESAT DataModel API</name>
+    <name>Sesat DataModel API</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
@@ -66,38 +66,38 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 
     <dependencies>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
             <version>${version}</version>
         </dependency> 
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-user-api</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-user-api</artifactId>
             <type>jar</type>
         </dependency> 
         <dependency>
@@ -116,14 +116,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         </dependency>
         <!-- Testing -->
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
             <version>${version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
             <version>${version}</version>
             <type>test-jar</type>

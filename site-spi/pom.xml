@@ -20,13 +20,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
       <parent>
-          <groupId>schibstedsok</groupId>
+          <groupId>sesat</groupId>
           <artifactId>search-portal</artifactId>
           <version>2.16-SNAPSHOT</version>
       </parent>
     <artifactId>sesat-site-spi</artifactId>
     <packaging>jar</packaging>
-    <name>SESAT Site SPI</name>
+    <name>Sesat Site SPI</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
@@ -63,7 +63,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
             <version>${version}</version>
         </dependency>
