@@ -13,8 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- */
-/*
+ * 
  * DataModelFactoryImplTest.java
  *
  * Created on 30 January 2007, 15:33

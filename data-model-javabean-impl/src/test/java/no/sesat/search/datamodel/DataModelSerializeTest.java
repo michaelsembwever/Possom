@@ -1,5 +1,5 @@
-/** Copyright (2007) Schibsted Søk AS
- *   This file is part of SESAT.
+/* Copyright (2007) Schibsted Søk AS
+ * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * DataModelSerializeTest.java
  *
  * Created on 11-Jun-2007, 13:42:18
@@ -24,6 +24,8 @@ package no.sesat.search.datamodel;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -44,6 +46,11 @@ import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.datamodel.site.SiteDataObject;
 import no.sesat.search.datamodel.user.UserDataObject;
+import no.sesat.search.user.BasicUser;
+import no.sesat.search.user.UserCookie;
+import no.sesat.search.user.UserProperty;
+import no.sesat.search.user.enums.BooleanEnum;
+import no.sesat.search.user.enums.PropertyKey;
 import no.sesat.search.view.navigation.NavigationConfig;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
@@ -62,7 +69,7 @@ import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.FileResourceLoader;
 import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.user.User;
+import no.sesat.search.user.BasicUser;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -222,7 +229,7 @@ public class DataModelSerializeTest {
                 ParametersDataObject.class);
         datamodel.setParameters(parametersDO);
      
-        final User user = new TestUser();
+        final BasicUser user = new TestUser();
         
         final UserDataObject userDO = factory.instantiate(
                 UserDataObject.class,
@@ -391,4 +398,57 @@ class ClauseFactory implements Serializable {
     }
 }
 
-class TestUser implements User {}
+class TestUser implements BasicUser {
+
+    public Long getUserId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getUsername() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getFirstName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getLastName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Date getCreated() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Date getLastLogin() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isExternal() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Map<PropertyKey, String> getUserPropertiesMap() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getNextLoginKey() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNextLoginKey(String nextLoginKey) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Date getUpdateTimestamp() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setUpdateTimestamp(Date updateTimestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isDirty(Date timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
