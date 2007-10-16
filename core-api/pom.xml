@@ -150,7 +150,7 @@
             <version>${version}</version>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>

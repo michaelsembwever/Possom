@@ -59,7 +59,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <artifactId>log4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>schibstedsok</groupId>
+            <groupId>sesat</groupId>
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>
