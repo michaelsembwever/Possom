@@ -144,6 +144,21 @@ public enum TokenPredicate implements Predicate {
     /** */
     EXACT_WIKI (Type.FAST),
     /** */
+
+    /** for video */
+    ACTOR (Type.FAST),
+    EXACT_ACTOR (Type.FAST),
+    ARTIST (Type.FAST),
+    EXACT_ARTIST (Type.FAST),
+    FICTION_CHARACTER (Type.FAST),
+    EXACT_FICTION_CHARACTER (Type.FAST),
+    MOTOR_SPORT (Type.FAST),
+    EXACT_MOTOR_SPORT (Type.FAST),
+    MOVIE (Type.FAST),
+    EXACT_MOVIE (Type.FAST),
+    PUBLIC_SERVICE_BROADCASTING (Type.FAST),
+    EXACT_PUBLIC_SERVICE_BROADCASTING (Type.FAST),
+    
     IMAGES (Type.FAST),
     /** */
     EXACT_IMAGE (Type.FAST),
