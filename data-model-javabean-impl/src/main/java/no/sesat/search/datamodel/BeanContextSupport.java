@@ -14,16 +14,12 @@ import java.awt.Component;
 import java.awt.Container;
 
 import java.beans.Beans;
-import java.beans.AppletInitializer;
 
-import java.beans.DesignMode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 import java.beans.VetoableChangeListener;
-import java.beans.VetoableChangeSupport;
 import java.beans.PropertyVetoException;
 
 import java.beans.Visibility;
