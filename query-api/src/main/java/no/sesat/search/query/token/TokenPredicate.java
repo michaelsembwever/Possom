@@ -87,6 +87,7 @@ public enum TokenPredicate implements Predicate {
     PRODUCT_BICYCLE (Type.FAST),
     /** */
     PRODUCT_CAR (Type.FAST),
+    EXACT_PRODUCT_CAR (Type.FAST),
     /** */
     PRODUCT_CHILDREN (Type.FAST),
     /** */
