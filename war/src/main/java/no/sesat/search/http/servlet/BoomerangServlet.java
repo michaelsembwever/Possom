@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
 public final class BoomerangServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(BoomerangServlet.class);
-    //private static final Logger STATS = Logger.getLogger("no.sesat.Statistics");
     private static final Logger ACCESS = Logger.getLogger("no.sesat.Access");
 
     private static final String CEREMONIAL = "/boomerang";
@@ -58,22 +57,6 @@ public final class BoomerangServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse res)
             throws ServletException, IOException {
-
-        //final String paper = parametersDO.getValue("paper").getXmlEscaped();
-        //
-        //// news statistics is treated as before until Bernt is ready to adapt to new format
-        //if (paper != null) {
-        //    STATS.info("<retriever-info name=\"papiraviser - " + paper + "\"/><!-- use boomerang instead -->");
-        //} else {
-        //    STATS.info(
-        //            "<view-info>"
-        //            + "<collection>" + req.getParameter("c") + "</collection>"
-        //            + "<type>" + StringEscapeUtils.escapeXml(req.getParameter("type")) + "</type>"
-        //            + "<query>" + StringEscapeUtils.escapeXml(req.getParameter("q")) + "</query>"
-        //            + "<name>" + URLEncoder.encode(req.getParameter("name"), "utf-8") + "</name>"
-        //            + (null != req.getParameter("pos") ? "<position>" + req.getParameter("pos") + "</position>" : "")
-        //            + "</view-info><!-- use boomerang instead -->");
-        //}
 
         // clients must not cache these requests
         res.setHeader("Cache-Control", "no-cache, must-revalidate, post-check=0, pre-check=0");
@@ -130,12 +113,16 @@ public final class BoomerangServlet extends HttpServlet {
         Collections.sort(paramKeys);
 
         final StringBuilder bob = new StringBuilder("<boomerang>");
+        
         for(String key : paramKeys){
+            
             final String value = params.get(key) instanceof StringDataObject
                     ? ((StringDataObject)params.get(key)).getXmlEscaped()
                     : StringEscapeUtils.escapeXml((String)params.get(key));
+            
+            final String keyEscaped = StringEscapeUtils.escapeXml(key);
 
-            bob.append('<' + key + '>' + value + "</" + key + '>');
+            bob.append('<' + keyEscaped + '>' + value + "</" + keyEscaped + '>');
         }
         bob.append("</boomerang>");
         ACCESS.info(bob.toString());
