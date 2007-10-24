@@ -18,6 +18,8 @@
 package no.sesat.search.result;
 
 /**
+ * @deprecated SEARCH-3625
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
