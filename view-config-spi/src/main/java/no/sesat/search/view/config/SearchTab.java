@@ -46,12 +46,12 @@ public final class SearchTab implements Serializable{
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(SearchTab.class);
-    
+
     // Attributes ----------------------------------------------------
-    
+
     private final String id;
     private final int pageSize;
-    private final int pagingSize = 10;    
+    private final int pagingSize = 10;
     private final int enrichmentLimit;
     private final int enrichmentOnTop;
     private final String adCommand;
@@ -63,7 +63,7 @@ public final class SearchTab implements Serializable{
     private final String rssResultName;
     private final boolean rssHidden;
     private final boolean absoluteOrdering;
-    private final boolean displayCss;   
+    private final boolean displayCss;
     private final boolean executeOnBlank;
     private final Collection<EnrichmentHint> enrichments = new ArrayList<EnrichmentHint> ();
     private final String mode;
@@ -72,12 +72,35 @@ public final class SearchTab implements Serializable{
     private final List<String> javascript = new ArrayList<String>();
     private final Layout layout;
     private final NavigationConfig navigationConfig;
-    
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of SearchTab */
+    /** Creates a new instance of SearchTab
+     * @param inherit
+     * @param id
+     * @param mode
+     * @param key
+     * @param parentKey
+     * @param rssResultName
+     * @param rssHidden
+     * @param pageSize
+     * @param navConf
+     * @param enrichmentLimit
+     * @param enrichmentOnTop
+     * @param enrichmentOnTopScore
+     * @param enrichments
+     * @param adCommand
+     * @param adLimit
+     * @param adOnTop
+     * @param css
+     * @param javascript
+     * @param absoluteOrdering
+     * @param layout
+     * @param displayCss
+     * @param executeOnBlank
+     */
     public SearchTab(
                 final SearchTab inherit,
                 final String id,
@@ -129,7 +152,7 @@ public final class SearchTab implements Serializable{
             // we cannot inherit navigators because there require a live reference to the applicable SearchTabFactory
             // but we do inherit enrichments and css
             this.enrichments.addAll(inherit.enrichments);
-            this.css.addAll(inherit.css);            
+            this.css.addAll(inherit.css);
         }
         this.rssResultName = rssResultName;
         this.css.addAll(css);
@@ -142,7 +165,7 @@ public final class SearchTab implements Serializable{
 
     // Getters --------------------------------------------------------
 
-    
+
 
     /**
      * Getter for property id.
@@ -167,7 +190,7 @@ public final class SearchTab implements Serializable{
     public int getPagingSize() {
         return this.pagingSize;
     }
-    
+
     /**
      * Getter for property enrichmentLimit.
      * @return Value of property enrichmentLimit.
@@ -254,7 +277,7 @@ public final class SearchTab implements Serializable{
     public boolean getRssHidden() {
         return rssHidden;
     }
-    
+
     /**
      * Returns true if there should be no visible links to the rss version of this tab.
      *
@@ -263,27 +286,27 @@ public final class SearchTab implements Serializable{
     public boolean isRssHidden() {
         return rssHidden;
     }
-    
+
     /**
      * Getter for property showRss
-     * @return 
+     * @return
      * @deprecated Not JavaBean compatable. Use isShowRss() instead.
      */
     public boolean getShowRss() {
-        return rssResultName != "" && !getRssHidden();
+        return !"".equals(rssResultName) && !getRssHidden();
     }
-    
+
     /**
      * Getter for property showRss
-     * @return 
+     * @return
      */
     public boolean isShowRss() {
-        return rssResultName != "" && !isRssHidden();
+        return !"".equals(rssResultName) && !isRssHidden();
     }
 
     /**
      * Getter for property absoluteOrdering
-     * @return 
+     * @return
      * @deprecated Not JavaBean compatable. Use isAbsoluteOrdering() instead.
      */
     public boolean getAbsoluteOrdering() {
@@ -292,28 +315,28 @@ public final class SearchTab implements Serializable{
 
     /**
      * Getter for property executeOnFront
-     * @return 
+     * @return
      */
     public boolean isExecuteOnBlank() {
         return executeOnBlank;
     }
-    
+
     /**
      * Getter for property absoluteOrdering
-     * @return 
+     * @return
      */
     public boolean isAbsoluteOrdering() {
         return absoluteOrdering;
     }
-    
+
     /**
      * Getter for property displayCss
-     * @return 
+     * @return
      */
     public boolean isDisplayCss() {
         return displayCss;
-    }    
-    
+    }
+
     /**
      * Getter for property enrichments.
      * @return Value of property enrichments.
@@ -323,9 +346,9 @@ public final class SearchTab implements Serializable{
     }
 
     /**
-     * 
-     * @param command 
-     * @return 
+     *
+     * @param command
+     * @return
      */
     public EnrichmentHint getEnrichmentByCommand(final String command){
 
@@ -359,8 +382,8 @@ public final class SearchTab implements Serializable{
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public List<SearchTab> getAncestry(){
         // XXX cache result
@@ -389,7 +412,7 @@ public final class SearchTab implements Serializable{
     public List<String> getJavascript() {
         return Collections.unmodifiableList(javascript);
     }
-    
+
     /**
      * Getter for property layout.
      * @return Value of property layout.
@@ -397,7 +420,7 @@ public final class SearchTab implements Serializable{
     public Layout getLayout() {
         return layout;
     }
-    
+
     public NavigationConfig getNavigationConfiguration(){
         return navigationConfig;
     }
@@ -407,12 +430,18 @@ public final class SearchTab implements Serializable{
     /** Immutable POJO holding Enrichment properties from a given tab. **/
     public static final class EnrichmentHint implements Serializable {
 
+        public static final String NAME_KEY = "enrichmentName";
+        public static final String SCORE_KEY = "enrichmentScore";
+        public static final String HINT_KEY = "enrichmentHint";
+
         /**
-         * 
-         * @param rule 
-         * @param threshold 
-         * @param weight 
-         * @param command 
+         *
+         * @param rule
+         * @param baseScore
+         * @param threshold
+         * @param weight
+         * @param command
+         * @param alwaysvisible
          */
         public EnrichmentHint(
                 final String rule,
@@ -436,19 +465,18 @@ public final class SearchTab implements Serializable{
         private final int threshold;
         private final String command;
         private final float weight;
-        private final boolean alwaysvisible; 
+        private final boolean alwaysvisible;
 
         /**
          * Getter for property rule.
-         * @return Value of property rule. Returns null if value equals empty 
+         * @return Value of property rule. Returns null if value equals empty
          * String("").
          */
         public String getRule() {
-            
-        	if(this.rule.equalsIgnoreCase(""))return null;
-        	else return this.rule;
+
+            return "".equals(rule) ? null : rule;
         }
-        
+
         /**
          * Getter for property baseScore.
          * @return Value of property baseScore.
@@ -485,11 +513,11 @@ public final class SearchTab implements Serializable{
         public String toString() {
             return rule + '[' + command + ']';
         }
-        
+
         /**
          * Getter for property alwaysvisible.
          *  alwaysvisible = means that there is no "firstPage" limitation if the
-         *  enrichments should be visible or not. 
+         *  enrichments should be visible or not.
          * @return Value of property alwaysvisible.
          */
         public boolean isAlwaysvisible(){
@@ -497,23 +525,23 @@ public final class SearchTab implements Serializable{
         }
 
     }
-    
-    /** POJO holding layout information for the given tab. 
+
+    /** POJO holding layout information for the given tab.
      * readLayout(Element) is the only way to mutate the bean and can only be called once.
      **/
     public static final class Layout implements Serializable {
-        
+
         private String origin;
         private String main;
         private String front;
         private Map<String,String> includes;
         private Map<String,String> properties;
-        
+
         private Layout(){}
-        
+
         /**
-         * 
-         * @param inherit 
+         *
+         * @param inherit
          */
         public Layout(final Layout inherit){
             if( null != inherit ){
@@ -524,73 +552,73 @@ public final class SearchTab implements Serializable{
                 properties = inherit.properties;
             }
         }
-        
+
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         public Map<String,String> getIncludes(){
-            
+
             return includes;
         }
-        
+
         /**
-         * 
-         * @param key 
-         * @return 
+         *
+         * @param key
+         * @return
          */
         public String getInclude(final String key){
-            
+
             return includes.get(key);
         }
-        
+
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         public Map<String,String> getProperties(){
             return properties;
         }
-        
+
         /**
-         * 
-         * @param key 
-         * @return 
+         *
+         * @param key
+         * @return
          */
         public String getProperty(final String key){
             return properties.get(key);
         }
-        
-        /** 
-         * @return 
+
+        /**
+         * @return
          @deprecated **/
         public String getOrigin(){
             return origin;
         }
-        
+
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getMain(){
             return main;
         }
-        
+
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         public String getFront(){
             return front;
         }
-        
-        /** Will return null when the element argument is null. 
+
+        /** Will return null when the element argument is null.
          * Otherwise returns the Layout object deserialised from the contents of the Element.
-         ** @param element 
-         * @return 
+         ** @param element
+         * @return
          */
         public Layout readLayout(final Element element){
-            
+
             if( null != origin ){
                 throw new IllegalStateException("Not allowed to call readLayout(element) twice");
             }
@@ -606,19 +634,20 @@ public final class SearchTab implements Serializable{
                 includes = readMap(includes, element.getElementsByTagName("include"), "key", "template");
                 properties = readMap(properties, element.getElementsByTagName("property"), "key", "value");
             }
-            
+
             return null == element ? null : this;
         }
-        
+
         private Map<String,String> readMap(
                 final Map<String,String> inherited,
-                final NodeList list, 
-                final String keyElementName, 
+                final NodeList list,
+                final String keyElementName,
                 final String valueElementName){
-            
-            final Map<String,String> map 
-                    = new HashMap<String,String>(null != inherited ? inherited : Collections.<String, String>emptyMap());
-            
+
+            final Map<String,String> map = new HashMap<String,String>(null != inherited
+                    ? inherited
+                    : Collections.<String, String>emptyMap());
+
             for(int i = 0; i< list.getLength(); ++i){
                 final Element include = (Element) list.item(i);
                 final String key = include.getAttribute(keyElementName);
