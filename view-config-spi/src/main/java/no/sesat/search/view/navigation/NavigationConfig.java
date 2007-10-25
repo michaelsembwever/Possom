@@ -118,6 +118,8 @@ public final class NavigationConfig implements Serializable {
         private String commandName;
         private String tab;
         private boolean out = false;
+        private boolean excludeQuery = false;
+
         private List<Nav> navList;
         private Map<String, Nav> navMap;
         private Set<String> resetNavSet;
@@ -131,6 +133,8 @@ public final class NavigationConfig implements Serializable {
             AbstractDocumentFactory.fillBeanProperty(this, null, "commandName", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "tab", ParseType.String, navigationElement, null);
             AbstractDocumentFactory.fillBeanProperty(this, null, "out", ParseType.Boolean, navigationElement, null);
+            AbstractDocumentFactory.fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navigationElement, "false");
+
 
             this.navList = new ArrayList<NavigationConfig.Nav>();
             this.navMap = new HashMap<String, NavigationConfig.Nav>();
@@ -207,6 +211,14 @@ public final class NavigationConfig implements Serializable {
             this.out = out;
         }
 
+        public void setExcludeQuery(final boolean excludeQuery) {
+            this.excludeQuery = excludeQuery;
+        }
+
+        public boolean isExcludeQuery() {
+            return excludeQuery;
+        }
+
         @Override
         public String toString() {
             return "\nNavigation{" +
@@ -236,7 +248,6 @@ public final class NavigationConfig implements Serializable {
         private List<Nav> childNavs;
         private final Navigation navigation;
         private final Nav parent;
-        private boolean excludeQuery = false;
         private boolean autoNavigation;
 
         public Nav(final Nav parent, final Navigation navigation, final Element navElement) {
@@ -269,9 +280,6 @@ public final class NavigationConfig implements Serializable {
                     ParseType.Boolean,
                     navElement,
                     Boolean.toString(navigation.isOut()));
-
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navElement, "false");
 
             AbstractDocumentFactory
                     .fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
@@ -328,14 +336,6 @@ public final class NavigationConfig implements Serializable {
 
         public void setStaticParameters(final Map<String, String> staticParameters) {
             this.staticParameters = staticParameters;
-        }
-
-        public void setExcludeQuery(final boolean excludeQuery) {
-            this.excludeQuery = excludeQuery;
-        }
-
-        public boolean isExcludeQuery() {
-            return excludeQuery;
         }
 
         public String getId() {
