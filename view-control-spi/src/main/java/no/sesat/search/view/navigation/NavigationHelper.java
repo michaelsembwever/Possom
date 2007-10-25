@@ -109,7 +109,7 @@ public final class NavigationHelper {
             addParameter(parameters, "c", navEntry.getTab());
         }
 
-        if (!navEntry.isExcludeQuery()) {
+        if (!navEntry.getNavigation().isExcludeQuery()) {
             addParameter(parameters, "q", datamodel.getQuery().getUtf8UrlEncoded());
         }
         if (value != null && value.length() > 0) {
