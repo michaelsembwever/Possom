@@ -17,13 +17,11 @@
  */
 package no.sesat.search.result;
 
-import no.sesat.search.result.StringChopper;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import no.sesat.search.result.StringChopper;
 
 /**
  * A simple implementation of a search result item.
@@ -48,6 +46,8 @@ public class BasicResultItem implements ResultItem {
     
     /**
      * 
+     * @param title
+     * @param url 
      */
     protected BasicResultItem(final String title, final String url){
         

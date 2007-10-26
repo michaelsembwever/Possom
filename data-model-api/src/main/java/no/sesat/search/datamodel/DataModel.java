@@ -29,6 +29,7 @@ import java.util.Map;
 import no.sesat.search.datamodel.generic.DataNode;
 import static no.sesat.search.datamodel.access.ControlLevel.*;
 import no.sesat.search.datamodel.access.AccessAllow;
+import no.sesat.search.datamodel.access.AccessDisallow;
 import no.sesat.search.datamodel.junkyard.JunkYardDataObject;
 import no.sesat.search.datamodel.navigation.NavigationDataObject;
 import no.sesat.search.datamodel.page.PageDataObject;
@@ -148,7 +149,7 @@ public interface DataModel extends Serializable{
      * 
      * @return 
      */
-    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING})
+    @AccessDisallow({RUNNING_QUERY_CONSTRUCTION, SEARCH_COMMAND_CONSTRUCTION})
     Map<String,SearchDataObject> getSearches();
     
     /** Get the SearchDataObject holding the given search's results

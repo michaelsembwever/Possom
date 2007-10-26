@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -56,7 +55,6 @@ import no.sesat.search.query.parser.AbstractQueryParserContext;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.parser.QueryParser;
 import no.sesat.search.query.parser.QueryParserImpl;
-import no.sesat.search.result.Enrichment;
 import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
@@ -67,6 +65,7 @@ import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.config.BytecodeLoader;
 import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.view.config.SearchTab.EnrichmentHint;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -110,7 +109,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     /** TODO comment me. **/
     protected final TokenEvaluationEngine engine;
-    private final List<Enrichment> enrichments = new ArrayList<Enrichment>(); // TODO into datamodel
+    //private final List<Enrichment> enrichments = new ArrayList<Enrichment>(); // TODO into datamodel
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
     private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
@@ -411,7 +410,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 final SearchConfiguration config = results.get(task).getSearchConfiguration();
 
                                 final String name = config.getName();
-                                final SearchTab.EnrichmentHint eHint
+                                final EnrichmentHint eHint
                                         = context.getSearchTab().getEnrichmentByCommand(name);
 
                                 final float score = scores.get(name) != null
@@ -431,10 +430,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                                 // score
                                 if(eHint != null && searchResult.getHitCount() > 0 && score >= eHint.getThreshold()) {
-
-                                    // add enrichment
-                                    final Enrichment e = new Enrichment(score, name);
-                                    enrichments.add(e);
+                                    
+                                    searchResult.addField(EnrichmentHint.NAME_KEY, name);
+                                    searchResult.addObjectField(EnrichmentHint.SCORE_KEY, score);
+                                    searchResult.addObjectField(EnrichmentHint.HINT_KEY, eHint);
+                                    
                                 }
                             }
                         }catch(ExecutionException ee){
@@ -513,14 +513,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     /** {@inherit}. **/
-    public List<Enrichment> getEnrichments() {
-
-        LOG.trace("getEnrichments()");
-
-        return enrichments;
-    }
-
-    /** {@inherit}. **/
     public Query getQuery() {
         return datamodel.getQuery().getQuery();
     }
@@ -544,31 +536,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 },
                 context);
 
-        performEnrichmentHandling(handlerContext);
-
         if (!isRss()) {
             performNavigationHandling(handlerContext);
         }
-    }
-
-    private void performEnrichmentHandling(final RunningQueryHandler.Context handlerContext){
-
-        Collections.sort(enrichments);
-
-        final StringBuilder log = new StringBuilder();
-
-        log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
-                + "\" size=\"" + enrichments.size() + "\">"
-                + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
-
-        /* Write product log and find webtv and tv enrichments */
-        for(Enrichment e : enrichments){
-            log.append("<enrichment name=\"" + e.getName()
-                    + "\" score=\"" + e.getAnalysisResult() + "\"/>");
-        }
-        log.append("</enrichments>");
-        PRODUCT_LOG.info(log.toString());
-
     }
 
     private void performNavigationHandling(final RunningQueryHandler.Context handlerContext){

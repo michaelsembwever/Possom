@@ -46,9 +46,6 @@ public interface RunningQuery {
         SearchTab getSearchTab();
     }
 
-    /** TODO comment me. **/
-    List getEnrichments();
-
     /**
      * First find out if the user types in an advanced search etc by analyzing the queryStr.
      * Then lookup correct tip using messageresources.
