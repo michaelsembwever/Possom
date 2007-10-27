@@ -209,7 +209,7 @@ public final class DataModelFilter implements Filter {
 
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
-                new DataObject.Property("values", new ConcurrentHashMap<String,Object>()));
+                new DataObject.Property("values", new ConcurrentHashMap<String,Object>(5, 0.75f, 2)));
 
         datamodel.setSite(siteDO);
         datamodel.setBrowser(browserDO);
