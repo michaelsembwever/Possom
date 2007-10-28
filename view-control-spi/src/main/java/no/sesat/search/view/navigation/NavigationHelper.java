@@ -34,17 +34,20 @@ import org.apache.log4j.Logger;
  * @author Geir H. Pettersen(T-Rank)
  * @author mick
  * @version $Id$
+ *
+ *
+ * @deprecated This class will be removed.
  */
 public final class NavigationHelper {
 
     // Constants -----------------------------------------------------
-    
-    private static final Logger LOG = Logger.getLogger(NavigationHelper.class);
-
     public static String removeQuery(final String url) {
         return url.replaceAll("(&amp;)?q=[^&]*", ""); 
     }
 
+    /**
+     * @todo move into domain? (NavigationItem & BasicNavigationItem)
+     */
     public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
         
         if (dm.getParameters().getValue(nav.getId()) != null
@@ -74,8 +77,7 @@ public final class NavigationHelper {
                     : nav;
         }
     }
-
-
+    
     public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
         final NavigationItem item = dm.getNavigation().getNavigation(navId);
 
