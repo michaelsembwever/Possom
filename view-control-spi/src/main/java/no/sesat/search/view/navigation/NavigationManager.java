@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted S¿k AS
+ * Copyright (2007) Schibsted SÃ¸k
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
