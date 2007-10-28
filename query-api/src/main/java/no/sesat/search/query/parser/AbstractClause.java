@@ -102,7 +102,7 @@ public abstract class AbstractClause implements Clause {
         // log weakCache size every 100 increments
         if(weakCache.size() % 100 == 0){
             LOG.info(INFO_WEAK_CACHE_SIZE_1 + clause.getClass().getSimpleName() 
-                    + INFO_WEAK_CACHE_SIZE_1 + weakCache.size());
+                    + INFO_WEAK_CACHE_SIZE_2 + weakCache.size());
         }
     }
 
@@ -117,6 +117,7 @@ public abstract class AbstractClause implements Clause {
      * Also holds state information about the current term/clause we are finding predicates against.
      * @param predicates2check the complete list of predicates that could apply
      *   to the current clause we are finding predicates for.
+     * @return 
      */
     protected static final boolean findPredicates(
             final TokenEvaluationEngine engine,
@@ -226,17 +227,18 @@ public abstract class AbstractClause implements Clause {
 
     /** {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + getTerm() + "]";
+        return getClass().getSimpleName() + '[' + getTerm() + ']';
     }
 
 
+    // required to keep size of WEAK_CACHE down regardless of null entries
+    //  TODO make commons class (similar copies of this exist around)
+    private static final class WeakClauseReference<T> extends WeakReference<T>{
 
-
-    private static final class WeakClauseReference<T> extends WeakReference{
-
-        private final Map<String,WeakReference<T>> weakCache;
-        private final String key;
+        private Map<String,WeakReference<T>> weakCache;
+        private String key;
 
         WeakClauseReference(
                 final String key,
@@ -248,9 +250,12 @@ public abstract class AbstractClause implements Clause {
             this.weakCache = weakCache;
         }
 
+        @Override
         public void clear() {
             // clear the hashmap entry too!
             weakCache.remove(key);
+            weakCache = null;
+            key = null;
             // clear the referent
             super.clear();
         }

@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
 class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializable {
 
     // Constants -----------------------------------------------------
-
+    
     private static final Map<Property[], WeakReference<BeanDataObjectInvocationHandler<?>>> instances
             = new HashMap<Property[], WeakReference<BeanDataObjectInvocationHandler<?>>>();
 
@@ -74,19 +74,19 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
     private Object support;
     private boolean immutable;
 
-    // properties: the only part of this class that be immutable and reused
+    // properties: the only part of this class that can be immutable and reused (see proposal SEARCH-1609)
     protected List<Property> properties = new CopyOnWriteArrayList<Property>();
 
     protected BeanContext context;
 
     // Most DataObjects dont have more than 3 properties.
     // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
-    transient private Map<Method,InvocationTarget> invocationTargetCache 
+    private transient Map<Method,InvocationTarget> invocationTargetCache 
             = new ConcurrentHashMap<Method,InvocationTarget>(5, 0.75f, 2);
     
     // many DataObjects never use a support object so initialCapacity is zero.
     // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
-    transient private Map<Method,Method> supportMethodCache 
+    private transient Map<Method,Method> supportMethodCache 
             = new ConcurrentHashMap<Method,Method>(0, 0.75f, 2);
 
     // Static --------------------------------------------------------
@@ -143,8 +143,8 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
    
     @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>();
-        supportMethodCache = new ConcurrentHashMap<Method,Method>();
+        invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>(5, 0.75f, 2);
+        supportMethodCache = new ConcurrentHashMap<Method,Method>(0, 0.75f, 2);
         implementOf = (Class<T>) stream.readObject();
         context = (BeanContext) stream.readObject();
         support = stream.readObject();
@@ -517,7 +517,8 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
      **/
     private static boolean isImmutable(final Class<?> cls) throws IntrospectionException{
 
-        // during development just return false
+        // during development (see proposal SEARCH-1609 Immutability and weakReference caching within the DataModel)
+        //  just return false
         return false;
 //        final PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(cls).getPropertyDescriptors();
 //

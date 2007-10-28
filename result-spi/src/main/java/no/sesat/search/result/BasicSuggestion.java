@@ -9,6 +9,7 @@ package no.sesat.search.result;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.log4j.Logger;
 
 /**
  * <b>Immutable</b>
@@ -20,6 +21,9 @@ public class BasicSuggestion implements Suggestion{
     private static final Map<Integer,WeakReference<BasicSuggestion>> WEAK_CACHE
             = new ConcurrentHashMap<Integer,WeakReference<BasicSuggestion>>();
 
+    private static final Logger LOG = Logger.getLogger(BasicSuggestion.class);
+    
+    
     private final String original;
     private final String suggestion;
     private final String htmlSuggestion;
@@ -47,7 +51,11 @@ public class BasicSuggestion implements Suggestion{
 
         if(null == bs){
             bs = new BasicSuggestion(original, suggestion, htmlSuggestion);
-            WEAK_CACHE.put(hashCode, new WeakReference<BasicSuggestion>(bs));
+            WEAK_CACHE.put(hashCode, new WeakSuggestionReference<BasicSuggestion>(hashCode, bs, WEAK_CACHE));
+            // log WEAK_CACHE size every 100 increments
+            if(WEAK_CACHE.size() % 100 == 0){
+                LOG.info("WEAK_CACHE.size is "  + WEAK_CACHE.size());
+            }
         }
 
         return bs;
@@ -122,4 +130,33 @@ public class BasicSuggestion implements Suggestion{
         result = 37*result + htmlSuggestion.hashCode();
         return result;
     }
+    
+
+    // required to keep size of WEAK_CACHE down regardless of null entries
+    //  TODO make commons class (similar copies of this exist around)
+    private static final class WeakSuggestionReference<T> extends WeakReference<T>{
+
+        private Map<Integer,WeakReference<T>> weakCache;
+        private int key;
+
+        WeakSuggestionReference(
+                final int key,
+                final T suggestion,
+                final Map<Integer,WeakReference<T>> weakCache){
+
+            super(suggestion);
+            this.key = key;
+            this.weakCache = weakCache;
+        }
+
+        @Override
+        public void clear() {
+            // clear the hashmap entry too!
+            weakCache.remove(key);
+            weakCache = null;
+            key = 0;
+            // clear the referent
+            super.clear();
+        }
+    }    
 }

@@ -49,7 +49,7 @@ public final class DataModelResultHandler implements ResultHandler{
      * read https://jira.sesam.no/jira/browse/SEARCH-3541 for more.
      */
     private static final Map<Site,Reference<DataModelFactory>> FACTORY_CACHE
-            = new ConcurrentHashMap<Site,Reference<DataModelFactory>>();
+            = new ConcurrentHashMap<Site,Reference<DataModelFactory>>(100, 0.75f, 100);
 
     // Constructors --------------------------------------------------
 
@@ -113,7 +113,9 @@ public final class DataModelResultHandler implements ResultHandler{
         
         if(null == factory){
             factory = getDataModelFactoryImpl(cxt);
-            FACTORY_CACHE.put(site, new WeakReference<DataModelFactory>(factory));
+            FACTORY_CACHE.put(site, new WeakDataModelFactoryReference<DataModelFactory>(site, factory, FACTORY_CACHE));
+            // log FACTORY_CACHE size
+            LOG.info("FACTORY_CACHE.size is "  + FACTORY_CACHE.size());
         }
         
         return factory;
@@ -137,5 +139,32 @@ public final class DataModelResultHandler implements ResultHandler{
 
     // Inner classes -------------------------------------------------
 
+    // required to keep size of WEAK_CACHE down regardless of null entries
+    //  TODO make commons class (similar copies of this exist around)
+    private static final class WeakDataModelFactoryReference<T> extends WeakReference<T>{
+
+        private Map<Site,Reference<T>> weakCache;
+        private Site key;
+
+        WeakDataModelFactoryReference(
+                final Site key,
+                final T factory,
+                final Map<Site,Reference<T>> weakCache){
+
+            super(factory);
+            this.key = key;
+            this.weakCache = weakCache;
+        }
+
+        @Override
+        public void clear() {
+            // clear the hashmap entry too!
+            weakCache.remove(key);
+            weakCache = null;
+            key = null;
+            // clear the referent
+            super.clear();
+        }
+    }  
 
 }
