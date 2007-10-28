@@ -18,8 +18,15 @@ import org.apache.log4j.Logger;
  */
 public class BasicSuggestion implements Suggestion{
 
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
+    
     private static final Map<Integer,WeakReference<BasicSuggestion>> WEAK_CACHE
-            = new ConcurrentHashMap<Integer,WeakReference<BasicSuggestion>>();
+            = new ConcurrentHashMap<Integer,WeakReference<BasicSuggestion>>(
+            WEAK_CACHE_INITIAL_CAPACITY, 
+            WEAK_CACHE_LOAD_FACTOR, 
+            WEAK_CACHE_CONCURRENCY_LEVEL);
 
     private static final Logger LOG = Logger.getLogger(BasicSuggestion.class);
     
@@ -134,7 +141,7 @@ public class BasicSuggestion implements Suggestion{
 
     // required to keep size of WEAK_CACHE down regardless of null entries
     //  TODO make commons class (similar copies of this exist around)
-    private static final class WeakSuggestionReference<T> extends WeakReference<T>{
+    protected static final class WeakSuggestionReference<T> extends WeakReference<T>{
 
         private Map<Integer,WeakReference<T>> weakCache;
         private int key;

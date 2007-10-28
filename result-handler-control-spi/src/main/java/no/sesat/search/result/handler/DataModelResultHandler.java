@@ -37,6 +37,20 @@ public final class DataModelResultHandler implements ResultHandler{
 
 
     // Constants -----------------------------------------------------
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 64;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.75f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 64;
+    
+    /** !Concurrent-safe! weak cache of DataModelFactories
+     *  since hitting DataModelFactory.valueOf(..) hard becomes a bottleneck.
+     * read https://jira.sesam.no/jira/browse/SEARCH-3541 for more.
+     */
+    private static final Map<Site,Reference<DataModelFactory>> FACTORY_CACHE
+            = new ConcurrentHashMap<Site,Reference<DataModelFactory>>(
+            WEAK_CACHE_INITIAL_CAPACITY, 
+            WEAK_CACHE_LOAD_FACTOR, 
+            WEAK_CACHE_CONCURRENCY_LEVEL);
+    
     private static final Logger LOG = Logger.getLogger(DataModelResultHandler.class);
     private static final String DEBUG_ADD_RESULT = "Adding the result ";
 
@@ -44,12 +58,6 @@ public final class DataModelResultHandler implements ResultHandler{
 
     // Static --------------------------------------------------------
     
-    /** !Concurrent-safe! weak cache of DataModelFactories
-     *  since hitting DataModelFactory.valueOf(..) hard becomes a bottleneck.
-     * read https://jira.sesam.no/jira/browse/SEARCH-3541 for more.
-     */
-    private static final Map<Site,Reference<DataModelFactory>> FACTORY_CACHE
-            = new ConcurrentHashMap<Site,Reference<DataModelFactory>>(100, 0.75f, 100);
 
     // Constructors --------------------------------------------------
 
