@@ -28,7 +28,7 @@ import no.sesat.search.site.config.TextMessages;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author maek
  */
 public final class ResultPagingNavigationController
         implements NavigationControllerFactory<ResultPagingNavigationConfig>, NavigationController {
@@ -62,14 +62,14 @@ public final class ResultPagingNavigationController
         // Add navigation item for previous page.
         if (pager.getCurrentPage() > 1) {
             final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
-            final String url = NavigationHelper.getUrlFragment(context.getDataModel(), config, pageOffset, null);
+            final String url = context.getUrlGenerator().getURL(pageOffset, config);
             item.addResult(new BasicNavigationItem(messages.getMessage("prev"), url, config.getPageSize()));
         }
 
         // Add navigation items for the individual pages.
         for (int i = pager.getFirstVisiblePage(); i <= pager.getLastVisiblePage(); ++i) {
             final String pageOffset = Integer.toString(pager.getOffsetOfPage(i));
-            final String url = NavigationHelper.getUrlFragment(context.getDataModel(), config, pageOffset, null);
+            final String url = context.getUrlGenerator().getURL(pageOffset, config);
             final BasicNavigationItem navItem = new BasicNavigationItem(Integer.toString(i), url, config.getPageSize());
 
             navItem.setSelected(i == pager.getCurrentPage());
@@ -80,7 +80,7 @@ public final class ResultPagingNavigationController
         // Add navigation item for next page.
         if (pager.getCurrentPage() < pager.getNumberOfPages()) {
             final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() + 1));
-            final String url = NavigationHelper.getUrlFragment(context.getDataModel(), config, pageOffset, null);
+            final String url = context.getUrlGenerator().getURL(pageOffset, config);
             item.addResult(new BasicNavigationItem(messages.getMessage("next"), url, config.getPageSize()));
         }                               
 

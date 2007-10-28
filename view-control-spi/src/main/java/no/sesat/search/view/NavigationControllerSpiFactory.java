@@ -17,15 +17,17 @@
  */
 package no.sesat.search.view;
 
+import no.sesat.search.site.Site;
+import no.sesat.search.site.SiteContext;
+import no.sesat.search.site.config.BytecodeContext;
+import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.site.config.SiteClassLoaderFactory;
+import no.sesat.search.site.config.Spi;
 import no.sesat.search.view.navigation.NavigationConfig;
+import no.sesat.search.view.navigation.NavigationControllerFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import no.sesat.search.mode.command.SearchCommand;
-import no.sesat.search.view.navigation.NavigationControllerFactory;
-import no.sesat.search.site.config.*;
-import no.sesat.search.site.SiteContext;
-import no.sesat.search.site.Site;
 
 
 /**

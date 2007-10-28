@@ -18,18 +18,17 @@
 */
 package no.sesat.search.view.navigation;
 
-import no.sesat.search.result.NavigationItem;
-import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelContext;
-import no.sesat.search.site.config.ResourceContext;
+import no.sesat.search.result.NavigationItem;
 import no.sesat.search.site.SiteContext;
+import no.sesat.search.site.config.ResourceContext;
 
 /**
- * TODO: Move into sesat-search-command-control-spi once that module is ready for action.
  */
 public interface NavigationController {
 
     interface Context extends DataModelContext, ResourceContext, SiteContext {
+        UrlGenerator getUrlGenerator();
     }
 
     NavigationItem getNavigationItems(Context context);

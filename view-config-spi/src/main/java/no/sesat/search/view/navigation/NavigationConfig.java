@@ -17,8 +17,7 @@
 package no.sesat.search.view.navigation;
 
 import java.io.Serializable;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import static no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
+import static no.sesat.search.site.config.AbstractDocumentFactory.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -123,17 +122,21 @@ public final class NavigationConfig implements Serializable {
         private List<Nav> navList;
         private Map<String, Nav> navMap;
         private Set<String> resetNavSet;
+        private String prefix;
+        private String urlGenerator;
 
         public Navigation() {
         }
 
         public Navigation(final Element navigationElement) {
 
-            AbstractDocumentFactory.fillBeanProperty(this, null, "id", ParseType.String, navigationElement, null);
-            AbstractDocumentFactory.fillBeanProperty(this, null, "commandName", ParseType.String, navigationElement, null);
-            AbstractDocumentFactory.fillBeanProperty(this, null, "tab", ParseType.String, navigationElement, null);
-            AbstractDocumentFactory.fillBeanProperty(this, null, "out", ParseType.Boolean, navigationElement, null);
-            AbstractDocumentFactory.fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navigationElement, "false");
+            fillBeanProperty(this, null, "id", ParseType.String, navigationElement, null);
+            fillBeanProperty(this, null, "commandName", ParseType.String, navigationElement, null);
+            fillBeanProperty(this, null, "tab", ParseType.String, navigationElement, null);
+            fillBeanProperty(this, null, "out", ParseType.Boolean, navigationElement, null);
+            fillBeanProperty(this, null, "excludeQuery", ParseType.Boolean, navigationElement, "false");
+            fillBeanProperty(this, null, "prefix", ParseType.Boolean, navigationElement, "/search/");
+            fillBeanProperty(this, null, "urlGenerator", ParseType.String, navigationElement, "no.sesat.search.view.navigation.BasicUrlGenerator");
 
 
             this.navList = new ArrayList<NavigationConfig.Nav>();
@@ -229,6 +232,43 @@ public final class NavigationConfig implements Serializable {
                     ", resetNavSet=" + resetNavSet +
                     '}';
         }
+
+        /**
+         * Returns the prefix to use when generating URLs. The default is <tt>"/search"</tt>.
+         *
+         * @return the URL prefix.
+         */
+        public String getPrefix() {
+            return prefix;
+        }
+
+        /**
+         * Sets the prefix to use when generating URLs.
+         *
+         * @param prefix The prefix to use.
+         */
+        public void setPrefix(final String prefix) {
+            this.prefix = prefix;
+        }
+
+        /**
+         * The UrlGenerator to use.
+         *
+         * @return the url generator.
+         *
+         */
+        public String getUrlGenerator() {
+            return urlGenerator;
+        }
+
+        /**
+         * Sets the UrlGenerator to use.
+         *
+         * @param urlGenerator the url generator.
+         */
+        public void setUrlGenerator(String urlGenerator) {
+            this.urlGenerator = urlGenerator;
+        }
     }
 
     @Nav.ControllerFactory("no.sesat.search.view.navigation.NoOpNavigationControllerFactoryImpl")
@@ -256,7 +296,7 @@ public final class NavigationConfig implements Serializable {
             this.parent = parent;
             this.childNavs = new ArrayList<Nav>(1);
 
-            AbstractDocumentFactory.fillBeanProperty(
+            fillBeanProperty(
                     this,
                     null,
                     "commandName",
@@ -264,30 +304,13 @@ public final class NavigationConfig implements Serializable {
                     navElement,
                     navigation.getCommandName());
 
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "id", ParseType.String, navElement, null);
-
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "field", ParseType.String, navElement, id);
-
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "tab", ParseType.String, navElement, navigation.getTab());
-
-            AbstractDocumentFactory.fillBeanProperty(
-                    this,
-                    null,
-                    "out",
-                    ParseType.Boolean,
-                    navElement,
-                    Boolean.toString(navigation.isOut()));
-
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
-
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
-            AbstractDocumentFactory
-                    .fillBeanProperty(this, null, "autoNavigation", ParseType.Boolean, navElement, "true");
+            fillBeanProperty(this, null, "id", ParseType.String, navElement, null);
+            fillBeanProperty(this, null, "field", ParseType.String, navElement, id);
+            fillBeanProperty(this, null, "tab", ParseType.String, navElement, navigation.getTab());
+            fillBeanProperty(this,null, "out",ParseType.Boolean,navElement,Boolean.toString(navigation.isOut()));
+            fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
+            fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
+            fillBeanProperty(this, null, "autoNavigation", ParseType.Boolean, navElement, "true");
 
 
             final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);

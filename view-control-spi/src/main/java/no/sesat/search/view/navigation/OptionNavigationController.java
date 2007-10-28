@@ -26,11 +26,7 @@ import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -59,7 +55,7 @@ public class OptionNavigationController
         }
 
         removeAll(config.getOptionsToDelete(), context.getDataModel());
-        addAll(config.getOptionsToAdd(), context.getDataModel());
+        addAll(config.getOptionsToAdd(), context.getDataModel(), context);
 
         // Only modifies the result of the parent. Return null.
         return null;
@@ -113,10 +109,10 @@ public class OptionNavigationController
           }
     }
 
-    private void addAll(final Collection<OptionsNavigationConfig.Option> optionsToAdd, final DataModel dataModel) {
+    private void addAll(final Collection<OptionsNavigationConfig.Option> optionsToAdd, final DataModel dataModel, final Context context) {
 
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
-        final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
+            final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
 
         boolean selectionDone = false;
@@ -135,15 +131,21 @@ public class OptionNavigationController
                 }
             }
             if (value != null) {
-                final Map<String, String> urlParameters = NavigationHelper.getUrlParameters(dataModel, config.getParent(), value, null);
+
+
+
+                final Map<String, String> urlParameters;
 
                 if (option.getTab() != null) {
+                    urlParameters = new HashMap<String, String>(1);
                     urlParameters.put("c", option.getTab());
+                } else {
+                    urlParameters = Collections.emptyMap();
                 }
 
                 final NavigationItem navigator = new BasicNavigationItem(
                         option.getDisplayName(),
-                        NavigationHelper.getUrlFragment(urlParameters),
+                        context.getUrlGenerator().getURL(value, config.getParent(), urlParameters),
                         -1);
                 parentResult.addResult(navigator);
                 if (!selectionDone && optionSelectedValue == null && isOptionDefaultSelected(searchResult, option)) {

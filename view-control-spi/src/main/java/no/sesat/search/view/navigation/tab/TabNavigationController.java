@@ -18,15 +18,15 @@
  */
 package no.sesat.search.view.navigation.tab;
 
-import no.sesat.search.view.navigation.TabNavigationConfig;
-import no.sesat.search.view.navigation.NavigationController;
-import no.sesat.search.result.NavigationItem;
-import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.datamodel.DataModel;
-
-import java.util.List;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
+import no.sesat.search.result.BasicNavigationItem;
+import no.sesat.search.result.NavigationItem;
+import no.sesat.search.view.navigation.NavigationController;
+import no.sesat.search.view.navigation.TabNavigationConfig;
+
+import java.util.List;
 
 /** The NavigationController for cross-vertical navigation.
  * Allowed to map to multiple commands and is selected if any of those commands are current.

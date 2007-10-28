@@ -18,8 +18,8 @@
  */
 package no.sesat.search.view.navigation;
 
-import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.BasicNavigationItem;
+import no.sesat.search.result.NavigationItem;
 
 /**
  * Default navigation controller. Does nothing.

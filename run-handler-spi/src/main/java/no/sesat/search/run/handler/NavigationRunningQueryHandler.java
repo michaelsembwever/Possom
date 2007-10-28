@@ -17,24 +17,20 @@
 package no.sesat.search.run.handler;
 
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.navigation.NavigationDataObject;
-import no.sesat.search.view.navigation.NavigationConfig;
 import no.sesat.search.view.NavigationControllerSpiFactory;
-import no.sesat.search.view.navigation.NavigationControllerFactory;
-import no.sesat.search.view.navigation.NavigationController;
+import no.sesat.search.view.navigation.*;
 import no.sesat.search.result.NavigationItem;
+import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
-import no.sesat.search.site.config.BytecodeLoader;
-import org.apache.log4j.Logger;
+import no.sesat.search.site.config.*;
 
 import java.util.List;
-import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.datamodel.navigation.NavigationDataObject;
+import java.util.Properties;
+import java.lang.reflect.Constructor;
 
-import no.schibstedsok.commons.ioc.ContextWrapper;
-
+import javax.xml.parsers.DocumentBuilder;
 
 
 /**
@@ -46,15 +42,13 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
  * there for navigation.
  *
  * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author maek
  * @version $Id$
  */
 public final class NavigationRunningQueryHandler implements RunningQueryHandler{
 
-    private static final Logger LOG = Logger.getLogger(NavigationRunningQueryHandler.class);
-   
     private NavigationControllerSpiFactory controllerFactoryFactory;
-
+    private NavigationManager navigationManager;
 
     public void handleRunningQuery(final Context context) {
 
@@ -70,15 +64,20 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
         };
 
         this.controllerFactoryFactory = new NavigationControllerSpiFactory(cxt);
+        this.navigationManager = new NavigationManager(context.getDataModel());
 
-        final NavigationController.Context navCxt = ContextWrapper.wrap(NavigationController.Context.class, context);
+        final SiteClassLoaderFactory.Context classLoadingContext = createClassLoadingContext(context);
 
         // Update the datamodel
         final NavigationDataObject navDO = context.getDataModel().getNavigation();
 
         if (navDO.getConfiguration() != null) {
-            for (final NavigationConfig.Navigation navigation : navDO.getConfiguration().getNavigationList()) {
-                processNavs(navigation.getNavList(), context.getDataModel(), navCxt);
+            for (final NavigationConfig.Navigation n : navDO.getConfiguration().getNavigationList()) {
+                final UrlGenerator urlGenerator = getUrlGeneratorInstance(classLoadingContext, n, context);
+
+                final NavigationController.Context navCxt = createNavigationControllerContext(urlGenerator, context);
+
+                processNavs(n.getNavList(), context.getDataModel(), navCxt, urlGenerator);
             }
         }
     }
@@ -89,29 +88,35 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
      * @param navs
      * @param dataModel
      * @param navCxt
+     * @param urlGenerator
      */
     private void processNavs(
             final List<NavigationConfig.Nav> navs,
             final DataModel dataModel,
-            final NavigationController.Context navCxt) {
+            final NavigationController.Context navCxt,
+            final UrlGenerator urlGenerator) {
 
         final NavigationDataObject navDO = dataModel.getNavigation();
 
         for (final NavigationConfig.Nav nav : navs) {
-            final NavigationItem items = getNavigators(dataModel, nav, navCxt);
+            final NavigationItem items = getNavigators(nav, navCxt);
 
             // Navs with null id are considered anonymous. These navs typically just modify the result of their
             // parent and will not be found in the navmap.
             if (items != null && nav.getId() != null) {
                 navDO.setNavigation(nav.getId(), items);
+
+                // Create a "back" navigation item.
+                final NavigationItem reset = new BasicNavigationItem("reset_" + nav.getId(), urlGenerator.getURL("", nav) ,0);
+                navDO.setNavigation("reset_" + nav.getId(), reset);
+
             }
 
-            processNavs(nav.getChildNavs(), dataModel, navCxt);
+            processNavs(nav.getChildNavs(), dataModel, navCxt, urlGenerator);
         }
     }
 
     private NavigationItem getNavigators(
-            final DataModel datamodel,
             final NavigationConfig.Nav navEntry,
             final NavigationController.Context navCxt) {
 
@@ -119,5 +124,66 @@ public final class NavigationRunningQueryHandler implements RunningQueryHandler{
                 = controllerFactoryFactory.getController(navEntry);
 
         return factory.get(navEntry).getNavigationItems(navCxt);
+    }
+
+    private NavigationController.Context createNavigationControllerContext(final UrlGenerator urlGenerator, final Context context) {
+
+        return new NavigationController.Context() {
+
+            public DataModel getDataModel() {
+                return context.getDataModel();
+            }
+
+            public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
+                return context.newDocumentLoader(siteCxt, resource, builder);
+            }
+
+            public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
+                return context.newPropertiesLoader(siteCxt, resource, properties);
+            }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                return context.newBytecodeLoader(siteContext, className, jarFileName);
+            }
+
+            public Site getSite() {
+                return context.getSite();
+            }
+
+            public UrlGenerator getUrlGenerator() {
+                return urlGenerator;
+            }
+        };
+    }
+
+    private UrlGenerator getUrlGeneratorInstance(SiteClassLoaderFactory.Context classLoadingContext, NavigationConfig.Navigation navigation, Context context) {
+        try {
+            final SiteClassLoaderFactory f = SiteClassLoaderFactory.valueOf(classLoadingContext);
+
+            final Class clazz = f.getClassLoader().loadClass(navigation.getUrlGenerator());
+
+            @SuppressWarnings("unchecked")
+            final Constructor<? extends UrlGenerator> s = clazz.getConstructor(DataModel.class, NavigationConfig.Navigation.class, NavigationState.class);
+
+            return s.newInstance(context.getDataModel(), navigation, navigationManager.getNavigationState());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unable to load desired url generator: " + navigation.getUrlGenerator(), e);
+        }
+    }
+
+    private SiteClassLoaderFactory.Context createClassLoadingContext(final Context context) {
+        return new SiteClassLoaderFactory.Context() {
+            public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                return context.newBytecodeLoader(siteContext, className, jarFileName);
+            }
+
+            public Site getSite() {
+                return context.getSite();
+            }
+
+            public Spi getSpi() {
+                return Spi.VIEW_CONTROL;
+            }
+        };
     }
 }
