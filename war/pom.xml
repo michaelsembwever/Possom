@@ -50,20 +50,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 </includes>
             </resource>
             <resource>
-                <directory>src/webapp/dtds</directory>
+                <!-- we want these inside classes/ as well -->
+                <directory>src/main/webapp/dtds</directory>
                 <includes>
                     <include>*.dtd</include>
                 </includes>
             </resource>
         </resources>
-       <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warSourceDirectory>src/webapp</warSourceDirectory>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
    <dependencies>
@@ -256,6 +249,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
+                <custom.install>${env.CATALINA_BASE}/webapps/</custom.install>
             </properties>
         </profile>
        <profile>
