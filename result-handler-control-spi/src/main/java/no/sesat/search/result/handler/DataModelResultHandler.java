@@ -13,6 +13,7 @@
 package no.sesat.search.result.handler;
 
 import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,7 @@ public final class DataModelResultHandler implements ResultHandler{
 
 
     // Constants -----------------------------------------------------
+    
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 64;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.75f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 64;
@@ -50,6 +52,9 @@ public final class DataModelResultHandler implements ResultHandler{
             WEAK_CACHE_INITIAL_CAPACITY, 
             WEAK_CACHE_LOAD_FACTOR, 
             WEAK_CACHE_CONCURRENCY_LEVEL);
+    
+    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
+    private static final ReferenceQueue<DataModelFactory> FACTORY_CACHE_QUEUE = new ReferenceQueue<DataModelFactory>();
     
     private static final Logger LOG = Logger.getLogger(DataModelResultHandler.class);
     private static final String DEBUG_ADD_RESULT = "Adding the result ";
@@ -121,9 +126,21 @@ public final class DataModelResultHandler implements ResultHandler{
         
         if(null == factory){
             factory = getDataModelFactoryImpl(cxt);
-            FACTORY_CACHE.put(site, new WeakDataModelFactoryReference<DataModelFactory>(site, factory, FACTORY_CACHE));
+            FACTORY_CACHE.put(site, new WeakDataModelFactoryReference<DataModelFactory>(
+                    site, 
+                    factory, 
+                    FACTORY_CACHE, 
+                    FACTORY_CACHE_QUEUE));
+            
             // log FACTORY_CACHE size
             LOG.info("FACTORY_CACHE.size is "  + FACTORY_CACHE.size());
+        }
+        
+        // cache cleaning
+        Reference<? extends DataModelFactory> ref = FACTORY_CACHE_QUEUE.poll();
+        while( null != ref ){
+            ref.clear();
+            ref = FACTORY_CACHE_QUEUE.poll();
         }
         
         return factory;
@@ -157,9 +174,10 @@ public final class DataModelResultHandler implements ResultHandler{
         WeakDataModelFactoryReference(
                 final Site key,
                 final T factory,
-                final Map<Site,Reference<T>> weakCache){
+                final Map<Site,Reference<T>> weakCache,
+                final ReferenceQueue<T> queue){
 
-            super(factory);
+            super(factory, queue);
             this.key = key;
             this.weakCache = weakCache;
         }

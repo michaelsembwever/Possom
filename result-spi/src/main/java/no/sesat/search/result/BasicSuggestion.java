@@ -6,6 +6,8 @@
  */
 package no.sesat.search.result;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +29,9 @@ public class BasicSuggestion implements Suggestion{
             WEAK_CACHE_INITIAL_CAPACITY, 
             WEAK_CACHE_LOAD_FACTOR, 
             WEAK_CACHE_CONCURRENCY_LEVEL);
+    
+    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
+    private static final ReferenceQueue<BasicSuggestion> WEAK_CACHE_QUEUE = new ReferenceQueue<BasicSuggestion>();
 
     private static final Logger LOG = Logger.getLogger(BasicSuggestion.class);
     
@@ -58,11 +63,22 @@ public class BasicSuggestion implements Suggestion{
 
         if(null == bs){
             bs = new BasicSuggestion(original, suggestion, htmlSuggestion);
-            WEAK_CACHE.put(hashCode, new WeakSuggestionReference<BasicSuggestion>(hashCode, bs, WEAK_CACHE));
+            WEAK_CACHE.put(
+                    hashCode, 
+                    new WeakSuggestionReference<BasicSuggestion>(hashCode, bs, WEAK_CACHE, WEAK_CACHE_QUEUE));
+            
             // log WEAK_CACHE size every 100 increments
             if(WEAK_CACHE.size() % 100 == 0){
                 LOG.info("WEAK_CACHE.size is "  + WEAK_CACHE.size());
             }
+            
+        }
+        
+        // cache cleaning
+        Reference<? extends BasicSuggestion> ref = WEAK_CACHE_QUEUE.poll();
+        while( null != ref ){
+            ref.clear();
+            ref = WEAK_CACHE_QUEUE.poll();
         }
 
         return bs;
@@ -149,9 +165,10 @@ public class BasicSuggestion implements Suggestion{
         WeakSuggestionReference(
                 final int key,
                 final T suggestion,
-                final Map<Integer,WeakReference<T>> weakCache){
+                final Map<Integer,WeakReference<T>> weakCache,
+                final ReferenceQueue<T> queue){
 
-            super(suggestion);
+            super(suggestion, queue);
             this.key = key;
             this.weakCache = weakCache;
         }
@@ -166,4 +183,5 @@ public class BasicSuggestion implements Suggestion{
             super.clear();
         }
     }    
+    
 }

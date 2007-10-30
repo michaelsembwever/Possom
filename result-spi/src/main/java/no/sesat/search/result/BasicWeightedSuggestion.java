@@ -7,6 +7,8 @@
  */
 package no.sesat.search.result;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +31,10 @@ public final class BasicWeightedSuggestion extends BasicSuggestion implements We
             WEAK_CACHE_LOAD_FACTOR, 
             WEAK_CACHE_CONCURRENCY_LEVEL);
 
+    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
+    private static final ReferenceQueue<BasicWeightedSuggestion> WEAK_CACHE_QUEUE 
+            = new ReferenceQueue<BasicWeightedSuggestion>();
+    
     private static final Logger LOG = Logger.getLogger(BasicWeightedSuggestion.class);
     
     private int weight;
@@ -57,12 +63,24 @@ public final class BasicWeightedSuggestion extends BasicSuggestion implements We
         }
         
         if(null == bws){
+            
             bws = new BasicWeightedSuggestion(original, suggestion, htmlSuggestion, weight);
-            WEAK_CACHE.put(hashCode, new WeakSuggestionReference<BasicWeightedSuggestion>(hashCode, bws, WEAK_CACHE));
+            
+            WEAK_CACHE.put(
+                    hashCode, 
+                    new WeakSuggestionReference<BasicWeightedSuggestion>(hashCode, bws, WEAK_CACHE, WEAK_CACHE_QUEUE));
+            
             // log WEAK_CACHE size every 100 increments
             if(WEAK_CACHE.size() % 100 == 0){
                 LOG.info("WEAK_CACHE.size is "  + WEAK_CACHE.size());
             }
+        }
+        
+        // cache cleaning
+        Reference<? extends BasicWeightedSuggestion> ref = WEAK_CACHE_QUEUE.poll();
+        while( null != ref ){
+            ref.clear();
+            ref = WEAK_CACHE_QUEUE.poll();
         }
         
         return bws;

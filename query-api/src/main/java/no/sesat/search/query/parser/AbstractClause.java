@@ -12,6 +12,8 @@
 
 package no.sesat.search.query.parser;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +38,9 @@ import org.apache.log4j.Logger;
  */
 public abstract class AbstractClause implements Clause {
 
+    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
+    private static final ReferenceQueue<AbstractClause> WEAK_CACHE_QUEUE = new ReferenceQueue<AbstractClause>();
+    
     private static final Logger LOG = Logger.getLogger(AbstractClause.class);
     /**
      * Error message when reflection cannot find the required constructor.
@@ -97,12 +102,19 @@ public abstract class AbstractClause implements Clause {
             final T clause,
             final Map<String,WeakReference<T>> weakCache) {
 
-        weakCache.put(key, new WeakClauseReference<T>(key, clause, weakCache));
+        weakCache.put(key, new WeakClauseReference<T>(key, clause, weakCache, WEAK_CACHE_QUEUE));
 
         // log weakCache size every 100 increments
         if(weakCache.size() % 100 == 0){
             LOG.info(INFO_WEAK_CACHE_SIZE_1 + clause.getClass().getSimpleName() 
                     + INFO_WEAK_CACHE_SIZE_2 + weakCache.size());
+        }
+        
+        // cache cleaning
+        Reference<? extends AbstractClause> ref = WEAK_CACHE_QUEUE.poll();
+        while( null != ref ){
+            ref.clear();
+            ref = WEAK_CACHE_QUEUE.poll();
         }
     }
 
@@ -243,9 +255,10 @@ public abstract class AbstractClause implements Clause {
         WeakClauseReference(
                 final String key,
                 final T clause,
-                final Map<String,WeakReference<T>> weakCache){
+                final Map<String,WeakReference<T>> weakCache,
+                final ReferenceQueue<? super T> queue){
 
-            super(clause);
+            super(clause, queue);
             this.key = key;
             this.weakCache = weakCache;
         }
