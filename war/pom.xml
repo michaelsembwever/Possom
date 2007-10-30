@@ -15,9 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
       <parent>
           <groupId>sesat</groupId>
@@ -57,6 +55,19 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 </includes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-self</id>
+                        <phase>install</phase>
+                        <goals><goal>copy</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
    <dependencies>
@@ -182,28 +193,28 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <type>jar</type>
         <version>4.0.5</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-ejb3-client</artifactId>
         <type>jar</type>
         <version>RC9</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-aspect-jdk50-client</artifactId>
         <type>jar</type>
         <version>4.0.5</version>
       </dependency>
-      
+
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-aop-jdk50-client</artifactId>
         <type>jar</type>
         <version>4.0.5</version>
-      </dependency>      
-      
+      </dependency>
+
       <dependency>
         <groupId>no.schibstedsok.alfa</groupId>
         <artifactId>alfa-remote</artifactId>
@@ -215,8 +226,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <artifactId>urlrewrite</artifactId>
         <type>jar</type>
         <version>3.0-schibstedsok-r1</version>
-      </dependency> 
-     
+      </dependency>
+
       <dependency>
         <groupId>dwr</groupId>
         <artifactId>dwr</artifactId>
@@ -233,8 +244,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <groupId>fast</groupId>
             <artifactId>esp-searchapi</artifactId>
         </dependency>
-        
-    </dependencies> 
+
+    </dependencies>
+
     <profiles>
         <profile>
             <id>development</id>
@@ -249,7 +261,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
-                <custom.install>${env.CATALINA_BASE}/webapps/</custom.install>
             </properties>
         </profile>
        <profile>

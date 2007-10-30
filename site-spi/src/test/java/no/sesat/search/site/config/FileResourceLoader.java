@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * UrlResourceLoader.java
+ * FileResourceLoader.java
  *
  * Created on 20 January 2006, 10:24
  *
@@ -90,6 +90,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
      * @return a bytecode loader for resource.
      */
     public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource, final String jar) {
+
         final BytecodeLoader bcLoader = new FileResourceLoader(siteCxt);
         bcLoader.initBytecodeLoader(resource, jar);
         return bcLoader;
@@ -113,8 +114,9 @@ public class FileResourceLoader extends AbstractResourceLoader {
     }
 
      protected final String getProjectName(final String siteName){
+
         // Very hacky.
-        String projectName = siteName.replaceAll("localhost", "sesam");
+        String projectName = siteName.replaceAll("localhost", "sesam").replaceAll("generic.localhost", "generic.sesam");
         if( projectName.indexOf(':') > 0 ){
             projectName = projectName.substring(0, projectName.indexOf(':'));
         }
@@ -124,28 +126,28 @@ public class FileResourceLoader extends AbstractResourceLoader {
         if( projectName.endsWith("sesam/") && !"generic.sesam/".equals(projectName) ){
             projectName = projectName.substring(0, projectName.length() - 1) + ".no/";
         }
-
-        if( "catalogue/".equals(projectName)){
-            projectName = "katalog.sesam.no/";
-        }
-        return projectName;
+        return projectName.replace('/', File.separatorChar);
     }
 
     @Override
     protected final URL getResource(final Site site) {
-         
+
         LOG.debug("getResource(" + site + ')');
 
         try{
             final String base = System.getProperty("basedir") // test jvm sets this property
-                    + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
+                    + (System.getProperty("basedir").endsWith("war")
+                    ? File.separatorChar  + ".." + File.separatorChar  + ".." + File.separatorChar
+                    : File.separatorChar  + ".." + File.separatorChar)
                     + getProjectName(site.getName());
 
-            final File warFolder = new File(base + "/war");
+            final File warFolder = new File(base + File.separatorChar  + "war");
 
             URI uri = new URI("file://"
                     + base
-                    + (warFolder.exists() && warFolder.isDirectory() ? "/war/target/" : "/target/") + getResourceDirectory()
+                    + (warFolder.exists() && warFolder.isDirectory()
+                    ? File.separatorChar  + "war" + File.separatorChar  + "target" + File.separatorChar
+                    : File.separatorChar  + "target" + File.separatorChar) + getResourceDirectory()
                     + getResource()).normalize();
 
             return uri.toURL();
@@ -157,26 +159,22 @@ public class FileResourceLoader extends AbstractResourceLoader {
     }
 
     private String getResourceDirectory() {
+
         if (getResource().contains("jar!")) {
-            return "lib/";
+            return "lib" + File.separatorChar;
         } else {
-            return "classes/";
+            return "classes" + File.separatorChar;
         }
     }
 
     protected String getUrlFor(final String resource) {
 
-//        LOG.debug("getUrlFor(" + resource + ')');
-//        final String result = "file://"
-//                + System.getProperty("basedir") // test jvm sets this property
-//                + "/target/classes/"
-//                + resource;
-//        LOG.debug("result: " + result);
         return resource;
     }
 
     @Override
     protected InputStream getInputStreamFor(URL url) {
+
         try {
             return url.openConnection().getInputStream();
         } catch (IOException e) {
@@ -196,9 +194,16 @@ public class FileResourceLoader extends AbstractResourceLoader {
             if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
 
                 final String dtd = System.getProperty("basedir") // test jvm sets this property
-                    + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
-                    + "search-portal/war/src/webapp/dtds/" +
-                    systemId.substring(systemId.lastIndexOf('/'));
+                    + (System.getProperty("basedir").endsWith("war")
+                    ? File.separatorChar + ".." + File.separatorChar  + ".." + File.separatorChar
+                    : File.separatorChar + ".." + File.separatorChar)
+                    + "search-portal" + File.separatorChar
+                    + "war" + File.separatorChar
+                    + "src" + File.separatorChar
+                    + "main" + File.separatorChar
+                    + "webapp" + File.separatorChar
+                    + "dtds" + File.separatorChar +
+                    systemId.substring(systemId.lastIndexOf(File.separatorChar));
 
                 LOG.info(INFO_LOADING_DTD + dtd);
                 try{
