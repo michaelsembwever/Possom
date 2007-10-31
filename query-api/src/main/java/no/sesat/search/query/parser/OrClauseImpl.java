@@ -17,7 +17,7 @@
  */
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.OrClause;
@@ -46,12 +47,12 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
-    
+
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<OrClauseImpl>>> WEAK_CACHE
-            = new ConcurrentHashMap<Site,Map<String,WeakReference<OrClauseImpl>>>();
+    private static final Map<Site,ReferenceMap<String,OrClauseImpl>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,ReferenceMap<String,OrClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -106,16 +107,18 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
             final String unique = '(' + term + ')';
 
             // the weakCache to use.
-            Map<String,WeakReference<OrClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            ReferenceMap<String,OrClauseImpl> weakCache = WEAK_CACHE.get(engine.getSite());
             if(weakCache == null){
-                
-                weakCache = new ConcurrentHashMap<String,WeakReference<OrClauseImpl>>(
-                        WEAK_CACHE_INITIAL_CAPACITY,
-                        WEAK_CACHE_LOAD_FACTOR,
-                        WEAK_CACHE_CONCURRENCY_LEVEL);
-                
-                WEAK_CACHE.put(engine.getSite(),weakCache);
-                
+
+                weakCache = new ReferenceMap<String,OrClauseImpl>(
+                        ReferenceMap.Type.WEAK,
+                        new ConcurrentHashMap<String,Reference<OrClauseImpl>>(
+                            WEAK_CACHE_INITIAL_CAPACITY,
+                            WEAK_CACHE_LOAD_FACTOR,
+                            WEAK_CACHE_CONCURRENCY_LEVEL));
+
+                WEAK_CACHE.put(engine.getSite(), weakCache);
+
             }
 
             // use helper method from AbstractLeafClause

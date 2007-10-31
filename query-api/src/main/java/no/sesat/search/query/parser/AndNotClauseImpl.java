@@ -17,7 +17,7 @@
  */
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
@@ -46,14 +47,14 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
-    
+
     /**
      * Values are WeakReference object to AndNotClauseImpl.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      * An overlap of creation is non-critical.
      */
-    private static final Map<Site,Map<String,WeakReference<AndNotClauseImpl>>> WEAK_CACHE
-            = new ConcurrentHashMap<Site,Map<String,WeakReference<AndNotClauseImpl>>>();
+    private static final Map<Site,ReferenceMap<String,AndNotClauseImpl>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,ReferenceMap<String,AndNotClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -101,15 +102,17 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
             engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
             // the weakCache to use.
-            Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            ReferenceMap<String,AndNotClauseImpl> weakCache = WEAK_CACHE.get(engine.getSite());
             if( weakCache == null ){
-                
-                weakCache = new ConcurrentHashMap<String,WeakReference<AndNotClauseImpl>>(
-                        WEAK_CACHE_INITIAL_CAPACITY,
-                        WEAK_CACHE_LOAD_FACTOR,
-                        WEAK_CACHE_CONCURRENCY_LEVEL);
-                
-                WEAK_CACHE.put(engine.getSite(),weakCache);
+
+                weakCache = new ReferenceMap<String,AndNotClauseImpl>(
+                        ReferenceMap.Type.WEAK,
+                        new ConcurrentHashMap<String,Reference<AndNotClauseImpl>>(
+                            WEAK_CACHE_INITIAL_CAPACITY,
+                            WEAK_CACHE_LOAD_FACTOR,
+                            WEAK_CACHE_CONCURRENCY_LEVEL));
+
+                WEAK_CACHE.put(engine.getSite(), weakCache);
             }
 
             // use helper method from AbstractLeafClause

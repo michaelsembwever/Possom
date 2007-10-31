@@ -21,13 +21,11 @@
 
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.OperationClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;
@@ -53,9 +51,9 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      *       final Clause right,
      *       final Set&lt;Predicate&gt; knownPredicates,
      *       final Set&lt;Predicate&gt; possiblePredicates
-     * 
+     *
      * Where this is true subclasses are free to use this helper method.
-     * 
+     *
      * @param left the left child clause for OperationClause the clause we are about to create (or find) will have.
      * @param right the right child clause the clause we are about to create (or find) will have.
      * @param clauseClass the exact subclass of AbstracLeafClause that we are about to create (or find already in use).
@@ -73,7 +71,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
             final Clause right,
             final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check,
-            final Map<String,WeakReference<T>> weakCache) {
+            final ReferenceMap<String,T> weakCache) {
 
 
         final String key = term; // important that the key argument is unique to this object.

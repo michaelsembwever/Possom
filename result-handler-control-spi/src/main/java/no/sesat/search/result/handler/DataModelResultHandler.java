@@ -23,11 +23,9 @@
 package no.sesat.search.result.handler;
 
 import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.generic.DataObject;
@@ -48,31 +46,30 @@ public final class DataModelResultHandler implements ResultHandler{
 
 
     // Constants -----------------------------------------------------
-    
+
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 64;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.75f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 64;
-    
+
     /** !Concurrent-safe! weak cache of DataModelFactories
      *  since hitting DataModelFactory.valueOf(..) hard becomes a bottleneck.
      * read https://jira.sesam.no/jira/browse/SEARCH-3541 for more.
      */
-    private static final Map<Site,Reference<DataModelFactory>> FACTORY_CACHE
-            = new ConcurrentHashMap<Site,Reference<DataModelFactory>>(
-            WEAK_CACHE_INITIAL_CAPACITY, 
-            WEAK_CACHE_LOAD_FACTOR, 
-            WEAK_CACHE_CONCURRENCY_LEVEL);
-    
-    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
-    private static final ReferenceQueue<DataModelFactory> FACTORY_CACHE_QUEUE = new ReferenceQueue<DataModelFactory>();
-    
+    private static final ReferenceMap<Site,DataModelFactory> FACTORY_CACHE
+            = new ReferenceMap<Site,DataModelFactory>(
+                ReferenceMap.Type.WEAK,
+                new ConcurrentHashMap<Site,Reference<DataModelFactory>>(
+                    WEAK_CACHE_INITIAL_CAPACITY,
+                    WEAK_CACHE_LOAD_FACTOR,
+                    WEAK_CACHE_CONCURRENCY_LEVEL));
+
     private static final Logger LOG = Logger.getLogger(DataModelResultHandler.class);
     private static final String DEBUG_ADD_RESULT = "Adding the result ";
 
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
-    
+
 
     // Constructors --------------------------------------------------
 
@@ -102,7 +99,7 @@ public final class DataModelResultHandler implements ResultHandler{
                 QueryDataObject.class,
                 new DataObject.Property("string", friendly),
                 new DataObject.Property("query", cxt.getQuery()));
-        
+
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
                 new DataObject.Property("configuration", cxt.getSearchConfiguration()),
@@ -110,7 +107,7 @@ public final class DataModelResultHandler implements ResultHandler{
                 new DataObject.Property("results", cxt.getSearchResult()));
 
         datamodel.setSearch(config.getName(), searchDO);
-        
+
         // also ping everybody that might be waiting on these results: "dinner's served!"
         synchronized (datamodel.getSearches()) {
             datamodel.getSearches().notifyAll();
@@ -124,39 +121,24 @@ public final class DataModelResultHandler implements ResultHandler{
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     private DataModelFactory getDataModelFactory(final Context cxt){
-        
+
         final Site site = cxt.getSite();
-        
-        DataModelFactory factory = null != FACTORY_CACHE.get(site)
-                ? FACTORY_CACHE.get(site).get()
-                : null;
-        
+
+        DataModelFactory factory = FACTORY_CACHE.get(site);
+
         if(null == factory){
             factory = getDataModelFactoryImpl(cxt);
-            FACTORY_CACHE.put(site, new WeakDataModelFactoryReference<DataModelFactory>(
-                    site, 
-                    factory, 
-                    FACTORY_CACHE, 
-                    FACTORY_CACHE_QUEUE));
-            
-            // log FACTORY_CACHE size
-            LOG.info("FACTORY_CACHE.size is "  + FACTORY_CACHE.size());
+            FACTORY_CACHE.put(site, factory);
+
         }
-        
-        // cache cleaning
-        Reference<? extends DataModelFactory> ref = FACTORY_CACHE_QUEUE.poll();
-        while( null != ref ){
-            ref.clear();
-            ref = FACTORY_CACHE_QUEUE.poll();
-        }
-        
+
         return factory;
     }
-    
+
     private DataModelFactory getDataModelFactoryImpl(final Context cxt){
-        
+
         try{
             // application bottleneck https://jira.sesam.no/jira/browse/SEARCH-3541
             //  DataModelFactory.valueOf(cxt) uses a ReentrantReadWriteLock in high-concurrency environment like here.
@@ -168,38 +150,9 @@ public final class DataModelResultHandler implements ResultHandler{
         }catch(SiteKeyedFactoryInstantiationException skfie){
             LOG.error(skfie.getMessage(), skfie);
             throw new IllegalStateException(skfie.getMessage(), skfie);
-        }        
+        }
     }
 
     // Inner classes -------------------------------------------------
-
-    // required to keep size of WEAK_CACHE down regardless of null entries
-    //  TODO make commons class (similar copies of this exist around)
-    private static final class WeakDataModelFactoryReference<T> extends WeakReference<T>{
-
-        private Map<Site,Reference<T>> weakCache;
-        private Site key;
-
-        WeakDataModelFactoryReference(
-                final Site key,
-                final T factory,
-                final Map<Site,Reference<T>> weakCache,
-                final ReferenceQueue<T> queue){
-
-            super(factory, queue);
-            this.key = key;
-            this.weakCache = weakCache;
-        }
-
-        @Override
-        public void clear() {
-            // clear the hashmap entry too!
-            weakCache.remove(key);
-            weakCache = null;
-            key = null;
-            // clear the referent
-            super.clear();
-        }
-    }  
 
 }

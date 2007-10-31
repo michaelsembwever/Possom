@@ -17,7 +17,7 @@
  */
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.AndClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
@@ -46,12 +47,12 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
-    
+
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<AndClauseImpl>>> WEAK_CACHE
-            = new ConcurrentHashMap<Site,Map<String,WeakReference<AndClauseImpl>>>();
+    private static final Map<Site,ReferenceMap<String,AndClauseImpl>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,ReferenceMap<String,AndClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -90,12 +91,12 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
         final String term =
                 (first instanceof LeafClause && ((LeafClause) first).getField() != null
-                    ?  ((LeafClause) first).getField() + ":"
+                    ?  ((LeafClause) first).getField() + ':'
                     : "")
                 + first.getTerm()
                 + " AND "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null
-                    ?  ((LeafClause) second).getField() + ":"
+                    ?  ((LeafClause) second).getField() + ':'
                     : "")
                 + second.getTerm();
 
@@ -106,15 +107,17 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
             final String unique = '(' + term + ')';
 
             // the weakCache to use.
-            Map<String,WeakReference<AndClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            ReferenceMap<String,AndClauseImpl> weakCache = WEAK_CACHE.get(engine.getSite());
             if(weakCache == null){
-                
-                weakCache = new ConcurrentHashMap<String,WeakReference<AndClauseImpl>>(
+
+                weakCache = new ReferenceMap<String,AndClauseImpl>(
+                    ReferenceMap.Type.WEAK,
+                    new ConcurrentHashMap<String,Reference<AndClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,
-                        WEAK_CACHE_CONCURRENCY_LEVEL);
-                
-                WEAK_CACHE.put(engine.getSite(),weakCache);
+                        WEAK_CACHE_CONCURRENCY_LEVEL));
+
+                WEAK_CACHE.put(engine.getSite(), weakCache);
             }
 
             // use helper method from AbstractLeafClause

@@ -17,10 +17,8 @@
 package no.sesat.search.result;
 
 import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import no.sesat.commons.ref.ReferenceMap;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,19 +31,18 @@ public class BasicSuggestion implements Suggestion{
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
-    
-    private static final Map<Integer,WeakReference<BasicSuggestion>> WEAK_CACHE
-            = new ConcurrentHashMap<Integer,WeakReference<BasicSuggestion>>(
-            WEAK_CACHE_INITIAL_CAPACITY, 
-            WEAK_CACHE_LOAD_FACTOR, 
-            WEAK_CACHE_CONCURRENCY_LEVEL);
-    
-    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
-    private static final ReferenceQueue<BasicSuggestion> WEAK_CACHE_QUEUE = new ReferenceQueue<BasicSuggestion>();
+
+    private static final ReferenceMap<Integer,BasicSuggestion> WEAK_CACHE
+            = new ReferenceMap<Integer,BasicSuggestion>(
+                ReferenceMap.Type.WEAK,
+                new ConcurrentHashMap<Integer,Reference<BasicSuggestion>>(
+                    WEAK_CACHE_INITIAL_CAPACITY,
+                    WEAK_CACHE_LOAD_FACTOR,
+                    WEAK_CACHE_CONCURRENCY_LEVEL));
 
     private static final Logger LOG = Logger.getLogger(BasicSuggestion.class);
-    
-    
+
+
     private final String original;
     private final String suggestion;
     private final String htmlSuggestion;
@@ -64,31 +61,12 @@ public class BasicSuggestion implements Suggestion{
 
         final int hashCode = hashCode(original, suggestion, htmlSuggestion);
 
-        BasicSuggestion bs = null;
-
-        if(WEAK_CACHE.containsKey(hashCode)){
-            final WeakReference<BasicSuggestion> wk = WEAK_CACHE.get(hashCode);
-            bs = wk.get();
-        }
+        BasicSuggestion bs = WEAK_CACHE.get(hashCode);
 
         if(null == bs){
             bs = new BasicSuggestion(original, suggestion, htmlSuggestion);
-            WEAK_CACHE.put(
-                    hashCode, 
-                    new WeakSuggestionReference<BasicSuggestion>(hashCode, bs, WEAK_CACHE, WEAK_CACHE_QUEUE));
-            
-            // log WEAK_CACHE size every 100 increments
-            if(WEAK_CACHE.size() % 100 == 0){
-                LOG.info("WEAK_CACHE.size is "  + WEAK_CACHE.size());
-            }
-            
-        }
-        
-        // cache cleaning
-        Reference<? extends BasicSuggestion> ref = WEAK_CACHE_QUEUE.poll();
-        while( null != ref ){
-            ref.clear();
-            ref = WEAK_CACHE_QUEUE.poll();
+            WEAK_CACHE.put(hashCode, bs);
+
         }
 
         return bs;
@@ -163,35 +141,5 @@ public class BasicSuggestion implements Suggestion{
         result = 37*result + htmlSuggestion.hashCode();
         return result;
     }
-    
 
-    // required to keep size of WEAK_CACHE down regardless of null entries
-    //  TODO make commons class (similar copies of this exist around)
-    protected static final class WeakSuggestionReference<T> extends WeakReference<T>{
-
-        private Map<Integer,WeakReference<T>> weakCache;
-        private int key;
-
-        WeakSuggestionReference(
-                final int key,
-                final T suggestion,
-                final Map<Integer,WeakReference<T>> weakCache,
-                final ReferenceQueue<T> queue){
-
-            super(suggestion, queue);
-            this.key = key;
-            this.weakCache = weakCache;
-        }
-
-        @Override
-        public void clear() {
-            // clear the hashmap entry too!
-            weakCache.remove(key);
-            weakCache = null;
-            key = 0;
-            // clear the referent
-            super.clear();
-        }
-    }    
-    
 }

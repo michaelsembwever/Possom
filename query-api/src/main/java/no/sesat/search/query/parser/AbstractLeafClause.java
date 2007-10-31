@@ -20,13 +20,12 @@
 
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.token.EvaluationState;
 import no.sesat.search.query.token.TokenEvaluationEngine;
@@ -70,7 +69,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
             final String field,
             final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check,
-            final Map<String,WeakReference<T>> weakCache) {
+            final ReferenceMap<String,T> weakCache) {
 
 
         // important that the key argument is unique to this object.

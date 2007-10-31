@@ -17,13 +17,14 @@
  */
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.IntegerClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
@@ -42,12 +43,12 @@ public final class IntegerClauseImpl extends AbstractLeafClause implements Integ
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
-    
+
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<IntegerClauseImpl>>> WEAK_CACHE
-            = new ConcurrentHashMap<Site,Map<String,WeakReference<IntegerClauseImpl>>>();
+    private static final Map<Site,ReferenceMap<String,IntegerClauseImpl>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,ReferenceMap<String,IntegerClauseImpl>>();
 
     /* A IntegerClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -83,15 +84,17 @@ public final class IntegerClauseImpl extends AbstractLeafClause implements Integ
         final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // the weakCache to use.
-        Map<String,WeakReference<IntegerClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        ReferenceMap<String,IntegerClauseImpl> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
         if(weakCache == null){
-            
-            weakCache = new ConcurrentHashMap<String,WeakReference<IntegerClauseImpl>>(
-                    WEAK_CACHE_INITIAL_CAPACITY,
-                    WEAK_CACHE_LOAD_FACTOR,
-                    WEAK_CACHE_CONCURRENCY_LEVEL);
-            
-            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+
+            weakCache = new ReferenceMap<String,IntegerClauseImpl>(
+                    ReferenceMap.Type.WEAK,
+                    new ConcurrentHashMap<String,Reference<IntegerClauseImpl>>(
+                        WEAK_CACHE_INITIAL_CAPACITY,
+                        WEAK_CACHE_LOAD_FACTOR,
+                        WEAK_CACHE_CONCURRENCY_LEVEL));
+
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(), weakCache);
         }
 
         // use helper method from AbstractLeafClause

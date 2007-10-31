@@ -17,7 +17,7 @@
  */
 package no.sesat.search.query.parser;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.XorClause;
@@ -46,12 +47,12 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
-    
+
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<XorClauseImpl>>> WEAK_CACHE
-            = new ConcurrentHashMap<Site,Map<String,WeakReference<XorClauseImpl>>>();
+    private static final Map<Site,ReferenceMap<String,XorClauseImpl>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,ReferenceMap<String,XorClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -89,12 +90,12 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
         final String term =
                 (first instanceof LeafClause && ((LeafClause) first).getField() != null
-                    ?  ((LeafClause) first).getField() + ":"
+                    ?  ((LeafClause) first).getField() + ':'
                     : "")
                 + first.getTerm()
                 + " "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null
-                    ?  ((LeafClause) second).getField() + ":"
+                    ?  ((LeafClause) second).getField() + ':'
                     : "")
                 + second.getTerm();
         try{
@@ -102,15 +103,17 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
             engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
             // the weakCache to use.
-            Map<String,WeakReference<XorClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            ReferenceMap<String,XorClauseImpl> weakCache = WEAK_CACHE.get(engine.getSite());
             if( weakCache == null ){
-                
-                weakCache = new ConcurrentHashMap<String,WeakReference<XorClauseImpl>>(
+
+                weakCache = new ReferenceMap<String,XorClauseImpl>(
+                        ReferenceMap.Type.WEAK,
+                        new ConcurrentHashMap<String,Reference<XorClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,
-                        WEAK_CACHE_CONCURRENCY_LEVEL);
-                
-                WEAK_CACHE.put(engine.getSite(),weakCache);
+                        WEAK_CACHE_CONCURRENCY_LEVEL));
+
+                WEAK_CACHE.put(engine.getSite(), weakCache);
             }
 
             // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor

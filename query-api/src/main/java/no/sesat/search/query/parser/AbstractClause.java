@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.token.TokenEvaluator;
@@ -47,9 +48,6 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractClause implements Clause {
-
-    // XXX potential bottleneck as ReferenceQueue is heavily synchronised
-    private static final ReferenceQueue<AbstractClause> WEAK_CACHE_QUEUE = new ReferenceQueue<AbstractClause>();
     
     private static final Logger LOG = Logger.getLogger(AbstractClause.class);
     /**
@@ -85,17 +83,9 @@ public abstract class AbstractClause implements Clause {
      */
     protected static final <T extends AbstractClause> T findClauseInUse(
             final String key,
-            final Map<String,WeakReference<T>> weakCache) {
+            final ReferenceMap<String,T> weakCache) {
 
-        T result = null;
-
-        final WeakReference<T> weakRef = weakCache.get(key);
-        if (weakRef != null) {
-            result = weakRef.get();
-        }
-        if (result != null && LOG.isDebugEnabled()) {
-            LOG.debug(DEBUG_REFERENCE_REUSED + weakCache.size());
-        }
+        T result = weakCache.get(key);
 
         return result;
     }
@@ -110,22 +100,9 @@ public abstract class AbstractClause implements Clause {
     protected static final <T extends AbstractClause> void addClauseInUse(
             final String key,
             final T clause,
-            final Map<String,WeakReference<T>> weakCache) {
+            final ReferenceMap<String,T> weakCache) {
 
-        weakCache.put(key, new WeakClauseReference<T>(key, clause, weakCache, WEAK_CACHE_QUEUE));
-
-        // log weakCache size every 100 increments
-        if(weakCache.size() % 100 == 0){
-            LOG.info(INFO_WEAK_CACHE_SIZE_1 + clause.getClass().getSimpleName() 
-                    + INFO_WEAK_CACHE_SIZE_2 + weakCache.size());
-        }
-        
-        // cache cleaning
-        Reference<? extends AbstractClause> ref = WEAK_CACHE_QUEUE.poll();
-        while( null != ref ){
-            ref.clear();
-            ref = WEAK_CACHE_QUEUE.poll();
-        }
+        weakCache.put(key, clause);
     }
 
     /**
@@ -254,33 +231,4 @@ public abstract class AbstractClause implements Clause {
         return getClass().getSimpleName() + '[' + getTerm() + ']';
     }
 
-
-    // required to keep size of WEAK_CACHE down regardless of null entries
-    //  TODO make commons class (similar copies of this exist around)
-    private static final class WeakClauseReference<T> extends WeakReference<T>{
-
-        private Map<String,WeakReference<T>> weakCache;
-        private String key;
-
-        WeakClauseReference(
-                final String key,
-                final T clause,
-                final Map<String,WeakReference<T>> weakCache,
-                final ReferenceQueue<? super T> queue){
-
-            super(clause, queue);
-            this.key = key;
-            this.weakCache = weakCache;
-        }
-
-        @Override
-        public void clear() {
-            // clear the hashmap entry too!
-            weakCache.remove(key);
-            weakCache = null;
-            key = null;
-            // clear the referent
-            super.clear();
-        }
-    }
 }
