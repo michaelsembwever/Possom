@@ -105,12 +105,12 @@ public class FileResourceLoader extends AbstractResourceLoader {
     @Override
     public boolean urlExists(final URL url) {
 
-        try {
-            return new File(url.toURI()).exists();
-        }catch (URISyntaxException ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
-        return false;
+        //try {
+            return new File(url.getFile()).exists();
+        //}catch (URISyntaxException ex) {
+        //    LOG.error(ex.getMessage(), ex);
+        //}
+        //return false;
     }
 
      protected final String getProjectName(final String siteName){
@@ -143,12 +143,13 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
             final File warFolder = new File(base + File.separatorChar  + "war");
 
-            URI uri = new URI("file://"
-                    + base
+	    final String urlStr = base
                     + (warFolder.exists() && warFolder.isDirectory()
                     ? File.separatorChar  + "war" + File.separatorChar  + "target" + File.separatorChar
                     : File.separatorChar  + "target" + File.separatorChar) + getResourceDirectory()
-                    + getResource()).normalize();
+                    + getResource();
+		    
+            final URI uri = new URI("file://"  + urlStr.replace(File.separatorChar, '/')).normalize();
 
             return uri.toURL();
         }catch (URISyntaxException ex) {
@@ -176,7 +177,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
     protected InputStream getInputStreamFor(URL url) {
 
         try {
-            return url.openConnection().getInputStream();
+            return new FileInputStream(new File(url.getFile()));
         } catch (IOException e) {
             throw new ResourceLoadException(e.getMessage(), e);
         }
@@ -203,7 +204,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
                     + "main" + File.separatorChar
                     + "webapp" + File.separatorChar
                     + "dtds" + File.separatorChar +
-                    systemId.substring(systemId.lastIndexOf(File.separatorChar));
+                    systemId.substring(systemId.lastIndexOf('/'));
 
                 LOG.info(INFO_LOADING_DTD + dtd);
                 try{

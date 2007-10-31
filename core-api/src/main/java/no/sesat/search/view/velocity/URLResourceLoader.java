@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.site.Site;
@@ -188,7 +189,7 @@ public class URLResourceLoader extends ResourceLoader {
         final String oldUrl = currSite.getName() + currSite.getConfigContext();
         final String newUrl = ancestorSite.getName() + ancestorSite.getConfigContext();
 
-        return url.replaceFirst(oldUrl, newUrl);
+        return url.replaceFirst(Matcher.quoteReplacement(oldUrl), newUrl);
     }
 
 

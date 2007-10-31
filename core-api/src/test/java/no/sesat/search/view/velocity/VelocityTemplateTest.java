@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelTestCase;
@@ -85,7 +86,9 @@ public final class VelocityTemplateTest extends DataModelTestCase{
 
         final StringBuilder errors = new StringBuilder();
 
-        final String base = System.getProperty("basedir") + "/src/main/templates/";
+        final String base = System.getProperty("basedir") 
+			+ File.separatorChar  + "src" + File.separatorChar  + "main" 
+			+ File.separatorChar  + "templates" + File.separatorChar;
         LOG.info("Looking in " + base);
 
         final File templatesFolder = new File(base);
@@ -95,7 +98,7 @@ public final class VelocityTemplateTest extends DataModelTestCase{
         for(File file : templates){
             LOG.info("Testing merge against " + file.getAbsolutePath());
             try{
-                final String templateName = file.getAbsolutePath().replaceFirst(base, "");
+                final String templateName = file.getAbsolutePath().replaceFirst(Matcher.quoteReplacement(base), "");
                 final DataModel datamodel = getDataModel();
                 getDataModelFactory().assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
                 final Site site = datamodel.getSite().getSite();
@@ -121,9 +124,9 @@ public final class VelocityTemplateTest extends DataModelTestCase{
                 template.merge(context, new StringWriter());
 
             }catch(MethodInvocationException mie){
-                LOG.debug(file.getAbsolutePath().replaceFirst(base, "") + " ignoring " + mie.getMessage());
+                LOG.debug(file.getAbsolutePath().replaceFirst(Matcher.quoteReplacement(base), "") + " ignoring " + mie.getMessage());
             }catch(IOException ioe){
-                LOG.debug(file.getAbsolutePath().replaceFirst(base, "") + " ignoring " + ioe.getMessage());
+                LOG.debug(file.getAbsolutePath().replaceFirst(Matcher.quoteReplacement(base), "") + " ignoring " + ioe.getMessage());
 
             }catch(Exception e){
                 LOG.error(e.getMessage(), e);
@@ -194,10 +197,11 @@ public final class VelocityTemplateTest extends DataModelTestCase{
                         .substring(resource.lastIndexOf("templates/") + 10)
                         .replaceAll(".vm.vm", ".vm");
 
-                return new URI("file://"
-                        + base
+		final String urlStr = base
                         + (wf.exists() && wf.isDirectory() ? "/war/src/main/templates/" : "/src/main/templates/")
-                        + rsc).normalize().toURL();
+                        + rsc; 
+			
+                return new URI("file://" + urlStr.replace(File.separatorChar, '/')).normalize().toURL();
 
             }catch (URISyntaxException ex) {
                 throw new ResourceLoadException(ex.getMessage(), ex);

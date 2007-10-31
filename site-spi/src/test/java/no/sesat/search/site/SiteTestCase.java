@@ -22,7 +22,9 @@
 
 package no.sesat.search.site;
 
+import java.io.File;
 import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -106,10 +108,10 @@ public abstract class SiteTestCase {
     
     protected final Site getTestingSite(){
         
-        final String basedir = System.getProperty("basedir").replaceAll("/war", "");
+        final String basedir = System.getProperty("basedir").replaceAll(Matcher.quoteReplacement(File.separatorChar + "war"), "");
         final Site result = Site.valueOf(
                 getSiteConstructingContext(),
-                basedir.substring(basedir.lastIndexOf('/')+1).replaceAll("/", ""),
+                basedir.substring(basedir.lastIndexOf(File.separatorChar)+1).replaceAll(Matcher.quoteReplacement(File.separator), ""),
                 Locale.getDefault());
         
         if(LOG.isDebugEnabled()){
