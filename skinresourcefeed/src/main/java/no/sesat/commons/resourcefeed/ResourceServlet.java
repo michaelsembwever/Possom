@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /** Resource Provider.
  * Serves configuration files (properties, xml), css, gifs, jpgs, javascript,
@@ -62,6 +63,8 @@ public final class ResourceServlet extends HttpServlet {
     private static final Map<String,String> CONTENT_TYPES = new HashMap<String,String>();
     private static final Map<String,String> CONTENT_PATHS = new HashMap<String,String>();
     private static final Set<String> RESTRICTED = new HashSet<String>();
+    
+    private static final Calendar CROWNING_OF_HAILE_SELASSIE = Calendar.getInstance();
 
     private long defaultLastModified = 0;
     private String[] ipaddressesAllowed = new String[]{};
@@ -84,6 +87,11 @@ public final class ResourceServlet extends HttpServlet {
         CONTENT_TYPES.put("html", "text/plain");
         CONTENT_TYPES.put("class", "application/java");
         CONTENT_TYPES.put("jar", "application/java-archive");
+        
+        // Things that don't expire
+        CROWNING_OF_HAILE_SELASSIE.set(Calendar.YEAR, 9999);
+        // call it in a safe environment (internals are not thread safe).
+        CROWNING_OF_HAILE_SELASSIE.getTimeInMillis();
     }
 
     /**
@@ -268,7 +276,10 @@ public final class ResourceServlet extends HttpServlet {
                 //  nothing is cached across deployment versions.
                 if(!restricted){
                     response.setHeader("Cache-Control", "Public");
-                    response.setDateHeader("Expires", Long.MAX_VALUE);
+                    // We used to use Long.MAX_VALUE but http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
+                    // shows the year field can only be four digits long. 
+                    //  see https://helpdesk.basefarm.com/bin/customer?action=listTicket&ticketId=274212
+                    response.setDateHeader("Expires", CROWNING_OF_HAILE_SELASSIE.getTimeInMillis());
                 }
 
                 // Avoid writing out the response body if it's a HEAD request or a GET that the browser has cache for

@@ -571,7 +571,11 @@ public final class HTTPClient {
         static Statistic getStatistic(final String id) {
 
             if (null == STATISTICS.get(id)) {
+                
                 STATISTICS.put(id, new Statistic(id));
+                
+                // log STATISTICS size
+                LOG.info("STATISTICS.size is "  + STATISTICS.size());
             }
             return STATISTICS.get(id);
         }

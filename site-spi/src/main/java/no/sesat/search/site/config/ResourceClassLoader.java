@@ -33,10 +33,13 @@ public abstract class ResourceClassLoader extends ClassLoader {
     /**  Context needed by this class. */
     public interface Context extends BytecodeContext, SiteContext {}
 
+    private static final Logger LOG = Logger.getLogger(ResourceClassLoader.class);
+
     private final Context context;
 
     private Collection<String> notFound = new HashSet<String>();
     private ReadWriteLock notFoundLock = new ReentrantReadWriteLock();
+
 
     /**
      * Creates a new resource class loader for a site.
@@ -96,6 +99,18 @@ public abstract class ResourceClassLoader extends ClassLoader {
             throw new ClassNotFoundException(className + " not found");
         }
 
-        return defineClass(className, bytecode, 0, bytecode.length);
+
+        // Make sure that the class hasn't been defined by another thread while we were busy looking for and loading the
+        // byte code.
+        synchronized(this) {
+            final Class loadedClass = findLoadedClass(className);
+
+            if (LOG.isDebugEnabled() && null != loadedClass) {
+                LOG.debug(className + " already loaded by some other thread ");
+
+            }
+            
+            return loadedClass != null ? loadedClass : defineClass(className, bytecode, 0, bytecode.length);
+        }
     }
 }

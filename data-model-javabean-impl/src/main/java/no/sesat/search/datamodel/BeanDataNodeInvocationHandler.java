@@ -65,7 +65,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     static <T> BeanDataNodeInvocationHandler<T> instanceOf(final Class<T> cls, final Property... properties)
             throws IntrospectionException {
 
-        return new BeanDataNodeInvocationHandler<T>(cls, new PropertyInitialisor(cls, properties));
+        return new BeanDataNodeInvocationHandler<T>(cls, new PropertyInitialisor<T>(cls, properties));
     }
 
     // Constructors --------------------------------------------------
