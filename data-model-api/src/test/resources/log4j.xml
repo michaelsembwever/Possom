@@ -27,7 +27,7 @@
     </appender>
    
     <appender name="TEST_LOG" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="@log.directory@/@log.file@.test"/>
+        <param name="File" value="target/test-logs/test.log"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>

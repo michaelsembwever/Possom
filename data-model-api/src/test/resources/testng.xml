@@ -1,11 +1,10 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 
-<suite name="DataModel API Assertion Tests" verbose="10">
+<suite name="DataModel API Assertion Tests">
     
     <test name="Tests">
         <packages>
             <package name="no.sesat.search.datamodel"/>
-            
         </packages>
     
     </test>
