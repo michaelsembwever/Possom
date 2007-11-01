@@ -85,7 +85,7 @@ public class OptionNavigationController
                   if (navigator.getTitle().equals(value)) {
                       match = true;
 
-                      if (selectedValue == null && isOptionDefaultSelected(searchResult, option)) {
+                      if ((selectedValue == null || "".equals(selectedValue)) && isOptionDefaultSelected(searchResult, option)) {
                           navigator.setSelected(true);
                           selectedValue = new StringDataObjectSupport("dummy");
                       }
