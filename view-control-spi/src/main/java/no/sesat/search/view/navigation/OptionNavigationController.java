@@ -85,7 +85,9 @@ public class OptionNavigationController
                   if (navigator.getTitle().equals(value)) {
                       match = true;
 
-                      if ((selectedValue == null || "".equals(selectedValue)) && isOptionDefaultSelected(searchResult, option)) {
+                      if ((selectedValue == null || "".equals(selectedValue.getString()))
+                              && isOptionDefaultSelected(searchResult, option)) {
+                          
                           navigator.setSelected(true);
                           selectedValue = new StringDataObjectSupport("dummy");
                       }
@@ -136,7 +138,10 @@ public class OptionNavigationController
                         NavigationHelper.getUrlFragment(urlParameters),
                         -1);
                 parentResult.addResult(navigator);
-                if (!selectionDone && optionSelectedValue == null && isOptionDefaultSelected(searchResult, option)) {
+                if (!selectionDone
+                        && (optionSelectedValue == null || "".equals(optionSelectedValue.getString()))
+                        && isOptionDefaultSelected(searchResult, option)) {
+
                     navigator.setSelected(true);
                     selectionDone = true;
                 } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
