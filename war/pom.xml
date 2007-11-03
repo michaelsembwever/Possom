@@ -36,6 +36,7 @@
     </scm>
 
     <build>
+        <finalName>ROOT</finalName>
         <resources>
             <resource>
                 <filtering>true</filtering>
@@ -55,19 +56,6 @@
                 </includes>
             </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-self</id>
-                        <phase>install</phase>
-                        <goals><goal>copy</goal></goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
    <dependencies>
@@ -253,9 +241,16 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <build>
-                <finalName>ROOT</finalName>
-            </build>
+            <build><plugins><plugin>
+                <!-- TODO extend this into a custom mojo that checks env.CATALINA_BASE is valid -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions><execution>
+                    <id>copy-self</id>
+                    <phase>install</phase>
+                    <goals><goal>copy</goal></goals>
+                </execution></executions>
+            </plugin></plugins></build>
             <properties>
                 <msearch.configuration.url>http://mobil:8080/mobil/conf/msearch-client.properties</msearch.configuration.url>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
@@ -266,16 +261,6 @@
        <profile>
             <id>alpha</id>
             <activation />
-            <build>
-                <finalName>ROOT.alpha</finalName>
-            </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Alpha</id>
-                    <name>Schibsted Søk's Alpha repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-alpha</url>
-                </repository>
-            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -289,16 +274,6 @@
        <profile>
             <id>nuclei</id>
             <activation />
-            <build>
-                <finalName>ROOT.nuclei</finalName>
-            </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Nuclei</id>
-                    <name>Schibsted Søk's Nuclei repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-nuclei</url>
-                </repository>
-            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
