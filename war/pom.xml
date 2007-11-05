@@ -242,13 +242,12 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build><plugins><plugin>
-                <!-- TODO extend this into a custom mojo that checks env.CATALINA_BASE is valid -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <groupId>sesat</groupId>
+                <artifactId>sesat-mojo</artifactId>
                 <executions><execution>
                     <id>copy-self</id>
                     <phase>install</phase>
-                    <goals><goal>copy</goal></goals>
+                    <goals><goal>local-deploy</goal></goals>
                 </execution></executions>
             </plugin></plugins></build>
             <properties>
