@@ -247,7 +247,7 @@
                 <executions><execution>
                     <id>copy-self</id>
                     <phase>install</phase>
-                    <goals><goal>local-deploy</goal></goals>
+                    <goals><goal>deploy</goal></goals>
                 </execution></executions>
             </plugin></plugins></build>
             <properties>
