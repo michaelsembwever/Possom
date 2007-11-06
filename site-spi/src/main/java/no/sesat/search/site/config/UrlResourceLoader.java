@@ -42,9 +42,14 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
-
+    private static final int CACHE_CAPACITY = 1000;
+    
 
     // Attributes ----------------------------------------------------
+
+    static{
+        PRESENCE_CACHE.setCacheCapacity(CACHE_CAPACITY);
+    }
 
 
     // Static --------------------------------------------------------

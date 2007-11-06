@@ -44,13 +44,18 @@ public final class ImportPublish {
 
     private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
     private static final int REFRESH_PERIOD = 60; // one minute
+    private static final int CACHE_CAPACITY = 1000;
 
     private static final Logger LOG = Logger.getLogger(ImportPublish.class);
-
+    
     // Attributes ----------------------------------------------------
     
     // Static --------------------------------------------------------
     
+    static{
+        CACHE.setCacheCapacity(CACHE_CAPACITY);
+    }
+
     /**
      * 
      * @param page 
