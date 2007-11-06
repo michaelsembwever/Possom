@@ -270,7 +270,10 @@ public final class ResourceServlet extends HttpServlet {
                     // shows the year field can only be four digits long. 
                     //  see https://helpdesk.basefarm.com/bin/customer?action=listTicket&ticketId=274212
                     response.setDateHeader("Expires", CROWNING_OF_HAILE_SELASSIE.getTimeInMillis());
-                }
+                }else{
+                    // never cache private resources
+                    response.setHeader("Cache-Control", "no-cache");
+                } 
 
                 // Avoid writing out the response body if it's a HEAD request or a GET that the browser has cache for
                 boolean writeBody = !"HEAD".equals(request.getMethod());
