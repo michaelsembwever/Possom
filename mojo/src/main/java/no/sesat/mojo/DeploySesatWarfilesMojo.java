@@ -19,7 +19,9 @@
 package no.sesat.mojo;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -30,6 +32,10 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.dependency.fromConfiguration.CopyMojo;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.scm.ScmException;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.command.tag.TagScmResult;
+import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
@@ -48,11 +54,11 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 /** Handles deployment of sesat and skins builds.
  * Deployment differs greatly between the development and the other profiles.
  * In development profile the behaviour just uses the superclass CopyMojo,
- *  or the dependency:copy goal, with a precondition that the outputDirectory exists. 
+ *  or the dependency:copy goal, with a precondition that the outputDirectory exists.
  *  (avoids a "null" directory created).
- * In the other profiles, the profile's classifier is used, the artifact downloaded from a remote serverDeployLocation is
- *  neccessary, and then uploaded to the configured 'profile'DeployRepository which corresponds to the 
- *  the environments webapp directory. 
+ * In the other profiles, the profile's classifier is used, the artifact downloaded from a remote serverDeployLocation
+ *  is neccessary, and then uploaded to the configured 'profile'DeployRepository which corresponds to the
+ *  the environments webapp directory.
  *  Skins are expected to override these deployRepository settings.
  *
  * @goal deploy
@@ -251,90 +257,111 @@ public class DeploySesatWarfilesMojo extends CopyMojo implements Contextualizabl
 
     public void execute() throws MojoExecutionException{
 
-        serverDeployLocation = project.getProperties().getProperty("serverDeployLocation");
-        pushFields();
+        // only ever interested in war projects. silently ignore other projects.
+        if("war".equals(project.getPackaging())){
 
-        final Wagon wagon = getWagon();
-        if(null != wagon){
+            serverDeployLocation = project.getProperties().getProperty("serverDeployLocation");
+            pushFields();
 
-            // alpha|nuclei|beta|electron|gamma|production deployment goes through scpexe
-            try{
+            final Wagon wagon = getWagon();
+            if(null != wagon){
 
-                @SuppressWarnings("unchecked")
-                final List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(stripVersion);
+                // alpha|nuclei|beta|electron|gamma|production deployment goes through scpexe
+                try{
 
-                for(ArtifactItem item : theArtifactItems){
+                    @SuppressWarnings("unchecked")
+                    final List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(stripVersion);
 
-                    final Artifact artifact = factory.createArtifactWithClassifier(
-                            item.getGroupId(),
-                            item.getArtifactId(),
-                            item.getVersion(),
-                            item.getType(),
-                            profile);
+                    for(ArtifactItem item : theArtifactItems){
 
-                    resolver.resolve(artifact, getRemoteRepos(), getLocal());
+                        final Artifact artifact = factory.createArtifactWithClassifier(
+                                item.getGroupId(),
+                                item.getArtifactId(),
+                                item.getVersion(),
+                                item.getType(),
+                                profile);
 
-                    final String sesamSite = project.getProperties().getProperty("sesam.site");
-                    final String destName = null != sesamSite
-                            ? sesamSite
-                            : project.getBuild().getFinalName();
-                    
-                    // we are ready to go. but first tag the code
-                    if(Boolean.parseBoolean(project.getProperties().getProperty("tag.on.deploy"))){
-                        
+                        resolver.resolve(artifact, getRemoteRepos(), getLocal());
+
+                        final String sesamSite = project.getProperties().getProperty("sesam.site");
+                        final String destName = null != sesamSite
+                                ? sesamSite
+                                : project.getBuild().getFinalName();
+
+                        // we are ready to go. but first tag the code
+                        if(Boolean.parseBoolean(project.getProperties().getProperty("tag.on.deploy"))){
+
+                            final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
+                            final String date = new SimpleDateFormat("yyyyMMddHHmm")
+                                    .format(Calendar.getInstance().getTime());
+
+                            final TagScmResult result = scmManager.tag(
+                                    scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
+                                    new ScmFileSet(project.getBasedir()) ,
+                                    profile + "-deployments/" + date + "-" + project.getArtifactId(),
+                                    "sesat " + profile + " deployment");
+
+                            getLog().info(result.getCommandOutput());
+                        }
+
+                        // now do the upload
+                        getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
+                                + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
+
+                        wagon.put(artifact.getFile(), destName + ".war");
                     }
 
-                    // now do the upload
-                    getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
-                            + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
+                    wagon.disconnect();
 
-                    wagon.put(artifact.getFile(), destName + ".war");
+                }catch(ConnectionException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("repository wagon not disconnected", ex);
+                }catch(TransferFailedException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("transfer failed", ex);
+                }catch(ResourceDoesNotExistException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("resource does not exist", ex);
+                }catch(AuthorizationException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("authorisation exception", ex);
+                }catch(ArtifactNotFoundException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("artifact not found", ex);
+                }catch(ArtifactResolutionException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("artifact resolution exception", ex);
+                }catch(ScmException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("scm exception", ex);
+                }catch(ComponentLookupException ex){
+                    getLog().error(ex);
+                    throw new MojoExecutionException("failed to lookup ScmManager", ex);
                 }
 
-                wagon.disconnect();
-
-            }catch(ConnectionException ex){
-                getLog().error(ex);
-                throw new MojoExecutionException("repository wagon not disconnected", ex);
-            }catch(TransferFailedException ex){
-                getLog().error(ex);
-                throw new MojoExecutionException("transfer failed", ex);
-            }catch(ResourceDoesNotExistException ex){
-                getLog().error(ex);
-                throw new MojoExecutionException("resource does not exist", ex);
-            }catch(AuthorizationException ex){
-                getLog().error(ex);
-                throw new MojoExecutionException("authorisation exception", ex);
-            }catch(ArtifactNotFoundException ex){
-                getLog().error(ex);
-                throw new MojoExecutionException("artifact not found", ex);
-            }catch(ArtifactResolutionException ex){
-                getLog().error(ex);
-                throw new MojoExecutionException("artifact resolution exception", ex);
-            }
-
-        }else{
-            // development behaviour comes from super implementation
-            // some pre-condition checks first
-
-            // 1. the output directory must exist
-            if(getOutputDirectory().exists()){
-
-                // 2. output directory is writable
-                if(getOutputDirectory().canWrite()){
-
-                    super.execute();
-
-                }else{
-                    // 2.failure output directory isn't writable
-                    getLog().error(getOutputDirectory().getAbsolutePath() + " can not be written to.");
-                }
             }else{
-                // 1.failure: the output directory doesn't exist
-                getLog().error(getOutputDirectory().getAbsolutePath() + " does not exist.");
-                final String catalinaBase = System.getProperty("env.CATALINA_BASE");
-                if(null == catalinaBase || 0 == catalinaBase.length()){
-                    getLog().info("Define system variable CATALINA_BASE to enable automatic deployment.");
+                // development behaviour comes from super implementation
+                // some pre-condition checks first
+
+                // 1. the output directory must exist
+                if(getOutputDirectory().exists()){
+
+                    // 2. output directory is writable
+                    if(getOutputDirectory().canWrite()){
+
+                        super.execute();
+
+                    }else{
+                        // 2.failure output directory isn't writable
+                        getLog().error(getOutputDirectory().getAbsolutePath() + " can not be written to.");
+                    }
+                }else{
+                    // 1.failure: the output directory doesn't exist
+                    getLog().error(getOutputDirectory().getAbsolutePath() + " does not exist.");
+                    final String catalinaBase = System.getProperty("env.CATALINA_BASE");
+                    if(null == catalinaBase || 0 == catalinaBase.length()){
+                        getLog().info("Define system variable CATALINA_BASE to enable automatic deployment.");
+                    }
                 }
             }
         }
@@ -357,7 +384,7 @@ public class DeploySesatWarfilesMojo extends CopyMojo implements Contextualizabl
 
     /**
      *
-     * @return the wagon (already connected) to use against the profile's serverDeployLocation 
+     * @return the wagon (already connected) to use against the profile's serverDeployLocation
      *              or null if in development profile
      * @throws org.apache.maven.plugin.MojoExecutionException
      */
