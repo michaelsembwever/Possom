@@ -34,6 +34,7 @@ import no.sesat.search.site.config.PropertiesContext;
 
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.query.QueryStringContext;
+import no.sesat.search.query.parser.QueryParser;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 
@@ -82,6 +83,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
     private static final int REFRESH_PERIOD = 60; // one minute
     private static final int CACHE_CAPACITY = 1000;
+    
+    private static final String SKIP_REGEX;
 
     // Attributes ----------------------------------------------------
     
@@ -93,6 +96,16 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     
     static{
         CACHE.setCacheCapacity(CACHE_CAPACITY);
+        
+        // build our skip regular expression
+        final StringBuilder builder = new StringBuilder();
+        for(char[] range : QueryParser.SKIP_CHARACTER_RANGES){
+            builder.append("[\\" + range[0] + "-\\" + range[1] + "]|");
+        }
+        // remove trailing '|'
+        builder.setLength(builder.length() - 1);
+        // our skip regular expression
+        SKIP_REGEX = '(' + builder.toString() + ')';
     }
 
     // Constructors -------------------------------------------------
@@ -172,7 +185,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return evaluation;
     }
 
-    /** TODO comment me. **/
+    /** 
+     * 
+     * @param predicate
+     * @return
+     */
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
@@ -308,9 +325,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
                         if(custom.endsWith("->") && usesListName(name, exactname)){
 
-                            final String match = custom.indexOf("->") >0
+                            final String match = (custom.indexOf("->") >0
                                     ? custom.substring(0, custom.indexOf("->"))
-                                    : custom;
+                                    : custom)
+                                    // remove words made solely of characters that the parser considers whitespace
+                                    .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
 
                             addMatch(name, match, query, result);
 
@@ -354,7 +373,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
-        final Matcher m = pattern.matcher(query);
+        final Matcher m = pattern.matcher(
+                // remove words made solely of characters that the parser considers whitespace
+                query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " "));
 
         while (m.find()) {
 

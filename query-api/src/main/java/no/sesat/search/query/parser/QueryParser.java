@@ -41,6 +41,23 @@ import no.sesat.search.query.token.TokenEvaluationEngineContext;
  */
 public interface QueryParser {
 
+    /**
+     * Duplication of the parser's definition of SKIP. Must be kept uptodate!
+     */
+    char[][] SKIP_CHARACTER_RANGES = {
+        {' ', ' '},
+        {'!', '!'},
+        {'\u0023', '\''/*\u0027*/},
+        {'\u002a', '\u002c'},
+        {'\u002e', '\u002f'},
+        {'\u003b', '\u0040'},
+        {'\u005b', '\u0060'},
+        {'\u007b', '\u00bf'},
+        {'\u00d7', '\u00d7'},
+        {'\u00f7', '\u00f7'},
+        {'\u2010', '\u2015'}        
+    };
+    
     /** The Context an QueryParser implementation needs to work off.
      * The QueryParser is not responsible for
      *  - holding the user's orginal inputted query string,
