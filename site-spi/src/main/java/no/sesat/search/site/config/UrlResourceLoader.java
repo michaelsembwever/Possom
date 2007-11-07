@@ -209,7 +209,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
                     + getResourceDirectory(resource)
                     + resource);
         } catch (MalformedURLException ex) {
-            throw new ResourceLoadException(ex.getMessage());
+            throw new ResourceLoadException("Read Configuration from " + resource, ex);
         }
     }
 
@@ -222,7 +222,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
             return client.getBufferedStream("");
 
         }catch (IOException ex) {
-            throw new ResourceLoadException(ex.getMessage(), client.interceptIOException(ex));
+            throw new ResourceLoadException(readResourceDebug(url), client.interceptIOException(ex));
         }
 
 

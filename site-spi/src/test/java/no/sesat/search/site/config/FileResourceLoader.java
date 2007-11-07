@@ -140,7 +140,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
             return uri.toURL();
         }catch (URISyntaxException ex) {
-            throw new ResourceLoadException(ex.getMessage(), ex);
+            throw new ResourceLoadException(readResourceDebug(), ex);
         } catch (MalformedURLException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         }
@@ -170,7 +170,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         try {
             return url.openConnection().getInputStream();
         } catch (IOException e) {
-            throw new ResourceLoadException(e.getMessage(), e);
+            throw new ResourceLoadException(readResourceDebug(url), e);
         }
     }
 
