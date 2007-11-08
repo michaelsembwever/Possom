@@ -18,10 +18,16 @@
 
 package no.sesat.mojo;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -60,7 +66,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
  *  is neccessary, and then uploaded to the configured 'profile'DeployRepository which corresponds to the
  *  the environments webapp directory.
  *  Skins are expected to override these deployRepository settings.
- * 
+ *
  * TODO separate mojos into local-deploy and server-deploy.
  * TODO abstract override of parameters from CopyMojo.
  *
@@ -71,7 +77,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextualizable{
 
     // Constants -----------------------------------------------------
-    
+
     private static final String[] ENVIRONMENTS = new String[]{"alpha","nuclei","beta","electron","gamma","production"};
 
     // Attributes ----------------------------------------------------
@@ -79,6 +85,8 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     private PlexusContainer container;
 
     private String profile = null;
+    private Date now = Calendar.getInstance().getTime();
+    private MavenProject pomProject;
 
     // All of these attributes are just explicit overrides to get them into the mojo.
     //  read http://www.mail-archive.com/dev@maven.apache.org/msg60770.html
@@ -268,19 +276,19 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
                 try{
                     executeServerDeploy(wagon);
-                    
+
                 }finally{
                     try{
                        wagon.disconnect();
-                       
+
                     }catch(ConnectionException ex){
                         getLog().error(ex);
                         throw new MojoExecutionException("repository wagon not disconnected", ex);
                     }
                 }
-                
+
             }else{
-                
+
                 executeLocalDeploy();
             }
         }
@@ -292,9 +300,9 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     private void executeServerDeploy(final Wagon wagon) throws MojoExecutionException{
-        
+
         // alpha|nuclei|beta|electron|gamma|production deployment goes through scpexe
         try{
 
@@ -321,13 +329,17 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 if(Boolean.parseBoolean(project.getProperties().getProperty("tag.on.deploy"))){
 
                     final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
-                    final String date = new SimpleDateFormat("yyyyMMddHHmm")
-                            .format(Calendar.getInstance().getTime());
+                    final String date = new SimpleDateFormat("yyyyMMddHHmm").format(now);
+
+                    pomProject = project;
+                    do{
+                        pomProject = pomProject.getParent();
+                    }while(!"pom".equals(pomProject.getPackaging()));
 
                     final TagScmResult result = scmManager.tag(
                             scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
-                            new ScmFileSet(project.getBasedir()) ,
-                            profile + "-deployments/" + date + "-" + project.getArtifactId(),
+                            new ScmFileSet(pomProject.getBasedir()), // TODO server-side copy
+                            profile + "-deployments/" + date + "-" + pomProject.getArtifactId(),
                             "sesat " + profile + " deployment");
 
                     getLog().info(result.getCommandOutput());
@@ -336,8 +348,10 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 // now do the upload
                 getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
                         + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
-
                 wagon.put(artifact.getFile(), destName + ".war");
+
+                getLog().info("Updating " + wagon.getRepository().getUrl() + "/version.txt");
+                updateVersionFile(wagon);
             }
 
         }catch(TransferFailedException ex){
@@ -361,12 +375,15 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         }catch(ComponentLookupException ex){
             getLog().error(ex);
             throw new MojoExecutionException("failed to lookup ScmManager", ex);
+        }catch(IOException ex){
+            getLog().error(ex);
+            throw new MojoExecutionException("IOException", ex);
         }
 
     }
-    
+
     private void executeLocalDeploy() throws MojoExecutionException{
-        
+
         // local-deploy behaviour comes from super implementation
         // some pre-condition checks first
 
@@ -379,12 +396,12 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 super.execute();
 
             }else{
-                
+
                 // 2.failure output directory isn't writable
                 getLog().error(getOutputDirectory().getAbsolutePath() + " can not be written to.");
             }
         }else{
-            
+
             // 1.failure: the output directory doesn't exist
             getLog().error(getOutputDirectory().getAbsolutePath() + " does not exist.");
             final String catalinaBase = System.getProperty("env.CATALINA_BASE");
@@ -392,7 +409,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 getLog().info("Define system variable CATALINA_BASE to enable automatic deployment.");
             }
         }
-        
+
     }
 
     private void pushFields(){
@@ -410,7 +427,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
      * @throws org.apache.maven.plugin.MojoExecutionException
      */
     private Wagon getWagon() throws MojoExecutionException {
-        
+
         loadProfile();
 
         try {
@@ -420,7 +437,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
             if(null != profile){
 
                 final String serverDeployLocation = project.getProperties().getProperty("serverDeployLocation");
-                
+
                 final String protocol = serverDeployLocation.substring(0, serverDeployLocation.indexOf(':'));
 
                 final Repository wagonRepository = new Repository();
@@ -445,11 +462,11 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         }
 
     }
-    
+
     private void loadProfile(){
-        
+
         if(null == profile){
-            
+
             @SuppressWarnings("unchecked")
             final List<Profile> profiles = project.getActiveProfiles();
 
@@ -462,6 +479,59 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 }
             }
         }
+    }
+
+    private void updateVersionFile(final Wagon wagon)
+            throws IOException, TransferFailedException, ResourceDoesNotExistException, AuthorizationException{
+
+        // update the version.txt accordingly
+        final File versionOldFile = File.createTempFile("version-old", "txt");
+        final File versionNewFile = File.createTempFile("version-new", "txt");
+        wagon.get("version.txt", versionOldFile);
+
+        boolean updated = false;
+
+        // look for our artifactId entry
+        final BufferedReader reader = new BufferedReader(new FileReader(versionOldFile));
+        final BufferedWriter writer = new  BufferedWriter(new FileWriter(versionNewFile));
+        for(String line = reader.readLine(); null != line; line = reader.readLine()){
+            if(line.equals(pomProject.getArtifactId())){
+                updateArtifactEntry(reader, writer);
+                updated = true;
+            }else{
+                // line remains the same
+                writer.write(line);
+                writer.newLine();
+            }
+        }
+        if(!updated){
+            writer.newLine();
+            updateArtifactEntry(reader, writer);
+        }
+        reader.close();
+        writer.close();
+        wagon.put(versionNewFile, "version.txt");
+    }
+
+    private void updateArtifactEntry(final BufferedReader reader, final BufferedWriter writer) throws IOException{
+
+        // this line remains the same
+        writer.write(pomProject.getArtifactId());
+        writer.newLine();
+        // next line is version, author (or "deployer"), date & time,
+        reader.readLine();
+        writer.write(pomProject.getVersion()
+                + " was last deployed by " + System.getProperty("user.name")
+                + " at " + SimpleDateFormat.getDateTimeInstance().format(now));
+        writer.newLine();
+        // next line is the quote
+        for(String line = reader.readLine(); null != line && 0 < line.length(); line = reader.readLine()){};
+        final String quote = project.getProperties().getProperty("version.quote");
+        if(null != quote){
+            writer.write(quote);
+            writer.newLine();
+        }
+
     }
 
     // Inner classes -------------------------------------------------
