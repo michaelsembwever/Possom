@@ -250,6 +250,9 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
     // Constructors --------------------------------------------------
 
+    /**
+     *
+     */
     public DeploySesatWarfilesMojo() {
     }
 
@@ -257,6 +260,8 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
     // Contextualizable implementation ----------------------------------------------
 
+    /** {@inheritDoc}
+     */
     public void contextualize(final Context context) throws ContextException {
 
         container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
@@ -264,6 +269,8 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
     // CopyMojo overrides ---------------------------------------------------
 
+    /** {@inheritDoc}
+     */
     public void execute() throws MojoExecutionException{
 
         // only ever interested in war projects. silently ignore other projects.
