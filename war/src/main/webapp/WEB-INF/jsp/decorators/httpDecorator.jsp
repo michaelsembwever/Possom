@@ -33,7 +33,7 @@
     <table cellspacing="0" cellpadding="0" id="body_table">
         <tr>
         <c:choose>
-        <c:when test="${tab.layout.properties['left-column-hide'] == 'true'}">
+        <c:when test="${layout.properties['left-column-hide'] == 'true'}">
             <td valign="top" colspan="3">
         </c:when>
         <c:otherwise>

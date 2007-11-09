@@ -128,6 +128,14 @@
             <artifactId>commons-log4j</artifactId>
         </dependency>
         <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>commons-reflect</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>commons-reference-map</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
         </dependency>

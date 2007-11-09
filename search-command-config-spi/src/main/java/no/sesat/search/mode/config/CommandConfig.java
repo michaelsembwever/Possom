@@ -36,8 +36,6 @@ import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.result.Navigator;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
-import no.sesat.search.site.config.ResourceLoader;
-import no.sesat.search.site.config.SiteClassLoaderFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -52,6 +50,7 @@ import org.w3c.dom.NodeList;
  */
 public class CommandConfig implements SearchConfiguration {
     
+    // Constants -----------------------------------------------------
 
     /**
      * 
@@ -66,6 +65,8 @@ public class CommandConfig implements SearchConfiguration {
     private static final String ERR_FAILED_QUERYTRANSFORMERS_COPY = "Failed to defensively clone QueryTransformers";
     private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
 
+    // Attributes ----------------------------------------------------
+    
     private String name;
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
     private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
@@ -75,15 +76,26 @@ public class CommandConfig implements SearchConfiguration {
     private boolean paging = false;
 
     private String queryParameter;
-    private boolean alwaysRun = false;
+    private boolean alwaysRun = true;
     private boolean runBlank = false;
-
+    private boolean asynchronous = false;
     private String statisticalName;
 
+    /**
+     * Holds value of property fieldFilters.
+     */
+    private final Map<String,String> fieldFilters = new HashMap<String,String>();
+    
+    // Static --------------------------------------------------------
+
+    // Constructors --------------------------------------------------
+    
     /**
      */
     public CommandConfig(){}
 
+    // Public --------------------------------------------------------
+    
     /**
      * Sets the paging enabled status of this configuration. The default is
      * false.
@@ -162,11 +174,6 @@ public class CommandConfig implements SearchConfiguration {
         this.resultsToReturn = no;
     }
 
-//    /** {@inheritDoc} **/
-//    public boolean isChild() {
-//        return child;
-//    }
-
     /** {@inheritDoc} **/
     public String getQueryParameter() {
         return queryParameter;
@@ -218,6 +225,21 @@ public class CommandConfig implements SearchConfiguration {
     public void setStatisticalName(final String name){
         statisticalName = name;
     }
+    
+    
+    /** {@inheritDoc} 
+     */
+    public boolean isAsynchronous() {
+        return asynchronous;
+    }
+
+    /**
+     * @param asynchronous 
+     */
+    public void setAsynchronous(final boolean asynchronous){
+        this.asynchronous = asynchronous;
+    }
+    
 
     /** {@inheritDoc} **/
     @Override
@@ -225,10 +247,6 @@ public class CommandConfig implements SearchConfiguration {
         return getClass().getSimpleName() + " [" + name + "]";
     }
 
-    /**
-     * Holds value of property fieldFilters.
-     */
-    private final Map<String,String> fieldFilters = new HashMap<String,String>();
 
     /**
      * @param field 
@@ -269,8 +287,9 @@ public class CommandConfig implements SearchConfiguration {
         
         setName(element.getAttribute("id"));
         
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "alwaysRun", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "alwaysRun", ParseType.Boolean, element, "true");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "runBlank", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "asynchronous", ParseType.Boolean, element, "false");
 
         // field-filters
         if(null!=inherit){
@@ -352,6 +371,9 @@ public class CommandConfig implements SearchConfiguration {
             return navigators;
         }
 
+    
+    // Inner classes -------------------------------------------------
+    
     /**
      *
      */

@@ -240,7 +240,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
 
     <session-config>
         <!-- 15 minutes -->
-        <session-timeout>15</session-timeout>
+        <session-timeout>10</session-timeout>
     </session-config>
 
     <error-page>

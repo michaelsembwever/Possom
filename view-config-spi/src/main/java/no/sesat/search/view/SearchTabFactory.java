@@ -387,8 +387,24 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         null != inherit ? inherit.getNavigationConfiguration() : null);
                                
                 // the tab's layout
-                final Layout layout = new Layout(null != inherit ? inherit.getLayout() : null)
-                        .readLayout((Element)tabE.getElementsByTagName("layout").item(0));
+                final NodeList layoutsNodeList = tabE.getElementsByTagName("layout");
+                
+                Layout defaultLayout = null;
+                final Map<String,Layout> layouts = new HashMap<String,Layout>();
+                
+                for(int j = 0 ;j < layoutsNodeList.getLength(); ++j){
+                    
+                    final Element layoutE = (Element) layoutsNodeList.item(j);
+                    final String layoutId = null != layoutE.getAttribute("id") ? layoutE.getAttribute("id") : "";
+                    final Layout layout = new Layout(null != inherit ? inherit.getLayouts().get(layoutId) : null)
+                            .readLayout(layoutE);
+                    
+                    layouts.put(layoutId, layout);
+                    
+                    if(0 == layoutId.length()){
+                        defaultLayout = layout;
+                    }
+                }
 
                 return new SearchTab(
                         inherit,
@@ -422,7 +438,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseBoolean(tabE.getAttribute("execute-on-blank"), inherit != null
                         ? inherit.isExecuteOnBlank()
                         : false),
-                        layout);
+                        defaultLayout,
+                        layouts);
 
                 
         }

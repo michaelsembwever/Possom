@@ -276,19 +276,12 @@ public final class DataModelFilter implements Filter {
     }
 
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
+    @SuppressWarnings("deprecation")
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
 
         for(String key : datamodel.getJunkYard().getValues().keySet()){
             datamodel.getJunkYard().setValue(key, null);
         }
-
-        /* Moving this into SearchServlet so the results can be accessed in later requests */
-
-        //for(String key : datamodel.getSearches().keySet()){
-        //    datamodel.setSearch(key, null);
-        //}
-        //datamodel.setParameters(null);
-        //datamodel.setQuery(null);
 
         assert isSerializable(datamodel) : "Datamodel is not serializable!";
         factory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);

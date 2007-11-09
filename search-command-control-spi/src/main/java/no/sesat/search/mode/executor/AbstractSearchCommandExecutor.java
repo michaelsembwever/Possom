@@ -49,6 +49,8 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
 
     // Constants -----------------------------------------------------
 
+    private static final String ERR_COMMAND_TIMEOUT = "Timeout on search command ";
+    
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
@@ -89,14 +91,28 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
         //  Note the current time and subtract any elapsed time from the timeout value
         //   (as the timeout value is intended overall and not for each).
         final long invokedAt = System.currentTimeMillis();
+        
         for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
 
-            task.get(timeoutInMillis - (System.currentTimeMillis() - invokedAt), TimeUnit.MILLISECONDS);
+            try{
+                task.get(
+                        Math.max(1, timeoutInMillis - (System.currentTimeMillis() - invokedAt)), 
+                        TimeUnit.MILLISECONDS);
+                
+            }catch(TimeoutException te){
+                LOG.error(ERR_COMMAND_TIMEOUT + te.getMessage());
+                task.cancel(true);
+            }
         }
         
         // Ensure any cancellations are properly handled
         for(SearchCommand command : results.values()){
             command.handleCancellation();
+        }
+        
+        // throw a timeout exception if we did not complete in time.
+        if(0 >= timeoutInMillis - (System.currentTimeMillis() - invokedAt)){
+            throw new TimeoutException();
         }
         
         return results;

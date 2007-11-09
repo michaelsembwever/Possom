@@ -70,7 +70,8 @@ public final class SearchTab implements Serializable{
     private final int enrichmentOnTopScore;
     private final List<String> css = new ArrayList<String>();
     private final List<String> javascript = new ArrayList<String>();
-    private final Layout layout;
+    private final Layout defaultLayout;
+    private final Map<String,Layout> layouts = new HashMap<String,Layout>();
     private final NavigationConfig navigationConfig;
 
     // Static --------------------------------------------------------
@@ -97,9 +98,10 @@ public final class SearchTab implements Serializable{
      * @param css
      * @param javascript
      * @param absoluteOrdering
-     * @param layout
+     * @param defaultLayout
      * @param displayCss
      * @param executeOnBlank
+     * @param layouts 
      */
     public SearchTab(
                 final SearchTab inherit,
@@ -123,7 +125,8 @@ public final class SearchTab implements Serializable{
                 final boolean absoluteOrdering,
                 final boolean displayCss,
                 final boolean executeOnBlank,
-                final Layout layout){
+                final Layout defaultLayout,
+                final Map<String,Layout> layouts){
 
         this.inherit = inherit;
         this.id = id;
@@ -153,6 +156,7 @@ public final class SearchTab implements Serializable{
             // but we do inherit enrichments and css
             this.enrichments.addAll(inherit.enrichments);
             this.css.addAll(inherit.css);
+            this.layouts.putAll(inherit.layouts);
         }
         this.rssResultName = rssResultName;
         this.css.addAll(css);
@@ -160,7 +164,8 @@ public final class SearchTab implements Serializable{
         this.absoluteOrdering = absoluteOrdering;
         this.executeOnBlank = executeOnBlank;
         this.rssHidden = rssHidden;
-        this.layout = layout;
+        this.defaultLayout = defaultLayout;
+        this.layouts.putAll(layouts);
     }
 
     // Getters --------------------------------------------------------
@@ -414,11 +419,15 @@ public final class SearchTab implements Serializable{
     }
 
     /**
-     * Getter for property layout.
-     * @return Value of property layout.
+     * Getter for property defaultLayout.
+     * @return Value of property defaultLayout.
      */
-    public Layout getLayout() {
-        return layout;
+    public Layout getDefaultLayout() {
+        return defaultLayout;
+    }
+    
+    public Map<String,Layout> getLayouts(){
+        return Collections.unmodifiableMap(layouts);
     }
 
     public NavigationConfig getNavigationConfiguration(){
@@ -526,11 +535,12 @@ public final class SearchTab implements Serializable{
 
     }
 
-    /** POJO holding layout information for the given tab.
+    /** POJO holding defaultLayout information for the given tab.
      * readLayout(Element) is the only way to mutate the bean and can only be called once.
      **/
     public static final class Layout implements Serializable {
 
+        private String id;
         private String origin;
         private String main;
         private String front;
@@ -545,6 +555,7 @@ public final class SearchTab implements Serializable{
          */
         public Layout(final Layout inherit){
             if( null != inherit ){
+                // id cannot be inherited!
                 // origin cannot be inherited!
                 main = inherit.main;
                 front = inherit.front;
@@ -553,6 +564,14 @@ public final class SearchTab implements Serializable{
             }
         }
 
+        /**
+         *
+         * @return
+         */
+        public String getId(){
+            return id;
+        }
+        
         /**
          *
          * @return
@@ -624,6 +643,7 @@ public final class SearchTab implements Serializable{
             }
             if( null != element ){
 
+                id = element.getAttribute("id");
                 origin = element.getAttribute("origin");
                 if(0 < element.getAttribute("main").length()){
                     main = element.getAttribute("main");

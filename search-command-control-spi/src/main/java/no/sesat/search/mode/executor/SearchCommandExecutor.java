@@ -44,7 +44,6 @@ public interface SearchCommandExecutor {
      * holding their results.
      *
      * @param callables       The list of {@link java.util.concurrent.Callable} to execute.
-     * @param timeoutInMillis The timeout in milliseconds
      * @return the list of Futures holding the results.
      * @throws InterruptedException
      */

@@ -164,13 +164,7 @@ public final class SearchServlet extends HttpServlet {
         // DataModel's ControlLevel will be VIEW_CONSTRUCTION (safe setting set by DataModelFilter)
         //  Bring it back to VIEW_CONSTRUCTION.
         dmFactory.assignControlLevel(datamodel, ControlLevel.REQUEST_CONSTRUCTION);
-        
-        /* Clean out old search results and parameters. */
-        for(String key : datamodel.getSearches().keySet()){
-            datamodel.setSearch(key, null);
-        }
-        datamodel.setQuery(null);
-        
+                
         try{
 
             if (!isEmptyQuery(datamodel, response, genericCxt)) {

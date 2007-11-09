@@ -80,7 +80,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         final PageContext cxt = (PageContext) getJspContext();
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
         final SearchTab tab = datamodel.getPage().getCurrentTab();
-        final String template = LAYOUT_DIRECTORY + tab.getLayout().getInclude(include);
+        final String template = LAYOUT_DIRECTORY + tab.getDefaultLayout().getInclude(include);
         try{
             cxt.getOut().println("<!-- " + include + " -->");
         }catch(IOException ioe){
@@ -90,7 +90,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         final Map<String,Object> map = new HashMap<String,Object>();
         
         // HACK the pager until the datamodel provides methods to access "paging" commands in the current mode.
-        map.put("commandName", tab.getLayout().getOrigin());
+        map.put("commandName", tab.getDefaultLayout().getOrigin());
         // end-HACK
         
         importTemplate(template, map);

@@ -104,11 +104,6 @@ public interface SearchConfiguration extends Serializable {
      */
     void setResultsToReturn(int numberOfResults);
 
-//    /**
-//     * @return 
-//     */
-//    boolean isChild();
-
     /**
      * @return 
      */
@@ -146,12 +141,19 @@ public interface SearchConfiguration extends Serializable {
      * Removes all field filters associated with this configuration.
      */
     void clearFieldFilters();
+    
+    /**
+     * Is the command used asynchronously, for example by ajax calls.
+     * @return
+     */
+    boolean isAsynchronous();
         
     /**
      * 
      * @param element 
      * @param inherit 
-     * @return 
+     * @param context 
+     * @return
      */
     SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context); 
 }
