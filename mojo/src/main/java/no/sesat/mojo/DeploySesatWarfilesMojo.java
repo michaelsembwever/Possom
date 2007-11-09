@@ -40,6 +40,7 @@ import org.apache.maven.plugin.dependency.fromConfiguration.CopyMojo;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.command.status.StatusScmResult;
 import org.apache.maven.scm.command.tag.TagScmResult;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.wagon.ConnectionException;
@@ -312,53 +313,40 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
         // alpha|nuclei|beta|electron|gamma|production deployment goes through scpexe
         try{
+            if(ensureNoLocalModifications()){
+                
+                @SuppressWarnings("unchecked")
+                final List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(stripVersion);
 
-            @SuppressWarnings("unchecked")
-            final List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(stripVersion);
+                for(ArtifactItem item : theArtifactItems){
 
-            for(ArtifactItem item : theArtifactItems){
+                    final Artifact artifact = factory.createArtifactWithClassifier(
+                            item.getGroupId(),
+                            item.getArtifactId(),
+                            item.getVersion(),
+                            item.getType(),
+                            profile);
 
-                final Artifact artifact = factory.createArtifactWithClassifier(
-                        item.getGroupId(),
-                        item.getArtifactId(),
-                        item.getVersion(),
-                        item.getType(),
-                        profile);
+                    resolver.resolve(artifact, getRemoteRepos(), getLocal());
 
-                resolver.resolve(artifact, getRemoteRepos(), getLocal());
+                    final String sesamSite = project.getProperties().getProperty("sesam.site");
+                    final String destName = null != sesamSite
+                            ? sesamSite
+                            : project.getBuild().getFinalName();
 
-                final String sesamSite = project.getProperties().getProperty("sesam.site");
-                final String destName = null != sesamSite
-                        ? sesamSite
-                        : project.getBuild().getFinalName();
+                    // we are ready to go. but first tag the code
+                    if(Boolean.parseBoolean(project.getProperties().getProperty("tag.on.deploy"))){
+                        tagDeploy();
+                    }
 
-                // we are ready to go. but first tag the code
-                if(Boolean.parseBoolean(project.getProperties().getProperty("tag.on.deploy"))){
+                    // now do the upload
+                    getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
+                            + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
+                    wagon.put(artifact.getFile(), destName + ".war");
 
-                    final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
-                    final String date = new SimpleDateFormat("yyyyMMddHHmm").format(now);
-
-                    pomProject = project;
-                    do{
-                        pomProject = pomProject.getParent();
-                    }while(!"pom".equals(pomProject.getPackaging()));
-
-                    final TagScmResult result = scmManager.tag(
-                            scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
-                            new ScmFileSet(pomProject.getBasedir()), // TODO server-side copy
-                            profile + "-deployments/" + date + "-" + pomProject.getArtifactId(),
-                            "sesat " + profile + " deployment");
-
-                    getLog().info(result.getCommandOutput());
+                    getLog().info("Updating " + wagon.getRepository().getUrl() + "/version.txt");
+                    updateVersionFile(wagon);
                 }
-
-                // now do the upload
-                getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
-                        + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
-                wagon.put(artifact.getFile(), destName + ".war");
-
-                getLog().info("Updating " + wagon.getRepository().getUrl() + "/version.txt");
-                updateVersionFile(wagon);
             }
 
         }catch(TransferFailedException ex){
@@ -427,6 +415,15 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         setResolver(resolver);
     }
 
+    private void loadPomProject(){
+        
+        if(null == pomProject){
+            pomProject = project;
+            do{
+                pomProject = pomProject.getParent();
+            }while(!"pom".equals(pomProject.getPackaging()));            
+        }
+    }
     /**
      *
      * @return the wagon (already connected) to use against the profile's serverDeployLocation
@@ -487,6 +484,47 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
             }
         }
     }
+    
+    private void tagDeploy() throws ComponentLookupException, ScmException{
+        
+        final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
+        final String date = new SimpleDateFormat("yyyyMMddHHmm").format(now);
+
+        loadPomProject();
+
+        final TagScmResult result = scmManager.tag(
+                scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
+                new ScmFileSet(pomProject.getBasedir()), // TODO server-side copy
+                profile + "-deployments/" + date + "-" + pomProject.getArtifactId(),
+                "sesat " + profile + " deployment");
+                
+        if(!result.isSuccess()){
+            getLog().error(result.getCommandOutput());
+        }
+    }
+    
+    private boolean ensureNoLocalModifications() throws ComponentLookupException, ScmException, MojoExecutionException{
+        
+        final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
+
+        loadPomProject();
+
+        final StatusScmResult result = scmManager.status(
+                scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
+                new ScmFileSet(pomProject.getBasedir()));
+
+        
+        if(!result.isSuccess()){
+            getLog().error(result.getCommandOutput());
+            throw new MojoExecutionException("Failed to ensure checkout has no modifications");
+        }
+        if(0 < result.getChangedFiles().size()){
+            throw new MojoExecutionException("Your checkout has local modifications. "
+                    + "Server deploy can *only* be done with a clean workbench.");
+        }
+        
+        return result.isSuccess() && 0 == result.getChangedFiles().size();
+    }    
 
     private void updateVersionFile(final Wagon wagon)
             throws IOException, TransferFailedException, ResourceDoesNotExistException, AuthorizationException{
