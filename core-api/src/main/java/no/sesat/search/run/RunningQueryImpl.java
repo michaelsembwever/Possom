@@ -88,7 +88,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             : Integer.MAX_VALUE;
 
     // TODO generic parameter key to be put into ParameterDataObject
-    private static final String PARAM_OUTPUT = "output";
+    public static final String PARAM_LAYOUT = "layout";
     // TODO generic parameter key to be put into ParameterDataObject
     private static final String PARAM_COMMANDS = "commands";
 
@@ -551,7 +551,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private boolean isRss() {
 
-        final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_OUTPUT);
+        final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_LAYOUT);
         return null != outputParam && "rss".equals(outputParam.getString());
     }
 

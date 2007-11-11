@@ -42,6 +42,7 @@ import org.w3c.dom.NodeList;
  */
 public final class SearchTab implements Serializable{
 
+    public enum Scope{REQUEST, SESSION};
 
     // Constants -----------------------------------------------------
 
@@ -73,6 +74,7 @@ public final class SearchTab implements Serializable{
     private final Layout defaultLayout;
     private final Map<String,Layout> layouts = new HashMap<String,Layout>();
     private final NavigationConfig navigationConfig;
+    private final Scope scope;
 
     // Static --------------------------------------------------------
 
@@ -126,7 +128,8 @@ public final class SearchTab implements Serializable{
                 final boolean displayCss,
                 final boolean executeOnBlank,
                 final Layout defaultLayout,
-                final Map<String,Layout> layouts){
+                final Map<String,Layout> layouts,
+                final Scope scope){
 
         this.inherit = inherit;
         this.id = id;
@@ -166,6 +169,7 @@ public final class SearchTab implements Serializable{
         this.rssHidden = rssHidden;
         this.defaultLayout = defaultLayout;
         this.layouts.putAll(layouts);
+        this.scope = null != scope ? scope : inherit.scope;
     }
 
     // Getters --------------------------------------------------------
@@ -432,6 +436,10 @@ public final class SearchTab implements Serializable{
 
     public NavigationConfig getNavigationConfiguration(){
         return navigationConfig;
+    }
+    
+    public Scope getScope(){
+        return scope;
     }
 
     // Inner classes -------------------------------------------------

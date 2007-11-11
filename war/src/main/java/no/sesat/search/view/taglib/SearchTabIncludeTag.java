@@ -29,7 +29,10 @@ import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.run.RunningQueryImpl;
 import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.view.config.SearchTab.Layout;
 import org.apache.log4j.Logger;
 
 
@@ -80,7 +83,11 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         final PageContext cxt = (PageContext) getJspContext();
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
         final SearchTab tab = datamodel.getPage().getCurrentTab();
-        final String template = LAYOUT_DIRECTORY + tab.getDefaultLayout().getInclude(include);
+        final StringDataObject layoutDO = datamodel.getParameters().getValue(RunningQueryImpl.PARAM_LAYOUT);
+        final Layout layout = null != layoutDO 
+                ? tab.getLayouts().get(layoutDO.getXmlEscaped()) 
+                : tab.getDefaultLayout();
+        final String template = LAYOUT_DIRECTORY + layout.getInclude(include);
         try{
             cxt.getOut().println("<!-- " + include + " -->");
         }catch(IOException ioe){
@@ -90,7 +97,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         final Map<String,Object> map = new HashMap<String,Object>();
         
         // HACK the pager until the datamodel provides methods to access "paging" commands in the current mode.
-        map.put("commandName", tab.getDefaultLayout().getOrigin());
+        map.put("commandName", layout.getOrigin());
         // end-HACK
         
         importTemplate(template, map);

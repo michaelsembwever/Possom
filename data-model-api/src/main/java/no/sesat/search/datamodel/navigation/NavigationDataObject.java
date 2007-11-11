@@ -23,6 +23,8 @@
 package no.sesat.search.datamodel.navigation;
 
 import java.util.Map;
+import no.sesat.search.datamodel.access.AccessAllow;
+import static no.sesat.search.datamodel.access.ControlLevel.*;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.view.navigation.NavigationConfig;
 import no.sesat.search.result.NavigationItem;
@@ -39,7 +41,6 @@ public interface NavigationDataObject {
 
     /**
      *
-     * @param key
      * @return
      */
     Map<String,NavigationItem> getNavigations();
@@ -55,7 +56,7 @@ public interface NavigationDataObject {
      * @param key
      * @param value
      */
-    //@AccessAllow(ControlLevel.RUNNING_QUERY_RESULT_HANDLING)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, RUNNING_QUERY_RESULT_HANDLING})
     void setNavigation(String key, NavigationItem value);
 
 //    /**

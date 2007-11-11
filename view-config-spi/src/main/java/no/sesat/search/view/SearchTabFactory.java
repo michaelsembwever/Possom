@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
+/** Deserialises views.xml into SearchTab (& its inner classes).
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -68,9 +68,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     private static final Map<Site, SearchTabFactory> INSTANCES = new HashMap<Site,SearchTabFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
+
     private static final TabFactory TAB_FACTORY = new TabFactory();
-    
+
     /**
      * Name of the configuration file.
      */
@@ -84,19 +84,17 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     private static final String RESET_NAV_ELEMENT = "reset";
     private static final String NAV_CONFIG_ELEMENT = "config";
-    
+
     // Attributes ----------------------------------------------------
 
     private final Map<String,SearchTab> tabsByName = new HashMap<String,SearchTab>();
     private final Map<String,SearchTab> tabsByKey = new HashMap<String,SearchTab>();
-    // redundant w/ init() in constructor TODO remove
-    private final ReentrantReadWriteLock tabsLock = new ReentrantReadWriteLock(); 
 
     private final DocumentLoader loader;
     private final Context context;
-    
-    
-    
+
+
+
 
     // Static --------------------------------------------------------
 
@@ -233,16 +231,11 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     }
 
     public Map<String,SearchTab> getTabsByName(){
-        
+
         LOG.trace("getTabsByName()");
 
-        try{
-            tabsLock.readLock().lock();
-            return Collections.unmodifiableMap(tabsByName);
+        return Collections.unmodifiableMap(tabsByName);
 
-        }finally{
-            tabsLock.readLock().unlock();
-        }        
 
     }
 
@@ -252,7 +245,12 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     // Private -------------------------------------------------------
 
-
+    /** Initialises instance.
+     * Crucial that this method is called from the constructor,
+     *  otherwise read/write synchronisation must be re-added to the tabsByName & tabsByKey fields.
+     *
+     * @throws javax.xml.parsers.ParserConfigurationException
+     */
     private void init() throws ParserConfigurationException {
 
         loader.abut();
@@ -271,14 +269,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
                         final SearchTab tab = TAB_FACTORY.parseTab(tabE, context, inherit);
 
-                        try{
-                            tabsLock.writeLock().lock();
-                            tabsByName.put(tab.getId(), tab);
-                            if(key.length() > 0){
-                                tabsByKey.put(key, tab);
-                            }
-                        }finally{
-                            tabsLock.writeLock().unlock();
+                        tabsByName.put(tab.getId(), tab);
+                        if(key.length() > 0){
+                            tabsByKey.put(key, tab);
                         }
                     }
                 }
@@ -294,39 +287,29 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
         LOG.trace("getTabImpl(" + id + ')');
 
-        try{
-            tabsLock.readLock().lock();
-            return tabsByName.get(id);
+        return tabsByName.get(id);
 
-        }finally{
-            tabsLock.readLock().unlock();
-        }
     }
 
     private SearchTab getTabByKeyImpl(final String key){
 
         LOG.trace("getTabByKeyImpl(" + key + ')');
 
-        try{
-            tabsLock.readLock().lock();
-            return tabsByKey.get(key);
+        return tabsByKey.get(key);
 
-        }finally{
-            tabsLock.readLock().unlock();
-        }
     }
 
     // Inner classes -------------------------------------------------
-    
+
     private static final class TabFactory extends AbstractConfigFactory<SearchTab> {
 
-        private static final NavFactory NAV_FACTORY = new NavFactory();    
-    
+        private static final NavFactory NAV_FACTORY = new NavFactory();
+
         SearchTab parseTab(
                 final Element tabE,
                 final Context context,
                 final SearchTab inherit) throws ParserConfigurationException {
-            
+
 
 
                 final String id = tabE.getAttribute("id");
@@ -342,7 +325,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String allJavascript = parseString(tabE.getAttribute("javascript"), null);
                 final String[] javascript = allJavascript != null ? allJavascript.split(",") : new String[]{};
 
-                
+
                 // enrichment hints
                 final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
                 final Collection<SearchTab.EnrichmentHint> enrichments = new ArrayList<SearchTab.EnrichmentHint>();
@@ -355,7 +338,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     final float weight = parseFloat(e.getAttribute("weight"), 0);
                     final String command = e.getAttribute("command");
                     final boolean alwaysvisible = parseBoolean(e.getAttribute("always-visable"),false);
-                    
+
                     final SearchTab.EnrichmentHint enrichment
                             = new SearchTab.EnrichmentHint(rule, baseScore, threshold, weight, command, alwaysvisible);
                     enrichments.add(enrichment);
@@ -372,7 +355,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         navE = n;
                     }
                 }
-                
+
                 final NavigationConfig navConf = parseNavigation(
                         mode,
                         null != navE ? navE.getElementsByTagName("navigation") : new NodeList() {
@@ -382,29 +365,33 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                             public int getLength() {
                                 return 0;
                             }
-                        }, 
+                        },
                         context,
                         null != inherit ? inherit.getNavigationConfiguration() : null);
-                               
+
                 // the tab's layout
                 final NodeList layoutsNodeList = tabE.getElementsByTagName("layout");
-                
+
                 Layout defaultLayout = null;
                 final Map<String,Layout> layouts = new HashMap<String,Layout>();
-                
+
                 for(int j = 0 ;j < layoutsNodeList.getLength(); ++j){
-                    
+
                     final Element layoutE = (Element) layoutsNodeList.item(j);
                     final String layoutId = null != layoutE.getAttribute("id") ? layoutE.getAttribute("id") : "";
                     final Layout layout = new Layout(null != inherit ? inherit.getLayouts().get(layoutId) : null)
                             .readLayout(layoutE);
-                    
+
                     layouts.put(layoutId, layout);
-                    
+
                     if(0 == layoutId.length()){
                         defaultLayout = layout;
                     }
                 }
+                final String scopeStr = tabE.getAttribute("scope");
+                final SearchTab.Scope scope = 0 < scopeStr.length()
+                        ? SearchTab.Scope.valueOf(scopeStr.toUpperCase())
+                        : null != inherit ? inherit.getScope() : SearchTab.Scope.REQUEST;
 
                 return new SearchTab(
                         inherit,
@@ -439,14 +426,15 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         ? inherit.isExecuteOnBlank()
                         : false),
                         defaultLayout,
-                        layouts);
+                        layouts,
+                        scope);
 
-                
+
         }
-        
+
 
         private NavigationConfig parseNavigation(
-                final String modeId, 
+                final String modeId,
                 final NodeList navigationElements,
                 final Context context,
                 final NavigationConfig inherit) throws ParserConfigurationException {
@@ -462,8 +450,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 for (int l = 0; l < navs.getLength(); l++) {
                     final Node navNode = navs.item(l);
 
-                    if (navNode instanceof Element 
-                            && ! (RESET_NAV_ELEMENT.equals(navNode.getNodeName()) 
+                    if (navNode instanceof Element
+                            && ! (RESET_NAV_ELEMENT.equals(navNode.getNodeName())
                             || NAV_CONFIG_ELEMENT.equals(navNode.getNodeName()))) {
 
                         navigation.addNav(
@@ -497,7 +485,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         /** XXX Implement me. Everything is hardcoded to SearchTab. Not even used i believe. */
         protected Class<SearchTab> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
-            
+
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
@@ -522,7 +510,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final NavigationConfig.Navigation navigation,
                 final Context context,
                 final NavigationConfig.Nav parent) throws ParserConfigurationException {
-            
+
             try {
 
                 Class<NavigationConfig.Nav> clazz = null;
@@ -570,7 +558,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
         protected Class<NavigationConfig.Nav> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
-            
+
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 

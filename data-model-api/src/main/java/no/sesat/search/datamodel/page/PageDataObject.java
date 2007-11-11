@@ -37,15 +37,14 @@ import no.sesat.search.view.config.SearchTab;
 @DataObject
 public interface PageDataObject {
 
-    @AccessDisallow({DATA_MODEL_CONSTRUCTION})        
+    @AccessDisallow({DATA_MODEL_CONSTRUCTION})
     SearchTab getCurrentTab();
-    
-    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})    
+
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setCurrentTab(SearchTab currentTab);
 
     /**
      *
-     * @param key
      * @return
      */
     @AccessDisallow({DATA_MODEL_CONSTRUCTION})
@@ -53,12 +52,12 @@ public interface PageDataObject {
 
     /**
      *
-     * @param key
+     * @param tabName
      * @return
      */
     @AccessDisallow({DATA_MODEL_CONSTRUCTION})
     SearchTab getTab(String tabName);
-    
+
     @AccessAllow({})
     void setTab(String tabName, SearchTab tab);
 

@@ -65,6 +65,7 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.UrlResourceLoader;
 
+import no.sesat.search.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
 /** Ensures that a session is created, and that a new DataModel, with Site and Browser dataObjects,
@@ -279,8 +280,27 @@ public final class DataModelFilter implements Filter {
     @SuppressWarnings("deprecation")
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
 
-        for(String key : datamodel.getJunkYard().getValues().keySet()){
-            datamodel.getJunkYard().setValue(key, null);
+        if(null != datamodel.getPage().getCurrentTab()){
+            final SearchTab.Scope scope = datamodel.getPage().getCurrentTab().getScope();
+            // we need to reset control level so to be able to unset properties in it.
+            factory.assignControlLevel(datamodel, ControlLevel.DATA_MODEL_CONSTRUCTION);
+
+            for(String key : datamodel.getJunkYard().getValues().keySet()){
+                datamodel.getJunkYard().setValue(key, null);
+            }
+
+            if(SearchTab.Scope.REQUEST == scope){
+                for(String key : datamodel.getSearches().keySet()){
+                    datamodel.setSearch(key, null);
+                }
+                for(String key : datamodel.getNavigation().getNavigations().keySet()){
+                    datamodel.getNavigation().setNavigation(key, null);
+                }
+                datamodel.setNavigation(null);
+                datamodel.setParameters(null);
+                datamodel.setQuery(null);
+                datamodel.getPage().setCurrentTab(null);
+            }
         }
 
         assert isSerializable(datamodel) : "Datamodel is not serializable!";

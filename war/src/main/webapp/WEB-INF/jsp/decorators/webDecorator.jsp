@@ -26,8 +26,8 @@
 <search:velocity template="/pages/main"/>
 <c:if test="${! empty Missing_pagesmain_Template}">
     <c:choose>
-        <c:when test="${!empty param.layout}">
-            <c:set var="layout" value="{tab.layouts[param.layout]}" scope="request"/>
+        <c:when test="${!empty DataModel.parameters.values['layout']}">
+            <c:set var="layout" value="${tab.layouts[DataModel.parameters.values['layout'].xmlEscaped]}" scope="request"/>
         </c:when>
         <c:otherwise>
             <c:set var="layout" value="${tab.defaultLayout}" scope="request"/>

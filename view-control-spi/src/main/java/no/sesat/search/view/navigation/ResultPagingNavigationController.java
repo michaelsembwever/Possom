@@ -25,13 +25,17 @@ import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.TextMessages;
+import org.apache.log4j.Logger;
 
 
 /**
  * @author maek
+ * @version $Id$
  */
 public final class ResultPagingNavigationController
         implements NavigationControllerFactory<ResultPagingNavigationConfig>, NavigationController {
+
+    private static final Logger LOG = Logger.getLogger(ResultPagingNavigationController.class);
 
     private ResultPagingNavigationConfig config;
 
@@ -43,47 +47,49 @@ public final class ResultPagingNavigationController
     public NavigationItem getNavigationItems(Context context) {
 
         final SearchDataObject search = context.getDataModel().getSearch(config.getCommandName());
+        NavigationItem item = null;
 
         if (search == null) {
-            throw new IllegalArgumentException("Could not find search result for command " + config.getCommandName());
+            LOG.info("Could not find search result for command " + config.getCommandName());
+
+        }else{
+
+            final ResultList<? extends ResultItem> searchResult = search.getResults();
+
+            final int hitCount = searchResult.getHitCount();
+            final StringDataObject offsetString = context.getDataModel().getParameters().getValue("offset");
+            final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
+
+            item = new BasicNavigationItem();
+            final PagingHelper pager = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
+
+            final TextMessages messages = TextMessages.valueOf(context.getSite());
+
+            // Add navigation item for previous page.
+            if (pager.getCurrentPage() > 1) {
+                final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
+                final String url = context.getUrlGenerator().getURL(pageOffset, config);
+                item.addResult(new BasicNavigationItem(messages.getMessage("prev"), url, config.getPageSize()));
+            }
+
+            // Add navigation items for the individual pages.
+            for (int i = pager.getFirstVisiblePage(); i <= pager.getLastVisiblePage(); ++i) {
+                final String pageOffset = Integer.toString(pager.getOffsetOfPage(i));
+                final String url = context.getUrlGenerator().getURL(pageOffset, config);
+                final BasicNavigationItem navItem = new BasicNavigationItem(Integer.toString(i), url, config.getPageSize());
+
+                navItem.setSelected(i == pager.getCurrentPage());
+
+                item.addResult(navItem);
+            }
+
+            // Add navigation item for next page.
+            if (pager.getCurrentPage() < pager.getNumberOfPages()) {
+                final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() + 1));
+                final String url = context.getUrlGenerator().getURL(pageOffset, config);
+                item.addResult(new BasicNavigationItem(messages.getMessage("next"), url, config.getPageSize()));
+            }
         }
-
-        final ResultList<? extends ResultItem> searchResult = search.getResults();
-
-        final int hitCount = searchResult.getHitCount();
-        final StringDataObject offsetString = context.getDataModel().getParameters().getValue("offset");
-        final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
-
-        final NavigationItem item = new BasicNavigationItem();
-        final PagingHelper pager = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
-
-        final TextMessages messages = TextMessages.valueOf(context.getSite());
-
-        // Add navigation item for previous page.
-        if (pager.getCurrentPage() > 1) {
-            final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
-            final String url = context.getUrlGenerator().getURL(pageOffset, config);
-            item.addResult(new BasicNavigationItem(messages.getMessage("prev"), url, config.getPageSize()));
-        }
-
-        // Add navigation items for the individual pages.
-        for (int i = pager.getFirstVisiblePage(); i <= pager.getLastVisiblePage(); ++i) {
-            final String pageOffset = Integer.toString(pager.getOffsetOfPage(i));
-            final String url = context.getUrlGenerator().getURL(pageOffset, config);
-            final BasicNavigationItem navItem = new BasicNavigationItem(Integer.toString(i), url, config.getPageSize());
-
-            navItem.setSelected(i == pager.getCurrentPage());
-
-            item.addResult(navItem);
-        }
-
-        // Add navigation item for next page.
-        if (pager.getCurrentPage() < pager.getNumberOfPages()) {
-            final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() + 1));
-            final String url = context.getUrlGenerator().getURL(pageOffset, config);
-            item.addResult(new BasicNavigationItem(messages.getMessage("next"), url, config.getPageSize()));
-        }                               
-
         return item;
     }
 }

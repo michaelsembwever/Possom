@@ -48,7 +48,7 @@ import no.sesat.search.datamodel.user.UserDataObject;
  *  but there exists *only* getter methods on non-dataNode dataObjects.
  * This allows dataObject, separated from their heirarchical context, to be immutable
  *  if the implementation so wishes. (The MapDataObject is an exception to this pattern).
- * 
+ *
  * The original design documentation is at
  *   https://dev.sesat.no/confluence/display/TECHDEV/Search+Portal+DataModel+%28Sesam-3.0%29
  *
@@ -66,13 +66,13 @@ public interface DataModel extends Serializable{
     // ParametersDataObject ------------------------------------------------------------
 
     /** Get the ParametersDataObject associated to this request.
-     * 
+     *
      * @return the ParametersDataObject updated for this request.
      */
     ParametersDataObject getParameters();
 
     /** Update the ParametersDataObject.
-     * 
+     *
      * @param parameters ParametsDataObject associated to this request.
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
@@ -81,13 +81,13 @@ public interface DataModel extends Serializable{
     // BrowserDataObject ------------------------------------------------------------
 
     /** Get the BrowserDataObject associated to this session.
-     * 
+     *
      * @return the BrowserDataObject created at the beginning of the session.
      */
     BrowserDataObject getBrowser();
 
     /** Assign the BrowserDataObject. Can only be called once.
-     * 
+     *
      * @param browser BrowserDataObject holding session-static information.
      */
     @AccessAllow(DATA_MODEL_CONSTRUCTION)
@@ -96,13 +96,13 @@ public interface DataModel extends Serializable{
     // UserDataObject ------------------------------------------------------------
 
     /** Get the UserDataObject holding the user information.
-     * 
+     *
      * @return the UserDataObject.
      */
     UserDataObject getUser();
 
     /** Assign the UserDataObject when user logs in.
-     * 
+     *
      * @param user UserDataObject holding user information.
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
@@ -111,14 +111,14 @@ public interface DataModel extends Serializable{
     // SiteDataObject ------------------------------------------------------------
 
     /** Get the SiteDataObject holding site and skin information.
-     * 
+     *
      * @return the SiteDataObject
      */
     SiteDataObject getSite();
 
-    /** Assign the SiteDataObject. 
+    /** Assign the SiteDataObject.
      * Usually only done once but some browsers don't use separate sessions for sub-domains.
-     * 
+     *
      * @param site the SiteDataObject holding site and skin information.
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
@@ -127,33 +127,33 @@ public interface DataModel extends Serializable{
     // QueryDataObject ------------------------------------------------------------
 
     /** The QueryDataObject holding all query related information associated to this request.
-     * 
+     *
      * @return the QueryDataObject
      */
     QueryDataObject getQuery();
 
     /** Set the QueryDataObject associated to this request.
-     * 
+     *
      * @param query the QueryDataObject holding all query related information
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, RUNNING_QUERY_CONSTRUCTION})
     void setQuery(QueryDataObject query);
 
     // SearchDataObject ------------------------------------------------------------
-    
+
     /** Map containing all the search results. See SearchDataObject.
      * Keys match each search configuration's name.
      * When a search command adds it's finished SearchDataObject, see setSearch(..)
      *  it is expected to call notifyAll() on the map.
      * This enables others to use wait() on the map so to get access to the results once they are ready.
-     * 
-     * @return 
+     *
+     * @return
      */
     @AccessDisallow({RUNNING_QUERY_CONSTRUCTION, SEARCH_COMMAND_CONSTRUCTION})
     Map<String,SearchDataObject> getSearches();
-    
+
     /** Get the SearchDataObject holding the given search's results
-     * 
+     *
      * @param key the search (commandName) to get SearchDataObject for
      * @return the SearchDataObject
      */
@@ -164,17 +164,17 @@ public interface DataModel extends Serializable{
      * Any call to this method must be followed by the code:
      *  synchronized(getSearches()){ getSearches().notifyAll(); }
      *  to inform any other parties waiting for the results that they are ready.
-     * 
-     * @param key 
-     * @param value 
+     *
+     * @param key
+     * @param value
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, SEARCH_COMMAND_EXECUTION})
     void setSearch(final String key, final SearchDataObject value);
-    
+
     // NavigationDataObject ------------------------------------------------------------
-    
+
     /** Get the NavigationDataObject associated to the SearchMode.
-     * 
+     *
      * @return the NavigationDataObject
      */
     NavigationDataObject getNavigation();
@@ -182,13 +182,13 @@ public interface DataModel extends Serializable{
     /** Set the NavigationDataObject.
      * @param value the NavigationDataObject associated to the SearchMode
      */
-    @AccessAllow(RUNNING_QUERY_CONSTRUCTION)
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, RUNNING_QUERY_CONSTRUCTION})
     void setNavigation(final NavigationDataObject value);
-    
+
     // PageDataObject ------------------------------------------------------------
-    
+
     /** Get the PageDataObject associated to the SearchTab.
-     * 
+     *
      * @return the PageDataObject
      */
     PageDataObject getPage();
@@ -198,7 +198,7 @@ public interface DataModel extends Serializable{
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setPage(final PageDataObject value);
-    
+
     // JunkYardDataObject ------------------------------------------------------------
 
     /** @return all the old crap
@@ -207,8 +207,9 @@ public interface DataModel extends Serializable{
     JunkYardDataObject getJunkYard();
 
     /**
-     * 
-     * @param junkYard 
+     *
+     * @param junkYard
+     * @deprecated  Provides access to datamodel elements not yet migrated into the DataModel proper.
      */
     @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION})
     void setJunkYard(JunkYardDataObject junkYard);
