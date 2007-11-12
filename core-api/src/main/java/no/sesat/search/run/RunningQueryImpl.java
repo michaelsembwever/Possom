@@ -91,6 +91,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public static final String PARAM_LAYOUT = "layout";
     // TODO generic parameter key to be put into ParameterDataObject
     private static final String PARAM_COMMANDS = "commands";
+    // TODO generic parameter key to be put into ParameterDataObject
+    private static final String PARAM_WAITFOR = "waitFor";
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.sesat.search.analyzer.Analysis");
@@ -492,9 +494,35 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitFor;
 
-                if(null != datamodel.getParameters().getValue(PARAM_COMMANDS)){
+                if(null != datamodel.getParameters().getValue(PARAM_WAITFOR)){
+                    
+                    waitFor = new HashMap<Future<ResultList<? extends ResultItem>>,SearchCommand>();
+                    
+                    final String[] waitForArr 
+                            = datamodel.getParameters().getValue(PARAM_WAITFOR).getString().split(",");
+                    
+                    for(String waitForStr : waitForArr){
+                        // using generics on the next line crashes javac
+                        for(Entry/*<Future<ResultList<? extends ResultItem>>,SearchCommand>*/ entry 
+                                : results.entrySet()){
+                            
+                            final String entryName 
+                                    = ((SearchCommand)entry.getValue()).getSearchConfiguration().getName();
+                            if(waitForStr.equalsIgnoreCase(entryName)){
+
+                                waitFor.put(
+                                        (Future<ResultList<? extends ResultItem>>)entry.getKey(),
+                                        (SearchCommand)entry.getValue());
+                                break;
+                            }
+                        }
+                    }
+                    
+                }else if(null != datamodel.getParameters().getValue(PARAM_COMMANDS)){
+                    
                     // wait on everything explicitly asked for
                     waitFor = results;
+                    
                 }else{
 
                     // do not wait on asynchronous commands
