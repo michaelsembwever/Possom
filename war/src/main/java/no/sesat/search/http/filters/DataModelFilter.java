@@ -280,7 +280,8 @@ public final class DataModelFilter implements Filter {
     @SuppressWarnings("deprecation")
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
 
-        if(null != datamodel.getPage().getCurrentTab()){
+        if(null != datamodel.getPage() && null != datamodel.getPage().getCurrentTab()){
+            
             final SearchTab.Scope scope = datamodel.getPage().getCurrentTab().getScope();
             // we need to reset control level so to be able to unset properties in it.
             factory.assignControlLevel(datamodel, ControlLevel.DATA_MODEL_CONSTRUCTION);
