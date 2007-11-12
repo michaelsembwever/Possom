@@ -1,4 +1,3 @@
-
 <%-- Copyright (2006-2007) Schibsted Søk AS
  *   This file is part of SESAT.
  *

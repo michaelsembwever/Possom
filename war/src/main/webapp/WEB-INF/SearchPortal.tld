@@ -20,6 +20,11 @@
     </attribute>
   </tag>
   <tag>
+    <name>main</name>
+    <tag-class>no.sesat.search.view.taglib.SearchTabMainTag</tag-class>
+    <body-content>empty</body-content>
+  </tag>
+  <tag>
     <name>include</name>
     <tag-class>no.sesat.search.view.taglib.SearchTabIncludeTag</tag-class>
     <body-content>empty</body-content>

@@ -22,29 +22,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 
-<%-- Option: allow the skin to define the toplevel template main.vm --%>
-<search:velocity template="/pages/main"/>
-<c:if test="${! empty Missing_pagesmain_Template}">
-    <c:choose>
-        <c:when test="${!empty DataModel.parameters.values['layout']}">
-            <c:set var="layout" value="${tab.layouts[DataModel.parameters.values['layout'].xmlEscaped]}" scope="request"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="layout" value="${tab.defaultLayout}" scope="request"/>
-        </c:otherwise>
-    </c:choose>
-    <c:choose>
-        <%-- Use any tab layout's custom front page if the query object does not exist --%>
-        <c:when test="${DataModel.query.query.blank && !empty layout.front}">
-            <search:velocity template="/pages/${layout.front}"/>
-        </c:when>
-        <%-- Use any tab layout's custom main page --%>
-        <c:when test="${!empty layout.main}">
-            <search:velocity template="/pages/${layout.main}"/>
-        </c:when>
-        <%-- Otherwise use the default templating layout --%>
-        <c:otherwise>
-            <%@ include file="httpDecorator.jsp" %>
-        </c:otherwise>
-    </c:choose>
+<search:main/>
+<c:if test="${!empty Missing_SearchTabMain_Template}">
+    <%@ include file="httpDecorator.jsp" %>
 </c:if>
