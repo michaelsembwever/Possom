@@ -8,7 +8,7 @@ import java.util.Iterator;
  *
  * In order for you provider to be recognized the skin needs have a provider-configuration file containing the fully
  * qualified classname for each of your provider, one on each line. The file must be called
- * no.sesat.commons.sitemaps.PageProvider and located be in META-INF/Services (which translates to
+ * no.sesat.commons.sitemaps.PageProvider and be located in META-INF/Services (which translates to
  * src/main/resources/META-INF/services if you're using the default Maven projcet layout)    
  *
  * @author maek
