@@ -47,6 +47,7 @@
                 <module>view-control-spi</module>
                 <module>run-transform-spi</module>
                 <module>run-handler-spi</module>
+		<module>sitemap-spi</module>
                 <module>core-api</module>
                 <module>search-servlet-handler-spi</module>
                 <module>war</module>
