@@ -138,12 +138,14 @@ public class FileResourceLoader extends AbstractResourceLoader {
                     + (warFolder.exists() && warFolder.isDirectory() ? "/war/target/" : "/target/") + getResourceDirectory()
                     + getResource()).normalize();
 
-            return uri.toURL();
-        }catch (URISyntaxException ex) {
-            throw new ResourceLoadException(readResourceDebug(), ex);
+            return uri.toURL();    
+        }
+        catch (URISyntaxException ex) {
+            throw new ResourceLoadException(ex.getMessage(), ex);
         } catch (MalformedURLException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         }
+        
     }
 
     private String getResourceDirectory() {
