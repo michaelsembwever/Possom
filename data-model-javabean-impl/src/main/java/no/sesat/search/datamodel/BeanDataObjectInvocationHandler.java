@@ -17,7 +17,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
-//import java.beans.beancontext.BeanContextSupport;
+import java.beans.beancontext.BeanContextSupport;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
