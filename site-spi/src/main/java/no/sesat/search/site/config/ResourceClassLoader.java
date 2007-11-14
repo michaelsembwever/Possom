@@ -92,7 +92,7 @@ public abstract class ResourceClassLoader extends ClassLoader {
 
         // Make sure that the class hasn't been defined by another thread while we were busy looking for and loading the
         // byte code.
-        synchronized(this) {
+        synchronized(className.intern()) {
             final Class loadedClass = findLoadedClass(className);
 
             if (LOG.isDebugEnabled() && null != loadedClass) {
