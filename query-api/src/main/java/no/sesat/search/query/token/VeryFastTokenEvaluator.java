@@ -219,7 +219,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             LIST_NAMES_LOCK.readLock().lock();
             
             // initialise the parent site's configuration
-            parentUninitialised = null != parent && null == LIST_NAMES.get(parent);
+            parentUninitialised = (null != parent && null == LIST_NAMES.get(parent));
             
         }finally{
             LIST_NAMES_LOCK.readLock().unlock();
