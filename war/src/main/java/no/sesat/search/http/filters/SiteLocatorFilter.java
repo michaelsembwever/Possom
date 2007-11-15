@@ -315,8 +315,10 @@ public final class SiteLocatorFilter implements Filter {
         final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
         servletRequest.setAttribute(SiteConfiguration.NAME_KEY, siteConf);
 
-        LOG.trace(MessageFormat.format(
-                LOCALE_DETAILS, locale.getLanguage(), locale.getCountry(), locale.getVariant()));
+        if(LOG.isTraceEnabled()){ // MessageFormat.format(..) is expensive
+            LOG.trace(MessageFormat.format(
+                    LOCALE_DETAILS, locale.getLanguage(), locale.getCountry(), locale.getVariant()));
+        }
         
         // Check if the browser's locale is supported by this skin. Use it if so.
         if( siteConf.isSiteLocaleSupported(locale) ){
