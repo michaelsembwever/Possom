@@ -124,7 +124,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
     static String toString(final List<Property> properties){
 
-        final StringBuilder builder = new StringBuilder(64 * properties.size());
+        final StringBuilder builder = new StringBuilder(64 * properties.size() + 8);
         builder.append('{');
         for(Property property : properties){
             builder.append(property.getName() + ':' + property.getValue() + ';');
