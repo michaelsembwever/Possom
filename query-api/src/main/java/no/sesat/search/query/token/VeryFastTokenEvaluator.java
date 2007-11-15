@@ -211,28 +211,32 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     private static void initImpl(final Context cxt) throws ParserConfigurationException  {
 
+        final Site site = cxt.getSite();
+        final Site parent = site.getParent();
+        final boolean parentUninitialised;
+        
         try{
             LIST_NAMES_LOCK.readLock().lock();
             
             // initialise the parent site's configuration
-            final Site parent = cxt.getSite().getParent();
-            if(null != parent && null == LIST_NAMES.get(parent)){
-                initImpl(ContextWrapper.wrap(
-                        Context.class,
-                        new SiteContext(){
-                            public Site getSite(){
-                                return parent;
-                            }
-                        },
-                        cxt
-                    ));
-            }
-
+            parentUninitialised = null != parent && null == LIST_NAMES.get(parent);
+            
         }finally{
             LIST_NAMES_LOCK.readLock().unlock();
         }
         
-        final Site site = cxt.getSite();
+        if(parentUninitialised){
+            initImpl(ContextWrapper.wrap(
+                    Context.class,
+                    new SiteContext(){
+                        public Site getSite(){
+                            return parent;
+                        }
+                    },
+                    cxt
+                ));
+        }
+        
         try{
             LIST_NAMES_LOCK.writeLock().lock();
         
