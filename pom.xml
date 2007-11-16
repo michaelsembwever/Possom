@@ -61,8 +61,10 @@
                 <module>result-handler-control-spi</module>
                 <module>search-command-control-spi</module>
                 <module>view-control-spi</module>
-                <module>run-transform-spi</module>
-                <module>run-handler-spi</module>
+                <module>run-transform-config-spi</module>
+                <module>run-transform-control-spi</module>
+                <module>run-handler-config-spi</module>
+                <module>run-handler-control-spi</module>
                 <module>core-api</module>
                 <module>search-servlet-handler-spi</module>
                 <module>war</module>

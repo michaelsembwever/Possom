@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+
+<suite name="Run Handler Tests" verbose="10" parallel="false">
+    
+    <test name="Tests">
+        <packages>
+            <package name="no.sesat.search.run.handler" />
+
+        </packages>
+    </test>
+</suite>

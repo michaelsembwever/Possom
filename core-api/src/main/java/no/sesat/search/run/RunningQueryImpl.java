@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.InfrastructureException;
@@ -49,7 +51,6 @@ import no.sesat.search.query.token.TokenEvaluationEngineImpl;
 import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.SearchCommandFactory;
 import no.sesat.search.mode.config.SearchConfiguration;
-import no.sesat.search.mode.SearchMode;
 import no.sesat.search.mode.executor.SearchCommandExecutor;
 import no.sesat.search.mode.executor.SearchCommandExecutorFactory;
 import no.sesat.search.query.parser.AbstractQueryParserContext;
@@ -60,13 +61,19 @@ import no.sesat.search.query.token.TokenEvaluationEngineContext;
 import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
-import no.sesat.search.run.handler.NavigationRunningQueryHandler;
-import no.sesat.search.run.handler.RunningQueryHandler;
+import no.sesat.search.run.handler.NavigationRunHandlerConfig;
+import no.sesat.search.run.handler.RunHandler;
+import no.sesat.search.run.handler.RunHandlerConfig;
+import no.sesat.search.run.handler.RunHandlerFactory;
+import no.sesat.search.run.transform.RunTransformer;
+import no.sesat.search.run.transform.RunTransformerConfig;
+import no.sesat.search.run.transform.RunTransformerFactory;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.config.BytecodeLoader;
-import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.site.config.DocumentLoader;
+import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.view.config.SearchTab.EnrichmentHint;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -410,8 +417,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 applicableSearchConfigurations.add(conf);
             }
         }
-
-        return applicableSearchConfigurations;
+        
+        return performTransformers(applicableSearchConfigurations);
     }
 
     private boolean useEnrichment(
@@ -553,12 +560,47 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return results;
     }
 
+    private Collection<SearchConfiguration> performTransformers(final Collection<SearchConfiguration> applicableSearchConfigurations) {
+        final RunTransformer.Context transformerContext = new RunTransformer.Context() {
+                    public Collection<SearchConfiguration>getApplicableSearchConfigurations() {
+                        return applicableSearchConfigurations;
+                    }
+
+                    public DataModel getDataModel() {
+                        return datamodel;
+                    }
+
+                    public DocumentLoader newDocumentLoader(final SiteContext siteContext, final String resource, final DocumentBuilder builder) {
+                        return context.newDocumentLoader(siteContext, resource, builder);
+                    }
+
+                    public PropertiesLoader newPropertiesLoader(final SiteContext siteContext, final String resource, final Properties properties) {
+                        return context.newPropertiesLoader(siteContext, resource, properties);
+                    }
+                    
+                    public BytecodeLoader newBytecodeLoader(final SiteContext siteContext, final String className, final String jarFileName) {
+                        return context.newBytecodeLoader(siteContext, className, jarFileName);
+                    }
+
+                    public Site getSite() {
+                        return datamodel.getSite().getSite();
+                    }
+        };
+
+        final List<RunTransformerConfig> rtcList = context.getSearchMode().getRunTransformers();
+
+        for (final RunTransformerConfig rtc : rtcList) {
+            final RunTransformer rt = RunTransformerFactory.getController(transformerContext, rtc);
+            rt.transform(transformerContext);
+        }
+
+        return applicableSearchConfigurations;
+    }
+
     private void performHandlers(){
 
-        // TODO move into Run Handler SPI
-
-        final RunningQueryHandler.Context handlerContext = ContextWrapper.wrap(
-                RunningQueryHandler.Context.class,
+        final RunHandler.Context handlerContext = ContextWrapper.wrap(
+                RunHandler.Context.class,
                 new SiteContext(){
                     public Site getSite() {
                         return datamodel.getSite().getSite();
@@ -566,17 +608,17 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 },
                 context);
 
-        if (!isRss()) {
-            performNavigationHandling(handlerContext);
+        final List<RunHandlerConfig> rhcList = context.getSearchMode().getRunHandlers();
+        /* Adding NavigationRunHandler to all search modes */
+        rhcList.add(new NavigationRunHandlerConfig());
+
+        for (final RunHandlerConfig rhc : rhcList) {
+            final RunHandler rh = RunHandlerFactory.getController(handlerContext, rhc);
+            rh.handleRunningQuery(handlerContext);
         }
     }
 
-    private void performNavigationHandling(final RunningQueryHandler.Context handlerContext){
-
-        final NavigationRunningQueryHandler navHandler = new NavigationRunningQueryHandler();
-        navHandler.handleRunningQuery(handlerContext);
-    }
-
+    // Inner classes -------------------------------------------------
     private boolean isRss() {
 
         final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_LAYOUT);

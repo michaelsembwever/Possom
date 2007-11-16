@@ -18,6 +18,7 @@
 package no.sesat.search.mode;
 
 
+import no.sesat.search.run.transform.RunTransformerConfig;
 import no.sesat.search.site.config.AbstractConfigFactory;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.config.SearchConfiguration;
@@ -26,6 +27,7 @@ import no.sesat.search.result.handler.ResultHandlerConfig;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
+import no.sesat.search.site.config.AbstractConfigFactory.Context;
 import no.sesat.search.site.config.Spi;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.ResourceContext;
@@ -40,10 +42,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.sesat.search.run.handler.RunHandlerConfig;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -65,13 +70,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final SearchCommandFactory SEARCH_CONFIGURATION_FACTORY = new SearchCommandFactory();
     private static final QueryTransformerFactory QUERY_TRANSFORMER_FACTORY = new QueryTransformerFactory();
     private static final ResultHandlerFactory RESULT_HANDLER_FACTORY = new ResultHandlerFactory();
+    private static final RunHandlerConfigFactory RUN_HANDLER_FACTORY = new RunHandlerConfigFactory();
+    private static final RunTransformerConfigFactory RUN_TRANSFORMER_FACTORY = new RunTransformerConfigFactory();
 
 
     /**
      * The name of the modes configuration file.
      */
     public static final String MODES_XMLFILE = "modes.xml";
-
+    private static final String RUN_HANDLERS = "run-handlers";
+    private static final String RUN_TRANSFORMERS = "run-transformers";
 
     private static final Map<SearchMode, Map<String, SearchConfiguration>> COMMANDS
             = new HashMap<SearchMode, Map<String, SearchConfiguration>>();
@@ -244,6 +252,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                 fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
 
+                mode.setRunTransformers(getRunTransformers(modeE, inherit));
+                mode.setRunHandlers(getRunHandlers(modeE, inherit));
+
                 // setup new commands list for this mode
                 final Map<String, SearchConfiguration> modesCommands = new HashMap<String, SearchConfiguration>();
                 try {
@@ -297,6 +308,48 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     }
 
+    private final List<RunHandlerConfig> getRunHandlers(final Element e, final SearchMode inherit) {
+        final List<RunHandlerConfig> runHandlers = new ArrayList<RunHandlerConfig>();
+
+        final NodeList rhNodes = e.getElementsByTagName(RUN_HANDLERS);
+        if (rhNodes.getLength() > 0) {
+            final NodeList nodes = rhNodes.item(0).getChildNodes();
+            for (int i = 0; i < nodes.getLength(); i++) {
+                if (nodes.item(i) instanceof Element) {
+                    final Element node = (Element) nodes.item(i);
+                    if (RUN_HANDLER_FACTORY.supported(node.getTagName(), context)) {
+                        RunHandlerConfig rhc = RUN_HANDLER_FACTORY.parseRunHandlerConfiguration(context, node);
+                        runHandlers.add(rhc);
+                    }
+                }
+            }
+        } else if (inherit != null && inherit.getRunHandlers().size() > 0)  {
+            runHandlers.addAll(inherit.getRunHandlers());
+        }
+        return runHandlers;
+    }
+
+    private final List<RunTransformerConfig> getRunTransformers(final Element e, final SearchMode inherit) {
+        final List<RunTransformerConfig> runTransformers = new ArrayList<RunTransformerConfig>();
+
+        final NodeList rtNodes = e.getElementsByTagName(RUN_TRANSFORMERS);
+        if (rtNodes.getLength() > 0) {
+            final NodeList nodes = rtNodes.item(0).getChildNodes();
+            for (int i = 0; i < nodes.getLength(); i++) {
+                if (nodes.item(i) instanceof Element) {
+                    final Element node = (Element) nodes.item(i);
+                    if (RUN_TRANSFORMER_FACTORY.supported(node.getTagName(), context)) {
+                        RunTransformerConfig rtc = RUN_TRANSFORMER_FACTORY.parseRunTransformerConfiguration(context, node);
+                        runTransformers.add(rtc);
+                    }
+                }
+            }
+        } else if (inherit != null && inherit.getRunTransformers().size() > 0)  {
+            runTransformers.addAll(inherit.getRunTransformers());
+        }
+        return runTransformers;
+    }
+
     private static SearchMode.SearchCommandExecutorConfig parseExecutor(
             final String name,
             final SearchMode.SearchCommandExecutorConfig def) {
@@ -324,7 +377,49 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     // Inner classes -------------------------------------------------
+    private static final class RunHandlerConfigFactory extends AbstractConfigFactory<RunHandlerConfig> {
+        RunHandlerConfigFactory() {}
 
+        @Override
+        protected Class<RunHandlerConfig> findClass(final String xmlName, final Context context) 
+                throws ClassNotFoundException {
+
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+
+            final String classNameFQ = "no.sesat.search.run.handler."+ className+ "RunHandlerConfig";
+            final Class<RunHandlerConfig> clazz = loadClass(context, classNameFQ, Spi.RUN_HANDLER_CONFIG);
+
+            LOG.debug("run-handler: Found class " + clazz.getName());
+            return clazz;
+        }
+
+        protected final RunHandlerConfig parseRunHandlerConfiguration(final Context context, final Element e) {
+            return construct(e, context);
+        };
+    }
+
+    private static final class RunTransformerConfigFactory extends AbstractConfigFactory<RunTransformerConfig> {
+        RunTransformerConfigFactory() {}
+
+        @Override
+        protected Class<RunTransformerConfig> findClass(final String xmlName, final Context context) 
+                throws ClassNotFoundException {
+
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+
+            final String classNameFQ = "no.sesat.search.run.transform."+ className+ "RunTransformerConfig";
+            final Class<RunTransformerConfig> clazz = loadClass(context, classNameFQ, Spi.RUN_TRANSFORM_CONFIG);
+
+            LOG.debug("run-transformer: Found class " + clazz.getName());
+            return clazz;
+        }
+
+        protected final RunTransformerConfig parseRunTransformerConfiguration(final Context context, final Element e) {
+            return construct(e, context);
+        };
+    }
 
     private static final class SearchCommandFactory extends AbstractConfigFactory<SearchConfiguration> {
 
@@ -455,7 +550,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
-
             LOG.debug("findClass " + className);
 
             final String classNameFQ = "no.sesat.search.mode.config."+ className+ "Config";

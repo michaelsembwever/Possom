@@ -19,7 +19,6 @@ package no.sesat.search.site.config;
 
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;

@@ -43,9 +43,13 @@ public enum Spi {
     /** */
     VIEW_CONTROL("view-control", VIEW_CONFIG),
     /** */
-    RUN_HANDLER("run-handler"),
+    RUN_HANDLER_CONFIG("run-handler-config"),
     /** */
-    RUN_TRANSFORM("run-transform"),
+    RUN_HANDLER_CONTROL("run-handler-control", RUN_HANDLER_CONFIG),
+    /** */
+    RUN_TRANSFORM_CONFIG("run-transform-config"),
+    /** */
+    RUN_TRANSFORM_CONTROL("run-transform-control", RUN_TRANSFORM_CONFIG),
     /** */
     SERVLET_HANDLER("servlet-handler"),
     /** */

@@ -29,7 +29,10 @@ import java.lang.annotation.Target;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.List;
 import no.sesat.search.mode.config.SearchConfiguration;
+import no.sesat.search.run.handler.RunHandlerConfig;
+import no.sesat.search.run.transform.RunTransformerConfig;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -78,6 +81,9 @@ public final class SearchMode implements Serializable {
     private boolean queryAnalysisEnabled = false;
     private String parentMode;
     private String id;
+    private List<RunHandlerConfig> runHandlers;
+    private List<RunTransformerConfig> runTransformers;
+
 
     // Static --------------------------------------------------------
 
@@ -221,6 +227,37 @@ public final class SearchMode implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Setter for run handlers
+     * @param runHandlers New list of run handlers
+     */
+    public void setRunHandlers(final List<RunHandlerConfig> runHandlers) {
+        this.runHandlers = runHandlers;
+    }
+
+    /**
+     * Getter for run handlers
+     * @return List of run handlers
+     */
+     public List<RunHandlerConfig> getRunHandlers() {
+         return runHandlers;
+     }
+
+     /**
+      * Setter for run transformers
+      * @param runTransformers New List of run transformers
+      */
+     public void setRunTransformers(final List<RunTransformerConfig> runTransformers) {
+         this.runTransformers = runTransformers;
+     }
+
+     /**
+      * Getter for run transformers
+      * @return List of run transformers
+      */
+     public List<RunTransformerConfig> getRunTransformers() {
+         return runTransformers;
+     }
     // Inner classes -------------------------------------------------
 
 }

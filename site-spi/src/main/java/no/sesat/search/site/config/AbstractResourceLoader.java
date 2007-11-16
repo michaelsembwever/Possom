@@ -267,7 +267,7 @@ public abstract class AbstractResourceLoader
                     resourceFound |= loadResource(getResource(site));
                 }
                 if (!resourceFound) {
-                    throw new ResourceLoadException("Could not find resource");
+                    throw new ResourceLoadException("Could not find resource: " + getResource());
                 }
                 break;
                 

@@ -141,7 +141,12 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>sesat-run-handler-spi</artifactId>
+            <artifactId>sesat-run-handler-control-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-run-transform-control-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

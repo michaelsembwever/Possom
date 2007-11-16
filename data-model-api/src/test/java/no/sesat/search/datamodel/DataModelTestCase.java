@@ -68,23 +68,29 @@ public abstract class DataModelTestCase extends SiteTestCase{
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-    
+   
+    protected synchronized void setSiteConfigurationContext(final SiteConfiguration.Context siteConfCxt) {
+        this.siteConfCxt = siteConfCxt;
+    }
+
     protected synchronized DataModelFactory getDataModelFactory() throws SiteKeyedFactoryInstantiationException{
         
         if(null == factory){
             try{
                 site = getTestingSite();
-                siteConfCxt = new SiteConfiguration.Context(){
-                    public Site getSite() {
-                        return site;
-                    }
+                if (siteConfCxt == null) {
+                    siteConfCxt = new SiteConfiguration.Context(){
+                        public Site getSite() {
+                            return site;
+                        }
 
-                    public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
-                                                                final String resource,
-                                                                final Properties properties) {
-                        return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
-                    }
-                };
+                        public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
+                                                                    final String resource,
+                                                                    final Properties properties) {
+                            return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+                        }
+                    };
+                }
                 factory = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, siteConfCxt));
 
             }catch(SiteKeyedFactoryInstantiationException skfie){
