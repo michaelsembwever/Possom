@@ -65,6 +65,9 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
     /** Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
+     * 
+     * Calling this tag also has the side effect of setting the layout in use into the context's attributes.
+     * 
      * @throws javax.servlet.jsp.JspException 
      */
     @Override
@@ -74,9 +77,10 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
         final SearchTab tab = datamodel.getPage().getCurrentTab();
         final StringDataObject layoutDO = datamodel.getParameters().getValue(RunningQueryImpl.PARAM_LAYOUT);
-        final Layout layout = null != layoutDO 
+        final Layout layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO 
                 ? tab.getLayouts().get(layoutDO.getXmlEscaped()) 
                 : tab.getDefaultLayout();
+        cxt.setAttribute("layout", layout);
 
         final String front = null != layout.getFront() && 0 < layout.getFront().length()
                 ? layout.getFront()
