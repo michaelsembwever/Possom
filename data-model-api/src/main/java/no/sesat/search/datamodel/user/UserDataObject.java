@@ -47,7 +47,7 @@ public interface UserDataObject extends Serializable {
      * 
      * @param user 
      */
-    void setUser(BasicUser user);
+    void setUser(final BasicUser user);
 
 //    Map<String,LocationDataObject> getLocations();
 //

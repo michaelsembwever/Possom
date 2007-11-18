@@ -13,14 +13,15 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * UserFilter.java
  *
  * Created on 9 March 2007, 15:25
  */
-
 package no.sesat.search.http.filters;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -30,20 +31,23 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import no.sesat.search.user.BasicUser;
+import no.sesat.search.user.exception.InvalidTokenException;
+import no.sesat.search.user.service.BasicUserService;
+import no.sesat.search.user.service.UserCookieUtil;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.site.config.SiteConfiguration;
-import no.sesat.search.user.UserCookie;
 import no.sesat.search.user.service.BasicUserService;
 import org.apache.log4j.Logger;
 
-/** Responsible for Persistent User Login.
- * Or "Remember Me" functionality.
- * Based off http://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice
+/**
+ * Responsible for Persistent User Login. Or "Remember Me" functionality. Based off
+ * http://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice
  *
+ * @author <a href="mailto:endre@sesam.no">Endre Midtgård Meckelborg</a>
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
@@ -53,65 +57,52 @@ public final class UserFilter implements Filter {
 
     private static final Logger LOG = Logger.getLogger(UserFilter.class);
 
-    private static final String USER_COOKIE_KEY ="SesamUser";
-    private static final String USER_COOKIE_PATH = "/";
-
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
 
-
     // Constructors --------------------------------------------------
 
-    /**
-     * 
-     */
+    /** Default constructor. */
     public UserFilter() {
+        super();
     }
-
 
     // Public --------------------------------------------------------
 
     /**
+     * The filter action method.
      *
      * @param request The servlet request we are processing
-     * @param response 
+     * @param response The servlet response for the request
      * @param chain The filter chain we are processing
-     *
-     * @exception IOException if an input/output error occurs
-     * @exception ServletException if a servlet error occurs
+     * @exception IOException Thrown if an input/output error occurs
+     * @exception ServletException Thrown if a servlet error occurs
      */
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
-            final FilterChain chain)
-                throws IOException, ServletException {
+            final FilterChain chain) throws IOException, ServletException {
 
-        if(request instanceof HttpServletRequest){
-            final HttpServletRequest httpRequest = (HttpServletRequest)request;
+        if (request instanceof HttpServletRequest) {
+            initialiseUserCookie((HttpServletRequest) request, (HttpServletResponse) response);
+            performAutomaticLogin((HttpServletRequest) request, (HttpServletResponse) response);
 
-            initialiseUserCookie(httpRequest, (HttpServletResponse)response);
-
-            performAutomaticLogin(httpRequest, (HttpServletResponse)response);
-
-            chain.doFilter(request, response);
-
-        }else{
-            chain.doFilter(request, response);
         }
+        chain.doFilter(request, response);
     }
 
     /**
-     * Destroy method for this filter
-     *
+     * Destroy method for this filter.
      */
     public void destroy() {
     }
 
 
     /**
-     * Init method for this filter
+     * Init method for this filter.
      *
+     * @param filterConfig the filter configuration
      */
     public void init(final FilterConfig filterConfig) {
     }
@@ -122,94 +113,186 @@ public final class UserFilter implements Filter {
 
     // Private -------------------------------------------------------
 
-    /**  Look for a User cookie.
-     * Can return null. **/
-    private static Cookie getUserCookie(final HttpServletRequest request){
-
-        // Look in attributes (it could have already been updated this request)
-        if( null != request ){
-
-            // Look through cookies
-            if( null != request.getCookies() ){
-                for( Cookie c : request.getCookies()){
-                    if( c.getName().equals( USER_COOKIE_KEY ) ){
-                        return c;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private static void performAutomaticLogin(
-            final HttpServletRequest request,
-            final HttpServletResponse response){
+    /**
+     * Method that populate the user datamodel if no user is set and there exists a login cookie.
+     *
+     * @param request The servlet request we are processing
+     * @param response The servlet response for the request
+     */
+    private static void performAutomaticLogin(final HttpServletRequest request, final HttpServletResponse response) {
 
         final HttpSession session = request.getSession();
         final DataModel datamodel = (DataModel) session.getAttribute(DataModel.KEY);
 
-        if(null == datamodel.getUser().getUser()){
+        final BasicUserService basicUserService = getBasicUserService(datamodel);
 
-            final Cookie cookie = getUserCookie(request);
-            if(null != cookie && !"0".equals(cookie.getValue())){
+        if (null != basicUserService) {
 
-                // lookup the ejb3-client service
-                final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
-                final String url = siteConf.getProperty("schibstedsok_remote_service_url");
-                final String jndi = siteConf.getProperty("user_service_jndi_name");
+            final String loginKey = UserCookieUtil.getUserLoginCookie(request);
+            final boolean isLegalLoginKey = basicUserService.isLegalLoginKey(loginKey);
 
-				LOG.info("Url: " + url);
-				LOG.info("JNDI_NAME: " + jndi);
+            final BasicUser user = datamodel.getUser().getUser();
+            final Date updateTimestamp = UserCookieUtil.getUserUpdateCookie(request);
 
-                final Properties properties = new Properties();
-				properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
-				properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-				properties.put("java.naming.provider.url", url);
+            final boolean actionLogout = "logout".equals(request.getParameter("action"));
 
-                try{
+            if (user == null && isLegalLoginKey) {
 
-                    final InitialContext ctx = new InitialContext(properties);
-                    final BasicUserService service = (BasicUserService) ctx.lookup(jndi);
+                // Login if no user and a legal login key.
+                loginUsingCookie(loginKey, datamodel, basicUserService, response);
 
-                    // perform the login
-                    final String automatedLoginKey = cookie.getValue();
+            } else if (user != null && (actionLogout || !isLegalLoginKey)) {
 
-//                    final UserCookie userCookie = service.getUserByAutomaticId(automatedLoginKey);
-//                    datamodel.getUser().setUser(userCookie.getUser());
-//
-//                    // update the UserCookie ready for next automaticLogin
-//                    response.addCookie(createUserCookie(userCookie.getAutomaticId()));
+                // Check if the user should be logged out, no login key anymore.
+                logout(datamodel, basicUserService, response);
 
-                }catch(NamingException ne){
-                    LOG.error(ne.getMessage(), ne);
+                // Remove the logout from the url to prevent problems with sesamBackUrl.
+                if (actionLogout) {
+                    final String strippedUrl = request.getRequestURL() + "?"
+                            + request.getQueryString().substring(0, request.getQueryString().indexOf("&action"));
+                    redirect(strippedUrl, response);
+                }
+
+            } else if (user != null && isLegalLoginKey) {
+                if (!isLoginKeyLegalForUser(loginKey, user)) {
+
+                    // Check if the logged in user is the one found in the login key
+                    logout(datamodel, basicUserService, response);
+                    loginUsingCookie(loginKey, datamodel, basicUserService, response);
+
+                } else if (user.isDirty(updateTimestamp)) {
+
+                    // Check if the user object is dirty, refresh if needed.
+                    LOG.info("Logged in user dirty, refreshes: " + user.getUsername());
+                    datamodel.getUser().setUser(basicUserService.refreshUser(user));
                 }
             }
+
+        }else{
+
+            LOG.warn("Couldn't find the basic user service.");
+            return;
         }
     }
 
-    /** Place a cookie into the response so on any subsequent requests can cookies are enabled.
-     **/
-    private static void initialiseUserCookie(
-            final HttpServletRequest request,
-            final HttpServletResponse response){
+    /**
+     * Initializing the personalization session from the login key.
+     *
+     * @param loginKey the login key used for login
+     * @param datamodel the data model
+     * @param userService the user service
+     * @param response the request response
+     */
+    private static void loginUsingCookie(
+            final String loginKey,
+            final DataModel datamodel,
+            final BasicUserService basicUserService,
+            final HttpServletResponse response) {
 
-        final Cookie cookie = getUserCookie(request);
+        LOG.info("Login user with login key: " + loginKey);
 
-        if( cookie == null ){
-            // The user is not logged in
-            // Place the cookie, so we can test cookies are enabled
-//            response.addCookie(createUserCookie("0"));
+        try {
+            final BasicUser user = basicUserService.authenticateByLoginKey(loginKey);
+
+            if (null != user) {
+                
+                datamodel.getUser().setUser(user);
+                
+                // Updates the login cookie.
+                UserCookieUtil.setUserLoginCookie(response, user.getNextLoginKey());
+            }
+        } catch (final InvalidTokenException e) {
+            // TODO: Give message to user?
+            LOG.warn("Invalid token in login key: " + loginKey);
+            datamodel.getUser().setUser(null);
+            UserCookieUtil.setUserLoginCookieDefault(response);
         }
     }
 
-//    private static Cookie createUserCookie(final String content){
-//
-//        final Cookie cookie = new Cookie(USER_COOKIE_KEY, content);
-//        cookie.setPath(USER_COOKIE_PATH);
-//        cookie.setMaxAge(Integer.MAX_VALUE);
-//
-//        return cookie;
-//    }
+    /**
+     * Method used to reset a session totally.
+     *
+     * @param datamodel the datamodel
+     * @param userService the user service
+     * @param response the request response
+     */
+    private static void logout(
+            final DataModel datamodel,
+            final BasicUserService userService,
+            final HttpServletResponse response) {
+
+        final BasicUser user = datamodel.getUser().getUser();
+        LOG.info("Logout: " + user.getUsername());
+
+        if (userService.isLegalLoginKey(user.getNextLoginKey())) {
+            userService.invalidateLogin(user.getNextLoginKey());
+        }
+
+        UserCookieUtil.setUserLoginCookieDefault(response);
+        datamodel.getUser().setUser(null);
+    }
+
+    /**
+     * Place a cookie into the response so any subsequent requests can trust that cookies are enabled.
+     *
+     * @param request The servlet request we are processing
+     * @param response The servlet response for the request
+     */
+    private static void initialiseUserCookie(final HttpServletRequest request, final HttpServletResponse response) {
+
+        if (null == UserCookieUtil.getUserLoginCookie(request)) {
+
+            // The user is not logged in.
+            // Place the cookie, so we can test that cookies are enabled.
+            UserCookieUtil.setUserLoginCookieDefault(response);
+        }
+    }
+
+    private static boolean isLoginKeyLegalForUser(final String loginKey, final BasicUser user) {
+
+        // The user id in the login key must be the same as in the user object.
+        return user.getUserId().toString().equals(
+            loginKey.substring(0, loginKey.indexOf(BasicUserService.LOGIN_KEY_SEPARATOR)));
+    }
+
+    private static void redirect(final String url, final HttpServletResponse response) {
+
+        try {
+            response.sendRedirect(url);
+            
+        } catch (final IOException e) {
+            LOG.error(e);
+        }
+    }
+
+    /**
+     * Return the basic user service used for personalization.
+     *
+     * @param datamodel the data model
+     * @return the user service
+     */
+    private static BasicUserService getBasicUserService(final DataModel datamodel) {
+
+        // lookup the ejb3-client service
+        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
+        final String url = siteConf.getProperty("schibstedsok_remote_service_url");
+        final String jndi = siteConf.getProperty("user_service_jndi_name");
+
+        LOG.debug("Url: " + url);
+        LOG.debug("JndiName: " + jndi);
+
+        final Properties properties = new Properties();
+        properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
+        properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+        properties.put("java.naming.provider.url", url);
+
+        try {
+            return (BasicUserService) new InitialContext(properties).lookup(jndi);
+
+        } catch (final NamingException ne) {
+            LOG.error(ne.getMessage(), ne);
+            return null;
+        }
+    }
 
 }
