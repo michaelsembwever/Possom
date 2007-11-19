@@ -22,10 +22,10 @@ package no.sesat.search.run.handler;
 import no.sesat.search.run.handler.AbstractRunHandlerConfig.Controller;
 
 /**
- * $Id$
+ * @version $Id$
  * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
  */
 @Controller("TestRunHandler")
-public class TestRunHandlerConfig implements RunHandlerConfig {
+public class TestRunHandlerConfig extends AbstractRunHandlerConfig {
 
 }

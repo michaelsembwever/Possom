@@ -23,9 +23,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.w3c.dom.Element;
 
 /**
- * $Id$
+ * @version $Id$
  * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
  */
 public class AbstractRunHandlerConfig implements RunHandlerConfig {
@@ -34,5 +35,11 @@ public class AbstractRunHandlerConfig implements RunHandlerConfig {
     @Target(ElementType.TYPE)
     public @interface Controller {
         public String value();
+    }
+
+    public RunHandlerConfig readRunHandler(final Element element) {
+        
+        // Override me to add custom deserialisation
+        return this;
     }
 }

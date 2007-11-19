@@ -21,10 +21,10 @@ package no.sesat.search.run.handler;
 import no.sesat.search.run.handler.AbstractRunHandlerConfig.Controller;
 
 /**
- * $Id$
+ * @version $Id$
  * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
  */
 @Controller("NavigationRunHandler")
-public final class NavigationRunHandlerConfig implements RunHandlerConfig {
+public final class NavigationRunHandlerConfig extends AbstractRunHandlerConfig {
     public NavigationRunHandlerConfig() {}
 }
