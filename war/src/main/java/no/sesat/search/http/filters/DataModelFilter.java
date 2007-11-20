@@ -121,12 +121,12 @@ public final class DataModelFilter implements Filter {
             final DataModel datamodel = getDataModel(factory, httpRequest);
             try{
 
-                final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
+                final ParametersDataObject parametersDO = updateDataModelForRequest(factory, datamodel, httpRequest);
 
                 datamodel.setParameters(parametersDO);
 
                 if(null == datamodel.getSite() || !datamodel.getSite().getSite().equals(site)){
-                    datamodel.setSite(getSiteDO(request, factory));
+                    datamodel.setSite(getSiteDO(request, factory, datamodel));
                 }
 
                 // DataModel's ControlLevel will be REQUEST_CONSTRUCTION (from getDataModel(..))
@@ -176,27 +176,31 @@ public final class DataModelFilter implements Filter {
 
         final DataModel datamodel = factory.instantiate();
 
-        final SiteDataObject siteDO = getSiteDO(request, factory);
+        final SiteDataObject siteDO = getSiteDO(request, factory, datamodel);
 
         final StringDataObject userAgentDO = factory.instantiate(
                 StringDataObject.class,
+                datamodel,
                 new DataObject.Property("string", request.getHeader("User-Agent")));
 
         final StringDataObject remoteAddrDO = factory.instantiate(
                 StringDataObject.class,
+                datamodel,
                 new DataObject.Property("string", request.getAttribute("REMOTE_ADDR")));
 
         final StringDataObject forwardedForDO = factory.instantiate(
                 StringDataObject.class,
+                datamodel,
                 new DataObject.Property("string", request.getHeader("x-forwarded-for")));
 
         final List<Locale> locales = new ArrayList<Locale>();
-        for(Enumeration<Locale> en = request.getLocales(); en.hasMoreElements();){
+        for(@SuppressWarnings("unchecked") Enumeration<Locale> en = request.getLocales(); en.hasMoreElements();){
             locales.add(en.nextElement());
         }
 
         final BrowserDataObject browserDO = factory.instantiate(
                 BrowserDataObject.class,
+                datamodel,
                 new DataObject.Property("userAgent", userAgentDO),
                 new DataObject.Property("remoteAddr", remoteAddrDO),
                 new DataObject.Property("forwardedFor", forwardedForDO),
@@ -205,10 +209,12 @@ public final class DataModelFilter implements Filter {
 
         final UserDataObject userDO = factory.instantiate(
                 UserDataObject.class,
+                datamodel,
                 new DataObject.Property("user", null));
 
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
+                datamodel,
                 new DataObject.Property("values", new ConcurrentHashMap<String,Object>(5, 0.75f, 2)));
 
         datamodel.setSite(siteDO);
@@ -220,13 +226,17 @@ public final class DataModelFilter implements Filter {
         return datamodel;
     }
 
-    private static SiteDataObject getSiteDO(final ServletRequest request, final DataModelFactory factory) {
+    private static SiteDataObject getSiteDO(
+            final ServletRequest request, 
+            final DataModelFactory factory,
+            final DataModel datamodel) {
 
         final Site site = (Site) request.getAttribute(Site.NAME_KEY);
         final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
 
         return factory.instantiate(
                 SiteDataObject.class,
+                datamodel,
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConf));
     }
@@ -234,6 +244,7 @@ public final class DataModelFilter implements Filter {
     /** Update the request elements in the datamodel. **/
     private static ParametersDataObject updateDataModelForRequest(
             final DataModelFactory factory,
+            final DataModel datamodel,
             final HttpServletRequest request){
 
         // Note that we do not support String[] parameter values! this is different to pre SESAT days
@@ -245,6 +256,7 @@ public final class DataModelFilter implements Filter {
             final String key = e.nextElement();
             values.put(key, factory.instantiate(
                 StringDataObject.class,
+                datamodel,
                 new DataObject.Property("string", getParameterSafely(request, key))));
         }
 
@@ -253,12 +265,14 @@ public final class DataModelFilter implements Filter {
             for (Cookie cookie : request.getCookies()) {
                 values.put(cookie.getName(), factory.instantiate(
                         StringDataObject.class,
+                datamodel,
                         new DataObject.Property("string", cookie.getValue())));
             }
         }
 
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
+                datamodel,
                 new DataObject.Property("values", values),
                 new DataObject.Property("contextPath", request.getContextPath()),
                 new DataObject.Property("uniqueId", SiteLocatorFilter.getRequestId(request)));

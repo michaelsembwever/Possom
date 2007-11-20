@@ -24,7 +24,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
-import java.beans.beancontext.BeanContextSupport;
+//import java.beans.beancontext.BeanContextSupport;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import no.sesat.search.datamodel.BeanDataModelInvocationHandler.DataModelBeanContextSupport;
 
 /**
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
@@ -48,13 +49,16 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     // Attributes ----------------------------------------------------
 
     private final BeanDataObjectInvocationHandler<T> dataObject;
+    private final DataModelBeanContextSupport absoluteContext;
 
     // Static --------------------------------------------------------
 
-    static <T> BeanDataNodeInvocationHandler<T> instanceOf(final Class<T> cls, final Property... properties)
-            throws IntrospectionException {
+    static <T> BeanDataNodeInvocationHandler<T> instanceOf(
+            final Class<T> cls,
+            final DataModel datamodel,
+            final Property... properties) throws IntrospectionException {
 
-        return new BeanDataNodeInvocationHandler<T>(cls, new PropertyInitialisor<T>(cls, properties));
+        return new BeanDataNodeInvocationHandler<T>(cls, datamodel, new PropertyInitialisor<T>(cls, properties));
     }
 
     // Constructors --------------------------------------------------
@@ -62,10 +66,11 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     /** Creates a new instance of ProxyBeanDataObject */
     private BeanDataNodeInvocationHandler(
             final Class<T> cls,
+            final DataModel datamodel,
             final PropertyInitialisor properties)
                 throws IntrospectionException {
         
-        this(cls, new BeanContextSupport(), properties);
+        this(cls, datamodel, new BeanContextSupport(), properties);
     }
     
     /**
@@ -73,11 +78,21 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
      */
     protected BeanDataNodeInvocationHandler(
             final Class<T> cls,
+            final DataModel datamodel,
             final BeanContext context,
             final PropertyInitialisor properties) throws IntrospectionException {
 
         super(cls, context, properties.properties);
 
+        // find the datamodel and use its context as the absoluteContext
+        if(null != datamodel){
+            final BeanDataModelInvocationHandler handler 
+                    = (BeanDataModelInvocationHandler) Proxy.getInvocationHandler(datamodel);
+            absoluteContext = (DataModelBeanContextSupport) handler.getBeanContextChild();
+        }else{
+            absoluteContext = (DataModelBeanContextSupport) context;
+        }
+        
         // make context to contextChild bindings
         for (PropertyDescriptor property : properties.childPropertyDescriptors) {
             for (Property p : properties.allProperties) {
@@ -95,7 +110,8 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
         }
 
         // delegate our own properties
-        dataObject = new BeanDataObjectInvocationHandler(cls, properties.delegatedProperties);
+        dataObject = new BeanDataObjectInvocationHandler<T>(cls, properties.delegatedProperties);
+        
     }
 
     // Public --------------------------------------------------------
@@ -157,8 +173,8 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             ///       BeanContextSupport.add synchronises against the static variable BeanContext.globalHierarchyLock
             ///        so every thread in the jvm must queue one at a time here :'(
             ///       Worse is that this synchronisation is requested behavor by BeanContext.add
-            
-            context.add(childsNewHandler.getBeanContextChild());
+            /// We workaround it by instead locking against the datamodel we know we are restricted within.
+            ((BeanContextSupport)context).add(childsNewHandler.getBeanContextChild(), absoluteContext.dataModelLock);
 
         }
     }

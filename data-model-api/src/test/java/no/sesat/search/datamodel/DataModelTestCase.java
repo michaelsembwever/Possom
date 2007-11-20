@@ -95,11 +95,13 @@ public abstract class DataModelTestCase extends SiteTestCase{
         
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
+                datamodel,
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConfig));
         
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
+                datamodel,
                 new DataObject.Property("values", new Hashtable<String,Object>()));
 
         datamodel.setSite(siteDO);

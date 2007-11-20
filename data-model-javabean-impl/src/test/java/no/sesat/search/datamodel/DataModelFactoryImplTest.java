@@ -50,6 +50,7 @@ public final class DataModelFactoryImplTest {
     // Attributes ----------------------------------------------------
 
     private final DataModelFactory factory;
+    private final DataModel datamodel;
 
     // Static --------------------------------------------------------
 
@@ -69,6 +70,7 @@ public final class DataModelFactoryImplTest {
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
         });
+        datamodel = factory.instantiate();
     }
 
     // Public --------------------------------------------------------
@@ -170,7 +172,7 @@ public final class DataModelFactoryImplTest {
            props[i] = new Property(properties[i].getName(), null);
        }
 
-       final T data = factory.instantiate(cls, props);
+       final T data = factory.instantiate(cls, datamodel, props);
 
        assert null != data : "instantiate(" + cls.getSimpleName() + ", properties) returned null";
        LOG.info("      instantiated .."

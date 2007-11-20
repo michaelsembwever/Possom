@@ -163,6 +163,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
+                datamodel,
                 new DataObject.Property("string", queryStr),
                 new DataObject.Property("query", parser.getQuery()));
 
@@ -170,6 +171,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 = new MapDataObjectSupport<NavigationItem>(Collections.<String, NavigationItem>emptyMap());
         final NavigationDataObject navDO = factory.instantiate(
                 NavigationDataObject.class,
+                datamodel,
                 new DataObject.Property("configuration", context.getSearchTab().getNavigationConfiguration()),
                 new DataObject.Property("navigation",navigations),
                 new DataObject.Property("navigations", navigations)); // FIXME bug that both single and mapped needed
