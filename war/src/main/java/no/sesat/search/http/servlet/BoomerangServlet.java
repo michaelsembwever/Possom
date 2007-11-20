@@ -1,4 +1,5 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* 
+ * Copyright (2006-2007) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,15 +14,17 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
  */
 package no.sesat.search.http.servlet;
 
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -113,16 +116,24 @@ public final class BoomerangServlet extends HttpServlet {
         Collections.sort(paramKeys);
 
         final StringBuilder bob = new StringBuilder("<boomerang>");
-        
-        for(String key : paramKeys){
-            
-            final String value = params.get(key) instanceof StringDataObject
-                    ? ((StringDataObject)params.get(key)).getXmlEscaped()
-                    : StringEscapeUtils.escapeXml((String)params.get(key));
-            
-            final String keyEscaped = StringEscapeUtils.escapeXml(key);
 
-            bob.append('<' + keyEscaped + '>' + value + "</" + keyEscaped + '>');
+        for(String key : paramKeys){
+            try {
+
+                final String value = params.get(key) instanceof StringDataObject 
+                        ? ((StringDataObject) params.get(key)).getXmlEscaped() 
+                        : StringEscapeUtils.escapeXml((String) params.get(key));
+
+                // it's critical for the logparser that we write valid xml
+                final String keyEscaped = StringEscapeUtils.escapeXml(URLDecoder.decode(key, "UTF-8"));
+                if (!keyEscaped.contains("%")) {
+                    bob.append('<' + keyEscaped + '>' + value + "</" + keyEscaped + '>');
+                }else{
+                    bob.append("<doubled-url-encoded-tag-ignored-here/>");
+                }
+            }catch (UnsupportedEncodingException ex) {
+                LOG.error("Failed to kangerooGrub " + key, ex);
+            }
         }
         bob.append("</boomerang>");
         ACCESS.info(bob.toString());

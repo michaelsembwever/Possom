@@ -67,6 +67,9 @@ PARSER_END(QueryParserImpl)
 
 /** Skip these characters, they are considered "white space" 
  * See http://www.unicode.org/charts/ for unicode charts.
+ *
+ * WARNING!! These ranges are duplicated in QueryParser.java
+ *             !! Always update it after any changes here !!
 **/
 <*>SKIP : {
       " " | "!" 
@@ -90,7 +93,7 @@ PARSER_END(QueryParserImpl)
 /* ‐ ‑ ‒ – — ― */
 
 <DEFAULT,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <URL: "http://"<WORD>("/"<WORD>)*> }
+TOKEN : { <URL: "http://"<WORD>(("/")?(<WORD>)?("?"(<WORD>("="<WORD>)?))?)*> }
 
 <DEFAULT,URL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }

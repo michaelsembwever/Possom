@@ -151,12 +151,14 @@ public class FileResourceLoader extends AbstractResourceLoader {
 		    
             final URI uri = new URI("file://"  + urlStr.replace(File.separatorChar, '/')).normalize();
 
-            return uri.toURL();
-        }catch (URISyntaxException ex) {
+            return uri.toURL();    
+        }
+        catch (URISyntaxException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         } catch (MalformedURLException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         }
+        
     }
 
     private String getResourceDirectory() {
@@ -179,7 +181,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         try {
             return new FileInputStream(new File(url.getFile()));
         } catch (IOException e) {
-            throw new ResourceLoadException(e.getMessage(), e);
+            throw new ResourceLoadException(readResourceDebug(url), e);
         }
     }
 

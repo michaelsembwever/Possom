@@ -44,6 +44,7 @@ import no.sesat.search.site.config.PropertiesContext;
 
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.query.QueryStringContext;
+import no.sesat.search.query.parser.QueryParser;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 
@@ -92,6 +93,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
     private static final int REFRESH_PERIOD = 60; // one minute
     private static final int CACHE_CAPACITY = 1000;
+    
+    private static final String SKIP_REGEX;
 
     // Attributes ----------------------------------------------------
     
@@ -103,6 +106,16 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     
     static{
         CACHE.setCacheCapacity(CACHE_CAPACITY);
+        
+        // build our skip regular expression
+        final StringBuilder builder = new StringBuilder();
+        for(char[] range : QueryParser.SKIP_CHARACTER_RANGES){
+            builder.append("[\\" + range[0] + "-\\" + range[1] + "]|");
+        }
+        // remove trailing '|'
+        builder.setLength(builder.length() - 1);
+        // our skip regular expression
+        SKIP_REGEX = '(' + builder.toString() + ')';
     }
 
     // Constructors -------------------------------------------------
@@ -182,7 +195,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return evaluation;
     }
 
-    /** TODO comment me. **/
+    /** 
+     * 
+     * @param predicate
+     * @return
+     */
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
@@ -195,24 +212,30 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     
     private void init() {
 
-        try{
-            LIST_NAMES_LOCK.writeLock().lock();
-
-            try {
-                initImpl(context);
-            } catch (ParserConfigurationException ex) {
-                LOG.error(ERR_FAILED_INITIALISATION, ex);
-            }
-        }finally{
-            LIST_NAMES_LOCK.writeLock().unlock();
+        try {
+            initImpl(context);
+        } catch (ParserConfigurationException ex) {
+            LOG.error(ERR_FAILED_INITIALISATION, ex);
         }
     }
 
     private static void initImpl(final Context cxt) throws ParserConfigurationException  {
 
-        // initialise the parent site's configuration
-        final Site parent = cxt.getSite().getParent();
-        if(parent != null && LIST_NAMES.get(parent) == null){
+        final Site site = cxt.getSite();
+        final Site parent = site.getParent();
+        final boolean parentUninitialised;
+        
+        try{
+            LIST_NAMES_LOCK.readLock().lock();
+            
+            // initialise the parent site's configuration
+            parentUninitialised = (null != parent && null == LIST_NAMES.get(parent));
+            
+        }finally{
+            LIST_NAMES_LOCK.readLock().unlock();
+        }
+        
+        if(parentUninitialised){
             initImpl(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
@@ -223,53 +246,58 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                     cxt
                 ));
         }
+        
+        try{
+            LIST_NAMES_LOCK.writeLock().lock();
+        
+            if(null == LIST_NAMES.get(site)){
 
-        final Site site = cxt.getSite();
-        if(LIST_NAMES.get(site) == null){
-            
-            // create map entry for this site
-            LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
+                // create map entry for this site
+                LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
 
-            // initialise this site's configuration
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder builder = factory.newDocumentBuilder();
-            final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
-            loader.abut();
-            
-            LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
-            final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
-            final Document doc = loader.getDocument();
-            final Element root = doc.getDocumentElement();
-            
-            if( null != root ){
-                final NodeList lists = root.getElementsByTagName("list");
-                for (int i = 0; i < lists.getLength(); ++i) {
+                // initialise this site's configuration
+                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                final DocumentBuilder builder = factory.newDocumentBuilder();
+                final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
+                loader.abut();
 
-                    final Element list = (Element) lists.item(i);
+                LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
+                final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
+                final Document doc = loader.getDocument();
+                final Element root = doc.getDocumentElement();
 
-                    final String tokenName = list.getAttribute("token");
-                    LOG.info(" ->list@token: " + tokenName);
+                if( null != root ){
+                    final NodeList lists = root.getElementsByTagName("list");
+                    for (int i = 0; i < lists.getLength(); ++i) {
 
-                    final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                        final Element list = (Element) lists.item(i);
 
-                    final String[] listNameArr = list.getAttribute("list-name").split(",");
-                    LOG.info(" ->lists: " + list.getAttribute("list-name"));
+                        final String tokenName = list.getAttribute("token");
+                        LOG.info(" ->list@token: " + tokenName);
 
-                    // update each listname to the format the fast query matching servers use
-                    if(null != listNameArr){
-                        for(int j = 0; j < listNameArr.length; ++j){
-                            listNameArr[j] = LIST_PREFIX + listNameArr[j] + LIST_SUFFIX;
+                        final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+
+                        final String[] listNameArr = list.getAttribute("list-name").split(",");
+                        LOG.info(" ->lists: " + list.getAttribute("list-name"));
+
+                        // update each listname to the format the fast query matching servers use
+                        if(null != listNameArr){
+                            for(int j = 0; j < listNameArr.length; ++j){
+                                listNameArr[j] = LIST_PREFIX + listNameArr[j] + LIST_SUFFIX;
+                            }
+
+                            // put the listnames in
+                            Arrays.sort(listNameArr, null);
+                            listNames.put(token, listNameArr);
                         }
-                        
-                        // put the listnames in
-                        Arrays.sort(listNameArr, null);
-                        listNames.put(token, listNameArr);
-                    }
-                    
 
+
+                    }
                 }
+                LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
             }
-            LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
+        }finally{
+            LIST_NAMES_LOCK.writeLock().unlock();
         }
     }
 
@@ -318,9 +346,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
                         if(custom.endsWith("->") && usesListName(name, exactname)){
 
-                            final String match = custom.indexOf("->") >0
+                            final String match = (custom.indexOf("->") >0
                                     ? custom.substring(0, custom.indexOf("->"))
-                                    : custom;
+                                    : custom)
+                                    // remove words made solely of characters that the parser considers whitespace
+                                    .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
 
                             addMatch(name, match, query, result);
 
@@ -364,7 +394,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
-        final Matcher m = pattern.matcher(query);
+        final Matcher m = pattern.matcher(
+                // remove words made solely of characters that the parser considers whitespace
+                query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " "));
 
         while (m.find()) {
 

@@ -304,7 +304,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // AbstractReflectionVisitor overrides ----------------------------------------------
 
-    private final StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder(128);
 
     /**
      * TODO comment me. *

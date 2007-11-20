@@ -1,4 +1,3 @@
-
 /* Copyright (2005-2007) Schibsted Søk AS
  * This file is part of SESAT.
  *
@@ -267,7 +266,7 @@ public abstract class AbstractResourceLoader
                     resourceFound |= loadResource(getResource(site));
                 }
                 if (!resourceFound) {
-                    throw new ResourceLoadException("Could not find resource: " + getResource());
+                    throw new ResourceLoadException("Could not find resource " + getResource(context.getSite()));
                 }
                 break;
                 

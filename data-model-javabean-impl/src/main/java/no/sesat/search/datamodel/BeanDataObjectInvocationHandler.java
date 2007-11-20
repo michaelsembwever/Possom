@@ -27,7 +27,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
-//import java.beans.beancontext.BeanContextSupport;
+import java.beans.beancontext.BeanContextSupport;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -98,6 +98,8 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
     // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
     private transient Map<Method,Method> supportMethodCache 
             = new ConcurrentHashMap<Method,Method>(0, 0.75f, 2);
+    
+    private volatile transient String toString = null;
 
     // Static --------------------------------------------------------
 
@@ -132,8 +134,9 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
     static String toString(final List<Property> properties){
 
-        final StringBuilder builder = new StringBuilder("{");
-        for( Property property : properties){
+        final StringBuilder builder = new StringBuilder(64 * properties.size() + 8);
+        builder.append('{');
+        for(Property property : properties){
             builder.append(property.getName() + ':' + property.getValue() + ';');
         }
         builder.append('}');
@@ -160,6 +163,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         support = stream.readObject();
         immutable = stream.readBoolean();
         properties = (List<Property>) stream.readObject();
+        toString = null;
     }
 
     private void writeObject(ObjectOutputStream stream) throws IOException {
@@ -341,8 +345,12 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
     @Override
     public String toString(){
-        return implementOf.getSimpleName()
+        
+        if(null == toString){
+            toString = implementOf.getSimpleName()
                 + " [Proxy (" + getClass().getSimpleName() + ")] w/ " + toString(properties);
+        }
+        return toString;
     }
 
     // Package protected ---------------------------------------------
@@ -438,6 +446,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
                         removeChild(p.getValue());
                         // update property
                         properties.set(i, new Property(p.getName(), args[0]));
+                        toString = null;
                         // add the new contextChild
                         addChild(args[0]);
                     }
@@ -519,7 +528,9 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
     private boolean addProperty(final Property property){
 
         // clone it, so caller cannot alter value later
-        return this.properties.add(new Property(property.getName(), property.getValue()));
+        final boolean result = properties.add(new Property(property.getName(), property.getValue()));
+        toString = null;
+        return result;
     }
 
     /** return true if any of the propertyDescriptors have a setter method.

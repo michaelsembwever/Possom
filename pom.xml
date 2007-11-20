@@ -65,6 +65,7 @@
                 <module>run-transform-control-spi</module>
                 <module>run-handler-config-spi</module>
                 <module>run-handler-control-spi</module>
+		<module>sitemap-spi</module>
                 <module>core-api</module>
                 <module>search-servlet-handler-spi</module>
                 <module>war</module>
