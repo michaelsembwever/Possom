@@ -53,8 +53,8 @@
             <img src="images/searchbar/dropdown.png" id="dropdownImg" width="19" height="24" alt="Pil ned" />
             <a id="searchtip" href='<search:boomerang url="/search/?q=&amp;page=1&amp;parent=37&amp;catid=82" param="category:static;subcategory=header"/>'>S&#248;ketips</a>
             <div id="searchRadio">
-                <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
-                <input type="radio" name="c" value="g" /> Verden
+                <input type="radio" name="c" value="d" checked="checked" /> Nettet &nbsp;&nbsp;
+                <input type="radio" name="c" value="g" /> Sider fra Norge
             </div>
             <div id="front_button_layer">
                 <div id="cn" class="nb">Nyhetss&#248;k</div>
