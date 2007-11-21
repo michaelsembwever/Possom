@@ -97,13 +97,13 @@ final class DataModelFactoryImpl extends DataModelFactory{
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T instantiate(final Class<T> cls, final Property... properties) {
+    public <T> T instantiate(final Class<T> cls, final DataModel datamodel, final Property... properties) {
 
         try{
             final InvocationHandler handler;
 
             if(null != cls.getAnnotation(DataNode.class)){
-                handler = BeanDataNodeInvocationHandler.instanceOf(cls, properties);
+                handler = BeanDataNodeInvocationHandler.instanceOf(cls, datamodel, properties);
 
             }else if(null != cls.getAnnotation(DataObject.class)){
                 handler = BeanDataObjectInvocationHandler.instanceOf(cls, properties);

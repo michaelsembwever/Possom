@@ -145,14 +145,16 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      *     DataModelFactory dm = DataModelFactory.valueOf(null);
      *     BrowserDataObject bdo = dm.instantiate(
      *       BrowserDataObject.class,
+     *       datamodel,
      *       new DataObject.Property("locale", null),
      *       new DataObject.Property("supportedLocales", null));
      * </pre>
      ** @param cls 
-     * @param properties 
+     * @param datamodel 
+     * @param properties
      * @return 
      */
-    public abstract <T> T instantiate(final Class<T> cls, DataObject.Property... properties);
+    public abstract <T> T instantiate(Class<T> cls, DataModel datamodel, DataObject.Property... properties);
     
     /** Lets the datamodel instance know that it has moved on and is now being accessed by a different level in the 
      * control process stack.
@@ -160,7 +162,8 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      * <b>This method is only to be used by SESAT classes, not skin implementations!</b>
      * 
      ** @param datamodel 
-     * @return 
+     * @param controlLevel 
+     * @return
      */
     public abstract DataModel assignControlLevel(final DataModel datamodel, final ControlLevel controlLevel);
 

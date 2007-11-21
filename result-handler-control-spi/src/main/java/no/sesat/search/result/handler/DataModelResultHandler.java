@@ -97,11 +97,13 @@ public final class DataModelResultHandler implements ResultHandler{
         // Update the datamodel
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
+                datamodel,
                 new DataObject.Property("string", friendly),
                 new DataObject.Property("query", cxt.getQuery()));
 
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
+                datamodel,
                 new DataObject.Property("configuration", cxt.getSearchConfiguration()),
                 new DataObject.Property("query", queryDO),
                 new DataObject.Property("results", cxt.getSearchResult()));

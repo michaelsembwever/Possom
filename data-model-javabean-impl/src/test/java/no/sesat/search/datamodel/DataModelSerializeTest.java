@@ -134,12 +134,14 @@ public class DataModelSerializeTest {
         
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
+                datamodel,
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConfig));
         datamodel.setSite(siteDO);
         
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
+                datamodel,
                 new DataObject.Property("values", new Hashtable<String,Object>()));
         datamodel.setJunkYard(junkYardDO);
         
@@ -188,12 +190,14 @@ public class DataModelSerializeTest {
         
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
+                datamodel,
                 new DataObject.Property("query", query));
         
         datamodel.setQuery(queryDO);
         
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
+                datamodel,
                 new DataObject.Property("configuration", null),
                 new DataObject.Property("results", searchResults),
                 new DataObject.Property("query", queryDO));
@@ -201,14 +205,17 @@ public class DataModelSerializeTest {
        
         final StringDataObject userAgent = factory.instantiate(
                 StringDataObject.class,
+                datamodel,
                 new DataObject.Property("string", USER_AGENT));
         
         final StringDataObject remoteAddress = factory.instantiate(
                 StringDataObject.class,
+                datamodel,
                 new DataObject.Property("string", REMOTE_ADDRESS));
         
         final BrowserDataObject browserDO = factory.instantiate(
                 BrowserDataObject.class,
+                datamodel,
                 new DataObject.Property("userAgent", userAgent),
                 new DataObject.Property("remoteAddress", remoteAddress));
         
@@ -221,18 +228,21 @@ public class DataModelSerializeTest {
         
         final NavigationDataObject navigationDO = factory.instantiate(
                 NavigationDataObject.class,
+                datamodel,
                 new DataObject.Property("configuration", navigationConfiguration),
                 new DataObject.Property("navigations", navigation));
         datamodel.setNavigation(navigationDO);
       
         final ParametersDataObject parametersDO = factory.instantiate(
-                ParametersDataObject.class);
+                ParametersDataObject.class,
+                datamodel);
         datamodel.setParameters(parametersDO);
      
         final BasicUser user = new TestUser();
         
         final UserDataObject userDO = factory.instantiate(
                 UserDataObject.class,
+                datamodel,
                 new DataObject.Property("user", user));
         datamodel.setUser(userDO);
         

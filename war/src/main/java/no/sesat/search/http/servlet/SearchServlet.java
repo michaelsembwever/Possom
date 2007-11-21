@@ -424,6 +424,7 @@ public final class SearchServlet extends HttpServlet {
                 
                 final PageDataObject pageDO = dmFactory.instantiate(
                         PageDataObject.class,
+                        datamodel,
                         new DataObject.Property("tabs", stFactory.getTabsByName()),
                         new DataObject.Property("currentTab", result));
                 
