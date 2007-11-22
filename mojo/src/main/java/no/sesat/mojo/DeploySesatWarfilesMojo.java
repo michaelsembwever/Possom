@@ -476,7 +476,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
             for(String entry : ENVIRONMENTS){
                 for(Profile p : profiles){
-                    if(p.getId().equals(entry)){
+                    if(null != p.getId() && p.getId().equals(entry)){
                         profile = p.getId();
                         return;
                     }
