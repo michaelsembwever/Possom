@@ -1,8 +1,5 @@
                     GNU AFFERO GENERAL PUBLIC LICENSE
-              Last Call Draft (2) of Version 3, 14 August 2007
-
-THIS IS A DRAFT, NOT A PUBLISHED VERSION OF THE GNU AFFERO GENERAL PUBLIC
-LICENSE.
+                       Version 3, 19 November 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
@@ -50,6 +47,12 @@ users of that server.  Therefore, public use of a modified version, on
 a publicly accessible server, gives the public access to the source
 code of the modified version.
 
+  An older license, called the Affero General Public License and
+published by Affero, was designed to accomplish similar goals.  This is
+a different license, not a version of the Affero GPL, but Affero has
+released a new version of the Affero GPL which permits relicensing under
+this license.
+
   The precise terms and conditions for copying, distribution and
 modification follow.
 
@@ -60,9 +63,9 @@ modification follow.
   "This License" refers to version 3 of the GNU Affero General Public
 License.
 
-  "Copyright" also means copyright-like laws that apply to other kinds of
-works, such as semiconductor masks.
-
+  "Copyright" also means copyright-like laws that apply to other kinds
+of works, such as semiconductor masks.
+ 
   "The Program" refers to any copyrightable work licensed under this
 License.  Each licensee is addressed as "you".  "Licensees" and
 "recipients" may be individuals or organizations.
@@ -374,12 +377,12 @@ that material) supplement the terms of this License with terms:
   All other non-permissive additional terms are considered "further
 restrictions" within the meaning of section 10.  If the Program as you
 received it, or any part of it, contains a notice stating that it is
-governed by this License along with a term that is a further
-restriction, you may remove that term.  If a license document contains
-a further restriction but permits relicensing or conveying under this
-License, you may add to a covered work material governed by the terms
-of that license document, provided that the further restriction does
-not survive such relicensing or conveying.
+governed by this License along with a term that is a further restriction,
+you may remove that term.  If a license document contains a further
+restriction but permits relicensing or conveying under this License, you
+may add to a covered work material governed by the terms of that license
+document, provided that the further restriction does not survive such
+relicensing or conveying.
 
   If you add terms to a covered work in accord with this section, you
 must place, in the relevant source files, a statement of the
@@ -563,19 +566,19 @@ the GNU Affero General Public License from time to time.  Such new
 versions will be similar in spirit to the present version, but may differ
 in detail to address new problems or concerns.
 
-  Each version is given a distinguishing version number.  If the Program
-specifies that a certain numbered version of the GNU Affero General
-Public License "or any later version" applies to it, you have the option
-of following the terms and conditions either of that numbered version or
-of any later version published by the Free Software Foundation.  If the
-Program does not specify a version number of the GNU Affero General
-Public License, you may choose any version ever published by the Free
-Software Foundation.
+  Each version is given a distinguishing version number.  If the
+Program specifies that a certain numbered version of the GNU Affero
+General Public License "or any later version" applies to it, you have
+the option of following the terms and conditions either of that
+numbered version or of any later version published by the Free
+Software Foundation.  If the Program does not specify a version number
+of the GNU Affero General Public License, you may choose any version
+ever published by the Free Software Foundation.
 
-  If the Program specifies that a proxy can decide which future versions
-of the GNU Affero General Public License can be used, that proxy's
-public statement of acceptance of a version permanently authorizes you
-to choose that version for the Program.
+  If the Program specifies that a proxy can decide which future
+versions of the GNU Affero General Public License can be used, that
+proxy's public statement of acceptance of a version permanently
+authorizes you to choose that version for the Program.
 
   Later license versions may give you additional or different
 permissions.  However, no additional obligations are imposed on any
@@ -614,51 +617,5 @@ an absolute waiver of all civil liability in connection with the
 Program, unless a warranty or assumption of liability accompanies a
 copy of the Program in return for a fee.
 
-                     END OF TERMS AND CONDITIONS
-
-            How to Apply These Terms to Your New Programs
-
-  If you develop a new program, and you want it to be of the greatest
-possible use to the public, the best way to achieve this is to make it
-free software which everyone can redistribute and change under these terms.
-
-  To do so, attach the following notices to the program.  It is safest
-to attach them to the start of each source file to most effectively
-state the exclusion of warranty; and each file should have at least
-the "copyright" line and a pointer to where the full notice is found.
-
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-Also add information on how to contact you by electronic and paper mail.
-
-  If the program does terminal interaction, make it output a short
-notice like this when it starts in an interactive mode:
-
-    <program>  Copyright (C) <year>  <name of author>
-    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type `show c' for details.
-
-The hypothetical commands `show w' and `show c' should show the appropriate
-parts of the General Public License.  Of course, your program's commands
-might be different; for a GUI interface, you would use an "about box".
-
-  You should also get your employer (if you work as a programmer) or school,
-if any, to sign a "copyright disclaimer" for the program, if necessary.
-For more information on this, and how to apply and follow the GNU GPL, see
-<http://www.gnu.org/licenses/>.
+                       END OF TERMS AND CONDITIONS
 
