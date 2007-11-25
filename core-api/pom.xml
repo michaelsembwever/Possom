@@ -268,11 +268,6 @@
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>dsapi</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>

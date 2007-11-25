@@ -230,17 +230,6 @@
         <type>jar</type>
         <version>2.0.1</version>
       </dependency>
-
-        <!-- need these here as they don't behave inside our own ResourceClassLoader -->
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>dsapi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>esp-searchapi</artifactId>
-        </dependency>
-
     </dependencies>
 
     <profiles>
@@ -297,13 +286,6 @@
             <build>
                 <finalName>ROOT.beta</finalName>
             </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Beta</id>
-                    <name>Schibsted Søk's Beta repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-beta</url>
-                </repository>
-            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -320,13 +302,6 @@
             <build>
                 <finalName>ROOT.electron</finalName>
             </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Electron</id>
-                    <name>Schibsted Søk's Electron repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-electron</url>
-                </repository>
-            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -343,13 +318,6 @@
             <build>
                 <finalName>ROOT.gamma</finalName>
             </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Gamma</id>
-                    <name>Schibsted Søk's Gamma repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-gamma</url>
-                </repository>
-            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -366,13 +334,6 @@
             <build>
                 <finalName>ROOT.production</finalName>
             </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Production</id>
-                    <name>Schibsted Søk's Production repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-production</url>
-                </repository>
-            </distributionManagement>
             <properties>
                 <sesam.site.default>generic.sesam.no</sesam.site.default>
                 <server.port>80</server.port>

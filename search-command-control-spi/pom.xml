@@ -104,11 +104,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <artifactId>ha-services</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>msearch-client</artifactId>
-        </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>sesat</groupId>
