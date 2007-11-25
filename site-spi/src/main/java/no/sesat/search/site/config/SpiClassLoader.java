@@ -95,6 +95,8 @@ public final class SpiClassLoader extends ResourceClassLoader {
                     c = parentSpi.loadClass(name);
                 }
             }
+        }else{
+            LOG.debug(name + " already in " + toString());
         }
 
         if (resolve) {
