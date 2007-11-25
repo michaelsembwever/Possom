@@ -258,8 +258,10 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 }
 
             };
+            
 
-            try  {
+            final ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
+            try{
 
                 engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
                 engine.setProperty(LOG_NAME, logger.getName());
@@ -305,13 +307,13 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                         cxt);
 
                 final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.valueOf(classContext).getClassLoader();
-                final ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
                 Thread.currentThread().setContextClassLoader(ctrlClassLoader);
                 engine.init();
-                Thread.currentThread().setContextClassLoader(origLoader);
 
-            } catch (Exception e) {
+            }catch (Exception e) {
                 throw new InfrastructureException(e);
+            }finally{                
+                Thread.currentThread().setContextClassLoader(origLoader);
             }
 
             INSTANCES.put(site, this);
