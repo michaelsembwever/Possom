@@ -77,6 +77,7 @@ public class RunHandlerFactoryTest {
         
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
+                datamodel,
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConfig));
         datamodel.setSite(siteDO);
