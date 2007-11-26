@@ -308,8 +308,10 @@ public final class DataModelFilter implements Filter {
                 for(String key : datamodel.getSearches().keySet()){
                     datamodel.setSearch(key, null);
                 }
-                for(String key : datamodel.getNavigation().getNavigations().keySet()){
-                    datamodel.getNavigation().setNavigation(key, null);
+                if(null != datamodel.getNavigation() && null != datamodel.getNavigation().getNavigations()){
+                    for(String key : datamodel.getNavigation().getNavigations().keySet()){
+                        datamodel.getNavigation().setNavigation(key, null);
+                    }
                 }
                 datamodel.setNavigation(null);
                 datamodel.setParameters(null);
