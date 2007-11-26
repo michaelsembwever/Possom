@@ -1,4 +1,65 @@
-SESAT (search-portal)
 
-    SESAT consists of a number of modules.
-[/maven2/SITE/schibstedsok-search/search-portal/sesat-core-api/apidocs/no/sesat/search/doc-files/SearchPortalComponents2] Components
+Sesam Search (search-main)
+
+    Umbrella project for the search kernel and all the skins.
+    Contains svn:externals links to these modules.
+
+    Also contains utility scripts only applicable to the project stack as a whole.
+
+
+* SESAT (search-portal)
+
+    The sesam kernel consists of a number of modular 
+[/maven2/SITE/schibstedsok-search/search-portal/sesat-core-api/apidocs/no/sesat/search/doc-files/SearchPortalComponents2] components
+providing different 
+{{{http://openide.netbeans.org/tutorial/api-design.html}
+Application Programming Interfaces (APIs) and Service Provider Interfaces (SPIs)}}.
+
+    All requests to the sesam cluster (any sesam search frontend) go first to the search engine. The 
+{{{search-portal/sesat-war/apidocs/no/schibstedsok/searchportal/http/filters/SiteLocatorFilter.html}
+SiteLocatorFilter}} intercepts the request, determines the correct skin, from the host-headers domain, loading into an 
+Site object, and then either, for client or server resources sends a redirect to the corresponding skin, or forwards
+the request onto one of the kernel's 
+{{{search-portal/sesat-war/apidocs/no/schibstedsok/searchportal/http/servlet/package-summary.html}servlets}}.
+    For a thousand foot view of the kernel architecture see the javadoc package description
+{{{search-portal/sesat-core-api/apidocs/no/schibstedsok/searchportal/}no.schibstedsok.searchportal}}
+
+    For information on setting up the project to develop read
+{{{https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam}Setting up Sesam}}
+
+    For information of operations on test and production environments and on the code read
+{{{https://dev.schibstedsok.no/confluence/display/TECHDEV/Operations+Documentation+-+Search+Portal}
+Operations Documentation - Search Portal}}
+
+
+* Skins (search-config)
+
+    Skins come in three categories, generic, country, and sitesearch. They are heirarchical with country and sitesearch
+skins generally leaves on the heirarchy, and the generics used for organisation benefits. 
+    The root of all skins is {{{pom.generic.sesam.no/}generic.sesam}}.
+    
+    A skin holds all server-side configurations for any given url-domain's business model 
+(search modes and commands, query transformations, and result handling), and the view (templating layout definition and 
+templates). Skins also hold and serve publicly all client requested resources (css, javascript, and images).
+    
+    Skins will, intime, also contain the implementation classes against the kernel's SPIs. The kernel accesses these
+classes through an URL based classloader. These classloaders' heirarchy will match the heirarchical of the
+skins. Therefore the skins will have access to, not just the kernel's APIs and SPIs, but also to parent skin 
+implementation classes.
+
+    Server-side configuration files are generally inheritable through the skin's heirarchy. The exact inheritence
+implementation depends of the filetype. See 
+{{{search-portal/sesat-site-spi/apidocs/no/schibstedsok/searchportal/site/config/UrlResourceLoader.html}
+AbstractResourceLoader}} for more details.
+
+    For information on creating new skins, and general skin operations, read
+{{{https://dev.schibstedsok.no/confluence/display/TECHDEV/SiteSearch}SiteSearch}}
+
+
+* Testing
+
+    Tests are located in, and packaged from, the search-portal projects.
+Some are run against the search-portal but mostly the skins depend on the -test.jar and, via the testng.xml, declare 
+which of the tests to include, and run them against the skin's actual configuration. 
+    This is far more useful than mocking up a dummy configuration.
+    

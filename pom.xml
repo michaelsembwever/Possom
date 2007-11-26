@@ -35,16 +35,6 @@
         <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk</developerConnection>
     </scm>
 
-    <!-- The following provides precise handling of building profile independant subprojects (jars)
-       -  versus profile-dependant subproject (war).
-       - Used mainly by continuum when deploying the different profile repositories.
-       -->
-    <profiles>
-        <profile>
-            <id>build-all</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <modules>
                 <module>skinresourcefeed</module>
                 <module>httpclient-api</module>
@@ -70,46 +60,5 @@
                 <module>search-servlet-handler-spi</module>
                 <module>war</module>
             </modules>
-        </profile>
-        <profile>
-            <id>build-jars-only</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>build-jars-only</name>
-                </property>
-            </activation>
-            <modules>
-                <module>httpclient-api</module>
-                <module>site-spi</module>
-                <module>query-api</module>
-                <module>query-transform-config-spi</module>
-                <module>result-handler-config-spi</module>
-                <module>search-command-config-spi</module>
-                <module>result-spi</module>
-                <module>data-model-api</module>
-                <module>data-model-javabean-impl</module>
-                <module>query-transform-control-spi</module>
-                <module>result-handler-control-spi</module>
-                <module>search-command-control-spi</module>
-                <module>run-transform-spi</module>
-                <module>run-handler-spi</module>
-                <module>core-api</module>
-                <module>search-servlet-handler-spi</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>build-wars-only</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>build-wars-only</name>
-                </property>
-            </activation>
-            <modules>
-                <module>war</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>

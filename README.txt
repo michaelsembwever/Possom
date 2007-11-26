@@ -27,9 +27,16 @@ Certificates
 =======================================
 
 To use the https-based repository you will also have to import
-Https://dev.schibstedsok.no/schibstedsok-ca.pem in your Java keystore. It can be
+https://dev.schibstedsok.no/schibstedsok-ca.pem in your Java keystore. It can be
 done after downloading the pem-file using this command:
 
 $ $JAVA_HOME/bin/keytool -import -alias schibstedsokca -file schibstedsok-ca.pem \
 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit
 
+
+=======================================
+Windows (sucks)
+=======================================
+
+ * search-portal/core-api doesn't build if the current path contains spaces.
+	fault from http://mojo.codehaus.org/axistools-maven-plugin/
