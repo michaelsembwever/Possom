@@ -1,7 +1,7 @@
 /* Copyright (2005-2007) Schibsted Søk AS
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
- * You should have received a copy of the SESAT License along with this program.  
+ * You should have received a copy of the SESAT License along with this program.
  * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,16 +31,16 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /** My favourite dish of ChopSuey.
- * 
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public final class StringChopper {
-    
+
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(StringChopper.class);
-    
+
     private static final String DEBUG_CHOPSUEY = "Chopped it up to ";
 
     private static final Pattern openTag = Pattern.compile("<[^<]+>");
@@ -48,35 +48,35 @@ public final class StringChopper {
     private static final Pattern singleTag = Pattern.compile("<[^<]+/>");
 
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
+
     /**
      * null safe.
-     * @param s 
-     * @param length 
-     * @return 
+     * @param s
+     * @param length
+     * @return
      */
     public static String chop(final String s, final int length) {
         return chop(s, length, false);
-    }  
-    
+    }
+
     /**
      * null safe.
-     * @param s 
-     * @param length 
+     * @param s
+     * @param length
      * @param chopWord allowed to chop a word in half
-     * @return 
-     */    
+     * @return
+     */
     public static String chop(final String s, final int length, final boolean chopWord) {
-        
+
         if(null != s){
 
             final StringBuilder choppedString = new StringBuilder(s);
 
             int laOriginalCount = 0, raOriginalCount = 0, markupLength = 0;
             boolean insideMarkup = false;
-            for(int i = 0; i < choppedString.length(); ++i){ 
+            for(int i = 0; i < choppedString.length(); ++i){
                 if( '<' == choppedString.charAt(i) ){ ++laOriginalCount; insideMarkup = true;}
 
                 if (insideMarkup) {
@@ -87,7 +87,7 @@ public final class StringChopper {
 
             }
 
-            // if we have more left than right arrows 
+            // if we have more left than right arrows
             while(laOriginalCount > raOriginalCount){
                 choppedString.append('>');
                 ++raOriginalCount;
@@ -104,7 +104,7 @@ public final class StringChopper {
 
                 // if we chopped a tag in half remove the half left over.
                 int laCount = 0, raCount = 0;
-                for(int i = 0; i < choppedString.length(); ++i){ 
+                for(int i = 0; i < choppedString.length(); ++i){
                     if( '<' == choppedString.charAt(i) ){ ++laCount; }
                     else if( '>' == choppedString.charAt(i) ){ ++raCount; }
                 }
@@ -169,24 +169,26 @@ public final class StringChopper {
                         //LOG.debug("Ignoring single tag " + matcher.group());
                     }else{
 
+                        // Removing attributes etc to find the correct closing tag.
                         //LOG.debug("Found opening tag  " + matcher.group());
-                        tags.addFirst(matcher.group());
+                        //LOG.debug("  adding to stack: " + matcher.group().replaceFirst(" [^>]+", ""));
+                        tags.addFirst(matcher.group().replaceFirst(" [^>]+", ""));
                     }
                 }
 
                 // remove tags that had no opening
-                for(int[] startEnd : tagsToRemove){
+                for(final int[] startEnd : tagsToRemove){
 
                     //LOG.debug("Removing " + matcher.group());
                     choppedString.delete(startEnd[0], startEnd[1]);
                 }
 
                 // add tags to balance
-                for(String tag : tags){
+                for(final String tag : tags){
 
                     //LOG.debug("Adding " + tag.replaceFirst("<", "</"));
                     choppedString.append(tag.replaceFirst("<", "</"));
-                }        
+                }
             }
             LOG.trace(DEBUG_CHOPSUEY + choppedString);
 
@@ -194,27 +196,27 @@ public final class StringChopper {
         }
         return null;
     }
-    
+
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of StringChopper */
     private StringChopper(){
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
-    
-    
+
+
+
 }
