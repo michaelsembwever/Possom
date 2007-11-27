@@ -116,6 +116,7 @@
         <module>core-api</module>
         <module>search-servlet-handler-spi</module>
         <module>war</module>
+        <module>generic.sesam</module>
     </modules>
 
     <build>
