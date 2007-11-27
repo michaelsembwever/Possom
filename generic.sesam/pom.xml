@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - Copyright (2005-2006) Schibsted Søk AS
+ *   This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ - $Id: project.xml 2296 2006-02-14 17:33:59Z magnuse $
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+      <parent>
+          <groupId>sesat</groupId>
+          <artifactId>sesat-kernel</artifactId>
+          <version>2.16-SNAPSHOT</version>
+      </parent>
+    <name>${project.artifactId}</name>
+    <artifactId>pom.generic.sesam.no</artifactId>
+    <packaging>pom</packaging>
+    <description>Generic Search-config Skin's Inheritable-Pom.</description>
+    <url>https://dev.schibstedsok.no/maven/sites/search-config/</url>
+
+    <scm>
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-config/generic.sesam/trunk</connection>
+        <url>https://dev.schibstedsok.no/svn/search-config/generic.sesam/trunk</url>
+      <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-config/generic.sesam/trunk</developerConnection>
+    </scm>
+
+    <modules>
+      <module>war</module>
+      <module>query-transform-config</module>
+      <module>result</module>
+      <module>result-handler-config</module>
+      <module>search-command-config</module>
+      <module>view-config</module>
+      <module>query-transform-control</module>
+      <module>result-handler-control</module>
+      <module>search-command-control</module>
+      <module>view-control</module>
+      <module>velocity-directives</module>
+    </modules>
+
+    <build>
+        <finalName>generic.sesam</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/conf</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.xml</include>
+                    <include>*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/css</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.css</include>
+                    <include>**/*.css</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/templates</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.vm</include>
+                    <include>*.html</include>
+                    <include>**/*.vm</include>
+                    <include>**/*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/images</directory>
+                <includes>
+                    <include>*.gif</include>
+                    <include>*.jpg</include>
+                    <include>*.png</include>
+                    <include>*.ico</include>
+                    <include>*.swf</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.png</include>
+                    <include>**/*.ico</include>
+                    <include>**/*.swf</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/javascript</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.js</include>
+                    <include>**/*.js</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <!-- WAR plugin configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceDirectory>src/webapp</warSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <forkMode>once</forkMode>
+                    <argLine>-ea -Xmx512m -Dfile.encoding=UTF-8</argLine>
+                    <!--argLine>-ea -Xmx512m -Dfile.encoding=UTF-8 -Xdebug -Xrunjdwp:transport=dt_socket,address=54321,server=y,suspend=y</argLine-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <!-- The parent (or default) Site -->
+        <sesam.site.parent>generic.sesam</sesam.site.parent>
+        <!-- Log4j -->
+        <log.level>WARN</log.level>
+        <log.file>${project.artifactId}</log.file>
+        <!-- Mail -->
+        <mail.smtp.host>ssmail.sesat.no</mail.smtp.host>
+    </properties>
+
+    <profiles>
+
+        <!-- DEVELOPMENT PROFILE -->
+        <profile>
+            <id>development</id>
+            <activation><!-- The activation element isn't inherited from the parent -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement/>
+            </build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://localhost:15100</newsQueryServerURL>
+                <queryServerURL.4>http://localhost:15500</queryServerURL.4>
+
+                <espBlogQueryServer>localhost:15101</espBlogQueryServer>
+                <espScanpixQueryServer>localhost:15101</espScanpixQueryServer>
+
+                <!-- Picsearch server -->
+                <picsearch.host>localhost</picsearch.host>
+                <picsearch.port>15252</picsearch.port>
+
+                <yahooImageServer>localhost</yahooImageServer>
+                <yahooImageServerPort>15253</yahooImageServerPort>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://localhost:15400</relevantqueries.url>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <platefoodURL>localhost</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Serve-->
+	              <siteSearchQueryServerURL>localhost:15800</siteSearchQueryServerURL>
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>localhost</tokenevaluator.host>
+                <tokenevaluator.port>15400</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>localhost:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+                <!-- Log4j -->
+                <log.level>INFO</log.level>
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>alpha</id>
+            <build><pluginManagement/></build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
+
+                <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
+                <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <!-- Picsearch server -->
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
+
+                <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
+                <yahooImageServerPort>8075</yahooImageServerPort>
+
+                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Serve-->
+	            <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
+
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+                <tokenevaluator.port>15200</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>nuclei</id>
+            <build><pluginManagement/></build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
+
+                <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
+                <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <!-- Picsearch server -->
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
+
+                <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
+                <yahooImageServerPort>8075</yahooImageServerPort>
+
+                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Serve-->
+	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
+
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+                <tokenevaluator.port>15200</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>beta</id>
+            <build><pluginManagement/></build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
+
+                <!--espBlogQueryServer>sch-fast-admin-e01.osl.basefarm.net:15100</espBlogQueryServer-->
+                <!--espBlogQueryServer>http://sch-fast-admin-e01.osl.basefarm.net:15100</espBlogQueryServer-->
+                <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
+                <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
+
+                <!-- Log4j -->
+                <log.level>WARN</log.level>
+                <log.file>${project.artifactId}</log.file>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <!-- Picsearch server -->
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
+
+                <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
+                <yahooImageServerPort>8075</yahooImageServerPort>
+
+                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Serve-->
+	            <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+                <tokenevaluator.port>15200</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>electron</id>
+            <build><pluginManagement/></build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
+
+                <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
+                <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <!-- Picsearch server -->
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
+
+                <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
+                <yahooImageServerPort>8075</yahooImageServerPort>
+
+                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Serve-->
+	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
+
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+                <tokenevaluator.port>15200</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>gamma</id>
+            <build><pluginManagement/></build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
+
+                <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
+                <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <!-- Picsearch server -->
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
+
+                <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
+                <yahooImageServerPort>8075</yahooImageServerPort>
+
+                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Serve-->
+	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
+
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+                <tokenevaluator.port>15200</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>production</id>
+            <build><pluginManagement/></build>
+            <properties>
+
+                <!-- QR Servers -->
+                <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
+
+
+                <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
+                <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
+
+                <!-- QR Server for relevant queries -->
+                <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
+
+                <!-- Trade doubler -->
+                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+                <tradedoubler.form.action>$$url</tradedoubler.form.action>
+
+                <!-- Picsearch server -->
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
+
+                <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
+                <yahooImageServerPort>8075</yahooImageServerPort>
+
+                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
+                <platefoodPort>60002</platefoodPort>
+
+                <!--StiteSearch Server , dont know if this is corect for production-->
+	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
+
+
+                <!-- Token Evaluator -->
+                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+                <tokenevaluator.port>15200</tokenevaluator.port>
+
+                <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
+
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-site-spi</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>commons-ioc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <!-- FOR TESTS -->
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-httpclient-api</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-site-spi</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-javabean-impl</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-core-api</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-transform-control-spi</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-core-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>dsapi</artifactId>
+            <version>2.0.70</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>esp-searchapi</artifactId>
+            <version>5.0.14</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>msearch-client</artifactId>
+            <version>4.2</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+</project>

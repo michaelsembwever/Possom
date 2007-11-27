@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>sesat</groupId>
+        <artifactId>pom.generic.sesam.no</artifactId>
+        <version>2.16-SNAPSHOT</version>
+    </parent>
+    <name>${project.artifactId}</name>
+    <artifactId>pom.generic.sesam.no-search-command-control</artifactId>
+    <packaging>pom</packaging>
+    <description>Generic Search Commands</description>
+
+    
+    <modules>
+        <module>default</module>
+        <module>assemble</module>
+    </modules>
+    
+    <profiles>
+        <profile>
+            <id>include-fast</id>
+            <modules>
+                <module>default</module>
+                <module>fast</module>
+                <module>assemble</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "http://sesam.no/dtds/views.dtd">
+<!-- Copyright (2006) Schibsted Søk AS
+    Document   : views.xml
+    Created on : 4 April 2006, 16:25
+    Author     : mick
+    Description:
+        Purpose of the document follows.
+-->
+
+<views>
+    <!-- DEFAULTS -->
+
+    <!-- "absolute-ordering" means that the navigator sources should be sorted according to the 
+prority attribute of the navigation hints -->
+
+    <tab id="default" page-size="10" enrichment-limit="0" enrichment-on-top="0" absolute-ordering="true">
+
+        <navigation>
+            <navigation id="verticals" out="true">
+                
+                <tab id="Nett" tab="d" values="d,g" image="nettsok.png" priority="10" 
+                        command-names="webCounter,globalCounter" out="true"/>
+                        
+                <tab id="Nyhets" tab="m" image="nyheter.png" priority="30" 
+                        command-names="newsCounter" out="true"/>
+                        
+                <tab id="Bedrift" tab="y" values="y,yip,yap" image="bedrift.png" priority="50" template="bedrift"
+                        command-names="yellowCounter" out="true"/>
+                        
+                <tab id="Person" tab="w" values="w,wip,wipgift" image="person.png" priority="60" 
+                        command-names="whiteCounter" out="true"/>
+                        
+                <tab id="Bild" tab="p" values="p,pp,pip" image="bilde.png" priority="70" 
+                        command-names="picCounter,scanpixCounter" out="true"/>
+                        
+                <tab id="Blogg" tab="b" image="blogg.png" priority="80" 
+                        command-names="blogCounter" out="true"/>
+                        
+                <tab id="TvSearch" tab="t" image="tv.png" priority="90" 
+                        command-names="tvCounter" out="true"/>
+                        
+                <tab id="WebTvSearch" tab="wt" image="webtv.png" priority="95" 
+                        command-names="webtvCounter" out="true"/>
+                        
+                <tab id="WeatherSearch" tab="sw" values="sw,swip" image="ver.png" priority="100" 
+                        command-names="weatherCounter" out="true"/>
+                        
+                <tab id="Map" tab="map" image="kart.png" priority="105" template="map"
+                        command-names="addressCounter" out="true"/>
+                        
+            </navigation>
+        </navigation>
+
+        <layout>
+            <include key="head-element" template="head/head"/>
+            <include key="header"/>            
+            <include key="left-col-one"/>
+            <include key="left-col-two"/>
+            <include key="left-col-three"/>
+
+            <include key="error-msg"/>
+            <include key="middle-col-one"/>
+            <include key="middle-col-two"/>
+            <include key="middle-col-three"/>
+            <include key="middle-col-four"/>
+
+            <include key="right-col-one"/>
+
+            <include key="publishing-page"/>
+            <include key="no-hits"/>
+            
+            <include key="bottom-one"/>
+            <include key="bottom-two"/>
+            <include key="bottom-three"/>
+            <include key="bottom-four"/>
+            <include key="bottom-five"/>
+            <include key="bottom-six"/>
+            <include key="bottom-seven"/>
+            <include key="bottom-eight"/>
+        </layout>
+    </tab>
+</views>

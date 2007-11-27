@@ -1,0 +1,31 @@
+<assembly>
+  <id>/../</id><!-- HACk to get classes into correct destination -->
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>  
+  <baseDirectory></baseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>../default/target/classes</directory>
+      <outputDirectory>../classes</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../fast/target/classes</directory>
+      <outputDirectory>../classes</outputDirectory>
+    </fileSet>
+  </fileSets> 
+  <!--dependencySets>
+    <dependencySet>
+      <outputDirectory>../classes</outputDirectory>
+      <outputFileNameMapping></outputFileNameMapping>
+      <unpack>true</unpack>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <scope>provided</scope>
+      <includes>
+        <include>fast:*</include>
+      </includes>
+      <excludes><exclude>sesat:*</exclude></excludes>
+    </dependencySet>
+  </dependencySets-->  
+</assembly>

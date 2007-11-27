@@ -1,0 +1,14 @@
+<assembly>
+  <id>/../</id><!-- HACk to get classes into correct destination -->
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory> 
+  <baseDirectory></baseDirectory> 
+  <fileSets>
+    <fileSet>
+      <directory>../default/target/classes</directory>
+      <outputDirectory>../classes</outputDirectory>
+    </fileSet>
+  </fileSets> 
+</assembly>

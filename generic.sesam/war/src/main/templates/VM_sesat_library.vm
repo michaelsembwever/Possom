@@ -1,0 +1,90 @@
+#macro(searchTabInclude $includeName)
+    #if($includeName && $tab.layout)
+        #set ($includeValue = "$!tab.layout.getInclude($includeName)")
+        #if($includeValue && $includeValue.trim().length() > 0)
+            #parse("$datamodel.site.site.getTemplateDir()/fragments/layout/${includeValue}.vm")
+        #end
+    #end
+#end
+
+#macro(spelling_suggestion_datamodel $command)
+    <img src="/images/star.png" width="11" height="11" alt="star" />
+    $text.getMessage("didYouMean"):
+    #foreach ($querySuggestion in $datamodel.getSearch($command).results.querySuggestions)
+    <em><a href="$boomerang.getUrl($datamodel.site.site,"/search/?c=$tab.getKey()&amp;q=#urlencode($querySuggestion.suggestion)", "category:navigation;subcategory:spell")">$querySuggestion.htmlSuggestion</a></em>#if ($velocityCount < $datamodel.getSearch($command).results.getQuerySuggestions().size()) eller #end#end?
+#end
+
+
+#macro(navigationBox $id $title $nrOfRows)
+    #set ($navigator = $datamodel.navigation.configuration.navigationMap.get($id))
+    #set ($first = $navigator.navList.get(0))    
+    #set ($currentLevel = $navigationHelper.getFirstNotSelected($datamodel, $first))
+    #set ($currentResults = $datamodel.navigation.getNavigation($currentLevel.id).getResults())
+
+    <div class="navSub" #if ($currentResults.size() < ($nrOfRows+1)) style="border-bottom: 1px solid #d1d1d2" #end>
+        <h2>$title</h2>
+        #backLink($datamodel $first)
+        #if ($currentLevel.parent)
+            <h2 class="subTitle">$datamodel.navigation.getNavigation($currentLevel.parent.id).getResults().get(0).title</h2>
+        #end
+        #foreach ($option in $currentResults)
+            #if ($velocityCount == ($nrOfRows+1))
+                <div id="expand_$id" style="display: #if ($currentResults.size() > $nrOfRows) block #else none #end ;" class="button" onclick="javascript:document.getElementById('nav_element_$id').style.display='block';document.getElementById('expand_$id').style.display='none';document.getElementById('hide_$id').style.display='block';">
+                    <img src="/images/index/vis_meny.png" width="21" height="21" alt="$text.getMessage('showAll')" />
+                    <span>$text.getMessage('showAll')</span>
+                </div>
+                <div id="nav_element_$id" style="display:none;">
+            #end
+            <div class="#if(! $option.selected && ($currentResults.size() > 1 || !$currentLevel.autoNavigation)) navRow #else navRowLast#end">
+                #if (! $option.selected && ($currentResults.size() > 1 || !$currentLevel.autoNavigation))
+                    <a href="$boomerang.getUrl($datamodel.site.site,"$option.url", "category:navigation;subcategory:$id;pos:$velocityCount")">$option.title</a>
+                    <span>#hitcount($option)</span>
+                #else                    
+                    <span class="lastUrl">$option.title</span>
+                    <span class="lastCount">#hitcount($option)</span>
+                #end
+            </div>
+        #end
+        </div>
+        <div id="hide_$id" class="button" style="display: none;" onclick="javascript:document.getElementById('nav_element_$id').style.display='none';document.getElementById('expand_$id').style.display='block';document.getElementById('hide_$id').style.display='none';">
+            <img src="/images/index/skjul_meny.png" width="21" height="20" alt="$text.getMessage('hide')" />
+            <span>$text.getMessage('hide')</span>
+        </div>
+    #if ($currentResults.size() > $nrOfRows)
+    </div>
+    #end
+
+#end
+
+## Render back links for the navigator.
+#macro(backLink $datamodel $nav)
+    #if ($datamodel.parameters.getValue($nav.field))
+        <div class="navRow">
+            <a href="$navigationHelper.getResetUrl($datamodel, $nav.id)">
+            &lt;&lt;
+            #if ($nav.backText != "")
+                $nav.backText
+            #else
+                $datamodel.navigation.getNavigation($nav.getParent().getId()).getResults().get(0).getTitle()
+            #end
+            </a>
+        </div>
+    #end
+    #foreach ($child in $nav.childNavs)
+        #backLink($datamodel $child)
+    #end
+#end
+
+#macro(sortByNavigation $navId $title)
+  $title
+  #foreach ($option in $datamodel.navigation.getNavigation($navId).results)
+        #if($velocityCount > 1)
+            |
+        #end
+        #if ($option.selected)
+            <strong>#htmlescape($option.title)</strong>
+        #else
+            <a href="$option.url">#htmlescape($option.title)</a>
+        #end
+  #end
+#end

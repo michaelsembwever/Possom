@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "http://sesam.no/dtds/AnalysisRules.dtd">
+<!--
+    Copyright (2006) Schibsted Søk AS
+    Document   : AnalysisRules.xml
+    Created on : 25 January 2006, 13:21
+    Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+    Version    : $Id: AnalysisRules.xml 10411 2007-08-30 13:04:55Z ssmiweve $
+    Description:
+        Purpose of the document follows.
+-->
+
+<rules>
+
+
+    <!-- Global predicates -->
+    <predicate id="anyMagic">
+        <any>
+            <predicate id="BOOK_MAGIC"/>
+            <predicate id="CATALOGUE_MAGIC"/>
+            <predicate id="CULTURE_MAGIC"/>
+            <predicate id="MOVIE_MAGIC"/>
+            <predicate id="NEWS_MAGIC"/>
+            <predicate id="OCEAN_MAGIC"/>
+            <predicate id="PICTURE_MAGIC"/>
+            <predicate id="RECEIPE_MAGIC"/>
+            <predicate id="SKIINFO_MAGIC"/>
+            <predicate id="STOCK_MAGIC"/>
+            <predicate id="TV_MAGIC"/>
+            <predicate id="WEATHER_MAGIC"/>
+            <predicate id="WEBTV_MAGIC"/>
+            <predicate id="WHITE_MAGIC"/>
+            <predicate id="WIKIPEDIA_MAGIC"/>
+            <predicate id="YELLOW_MAGIC"/>
+        </any>
+    </predicate>
+    <predicate id="anyTrigger">
+        <any>
+            <predicate id="CATALOGUE_TRIGGER"/>
+            <predicate id="NEWS_TRIGGER"/>
+            <predicate id="PICTURE_TRIGGER"/>
+            <predicate id="SKIINFO_TRIGGER"/>
+            <predicate id="TV_TRIGGER"/>
+            <predicate id="WEATHER_TRIGGER"/>
+            <predicate id="WIKIPEDIA_TRIGGER"/>
+        </any>
+    </predicate>
+    <predicate id="dropPredicates">
+        <any>
+            <predicate id="EXACT_CLASSIFIED_MAGIC"/>
+            <predicate id="MATHPREDICATE"/>
+            <predicate id="SITEPREFIX"/>
+            <predicate id="TNS"/>
+        </any>
+    </predicate>
+    <predicate id="geo">
+        <any>
+            <predicate id="GEOLOCAL"/>
+            <predicate id="GEOGLOBAL"/>
+        </any>
+    </predicate>
+    <predicate id="geoExact">
+        <any>
+            <predicate id="EXACT_GEOLOCAL"/>
+            <predicate id="EXACT_GEOGLOBAL"/>
+        </any>
+    </predicate>
+    <predicate id="exactFirstOrLast">
+        <any>
+            <predicate id="EXACT_FIRST"/>
+            <predicate id="EXACT_LAST"/>
+        </any>
+    </predicate>
+    <predicate id="firstAndLastName">
+        <all>
+            <predicate id="FIRSTNAME"/>
+            <predicate id="LASTNAME"/>
+        </all>
+    </predicate>
+    <predicate id="firstOrLast">
+        <any>
+            <predicate id="FIRSTNAME"/>
+            <predicate id="LASTNAME"/>
+        </any>
+    </predicate>
+    <predicate id="firstOrLastAndGeo">
+        <all>
+            <predicate id="firstOrLast"/>
+            <predicate id="geo"/>
+        </all>
+    </predicate>
+    <predicate id="categoryOrKeyword">
+        <any>
+            <predicate id="CATEGORY"/>
+            <predicate id="COMPANY_KEYWORD"/>
+        </any>
+    </predicate>
+    <predicate id="bigCompany">
+        <any>
+            <predicate id="PRIOCOMPANYNAME"/>
+            <predicate id="COMPANY_CHAIN"/>
+        </any>
+    </predicate>
+    <predicate id="firstAndLastName-exactWiki-notCompany">
+        <all>
+            <predicate id="firstAndLastName"/>
+            <predicate id="EXACT_WIKI"/>
+            <predicate>
+                <any>
+                    <predicate><not><predicate id="COMPANYSUFFIX"/></not></predicate>
+                    <predicate><not><predicate id="TNS"/></not></predicate>
+                </any>
+            </predicate>
+        </all>
+    </predicate>
+    <predicate id="englishWordsWithoutThisLanguage">
+        <all>
+            <predicate id="ENGLISHWORDS"/>
+            <predicate>
+                <none>
+                    <predicate id="TNS"/>
+                    <predicate id="EXACT_WIKI"/>
+                    <predicate id="geo"/>
+                    <predicate id="COMPANY_KEYWORD"/>
+                    <predicate id="CATEGORY"/>
+                    <predicate id="firstOrLast"/>
+                </none>
+            </predicate>
+        </all>
+    </predicate>
+    <predicate id="companyNotPerson">
+        <all>
+            <predicate id="COMPANYENRICHMENT"/>
+            <predicate><not><predicate id="firstAndLastName"/></not></predicate>
+        </all>
+    </predicate>
+
+    <predicate id="phoneOrOrgNr">
+        <all>
+            <predicate id="MATHPREDICATE"/>
+            <predicate>
+                <any>
+                    <predicate id="PHONENUMBER"/>
+                    <predicate id="ORGNR"/>
+                </any>
+            </predicate>
+        </all>           
+    </predicate>
+    <predicate id="product">
+        <any>
+            <predicate id="PRODUCT_BICYCLE"/>
+            <predicate id="PRODUCT_CAR"/>
+            <predicate id="PRODUCT_CHILDREN"/>
+            <predicate id="PRODUCT_CLOTHING"/>
+            <predicate id="PRODUCT_CONSTRUCTION"/>
+            <predicate id="PRODUCT_COSTUME"/>
+            <predicate id="PRODUCT_ELECTRONIC"/>
+            <predicate id="PRODUCT_FURNITURE"/>
+            <predicate id="PRODUCT_GARDEN"/>
+            <predicate id="PRODUCT_HOBBY"/>
+            <predicate id="PRODUCT_HOUSEHOLD"/>
+            <predicate id="PRODUCT_JEWELRY"/>
+            <predicate id="PRODUCT_MOTOR"/>
+            <predicate id="PRODUCT_MUSIC"/>
+            <predicate id="PRODUCT_SHOE"/>
+            <predicate id="PRODUCT_SPORT"/>
+            <predicate id="PRODUCT_WATCH"/>
+            <predicate id="PRODUCT_WEAPON"/>
+        </any>
+    </predicate>
+    <predicate id="wikiAndCompany">
+        <all>
+            <predicate id="bigCompany"/>
+            <predicate id="WIKIPEDIA"/>
+        </all>
+    </predicate>
+
+    <predicate id="wikiAndWikiPrefix">
+        <all>
+            <predicate id="WIKIPEDIA_TRIGGER"/>
+            <predicate id="WIKIPEDIA"/>
+        </all>
+    </predicate>
+    
+    <predicate id="exactWiki-notCompanyUnlessFullname">
+        <all>
+            <predicate id="EXACT_WIKI"/>
+            <predicate>
+                <any>
+                    <predicate>
+                        <not>
+                            <predicate id="EXACT_COMPANYENRICHMENT"/>
+                        </not>
+                    </predicate>
+                    <predicate id="EXACT_FULLNAME"/>
+                </any>
+            </predicate>
+        </all>
+    </predicate>
+
+    <!-- Rules -->
+    
+    
+    <rule id="whitePages">
+
+        <!-- private predicates -->
+        <predicate id="customDropPredicates">
+            <all>
+                <predicate id="dropPredicates"/>
+                <predicate>
+                    <not><predicate id="FULLNAME"/></not>
+                </predicate>
+            </all>
+        </predicate>
+
+        <!-- Scoring -->
+        <score predicate="CATALOGUE_MAGIC">1000</score>
+        <score predicate="WHITE_MAGIC">1000</score>
+        <score predicate="phoneOrOrgNr">500</score>
+        <score predicate="CATALOGUE_TRIGGER">250</score>
+        <score predicate="FULLNAME">10</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="customDropPredicates">-500</score>
+        <score predicate="exactFirstOrLast">-500</score>
+        <score predicate="geoExact">-500</score>
+    </rule>
+    
+
+    <rule id="yellowPages">
+
+        <!-- private predicates -->
+        <predicate id="firstAndLastNameAndCompanySuffix">
+            <all>
+                <predicate id="COMPANYSUFFIX"/>
+                <predicate id="firstAndLastName"/>
+            </all>
+        </predicate>
+        <predicate id="firstOrLastAndGeoNotCompany">
+            <all>
+                <predicate id="firstOrLastAndGeo"/>
+                <predicate><not><predicate id="bigCompany"/></not></predicate>
+                <predicate><not><predicate id="COMPANYSUFFIX"/></not></predicate>
+                <predicate><not><predicate id="categoryOrKeyword"/></not></predicate>
+            </all>
+        </predicate>
+        <predicate id="cataloguePrefixAndFirstOrLastNotCompany">
+            <all>
+                <predicate id="CATALOGUE_TRIGGER"/>
+                <predicate id="firstOrLast"/>
+                <predicate><not><predicate id="COMPANYSUFFIX"/></not></predicate>
+            </all>
+        </predicate>
+        <predicate id="geoExactNotCompany">
+            <all>
+                <predicate id="geoExact"/>
+                <predicate>
+                    <not><predicate id="COMPANYENRICHMENT"/></not>
+                </predicate>
+            </all>
+        </predicate>
+        <predicate id="styleOrMaterial">
+            <any>
+                <predicate id="STYLE"/>
+                <predicate id="MATERIAL"/>
+            </any>
+        </predicate>
+        <predicate id="productAndGeo">
+            <all>
+                <predicate id="geo"/>
+                <predicate id="product"/>
+            </all>
+        </predicate>
+        <predicate id="categoryOrKeywordOrProduct">
+            <any>
+                <predicate id="categoryOrKeyword"/>
+                <predicate id="product"/>
+            </any>
+        </predicate>
+
+        <!-- Scoring postives -->
+        <score predicate="EXACT_TOP3">2000</score>
+        <score predicate="CATALOGUE_MAGIC">1000</score>
+        <score predicate="YELLOW_MAGIC">1000</score>
+        <score predicate="phoneOrOrgNr">500</score>
+        <score predicate="CATALOGUE_TRIGGER">250</score>
+        <score predicate="companyNotPerson">200</score>
+        <score predicate="firstAndLastNameAndCompanySuffix">200</score>
+        <score predicate="PHONENUMBER">200</score>
+        <score predicate="ORGNR">120</score>
+        <score predicate="categoryOrKeywordOrProduct">100</score>
+        <score predicate="bigCompany">30</score>
+        <score predicate="TRADEMARK">30</score>
+        <score predicate="productAndGeo">30</score>
+
+        <!-- Scoring negatives -->
+        <score predicate="styleOrMaterial">-100</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="cataloguePrefixAndFirstOrLastNotCompany">-500</score>
+        <score predicate="dropPredicates">-500</score>
+        <score predicate="geoExactNotCompany">-500</score>
+        <score predicate="EXACT_FIRST">-500</score>
+        <score predicate="firstOrLastAndGeoNotCompany">-1000</score>
+    </rule>
+    
+
+
+    <rule id="news">
+
+        <!-- private predicates -->
+        <predicate id="priocompanyNameWithoutFirstNameAndGeo">
+            <all>
+                <predicate id="bigCompany"/>
+                <predicate>
+                    <none>
+                        <predicate id="FIRSTNAME"/>
+                        <predicate id="geo"/>
+                    </none>
+                </predicate>
+            </all>
+        </predicate>
+        <predicate id="categoryOrKeywordWithoutNewsPrefix">
+            <all>
+                <predicate id="categoryOrKeyword"/>
+                <predicate><not><predicate id="NEWS_TRIGGER"/></not></predicate>
+            </all>
+        </predicate>
+        <predicate id="companyNameWithoutPrioCompanyName">
+            <all>
+                <predicate id="COMPANYENRICHMENT"/>
+                <predicate><not><predicate id="bigCompany"/></not></predicate>
+            </all>
+        </predicate>
+        <predicate id="tnsOrCompanyNotPerson">
+            <any>
+                <predicate id="TNS"/>
+                <predicate id="companyNotPerson"/>
+            </any>
+        </predicate>
+
+        <!-- Scoring -->
+        <score predicate="NEWS_MAGIC">1000</score>
+        <score predicate="priocompanyNameWithoutFirstNameAndGeo">400</score>
+        <score predicate="exactWiki-notCompanyUnlessFullname">300</score>
+        <score predicate="NEWS_TRIGGER">250</score>
+        <score predicate="ALWAYSTRUE">100</score>
+        <score predicate="companyNameWithoutPrioCompanyName">-20</score>
+        <score predicate="tnsOrCompanyNotPerson">-20</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="EXACT_CLASSIFIED_MAGIC">-500</score>
+        <score predicate="SITEPREFIX">-500</score>
+        <score predicate="MATHPREDICATE">-500</score>
+        <score predicate="categoryOrKeywordWithoutNewsPrefix">-550</score>
+    </rule>
+        
+    
+    <rule id="picSearch">
+
+        <!-- Scoring postives -->
+        <score predicate="PICTURE_MAGIC">1000</score>
+        <score predicate="exactWiki-notCompanyUnlessFullname">550</score>
+        <score predicate="PICTURE_TRIGGER">250</score>
+        <!-- Scoring negatives -->
+        <score predicate="anyMagic">-500</score>
+        <score predicate="dropPredicates">-500</score>
+        <score predicate="EXACT_CLASSIFIED_MAGIC">-500</score>
+        <score predicate="geoExact">-600</score>
+        <score predicate="EXACT_TOP3">-1000</score>
+        <score predicate="EXACT_PPCTOPLIST">-1000</score>
+        <score predicate="DISEASE">-1000</score>
+        <score predicate="FOOD">-1000</score>
+    </rule>
+    
+    
+    <rule id="wikipedia">
+
+        <!-- private predicates -->
+
+        <!-- Scoring -->
+        <score predicate="WIKIPEDIA_MAGIC">1000</score>
+        <score predicate="wikiAndWikiPrefix">400</score>
+        <score predicate="EXACT_WIKI">300</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="dropPredicates">-500</score>
+        <score predicate="wikiAndCompany">-800</score>
+        <score predicate="EXACT_PPCTOPLIST">-1000</score>
+    </rule>
+    
+    <rule id="tv">
+        
+        <!-- Private predicates -->
+        <predicate id="customDropPredicates">
+            <any>
+                <predicate id="dropPredicates"/>
+                <predicate id="product"/>
+                <predicate id="EMPTYQUERY"/>
+                <predicate id="anyMagic"/>
+                <predicate>
+                    <all>
+                        <predicate id="firstOrLastAndGeo"/>
+                        <predicate>
+                            <not>
+                                <predicate id="exactWiki-notCompanyUnlessFullname"/>
+                            </not>
+                        </predicate>
+                    </all>
+                </predicate>
+            </any>
+        </predicate>
+        
+        <!-- Scoring postives -->
+        <score predicate="TV_MAGIC">500</score>
+        <score predicate="TV_TRIGGER">250</score>
+        <score predicate="exactWiki-notCompanyUnlessFullname">100</score>
+        
+        <!-- Scoring negatives -->
+        <score predicate="EXACT_PPCTOPLIST">-100</score>
+        <score predicate="customDropPredicates">-500</score>
+        
+    </rule>
+
+    <rule id="globalSearch">
+
+        <!-- private predicates -->
+
+        <!-- Scoring -->
+        <score predicate="englishWordsWithoutThisLanguage">100</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="anyTrigger">-500</score>
+        <score predicate="dropPredicates">-500</score>
+    </rule>
+
+    <rule id="weather">
+
+        <!-- private predicates -->
+        <predicate id="weatherPrefixAndGeo">
+            <all>
+                <predicate id="WEATHER_TRIGGER"/>
+                <predicate id="geo"/>
+            </all>
+        </predicate>
+        <predicate id="allCompanyAndPersonHitsWithoutGeo">
+            <all>
+                <predicate><not><predicate id="geo"/></not></predicate>
+                <predicate>
+                    <any>
+                        <predicate id="FULLNAME"/>
+                        <predicate id="COMPANY_KEYWORD"/>
+                        <predicate id="CATEGORY"/>
+                        <predicate id="COMPANYENRICHMENT"/>
+                    </any>
+                </predicate>
+            </all>
+        </predicate>
+
+        <!-- Scoring -->
+        <score predicate="WEATHER_MAGIC">1000</score>
+        <score predicate="geoExact">500</score>
+        <score predicate="weatherPrefixAndGeo">400</score>
+        <score predicate="allCompanyAndPersonHitsWithoutGeo">-500</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="dropPredicates">-500</score>
+    </rule>
+
+
+    <rule id="skiInfo">
+
+        <!-- private predicates -->
+        <predicate id="skiInfo">
+            <all>
+                <predicate>
+                    <any>
+                        <predicate id="SKIINFO_TRIGGER"/>
+                        <predicate id="geoExact"/>
+                    </any>
+                </predicate>
+                <predicate>
+                    <not><predicate id="ONLYSKIINFO"/></not>
+                </predicate>
+            </all>
+        </predicate>
+
+        <!-- Scoring -->
+        <score predicate="SKIINFO_MAGIC">1000</score>
+        <score predicate="skiInfo">600</score>
+        <score predicate="anyMagic">-500</score>
+        <score predicate="dropPredicates">-500</score>
+    </rule>    
+    
+    <rule id="mathExpression">
+
+        <!-- private predicates -->
+
+        <!-- Scoring -->
+        <score predicate="MATHPREDICATE">500</score>
+    </rule>
+    
+    <rule id="aksje">
+
+        <!-- private predicates -->
+        <predicate id="tickerCodeOrFirm">
+            <any>
+                <predicate id="EXACT_STOCKMARKETTICKERS"/>
+                <predicate id="EXACT_STOCKMARKETFIRMS"/>
+            </any>
+        </predicate>
+        
+        <!-- Scoring -->
+        <score predicate="STOCK_MAGIC">1000</score>
+        <score predicate="tickerCodeOrFirm">100</score>
+        <score predicate="anyMagic">-500</score>
+    </rule>
+
+    <rule id="bade">
+
+        <!-- private predicates -->
+        
+        <!-- Scoring -->
+        <score predicate="OCEAN_MAGIC">1000</score>
+        <score predicate="OCEAN_TRIGGER">250</score>
+        <score predicate="OCEAN">200</score>
+        <score predicate="anyMagic">-500</score>
+    </rule>
+    
+    
+    <rule id="classifieds">
+        
+        <!-- private predicates -->
+        <predicate id="dropMagics">
+            <any>
+                <predicate id="TV_MAGIC"/>
+                <predicate id="PICTURE_MAGIC"/>
+                <predicate id="WEATHER_MAGIC"/>
+                <predicate id="WIKIPEDIA_MAGIC"/>
+            </any>
+        </predicate>
+        <predicate id="magicService">
+            <all>
+                <predicate id="CLASSIFIED_MAGIC"/>
+                <predicate id="CLASSIFIED_CATEGORY"/>
+            </all>
+        </predicate>
+        <predicate id="productOrAnimal">
+            <any>
+                <predicate id="product"/>
+                <predicate id="ANIMAL"/>
+            </any>
+        </predicate>
+        
+        <!-- Scoring postives -->
+        <score predicate="CLASSIFIED_MAGIC">500</score>
+        <score predicate="CLASSIFIED_TRIGGER">250</score>
+        <score predicate="STYLE">110</score>
+        <score predicate="productOrAnimal">100</score>
+        
+        <!-- Scoring negatives -->
+        <score predicate="geo">-30</score>
+        <score predicate="EXACT_TOP3">-30</score>
+        <score predicate="dropPredicates">-250</score>
+        <score predicate="dropMagics">-500</score>
+        <score predicate="EXACT_CLASSIFIED_MAGIC">-500</score>
+        <score predicate="PRODUCT_CAR">-1000</score>
+        <score predicate="magicService">-1000</score>
+    </rule>  
+    
+</rules>

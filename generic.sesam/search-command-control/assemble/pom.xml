@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>sesat</groupId>
+        <artifactId>pom.generic.sesam.no-search-command-control</artifactId>
+        <version>2.16-SNAPSHOT</version>
+    </parent>
+    <name>${project.artifactId}</name>
+    <artifactId>generic.sesam.no-search-command-control</artifactId>
+    <packaging>jar</packaging>
+    <description>Generic Search Commands</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-1</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assemble/assemble-default.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                            <phase>generate-resources</phase>
+                            <goals><goal>directory-single</goal></goals>
+                        </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <phase>generate-resources</phase>
+                    <configuration>
+                      <tasks>
+                        <mkdir dir="${basedir}/target/.dir"/>
+                      </tasks>
+                    </configuration>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>include-fast</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                          <execution>
+                            <phase>process-sources</phase>
+                            <configuration>
+                              <tasks>
+                                <mkdir dir="${basedir}/target/.dir"/>
+                              </tasks>
+                            </configuration>
+                            <goals>
+                              <goal>run</goal>
+                            </goals>
+                          </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.2-beta-1</version>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assemble/assemble-include-fast.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                            <phase>generate-resources</phase>
+                            <goals><goal>directory-single</goal></goals>
+                        </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration><classifier>include-fast</classifier></configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+    <!-- while it would make sense to push these up into parent, 
+       -  it introduces a "cyclic reference" between projects in the reactor -->
+      <dependency>
+        <groupId>sesat</groupId>
+        <artifactId>generic.sesam.no-search-command-control-default</artifactId>
+        <version>${version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>sesat</groupId>
+        <artifactId>generic.sesam.no-search-command-control-fast</artifactId>
+        <version>${version}</version>
+        <scope>provided</scope>
+        <optional>true</optional>
+      </dependency>
+    </dependencies>
+    
+</project>
