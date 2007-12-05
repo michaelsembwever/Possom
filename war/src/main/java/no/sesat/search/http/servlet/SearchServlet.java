@@ -323,6 +323,9 @@ public final class SearchServlet extends HttpServlet {
             final String charset = "utf-8";
             response.setCharacterEncoding(charset);
             response.setContentType("text/xml; charset=" + charset);
+        } else if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){ 
+            response.setContentType("text/html; charset=iso-8859-1"); // for external javascript document.write(), where server uses iso encoding 
+            response.setCharacterEncoding("iso-8859-1");
         } else {
             final String charset = "utf-8";
             response.setContentType("text/html; charset=" + charset);
