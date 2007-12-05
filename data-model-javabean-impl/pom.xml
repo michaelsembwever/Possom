@@ -21,7 +21,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <modelVersion>4.0.0</modelVersion>
       <parent>
           <groupId>sesat</groupId>
-          <artifactId>search-portal</artifactId>
+          <artifactId>sesat-kernel</artifactId>
           <version>2.16-SNAPSHOT</version>
       </parent>
     <artifactId>sesat-data-model-javabean-impl</artifactId>
