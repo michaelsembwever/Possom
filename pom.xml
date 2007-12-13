@@ -47,9 +47,10 @@
                 <module>view-control-spi</module>
                 <module>run-transform-spi</module>
                 <module>run-handler-spi</module>
-		<module>sitemap-spi</module>
+                <module>sitemap-spi</module>
                 <module>core-api</module>
                 <module>search-servlet-handler-spi</module>
+                <!-- REQUIRES java6 module>sitemap-generator</module-->
                 <module>war</module>
             </modules>
         </profile>
