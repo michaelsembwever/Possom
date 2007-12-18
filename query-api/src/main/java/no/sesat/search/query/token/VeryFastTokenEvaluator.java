@@ -384,9 +384,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
+        final String qNew = query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
         final Matcher m = pattern.matcher(
                 // remove words made solely of characters that the parser considers whitespace
-                query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " "));
+                qNew);
 
         while (m.find()) {
 
@@ -397,6 +398,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             }
 
             result.get(name).add(tknMatch);
+
+            if (result.get(name).size() % 1000 == 0) {
+                try {
+                    LOG.info("Pattern: " + pattern.pattern() + " name: " + name + " query: " + query + " match: " + match + " query2: " + qNew);
+                } catch (Exception e) {
+                }
+            }
         }
     }
 
