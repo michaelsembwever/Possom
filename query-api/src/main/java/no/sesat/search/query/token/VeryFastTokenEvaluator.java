@@ -399,11 +399,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
             result.get(name).add(tknMatch);
 
-            if (result.get(name).size() % 1000 == 0) {
-                try {
-                    LOG.info("Pattern: " + pattern.pattern() + " name: " + name + " query: " + query + " match: " + match + " query2: " + qNew);
-                } catch (Exception e) {
-                }
+            if (result.get(name).size() % 100 == 0) {
+                LOG.warn("Pattern: " + pattern.pattern() + " name: " + name + " query: " + query + " match: " + match + " query2: " + qNew);
             }
         }
     }
