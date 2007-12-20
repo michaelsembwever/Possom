@@ -67,8 +67,8 @@
         </dependency>
 
         <dependency>
-            <groupId>schibstedsok.newsadmin</groupId>
-            <artifactId>ha-services</artifactId>
+            <groupId>schibstedsok</groupId>
+            <artifactId>newsadmin-services</artifactId>
         </dependency>
 
         <!-- Testing -->

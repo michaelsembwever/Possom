@@ -54,7 +54,7 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         }
         LOG.debug("Original query is: '" + queryString + "'");
         if (queryString != null && queryString.length() > 0) {
-            String transformedQuery = dataAccess.getQuery(queryString, config.getQueryType());
+            String transformedQuery = dataAccess.getQuery(queryString, config.getQueryType(),config.getAggregatorId());
             if (transformedQuery == null) {
                 transformedQuery = defaultTransform(queryString);
             }
@@ -153,12 +153,12 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
          * @param queryType
          * @return
          */
-        public String getQuery(String newsCaseName, String queryType) {
+        public String getQuery(String newsCaseName, String queryType, int aggrId) {
             try {
                 LOG.debug("Looking up query for: " + newsCaseName);
                 final NewsCaseFacadeInterface newsCaseFacade = lookupDataService();
                 if (newsCaseFacade != null) {
-                    String newsQuery = newsCaseFacade.searchForQuery(newsCaseName, queryType);
+                    String newsQuery = newsCaseFacade.searchForQuery(newsCaseName, queryType, aggrId);
                     if (newsQuery != null) {
                         return newsQuery;
                     }
