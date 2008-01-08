@@ -40,6 +40,7 @@ import no.sesat.search.site.SiteContext;
 
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -85,6 +86,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final int CACHE_CAPACITY = 1000;
     
     private static final String SKIP_REGEX;
+    private static final String OPERATOR_REGEX;
 
     // Attributes ----------------------------------------------------
     
@@ -106,6 +108,18 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         builder.setLength(builder.length() - 1);
         // our skip regular expression
         SKIP_REGEX = '(' + builder.toString() + ')';
+
+        final StringBuilder operatorRegexpBuilder = new StringBuilder();
+
+        operatorRegexpBuilder.append("[");
+
+        for (char c : QueryParser.OPERATOR_CHARACTERS) {
+            operatorRegexpBuilder.append('\\').append(c);
+        }
+
+        operatorRegexpBuilder.append("]");
+
+        OPERATOR_REGEX = operatorRegexpBuilder.toString();
     }
 
     // Constructors -------------------------------------------------
@@ -128,7 +142,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         httpClient = HTTPClient.instance(host, port);
         
         init();
-        analysisResult = queryFast(context.getQueryString());
+
+        // Remove whitespace (except space itself) and operator characters.
+        analysisResult = queryFast(context.getQueryString()
+                .replaceAll(" ", "--KEEPWS--") // Hack to keep spaces.
+                .replaceAll(SKIP_REGEX, "")
+                .replaceAll(OPERATOR_REGEX, "")
+                .replaceAll("--KEEPWS--", " ")); // Hack to keep spaces.
     }
 
     // Public --------------------------------------------------------
