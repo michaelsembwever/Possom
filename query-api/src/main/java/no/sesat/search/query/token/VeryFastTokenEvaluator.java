@@ -145,10 +145,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         // Remove whitespace (except space itself) and operator characters.
         analysisResult = queryFast(context.getQueryString()
-                .replaceAll(" ", "--KEEPWS--") // Hack to keep spaces.
+                .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces.
                 .replaceAll(SKIP_REGEX, "")
                 .replaceAll(OPERATOR_REGEX, "")
-                .replaceAll("--KEEPWS--", " ")); // Hack to keep spaces.
+                .replaceAll("xxKEEPWSxx", " ")); // Hack to keep spaces.
     }
 
     // Public --------------------------------------------------------
@@ -182,7 +182,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                     }  else  {
 
                         // HACK since DefaultOperatorClause wraps its children in parenthesis
-                        final String hackTerm = term.replaceAll("\\(|\\)","");
+                        // Also remove any operator characters. (SEARCH-3883)
+                        final String hackTerm = term.replaceAll("\\(|\\)","").replaceAll(OPERATOR_REGEX, "");
 
                         for (TokenMatch occurance : analysisResult.get(listname)) {
 
