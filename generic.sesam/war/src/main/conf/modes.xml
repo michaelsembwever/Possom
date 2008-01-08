@@ -89,11 +89,14 @@ Copyright (2006-2007) Schibsted Søk AS
                            field-filters="site AS domain"
                            filter="-porn"
                            port="yahooIdpPort"
-                           region-mix="1.0*nonregional"
+                           region-mix=""
+                           language-mix=""
+                           language=""
+                           region=""
                            result-fields="title.html.hl AS title,dispURL AS url,redirecturl AS clickurl,abstract.best.html.hl AS body"
                            results-to-return="10"
                            spell-state="disabled"
-                           unique="doc,host">
+                           unique="doc,host%202">
 
             <result-handlers>
                 <field-chooser target="title" fields="title,url"/>
@@ -101,7 +104,6 @@ Copyright (2006-2007) Schibsted Søk AS
         </yahoo-idp-command>
         
         <yahoo-idp-command id="default-yahoo-i18n-command" inherit="default-yahoo-command"
-                           language-mix="1.0*english"
                            port="yahooIdpPort"/>
 
         <yahoo-idp-command id="defaultno-yahoo-i18n-command" inherit="default-yahoo-i18n-command"

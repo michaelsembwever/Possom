@@ -68,6 +68,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String HEADER_ELEMENT = "HEADER";
     private static final String TOTALHITS_ELEMENT ="TOTALHITS";
+    private static final String DEEPHITS_ELEMENT = "DEEPHITS";
     private static final String RESULT_ELEMENT = "RESULT";
     private static final String WORDCOUNTS_ELEMENT = "WORDCOUNTS";
 
@@ -101,7 +102,10 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     final Element searchResponseE = doc.getDocumentElement();
                     final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                     final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
-                    searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
+                    final Element deepHitsE = (Element) headerE.getElementsByTagName(DEEPHITS_ELEMENT).item(0);
+                    searchResult.setHitCount(Integer.parseInt(deepHitsE.getFirstChild().getNodeValue()));
+                    searchResult.addField("totalhits", totalHitsE.getFirstChild().getNodeValue());
+                    searchResult.addField("deephits", deepHitsE.getFirstChild().getNodeValue());
 
                     LOG.info("hitcount " + searchResult.getHitCount());
 
@@ -182,7 +186,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     conf.getLanguageMix(),
                     conf.getEncoding(),
                     fields.toString(),
-                    conf.getUnique(),
+                    this.getParameters().get("unique") != null ? "" : conf.getUnique(),
                     conf.getFilter(),
                     URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
                     getAffilDataParameter()

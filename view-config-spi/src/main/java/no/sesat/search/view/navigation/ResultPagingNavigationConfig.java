@@ -32,6 +32,7 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
     private int pageSize;
     private int numberOfPages;
     private String commandName;
+    private String hitcountSource;
 
     public ResultPagingNavigationConfig(final NavigationConfig.Nav parent, final NavigationConfig.Navigation navigation, final Element e) {
         super(parent, navigation, e);
@@ -39,6 +40,7 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
         fillBeanProperty(this, null, "pageSize", ParseType.Int, e, "10");
         fillBeanProperty(this, null, "numberOfPages", ParseType.Int, e, "10");
         fillBeanProperty(this, null, "commandName", ParseType.String, e, null);
+        fillBeanProperty(this, null, "hitcountSource", ParseType.String, e, "");
     }
     public int getPageSize() {
         return pageSize;
@@ -66,4 +68,11 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
         this.commandName = commandName;
     }
 
+    public String getHitcountSource() {
+        return hitcountSource;
+}
+    
+    public void setHitcountSource(String hitcountSource) {
+        this.hitcountSource = hitcountSource;
+    }
 }

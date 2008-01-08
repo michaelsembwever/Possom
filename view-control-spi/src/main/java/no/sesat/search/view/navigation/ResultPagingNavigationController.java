@@ -56,7 +56,13 @@ public final class ResultPagingNavigationController
 
             final ResultList<? extends ResultItem> searchResult = search.getResults();
 
-            final int hitCount = searchResult.getHitCount();
+            int hitCount;
+            if(config.getHitcountSource().length() > 0) {
+                hitCount = Integer.parseInt(searchResult.getField(config.getHitcountSource()));
+            }
+            else {
+                hitCount = searchResult.getHitCount();
+            }
             final StringDataObject offsetString = context.getDataModel().getParameters().getValue("offset");
             final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
 
