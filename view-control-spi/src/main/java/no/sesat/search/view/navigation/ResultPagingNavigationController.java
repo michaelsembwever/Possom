@@ -69,6 +69,11 @@ public final class ResultPagingNavigationController
             item = new BasicNavigationItem();
             final PagingHelper pager = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
 
+            searchResult.addField("currentPage", Integer.toString(pager.getCurrentPage()));
+            searchResult.addField("numberOfPages", Integer.toString(pager.getNumberOfPages()));
+            searchResult.addField("firstVisiblePage", Integer.toString(pager.getFirstVisiblePage()));
+            searchResult.addField("lastVisiblePage", Integer.toString(pager.getLastVisiblePage()));
+
             final TextMessages messages = TextMessages.valueOf(context.getSite());
 
             // Add navigation item for previous page.
