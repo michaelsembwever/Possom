@@ -171,7 +171,8 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             return searchResult;
 
         } catch (ConfigurationException ex) {
-            throw new SearchCommandException(ex);
+            LOG.error(ex.getMessage());
+            return new BasicResultList<BasicResultItem>();
         } catch (IOException ex) {
             throw new SearchCommandException(ex);
         } catch (FastException ex) {
