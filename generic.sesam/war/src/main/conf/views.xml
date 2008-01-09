@@ -14,7 +14,7 @@
     <!-- "absolute-ordering" means that the navigator sources should be sorted according to the 
 prority attribute of the navigation hints -->
 
-    <tab id="default" page-size="10" enrichment-limit="0" enrichment-on-top="0" absolute-ordering="true">
+    <tab id="default" enrichment-limit="0" enrichment-on-top="0" absolute-ordering="true">
 
         <navigation>
             <navigation id="verticals" out="true">

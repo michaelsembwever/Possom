@@ -51,8 +51,6 @@ public final class SearchTab implements Serializable{
     // Attributes ----------------------------------------------------
 
     private final String id;
-    private final int pageSize;
-    private final int pagingSize = 10;
     private final int enrichmentLimit;
     private final int enrichmentOnTop;
     private final String adCommand;
@@ -88,7 +86,6 @@ public final class SearchTab implements Serializable{
      * @param parentKey
      * @param rssResultName
      * @param rssHidden
-     * @param pageSize
      * @param navConf
      * @param enrichmentLimit
      * @param enrichmentOnTop
@@ -113,7 +110,6 @@ public final class SearchTab implements Serializable{
                 final String parentKey,
                 final String rssResultName,
                 final boolean rssHidden,
-                final int pageSize,
                 final NavigationConfig navConf,
                 final int enrichmentLimit,
                 final int enrichmentOnTop,
@@ -140,7 +136,6 @@ public final class SearchTab implements Serializable{
         this.parentKey = parentKey != null && parentKey.trim().length() >0
                 ? parentKey
                 : inherit != null ? inherit.parentKey : null;
-        this.pageSize = pageSize >=0 || inherit == null ? pageSize : inherit.pageSize;
         this.navigationConfig = navConf;
         this.enrichmentLimit = enrichmentLimit >=0 || inherit == null ? enrichmentLimit : inherit.enrichmentLimit;
         this.enrichmentOnTop = enrichmentOnTop >=0 || inherit == null ? enrichmentOnTop : inherit.enrichmentOnTop;
@@ -182,22 +177,6 @@ public final class SearchTab implements Serializable{
      */
     public String getId() {
         return this.id;
-    }
-
-    /**
-     * Getter for property pageSize.
-     * @return Value of property pageSize.
-     */
-    public int getPageSize() {
-        return this.pageSize;
-    }
-
-    /**
-     * Getter for property pagingSize.
-     * @return Value of property pagingSize.
-     */
-    public int getPagingSize() {
-        return this.pagingSize;
     }
 
     /**

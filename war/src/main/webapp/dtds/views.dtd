@@ -36,7 +36,6 @@
     ad-command CDATA #IMPLIED
     enrichment-on-top CDATA #IMPLIED
     enrichment-limit CDATA #IMPLIED
-    page-size CDATA #IMPLIED
     id CDATA #IMPLIED
   >
 
