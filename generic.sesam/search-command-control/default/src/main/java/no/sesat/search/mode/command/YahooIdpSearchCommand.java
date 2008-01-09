@@ -103,11 +103,31 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                     final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
                     final Element deepHitsE = (Element) headerE.getElementsByTagName(DEEPHITS_ELEMENT).item(0);
-                    searchResult.setHitCount(Integer.parseInt(deepHitsE.getFirstChild().getNodeValue()));
-                    searchResult.addField("totalhits", totalHitsE.getFirstChild().getNodeValue());
-                    searchResult.addField("deephits", deepHitsE.getFirstChild().getNodeValue());
 
-                    LOG.info("hitcount " + searchResult.getHitCount());
+                    int totalHits;
+                    try {
+                        totalHits = Integer.parseInt(totalHitsE.getFirstChild().getNodeValue());
+                    }
+                    catch(NumberFormatException e) {
+                        totalHits = Integer.MAX_VALUE;
+                    }
+                    searchResult.addField("totalhits", ""+totalHits);
+                    
+                    int deepHits;
+                    try {
+                        deepHits = Integer.parseInt(deepHitsE.getFirstChild().getNodeValue());
+                    }
+                    catch(NumberFormatException e) {
+                        deepHits = Integer.MAX_VALUE;
+                    }
+                    searchResult.addField("deephits", ""+deepHits);                    
+                    searchResult.setHitCount(deepHits);
+
+                    if(searchResult.getHitCount() > totalHits) {
+                        searchResult.addField("hasMoreHits", "true");
+                    }
+
+
 
                     // build results
                     final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
