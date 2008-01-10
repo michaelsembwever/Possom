@@ -89,12 +89,10 @@ public final class SearchServlet extends HttpServlet {
     static{
 
         // when the root logger is set to DEBUG do not limit connection times
-        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
             System.setProperty("http.keepAlive", "false");
             System.setProperty("sun.net.client.defaultConnectTimeout", "1000");
             System.setProperty("sun.net.client.defaultReadTimeout", "3000");
             System.setProperty("sun.net.http.errorstream.enableBuffering", "true");
-        }
     }
 
     // Constructors --------------------------------------------------
