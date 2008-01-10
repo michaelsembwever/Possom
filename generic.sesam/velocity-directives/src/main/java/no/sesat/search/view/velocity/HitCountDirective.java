@@ -28,6 +28,8 @@ import java.io.Writer;
 import java.io.IOException;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.text.MessageFormat;
+
 import no.sesat.search.result.ResultList;
 
 /**
@@ -45,6 +47,7 @@ public final class HitCountDirective extends AbstractDirective {
     private static final Logger LOG = Logger.getLogger(HitCountDirective.class);
 
     private static final String NAME = "hitcount";
+    private static final String ERR_MISSING_ARG = "#{0} - missing or invalid argument at {1}:{2},{3}";
 
     /**
       * {@inheritDoc}
@@ -76,7 +79,8 @@ public final class HitCountDirective extends AbstractDirective {
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
         if (node.jjtGetNumChildren() < 1 || !(getObjectArgument(cxt, node, 0) instanceof ResultList)) {
-            LOG.error("#" + getName() + " - missing or invalid argument");
+            LOG.error(MessageFormat.format(
+                    ERR_MISSING_ARG, getName(), cxt.getCurrentTemplateName(), node.getLine(), node.getColumn()));
             return false;
         }
 
