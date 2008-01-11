@@ -16,18 +16,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import javax.xml.parsers.DocumentBuilder;
+
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.InfrastructureException;
 import no.sesat.search.result.Boomerang;
+import no.sesat.search.result.Decoder;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
-import no.sesat.search.site.config.*;
-import no.sesat.search.result.Decoder;
+import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.site.config.DocumentLoader;
+import no.sesat.search.site.config.PropertiesLoader;
+import no.sesat.search.site.config.ResourceContext;
+import no.sesat.search.site.config.SiteClassLoaderFactory;
+import no.sesat.search.site.config.SiteConfiguration;
+import no.sesat.search.site.config.Spi;
+import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.view.navigation.NavigationHelper;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -39,6 +49,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.generic.DateTool;
 import org.apache.velocity.tools.generic.MathTool;
+import org.apache.velocity.tools.generic.NumberTool;
 
 /** Custom Factory around Velocity Engines and Templates.
  * Each instance maps to an VelocityEngine instance.
@@ -122,6 +133,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("decoder", new Decoder());
         // math tool
         context.put("math", new MathTool());
+        // number tool
+        context.put("number", new NumberTool());
         // date tool
         context.put("date", new DateTool());
         // navigation helper
