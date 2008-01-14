@@ -493,13 +493,7 @@
                 <artifactId>rome</artifactId>
                 <version>0.8</version>
             </dependency>
-            <dependency><!-- FIXME move out to skin -->
-                <groupId>no.schibstedsok.alfa</groupId>
-                <artifactId>alfa-remote</artifactId>
-                <type>ejb-client</type>
-                <version>1.6-SNAPSHOT</version>
-            </dependency>
-            <dependency><!-- FIXME move out to skin -->
+            <dependency>
                 <groupId>schibstedsok.newsadmin</groupId>
                 <artifactId>ha-services</artifactId>
                 <version>1.1</version>

@@ -28,7 +28,8 @@ import no.sesat.search.site.config.TextMessages;
 import org.apache.log4j.Logger;
 
 
-/**
+/** Paging navigation controller.
+ *
  * @author maek
  * @version $Id$
  */
@@ -40,11 +41,12 @@ public final class ResultPagingNavigationController
     private ResultPagingNavigationConfig config;
 
     public NavigationController get(final ResultPagingNavigationConfig nav) {
+
         this.config = nav;
         return this;
     }
 
-    public NavigationItem getNavigationItems(Context context) {
+    public NavigationItem getNavigationItems(final Context context) {
 
         final SearchDataObject search = context.getDataModel().getSearch(config.getCommandName());
         NavigationItem item = null;
@@ -57,17 +59,18 @@ public final class ResultPagingNavigationController
             final ResultList<? extends ResultItem> searchResult = search.getResults();
 
             int hitCount;
-            if(config.getHitcountSource().length() > 0) {
+            if(config.getHitcountSource().length() > 0 && null != searchResult.getField(config.getHitcountSource())) {
                 hitCount = Integer.parseInt(searchResult.getField(config.getHitcountSource()));
-            }
-            else {
+            }else {
                 hitCount = searchResult.getHitCount();
             }
             final StringDataObject offsetString = context.getDataModel().getParameters().getValue("offset");
             final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
 
             item = new BasicNavigationItem();
-            final PagingHelper pager = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
+
+            final PagingHelper pager
+                    = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
 
             searchResult.addField("currentPage", Integer.toString(pager.getCurrentPage()));
             searchResult.addField("numberOfPages", Integer.toString(pager.getNumberOfPages()));
@@ -85,9 +88,12 @@ public final class ResultPagingNavigationController
 
             // Add navigation items for the individual pages.
             for (int i = pager.getFirstVisiblePage(); i <= pager.getLastVisiblePage(); ++i) {
+
                 final String pageOffset = Integer.toString(pager.getOffsetOfPage(i));
                 final String url = context.getUrlGenerator().getURL(pageOffset, config);
-                final BasicNavigationItem navItem = new BasicNavigationItem(Integer.toString(i), url, config.getPageSize());
+
+                final BasicNavigationItem navItem
+                        = new BasicNavigationItem(Integer.toString(i), url, config.getPageSize());
 
                 navItem.setSelected(i == pager.getCurrentPage());
 
