@@ -29,13 +29,6 @@
     <artifactId>pom.generic.sesam.no</artifactId>
     <packaging>pom</packaging>
     <description>Generic Search-config Skin's Inheritable-Pom.</description>
-    <url>https://dev.schibstedsok.no/maven/sites/search-config/</url>
-
-    <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-config/generic.sesam/trunk</connection>
-        <url>https://dev.schibstedsok.no/svn/search-config/generic.sesam/trunk</url>
-      <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-config/generic.sesam/trunk</developerConnection>
-    </scm>
 
     <modules>
       <module>war</module>

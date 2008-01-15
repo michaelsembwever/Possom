@@ -16,16 +16,9 @@
     <artifactId>generic.sesam.no</artifactId>
     <packaging>war</packaging>
     <description>Generic Search-config Skin.</description>
-    <url>https://dev.schibstedsok.no/maven/sites/search-config/</url>
-
-    <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-config/generic.sesam.no/trunk/war</connection>
-        <url>https://dev.schibstedsok.no/svn/search-config/generic.sesam.no/trunk/war</url>
-        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-config/generic.sesam.no/trunk/war</developerConnection>
-    </scm>
-
+    
     <profiles>
-        <!-- DEVELOPMENT PROFILE -->
+        <!-- DEVELOPMENT PROFILE >
         <profile>
             <id>development</id>
             <activation><activeByDefault>true</activeByDefault></activation>
@@ -44,71 +37,26 @@
         <profile><id>beta</id></profile>
         <profile><id>electron</id></profile>
         <profile><id>gamma</id></profile>
-        <profile><id>production</id></profile>
+        <profile><id>production</id></profile-->
         <profile>
             <id>include-fast</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration><classifier>include-fast</classifier></configuration>
+                    </plugin>                
+                </plugins>
+            </build>
             <dependencies>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>sesat-resourcefeed</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>commons-log4j</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-query-transform-config</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-query-transform-control</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-result</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-result-handler-config</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-result-handler-control</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-search-command-config</artifactId>
-                    <version>${version}</version>
-                </dependency>
                 <dependency>
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam.no-search-command-control</artifactId>
                     <version>${version}</version>
-                    <classifier>include-fast</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-view-config</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-view-control</artifactId>
-                    <version>${version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-velocity-directives</artifactId>
-                    <version>${version}</version>
-                </dependency>
-            </dependencies>          
+                    <optional>true</optional>
+                </dependency>                
+            </dependencies>
         </profile>
     </profiles>
     
@@ -156,6 +104,13 @@
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
             <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>generic.sesam.no-search-command-control</artifactId>
+            <version>${version}</version>
+            <classifier>include-fast</classifier>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
