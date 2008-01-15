@@ -84,13 +84,103 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-control-fast</artifactId>
-            <version>${version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
+    
+    <profiles>
+        <profile>
+            <id>include-fast</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <testSourceDirectory>${basedir}/src/test-fast/java</testSourceDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-query-api</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-result-handler-config-spi</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>generic.sesam.no-result-handler-config</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-result-spi</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>generic.sesam.no-result</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-search-command-config-spi</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-data-model-api</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-result-handler-control-spi</artifactId>
+                    <version>${version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                    <version>1.0.2</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jep</groupId>
+                    <artifactId>jep</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <!-- tests -->
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>sesat-core-api</artifactId>
+                    <version>${version}</version>
+                    <type>test-jar</type>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>generic.sesam.no-search-command-control-fast</artifactId>
+                    <version>${version}</version>
+                    <type>test-jar</type>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>          
+        </profile>
+    </profiles>
+    
 </project>

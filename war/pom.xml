@@ -235,12 +235,13 @@
         <version>3.0-schibstedsok-r1</version>
       </dependency>
 
+      <!-- Reference implementation provided in no.sesat.search.http.dwr.DataModelWrapper.java
       <dependency>
         <groupId>dwr</groupId>
         <artifactId>dwr</artifactId>
         <type>jar</type>
         <version>2.0.1</version>
-      </dependency>
+      </dependency-->
     </dependencies>
 
     <profiles>

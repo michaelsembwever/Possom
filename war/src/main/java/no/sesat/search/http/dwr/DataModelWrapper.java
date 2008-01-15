@@ -29,8 +29,6 @@ import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import org.apache.log4j.Logger;
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
 
 /**
  *
@@ -45,16 +43,13 @@ public class DataModelWrapper {
     
     public static DataModel getDataModel() {
        
-        final WebContext webContext = WebContextFactory.get();
-        final HttpSession session = webContext.getSession(false);
+        HttpSession session = null;
+//  Uncomment the following two codelines to enable DWR.
+//    The dwr dependency in the pom.xml will also need to be uncommented.        
+//        final org.directwebremoting.WebContext webContext = org.directwebremoting.WebContextFactory.get();
+//        session = webContext.getSession(false);
         
-        if (session == null) {
-            return createDefaultDataModel();
-        }
-       
-        final DataModel datamodel = (DataModel) session.getAttribute(DataModel.KEY);
-        
-        return datamodel;
+        return null == session ? createDefaultDataModel() : (DataModel) session.getAttribute(DataModel.KEY);
     }
    
     public static BrowserDataObject getBrowser() {

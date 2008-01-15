@@ -90,24 +90,35 @@
                     </plugin>
                 </plugins>
             </build>
+
+            <dependencies>
+             <!-- while it would make sense to push these up into parent, 
+               -  it introduces a "cyclic reference" between projects in the reactor -->
+              <dependency>
+                <groupId>sesat</groupId>
+                <artifactId>generic.sesam.no-search-command-control-default</artifactId>
+                <version>${version}</version>
+                <scope>provided</scope>
+              </dependency>
+              <dependency>
+                <groupId>sesat</groupId>
+                <artifactId>generic.sesam.no-search-command-control-fast</artifactId>
+                <version>${version}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+              </dependency>
+            </dependencies>            
         </profile>
     </profiles>
 
     <dependencies>
-    <!-- while it would make sense to push these up into parent, 
+     <!-- while it would make sense to push these up into parent, 
        -  it introduces a "cyclic reference" between projects in the reactor -->
       <dependency>
         <groupId>sesat</groupId>
         <artifactId>generic.sesam.no-search-command-control-default</artifactId>
         <version>${version}</version>
         <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>sesat</groupId>
-        <artifactId>generic.sesam.no-search-command-control-fast</artifactId>
-        <version>${version}</version>
-        <scope>provided</scope>
-        <optional>true</optional>
       </dependency>
     </dependencies>
     
