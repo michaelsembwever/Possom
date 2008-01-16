@@ -92,7 +92,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     
     private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
     private static final int REFRESH_PERIOD = 60; // one minute
-    private static final int CACHE_CAPACITY = 1000;
+    private static final int CACHE_CAPACITY = 100; // smaller than usual as each entry can contain up to 600 values!
     
     private static final String SKIP_REGEX;
 
