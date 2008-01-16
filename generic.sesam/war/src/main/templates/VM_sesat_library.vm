@@ -1,8 +1,11 @@
 #macro(searchTabInclude $includeName)
-    #if($includeName && $tab.layout)
-        #set ($includeValue = "$!tab.layout.getInclude($includeName)")
+    #if($includeName && $layout)
+        #set ($includeValue = "$!layout.getInclude($includeName)")
         #if($includeValue && $includeValue.trim().length() > 0)
+            <!-- $includeName -->
             #parse("$datamodel.site.site.getTemplateDir()/fragments/layout/${includeValue}.vm")
+        #else
+            <!-- $includeName not found -->
         #end
     #end
 #end
@@ -11,7 +14,7 @@
     <img src="/images/star.png" width="11" height="11" alt="star" />
     $text.getMessage("didYouMean"):
     #foreach ($querySuggestion in $datamodel.getSearch($command).results.querySuggestions)
-    <em><a href="$boomerang.getUrl($datamodel.site.site,"/search/?c=$tab.getKey()&amp;q=#urlencode($querySuggestion.suggestion)", "category:navigation;subcategory:spell")">$querySuggestion.htmlSuggestion</a></em>#if ($velocityCount < $datamodel.getSearch($command).results.getQuerySuggestions().size()) eller #end#end?
+    <em><a href="$boomerang.getUrl($datamodel.site.site,"/search/?c=$datamodel.page.currentTab.getKey()&amp;q=#urlencode($querySuggestion.suggestion)", "category:navigation;subcategory:spell")">$querySuggestion.htmlSuggestion</a></em>#if ($velocityCount < $datamodel.getSearch($command).results.getQuerySuggestions().size()) eller #end#end?
 #end
 
 

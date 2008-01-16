@@ -78,30 +78,39 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
      * and handles all tag processing, body iteration, etc.
      */
     @Override
-    public void doTag() throws JspException {
+    public void doTag() throws JspException, IOException {
         
         final PageContext cxt = (PageContext) getJspContext();
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
         final SearchTab tab = datamodel.getPage().getCurrentTab();
         final StringDataObject layoutDO = datamodel.getParameters().getValue(RunningQueryImpl.PARAM_LAYOUT);
-        final Layout layout = null != layoutDO 
+        final Layout layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO 
                 ? tab.getLayouts().get(layoutDO.getXmlEscaped()) 
                 : tab.getDefaultLayout();
-        final String template = LAYOUT_DIRECTORY + layout.getInclude(include);
-        try{
-            cxt.getOut().println("<!-- " + include + " -->");
-        }catch(IOException ioe){
-            LOG.warn("Failed to write include comment", ioe);
-        }
+        cxt.setAttribute("layout", layout);
         
-        final Map<String,Object> map = new HashMap<String,Object>();
-        
-        // HACK the pager until the datamodel provides methods to access "paging" commands in the current mode.
-        map.put("commandName", layout.getOrigin());
-        // end-HACK
-        
-        importTemplate(template, map);
+        if(null != layout.getInclude(include) && layout.getInclude(include).length() > 0 ){
+            
+            final String template = LAYOUT_DIRECTORY + layout.getInclude(include);
+            try{
+                cxt.getOut().println("<!-- " + include + " -->");
+            }catch(IOException ioe){
+                LOG.warn("Failed to write include comment", ioe);
+            }
 
+            final Map<String,Object> map = new HashMap<String,Object>();
+
+            map.put("layout", layout);
+            // HACK the pager until the datamodel provides methods to access "paging" commands in the current mode.
+            map.put("commandName", layout.getOrigin());
+            // end-HACK
+
+            importTemplate(template, map);
+
+        }else{
+            // could not find include
+            cxt.getOut().write("<!-- " + include + " not found -->");
+        }
     }
 
     // Package protected ---------------------------------------------

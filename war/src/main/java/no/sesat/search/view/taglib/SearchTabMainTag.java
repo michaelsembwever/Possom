@@ -98,9 +98,11 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
                 LOG.warn("Failed to write include comment", ioe);
             }
 
-            importTemplate(
-                    include.startsWith("/") ? include : PAGES_DIRECTORY + include, 
-                    new HashMap<String,Object>());
+            final Map<String,Object> map = new HashMap<String,Object>();
+
+            map.put("layout", layout);
+            
+            importTemplate(include.startsWith("/") ? include : PAGES_DIRECTORY + include, map);
             
         }else{
             // use the default httpDecorator.jsp
