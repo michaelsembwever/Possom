@@ -18,7 +18,7 @@
     <description>Generic Search-config Skin.</description>
     
     <profiles>
-        <!-- DEVELOPMENT PROFILE >
+        <!-- DEVELOPMENT PROFILE -->
         <profile>
             <id>development</id>
             <activation><activeByDefault>true</activeByDefault></activation>
@@ -32,12 +32,6 @@
                 </execution></executions>
             </plugin></plugins></build>
         </profile>
-        <profile><id>alpha</id></profile>
-        <profile><id>nuclei</id></profile>
-        <profile><id>beta</id></profile>
-        <profile><id>electron</id></profile>
-        <profile><id>gamma</id></profile>
-        <profile><id>production</id></profile-->
         <profile>
             <id>include-fast</id>
             <build>
@@ -57,6 +51,90 @@
                     <optional>true</optional>
                 </dependency>                
             </dependencies>
+        </profile>
+        <profile><id>alpha</id>
+        <!-- redefine sesat-kernel's environment classifiers as the include-fast profile would otherwise clobber it!
+           -  this means that there's no way of determining if an alpha build includes fast or not. 
+           - This headache would be solved if http://jira.codehaus.org/browse/MNG-2596 was implemented. -->
+            <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration><classifier>alpha</classifier></configuration>
+                  </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile><id>nuclei</id>
+        <!-- redefine sesat-kernel's environment classifiers as the include-fast profile would otherwise clobber it!
+           -  this means that there's no way of determining if an alpha build includes fast or not. 
+           - This headache would be solved if http://jira.codehaus.org/browse/MNG-2596 was implemented. -->
+            <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration><classifier>alpha</classifier></configuration>
+                  </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile><id>beta</id>
+        <!-- redefine sesat-kernel's environment classifiers as the include-fast profile would otherwise clobber it!
+           -  this means that there's no way of determining if an alpha build includes fast or not. 
+           - This headache would be solved if http://jira.codehaus.org/browse/MNG-2596 was implemented. -->
+            <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration><classifier>alpha</classifier></configuration>
+                  </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile><id>electron</id>
+        <!-- redefine sesat-kernel's environment classifiers as the include-fast profile would otherwise clobber it!
+           -  this means that there's no way of determining if an alpha build includes fast or not. 
+           - This headache would be solved if http://jira.codehaus.org/browse/MNG-2596 was implemented. -->
+            <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration><classifier>alpha</classifier></configuration>
+                  </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile><id>gamma</id>
+        <!-- redefine sesat-kernel's environment classifiers as the include-fast profile would otherwise clobber it!
+           -  this means that there's no way of determining if an alpha build includes fast or not. 
+           - This headache would be solved if http://jira.codehaus.org/browse/MNG-2596 was implemented. -->
+            <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration><classifier>alpha</classifier></configuration>
+                  </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile><id>production</id>
+        <!-- redefine sesat-kernel's environment classifiers as the include-fast profile would otherwise clobber it!
+           -  this means that there's no way of determining if an alpha build includes fast or not. 
+           - This headache would be solved if http://jira.codehaus.org/browse/MNG-2596 was implemented. -->
+            <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration><classifier>alpha</classifier></configuration>
+                  </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
     
