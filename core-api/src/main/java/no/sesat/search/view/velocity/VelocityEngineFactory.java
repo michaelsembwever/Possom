@@ -37,7 +37,6 @@ import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
 import no.sesat.search.site.config.*;
 import no.sesat.search.result.Decoder;
-import no.sesat.search.view.navigation.NavigationHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -134,8 +133,6 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
-        // navigation helper
-        context.put("navigationHelper", new NavigationHelper());
         // boomerang
         context.put("boomerang", new Boomerang());
 
