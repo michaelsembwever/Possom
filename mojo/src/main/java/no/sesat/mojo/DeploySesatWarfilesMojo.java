@@ -505,25 +505,32 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     
     private boolean ensureNoLocalModifications() throws ComponentLookupException, ScmException, MojoExecutionException{
         
-        final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
+        if(!Boolean.getBoolean("sesat.mojo.localModifications.ignore")){
+            
+            final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
 
-        loadPomProject();
+            loadPomProject();
 
-        final StatusScmResult result = scmManager.status(
-                scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
-                new ScmFileSet(pomProject.getBasedir()));
+            final StatusScmResult result = scmManager.status(
+                    scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
+                    new ScmFileSet(pomProject.getBasedir()));
 
-        
-        if(!result.isSuccess()){
-            getLog().error(result.getCommandOutput());
-            throw new MojoExecutionException("Failed to ensure checkout has no modifications");
+
+            if(!result.isSuccess()){
+
+                getLog().error(result.getCommandOutput());
+                throw new MojoExecutionException("Failed to ensure checkout has no modifications");
+            }
+
+            if(0 < result.getChangedFiles().size()){
+
+                throw new MojoExecutionException("Your checkout has local modifications. "
+                        + "Server deploy can *only* be done with a clean workbench.");
+            }
+
+            return result.isSuccess() && 0 == result.getChangedFiles().size();
         }
-        if(0 < result.getChangedFiles().size()){
-            throw new MojoExecutionException("Your checkout has local modifications. "
-                    + "Server deploy can *only* be done with a clean workbench.");
-        }
-        
-        return result.isSuccess() && 0 == result.getChangedFiles().size();
+        return true; // sesat.mojo.localModifications.ignore
     }    
 
     private void updateVersionFile(final Wagon wagon)
