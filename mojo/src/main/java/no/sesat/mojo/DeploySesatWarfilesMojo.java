@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,6 +82,10 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     // Constants -----------------------------------------------------
 
     private static final String[] ENVIRONMENTS = new String[]{"alpha","nuclei","beta","electron","gamma","production"};
+    
+    private static final String TAG_ON_DEPLOY = "tag.on.deploy";
+    
+    private static final String DRY_RUN = "sesat.mojo.dryRun";
 
     // Attributes ----------------------------------------------------
 
@@ -334,18 +340,36 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                             ? sesamSite
                             : project.getBuild().getFinalName();
 
-                    // we are ready to go. but first tag the code
-                    if(Boolean.parseBoolean(project.getProperties().getProperty("tag.on.deploy"))){
+                    // tag the code
+                    if(Boolean.parseBoolean(project.getProperties().getProperty(TAG_ON_DEPLOY))
+                            && !Boolean.getBoolean(DRY_RUN)){
+                        
                         tagDeploy();
                     }
 
-                    // now do the upload
+                    // do the upload
                     getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
                             + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
-                    wagon.put(artifact.getFile(), destName + ".war");
-
+                    
+                    if(!Boolean.getBoolean(DRY_RUN)){
+                        wagon.put(artifact.getFile(), destName + ".war");
+                    }
+                    
+                    // update the version.txt
                     getLog().info("Updating " + wagon.getRepository().getUrl() + "/version.txt");
-                    updateVersionFile(wagon);
+                        
+                    if(Boolean.getBoolean(DRY_RUN)){
+                        
+                        final StringWriter sb = new StringWriter();
+                        final BufferedWriter w = new BufferedWriter(sb);
+                        updateArtifactEntry(new BufferedReader(new StringReader("")), w);
+                        w.flush();
+                        getLog().info("version.txt entry will be \n" + sb.toString());
+                        
+                    }else{
+
+                        updateVersionFile(wagon);
+                    }
                 }
             }
 
