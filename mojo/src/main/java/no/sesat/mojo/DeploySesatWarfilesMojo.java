@@ -547,7 +547,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         final BufferedReader reader = new BufferedReader(new FileReader(versionOldFile));
         final BufferedWriter writer = new  BufferedWriter(new FileWriter(versionNewFile));
         for(String line = reader.readLine(); null != line; line = reader.readLine()){
-            if(line.equals(pomProject.getArtifactId())){
+            if(line.equals(project.getArtifactId())){
                 updateArtifactEntry(reader, writer);
                 updated = true;
             }else{
@@ -568,11 +568,11 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     private void updateArtifactEntry(final BufferedReader reader, final BufferedWriter writer) throws IOException{
 
         // this line remains the same
-        writer.write(pomProject.getArtifactId());
+        writer.write(project.getArtifactId());
         writer.newLine();
         // next line is version, author (or "deployer"), date & time,
         reader.readLine();
-        writer.write(pomProject.getVersion()
+        writer.write(project.getVersion()
                 + " was last deployed by " + System.getProperty("user.name")
                 + " at " + SimpleDateFormat.getDateTimeInstance().format(now));
         writer.newLine();
@@ -581,6 +581,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         final String quote = project.getProperties().getProperty("version.quote");
         if(null != quote){
             writer.write(quote);
+            writer.newLine();
             writer.newLine();
         }
 
