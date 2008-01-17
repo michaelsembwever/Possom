@@ -198,6 +198,8 @@
             <build><pluginManagement/></build>
             <properties>
 
+                <sesam.site>generic.alpha.test.sesam.no</sesam.site>                
+
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
 
@@ -240,6 +242,8 @@
             <build><pluginManagement/></build>
             <properties>
 
+                <sesam.site>generic.nuclei.test.sesam.no</sesam.site>   
+
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
 
@@ -281,6 +285,8 @@
             <id>beta</id>
             <build><pluginManagement/></build>
             <properties>
+
+                <sesam.site>generic.beta.test.sesam.no</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -329,6 +335,8 @@
             <build><pluginManagement/></build>
             <properties>
 
+                <sesam.site>generic.electron.test.sesam.no</sesam.site>   
+
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
 
@@ -370,6 +378,8 @@
             <id>gamma</id>
             <build><pluginManagement/></build>
             <properties>
+
+                <sesam.site>generic.gamma.test.sesam.no</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -414,6 +424,8 @@
             <id>production</id>
             <build><pluginManagement/></build>
             <properties>
+
+                <sesam.site>generic.sesam.no</sesam.site> 
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
