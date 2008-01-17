@@ -197,7 +197,6 @@ public final class HTTPClient {
 
         } catch (IOException e) {
             throw interceptIOException(e);
-
         } finally {
 
             if (null != urlConn && null != urlConn.getInputStream()) {
@@ -377,6 +376,7 @@ public final class HTTPClient {
             cleanErrorStream((HttpURLConnection) urlConn);
         }
 
+        LOG.error("IOException occured for server at: " + id);
 
         return ioe;
     }
