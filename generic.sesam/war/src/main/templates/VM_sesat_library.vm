@@ -1,4 +1,11 @@
+## Include template from your tab's default layout.
+
 #macro(searchTabInclude $includeName)
+    #searchTabIncludeFromLayout($includeName $tab.defaultLayout)
+#end
+
+## Include template from any of your tab's layouts.
+#macro(searchTabIncludeFromLayout $includeName $layout)
     #if($includeName && $layout)
         #set ($includeValue = "$!layout.getInclude($includeName)")
         #if($includeValue && $includeValue.trim().length() > 0)
