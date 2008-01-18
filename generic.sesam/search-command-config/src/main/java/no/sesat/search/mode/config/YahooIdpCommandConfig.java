@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * @version <tt>$Id$</tt>
  */
 @Controller("YahooIdpSearchCommand")
-public final class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
+public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
 
     /**
      * Holds value of property database.

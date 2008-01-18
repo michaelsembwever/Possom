@@ -46,7 +46,7 @@ import no.sesat.search.result.ResultList;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class PicSearchCommand extends AbstractSearchCommand {
+public class PicSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
     private final transient HTTPClient client;

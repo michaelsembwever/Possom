@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * @version <tt>$Id$</tt>
  */
 @Controller("PicSearchCommand")
-public final class PictureCommandConfig extends CommandConfig {
+public class PictureCommandConfig extends CommandConfig {
 
     private static final Logger LOG = Logger.getLogger(PictureCommandConfig.class);
 

@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
  * @author mick
  * @version $Id$
  */
-public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
+public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(YahooIdpSearchCommand.class);
     private static final String ERR_FAILED_CREATING_URL = "Failed to create command url";

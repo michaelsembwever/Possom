@@ -31,4 +31,4 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
  * @version $Id$
  */
 @Controller("WebSearchCommand")
-public final class WebCommandConfig extends FastCommandConfig {}
+public class WebCommandConfig extends FastCommandConfig {}
