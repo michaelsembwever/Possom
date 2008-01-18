@@ -33,7 +33,7 @@ import no.sesat.search.query.XorClause;
  * @author magnuse
  * @version $Id$
  */
-public final class WebSearchCommand extends FastSearchCommand {
+public class WebSearchCommand extends FastSearchCommand {
 
     /** Creates a new instance of WebSearchCommand
      *
