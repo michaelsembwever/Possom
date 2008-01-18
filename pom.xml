@@ -87,9 +87,9 @@
         </mailingList>
      </mailingLists>
     <scm>
-        <connection>scm:svn:http://sesat.no/svn/sesat-kernal/trunk</connection>
-        <url>http://sesat.no/svn/sesat-kernal/trunk</url>
-        <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernal/trunk</developerConnection>
+        <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
+        <url>http://sesat.no/svn/sesat-kernel/trunk</url>
+        <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</developerConnection>
     </scm>
 
     <modules>
