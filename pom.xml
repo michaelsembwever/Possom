@@ -495,9 +495,9 @@
                 <version>0.8</version>
             </dependency>
             <dependency>
-                <groupId>schibstedsok.newsadmin</groupId>
-                <artifactId>ha-services</artifactId>
-                <version>1.1</version>
+                <groupId>schibstedsok</groupId>
+                <artifactId>newsadmin-services</artifactId>
+                <version>1.4</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
