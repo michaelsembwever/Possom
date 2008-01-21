@@ -100,7 +100,8 @@ public final class SearchTab implements Serializable{
      * @param defaultLayout
      * @param displayCss
      * @param executeOnBlank
-     * @param layouts 
+     * @param layouts
+     * @param scope 
      */
     public SearchTab(
                 final SearchTab inherit,
