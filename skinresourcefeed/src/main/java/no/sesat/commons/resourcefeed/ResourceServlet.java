@@ -324,11 +324,14 @@ public final class ResourceServlet extends HttpServlet {
             // Remove path, site name and version suffix.
             final String jarName = path
                     .substring(path.lastIndexOf('/') + 1)
-                    .replaceAll("-(\\d+\\.?)+(-SNAPSHOT)?(-.*)?\\.jar$", "")
+                    .replaceAll("-(\\d+\\.?)+(-SNAPSHOT).*\\.jar", "")
                     .replaceAll("^([\\p{Alnum}]+\\.?)+-", "");
+
             
-            LOG.debug("Checking against " + jarName);
-            
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Checking against " + jarName);
+            }
+
             if (jarName.equals(baseName)) {
                 LOG.warn("Loading jarfile " + path);
                 return servletConfig.getServletContext().getResource(path).openConnection().getInputStream();

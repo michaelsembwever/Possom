@@ -67,7 +67,9 @@ public interface QueryParser {
         {'\u00f7', '\u00f7'},
         {'\u2010', '\u2015'}        
     };
-    
+
+    char[] OPERATOR_CHARACTERS = {'*', '-', '+', '(', ')'};
+
     /** The Context an QueryParser implementation needs to work off.
      * The QueryParser is not responsible for
      *  - holding the user's orginal inputted query string,

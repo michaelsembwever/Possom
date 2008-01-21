@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>schibstedsok</groupId>
+        <artifactId>search-portal</artifactId>
+        <version>2.15-SNAPSHOT</version>
+    </parent>
+
+    <name>SESAT Sitemap Generator</name>
+    <description>
+        This is the project for the SESAT Sitemap generator.
+    </description>
+    <scm>
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/sitemap-generator</connection>
+        <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/sitemap-generator</url>
+        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/sitemap-generator</developerConnection>
+    </scm>
+
+    <artifactId>sesat-sitemap-generator</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+        <plugins>
+            <!-- Package all dependencies in an ueberjar -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>sesat-sitemap-spi</artifactId>
+            <version>2.15-SNAPSHOT</version>
+        </dependency>
+     
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+</project>

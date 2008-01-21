@@ -50,6 +50,7 @@ import no.sesat.search.site.SiteContext;
 
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -95,6 +96,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final int CACHE_CAPACITY = 100; // smaller than usual as each entry can contain up to 600 values!
     
     private static final String SKIP_REGEX;
+    private static final String OPERATOR_REGEX;
 
     // Attributes ----------------------------------------------------
     
@@ -116,6 +118,18 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         builder.setLength(builder.length() - 1);
         // our skip regular expression
         SKIP_REGEX = '(' + builder.toString() + ')';
+
+        final StringBuilder operatorRegexpBuilder = new StringBuilder();
+
+        operatorRegexpBuilder.append("[");
+
+        for (char c : QueryParser.OPERATOR_CHARACTERS) {
+            operatorRegexpBuilder.append('\\').append(c);
+        }
+
+        operatorRegexpBuilder.append("]");
+
+        OPERATOR_REGEX = operatorRegexpBuilder.toString();
     }
 
     // Constructors -------------------------------------------------
@@ -138,7 +152,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         httpClient = HTTPClient.instance(host, port);
         
         init();
-        analysisResult = queryFast(context.getQueryString());
+
+        // Remove whitespace (except space itself) and operator characters.
+        analysisResult = queryFast(context.getQueryString()
+                .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces.
+                .replaceAll(SKIP_REGEX, "")
+                .replaceAll(OPERATOR_REGEX, "")
+                .replaceAll("xxKEEPWSxx", " ")); // Hack to keep spaces.
     }
 
     // Public --------------------------------------------------------
@@ -172,7 +192,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                     }  else  {
 
                         // HACK since DefaultOperatorClause wraps its children in parenthesis
-                        final String hackTerm = term.replaceAll("\\(|\\)","");
+                        // Also remove any operator characters. (SEARCH-3883)
+                        final String hackTerm = term.replaceAll("\\(|\\)","").replaceAll(OPERATOR_REGEX, "");
 
                         for (TokenMatch occurance : analysisResult.get(listname)) {
 
@@ -394,9 +415,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
+        final String qNew = query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
         final Matcher m = pattern.matcher(
                 // remove words made solely of characters that the parser considers whitespace
-                query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " "));
+                qNew);
 
         while (m.find()) {
 
@@ -407,6 +429,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             }
 
             result.get(name).add(tknMatch);
+
+            if (result.get(name).size() % 100 == 0) {
+                LOG.warn("Pattern: " + pattern.pattern() + " name: " + name + " query: " + query + " match: " + match + " query2: " + qNew);
+            }
         }
     }
 
