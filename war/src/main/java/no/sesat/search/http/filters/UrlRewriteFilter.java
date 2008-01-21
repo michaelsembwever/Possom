@@ -61,7 +61,7 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
             final Site site = (Site) httpRequest.getAttribute(Site.NAME_KEY);
             
-            final UrlRewriterContainerFactory factory = UrlRewriterContainerFactory.valueOf(
+            final UrlRewriterContainerFactory factory = UrlRewriterContainerFactory.instanceOf(
                     new UrlRewriterContainerFactory.Context(){
                         public DocumentLoader newDocumentLoader(SiteContext siteCxt,
                                                                 String resource,

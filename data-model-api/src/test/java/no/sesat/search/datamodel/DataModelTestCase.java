@@ -91,7 +91,7 @@ public abstract class DataModelTestCase extends SiteTestCase{
                         }
                     };
                 }
-                factory = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, siteConfCxt));
+                factory = DataModelFactory.instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, siteConfCxt));
 
             }catch(SiteKeyedFactoryInstantiationException skfie){
                 LOG.error(skfie.getMessage(), skfie);
@@ -107,7 +107,7 @@ public abstract class DataModelTestCase extends SiteTestCase{
        
         final DataModel datamodel = factory.instantiate();
 
-        final SiteConfiguration siteConfig = SiteConfiguration.valueOf(siteConfCxt);
+        final SiteConfiguration siteConfig = SiteConfiguration.instanceOf(siteConfCxt);
         
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,

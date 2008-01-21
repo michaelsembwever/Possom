@@ -77,7 +77,7 @@ public final class SearchModeTest extends DataModelTestCase {
                 return mode;
             }
             public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
+                return SearchTabFactory.instanceOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class,
                     this,
                     new SiteContext(){
@@ -112,7 +112,7 @@ public final class SearchModeTest extends DataModelTestCase {
         // DataModel's ControlLevel will be REQUEST_CONSTRUCTION
         //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
         DataModelFactory
-                .valueOf(ContextWrapper.wrap(
+                .instanceOf(ContextWrapper.wrap(
                 DataModelFactory.Context.class, 
                 rqCxt,
                 new SiteContext(){
@@ -155,7 +155,7 @@ public final class SearchModeTest extends DataModelTestCase {
                 return mode;
             }
             public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
+                return SearchTabFactory.instanceOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class,
                     this,
                     new SiteContext(){
@@ -192,7 +192,7 @@ public final class SearchModeTest extends DataModelTestCase {
         // DataModel's ControlLevel will be REQUEST_CONSTRUCTION
         //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
         DataModelFactory
-                .valueOf(ContextWrapper.wrap(
+                .instanceOf(ContextWrapper.wrap(
                 DataModelFactory.Context.class, 
                 rqCxt,
                 new SiteContext(){

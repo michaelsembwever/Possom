@@ -135,7 +135,7 @@ public final class SearchTabFactoryTest extends SiteTestCase {
                     return site;
                 }
             };//</editor-fold>
-            final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
+            final SiteConfiguration siteConf = SiteConfiguration.instanceOf(siteConfCxt);
             
             if( siteConf.isSiteLocaleSupported(l) ){
                 final SearchTabFactory instance = getViewFactory(siteConstructorContext, l);
@@ -180,7 +180,7 @@ public final class SearchTabFactoryTest extends SiteTestCase {
 
         };
 
-        final SearchTabFactory result = SearchTabFactory.valueOf(cxt);
+        final SearchTabFactory result = SearchTabFactory.instanceOf(cxt);
         assertNotNull(result);
 
         return result;

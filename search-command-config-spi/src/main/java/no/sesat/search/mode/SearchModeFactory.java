@@ -109,7 +109,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
      * @param cxt The context.
      * @return the factory for the context.
      */
-    public static SearchModeFactory valueOf(final Context cxt) {
+    public static SearchModeFactory instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
 
@@ -193,7 +193,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SearchMode mode = getModeImpl(id);
         if (mode == null && id != null && id.length() > 0 && context.getSite().getParent() != null) {
             // not found in this site's modes.xml. look in parent's site.
-            final SearchModeFactory factory = valueOf(ContextWrapper.wrap(
+            final SearchModeFactory factory = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
                         public Site getSite() {

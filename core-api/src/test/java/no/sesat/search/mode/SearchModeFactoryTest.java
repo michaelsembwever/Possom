@@ -59,7 +59,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
     }
 
     /**
-     * Test of valueOf method, of class no.sesat.search.configuration.SearchModeFactory.
+     * Test of instanceOf method, of class no.sesat.search.configuration.SearchModeFactory.
      */
     @Test
     public void testGetModeFactory(){
@@ -98,7 +98,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
             }
         };
 
-        final SearchModeFactory result = SearchModeFactory.valueOf(cxt);
+        final SearchModeFactory result = SearchModeFactory.instanceOf(cxt);
         assert null != result : "Mode cannot be null for mode " + cxt.getSite();
 
         return result;
@@ -153,7 +153,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
                     return site;
                 }
             };
-            final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
+            final SiteConfiguration siteConf = SiteConfiguration.instanceOf(siteConfCxt);
 
             if( siteConf.isSiteLocaleSupported(l) ){
                 final SearchModeFactory instance = getModeFactory(siteConstructorContext, l);

@@ -134,7 +134,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
                 return mode;
             }
             public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
+                return SearchTabFactory.instanceOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("d");
             }

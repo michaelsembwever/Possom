@@ -137,7 +137,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
             }
         };
 
-        return SiteClassLoaderFactory.valueOf(factoryContext).getClassLoader();
+        return SiteClassLoaderFactory.instanceOf(factoryContext).getClassLoader();
     }
 
     private ClassLoader parentSiteClassLoader() {
@@ -157,7 +157,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
             }
         };
 
-        return SiteClassLoaderFactory.valueOf(parentContext).getClassLoader();
+        return SiteClassLoaderFactory.instanceOf(parentContext).getClassLoader();
     }
 
     /**

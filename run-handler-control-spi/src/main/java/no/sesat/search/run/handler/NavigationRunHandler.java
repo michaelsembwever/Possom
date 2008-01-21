@@ -172,7 +172,7 @@ public final class NavigationRunHandler implements RunHandler{
 
     private UrlGenerator getUrlGeneratorInstance(SiteClassLoaderFactory.Context classLoadingContext, NavigationConfig.Navigation navigation, Context context) {
         try {
-            final SiteClassLoaderFactory f = SiteClassLoaderFactory.valueOf(classLoadingContext);
+            final SiteClassLoaderFactory f = SiteClassLoaderFactory.instanceOf(classLoadingContext);
 
             final Class clazz = f.getClassLoader().loadClass(navigation.getUrlGenerator());
 

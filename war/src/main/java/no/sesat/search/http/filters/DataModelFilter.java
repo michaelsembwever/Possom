@@ -111,7 +111,7 @@ public final class DataModelFilter implements Filter {
 
             final DataModelFactory factory;
             try{
-                factory = DataModelFactory.valueOf(new DataModelFactory.Context(){
+                factory = DataModelFactory.instanceOf(new DataModelFactory.Context(){
                     public Site getSite() {
                         return site;
                     }

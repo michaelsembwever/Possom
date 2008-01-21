@@ -178,7 +178,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         });
 
         final DataModelFactory factory
-                = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt, siteCxt));
+                = DataModelFactory.instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt, siteCxt));
 
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
@@ -198,7 +198,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         datamodel.setQuery(queryDO);
         datamodel.setNavigation(navDO);
 
-        rules = AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context, siteCxt));
+        rules = AnalysisRuleFactory.instanceOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context, siteCxt));
 
     }
 
@@ -221,7 +221,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         try {
 
             final DataModelFactory dataModelFactory =  DataModelFactory
-                    .valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, context, new SiteContext(){
+                    .instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, context, new SiteContext(){
                         public Site getSite(){
                             return datamodel.getSite().getSite();
                         }

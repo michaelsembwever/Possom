@@ -51,7 +51,7 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
             return mode;
         }
         public SearchTab getSearchTab(){
-            return SearchTabFactory.valueOf(
+            return SearchTabFactory.instanceOf(
                 ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                 .getTabByKey("d");
         }

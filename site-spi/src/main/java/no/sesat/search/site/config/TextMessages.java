@@ -76,7 +76,7 @@ public final class TextMessages {
     }
 
     /**
-     * Utility wrapper to the valueOf(Context).
+     * Utility wrapper to the instanceOf(Context).
      */
     public static TextMessages valueOf(final Site site) {
 
@@ -113,7 +113,7 @@ public final class TextMessages {
 
             // import messages from site's preferred locale [will not override already loaded messages]
             final SiteConfiguration siteConf
-                    =  SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+                    =  SiteConfiguration.instanceOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
             final String defaultLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT);
 
             assert null != defaultLocale

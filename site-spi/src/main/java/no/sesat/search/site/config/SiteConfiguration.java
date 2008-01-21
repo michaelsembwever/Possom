@@ -118,7 +118,7 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
      * Find the correct instance handling this Site.
      * We need to use a Context instead of the Site directly so we can handle different styles of loading resources.
      */
-    public static SiteConfiguration valueOf(final Context cxt) {
+    public static SiteConfiguration instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
         assert null != site : "valueOf(cxt) got null site";
@@ -139,13 +139,14 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     }
 
     /**
-     * Utility wrapper to the valueOf(Context).
+     * Utility wrapper to the instanceOf(Context).
      * <b>Makes the presumption we will be using the UrlResourceLoader to load the resource.</b>
+     * <b>Therefore can only be used within a running container, eg tomcat.</b>
      */
-    public static SiteConfiguration valueOf(final Site site) {
+    public static SiteConfiguration instanceOf(final Site site) {
 
         // SiteConfiguration.Context for this site & UrlResourceLoader.
-        final SiteConfiguration stc = SiteConfiguration.valueOf(new SiteConfiguration.Context() {
+        final SiteConfiguration stc = SiteConfiguration.instanceOf(new SiteConfiguration.Context() {
             public Site getSite() {
                 return site;
             }

@@ -77,7 +77,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      * @return 
      * @throws no.sesat.search.site.SiteKeyedFactoryInstantiationException 
      */
-    public static DataModelFactory valueOf(final Context cxt) throws SiteKeyedFactoryInstantiationException {
+    public static DataModelFactory instanceOf(final Context cxt) throws SiteKeyedFactoryInstantiationException {
 
         final Site site = cxt.getSite();
         assert null != site;
@@ -142,7 +142,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
     /**
      * <pre>
      * Example usage:
-     *     DataModelFactory dm = DataModelFactory.valueOf(null);
+     *     DataModelFactory dm = DataModelFactory.instanceOf(null);
      *     BrowserDataObject bdo = dm.instantiate(
      *       BrowserDataObject.class,
      *       datamodel,
@@ -181,7 +181,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
         try{
 
-            final SiteConfiguration siteConf = SiteConfiguration.valueOf(
+            final SiteConfiguration siteConf = SiteConfiguration.instanceOf(
                     ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
 
             final String clsName = siteConf.getProperty(DATA_MODEL_FACTORY_IMPL);

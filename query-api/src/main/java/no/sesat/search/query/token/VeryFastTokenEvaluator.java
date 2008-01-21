@@ -130,7 +130,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         context = cxt;
 
-        final Properties props = SiteConfiguration.valueOf(
+        final Properties props = SiteConfiguration.instanceOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
         final String host = props.getProperty(TOKEN_HOST_PROPERTY);
         final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));

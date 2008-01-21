@@ -100,7 +100,7 @@ public abstract class AbstractConfigFactory<C> {
                     context
                 );
 
-        final ClassLoader classLoader = SiteClassLoaderFactory.valueOf(c).getClassLoader();
+        final ClassLoader classLoader = SiteClassLoaderFactory.instanceOf(c).getClassLoader();
         return (Class<C>) classLoader.loadClass(classNameFQ);
     }
     

@@ -76,7 +76,7 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
      * @param context The site and bytecode loader.
      * @return a class loader factory for the site.
      */
-    public static SiteClassLoaderFactory valueOf(final Context context) {
+    public static SiteClassLoaderFactory instanceOf(final Context context) {
 
         final Site site = context.getSite();
 

@@ -119,7 +119,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
             case FAST:
                 return getFastEvaluator();
             case REGEX:
-                return RegExpEvaluatorFactory.valueOf(
+                return RegExpEvaluatorFactory.instanceOf(
                         ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class,context)).getEvaluator(token);
             case JEP:
                 return jedEvaluator;

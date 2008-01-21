@@ -158,7 +158,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
      * @param cxt the contextual needs the VelocityEngine must use to operate.
      * @return VelocityEngine for this site.
      */
-    public static VelocityEngineFactory valueOf(final Context cxt) {
+    public static VelocityEngineFactory instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
 
@@ -183,7 +183,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     }
 
     /**
-     * Utility wrapper to the valueOf(Context).
+     * Utility wrapper to the instanceOf(Context).
      * <b>Makes the presumption we will be using the UrlResourceLoader to load all resources.</b>
      * @param site the site the VelocityEngine will work for.
      * @return VelocityEngine for this site.
@@ -191,7 +191,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     public static VelocityEngineFactory valueOf(final Site site) {
 
         // RegExpEvaluatorFactory.Context for this site & UrlResourceLoader.
-        final VelocityEngineFactory instance = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
+        final VelocityEngineFactory instance = VelocityEngineFactory.instanceOf(new VelocityEngineFactory.Context() {
             public Site getSite() {
                 return site;
             }
@@ -229,7 +229,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
             final Site site = cxt.getSite();
 
-            final SiteConfiguration siteConf = SiteConfiguration.valueOf(ContextWrapper.wrap(
+            final SiteConfiguration siteConf = SiteConfiguration.instanceOf(ContextWrapper.wrap(
                     SiteConfiguration.Context.class,
                     cxt));
 
@@ -316,7 +316,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                         },
                         cxt);
 
-                final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.valueOf(classContext).getClassLoader();
+                final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.instanceOf(classContext).getClassLoader();
                 Thread.currentThread().setContextClassLoader(ctrlClassLoader);
                 engine.init();
 

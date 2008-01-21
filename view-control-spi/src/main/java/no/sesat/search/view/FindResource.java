@@ -58,7 +58,7 @@ public final class FindResource {
 
         if (resource.startsWith(PUBLISH_DIR)) { // publishing system
             // the publishing system is responsible for this.
-            final Properties props = SiteConfiguration.valueOf(site).getProperties();
+            final Properties props = SiteConfiguration.instanceOf(site).getProperties();
             url = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL)
                 + '/' + resource;
 

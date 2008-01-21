@@ -130,7 +130,7 @@ public class DataModelSerializeTest {
             }
         };
         
-        final SiteConfiguration siteConfig = SiteConfiguration.valueOf(cxt);
+        final SiteConfiguration siteConfig = SiteConfiguration.instanceOf(cxt);
         
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,

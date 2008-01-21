@@ -155,7 +155,7 @@ public final class SearchServlet extends HttpServlet {
 
         final DataModelFactory dmFactory;
         try{
-            dmFactory = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, genericCxt));
+            dmFactory = DataModelFactory.instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, genericCxt));
 
         }catch(SiteKeyedFactoryInstantiationException skfe){
             throw new ServletException(skfe);
@@ -413,7 +413,7 @@ public final class SearchServlet extends HttpServlet {
 
         SearchTab result = null;
         try{
-            final SearchTabFactory stFactory = SearchTabFactory.valueOf(
+            final SearchTabFactory stFactory = SearchTabFactory.instanceOf(
                 ContextWrapper.wrap(
                     SearchTabFactory.Context.class,
                     genericCxt));
@@ -453,7 +453,7 @@ public final class SearchServlet extends HttpServlet {
             final SearchTab searchTab,
             final StopWatch stopWatch) throws IOException{
 
-        final SearchMode mode = SearchModeFactory.valueOf(
+        final SearchMode mode = SearchModeFactory.instanceOf(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());
 
@@ -490,7 +490,7 @@ public final class SearchServlet extends HttpServlet {
                 // DataModel's ControlLevel will be REQUEST_CONSTRUCTION
                 //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
                 DataModelFactory
-                        .valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, genericCxt))
+                        .instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, genericCxt))
                         .assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
 
                 final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);

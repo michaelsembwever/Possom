@@ -102,7 +102,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
      * @param cxt
      * @return
      */
-    public static SearchTabFactory valueOf(final Context cxt) {
+    public static SearchTabFactory instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
         assert null != site;
@@ -181,7 +181,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         SearchTab tab = getTabImpl(id);
         if(null == tab && null != context.getSite().getParent()){
             // not found in this site's views.xml. look in parent's site.
-            final SearchTabFactory factory = valueOf(ContextWrapper.wrap(
+            final SearchTabFactory factory = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){
@@ -212,7 +212,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         SearchTab tab = getTabByKeyImpl(key);
         if(null == tab && null != context.getSite().getParent()){
             // not found in this site's views.xml. look in parent's site.
-            final SearchTabFactory factory = valueOf(ContextWrapper.wrap(
+            final SearchTabFactory factory = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){

@@ -77,7 +77,7 @@ public final class RunHandlerFactory {
                     context
                 );
 
-            final ClassLoader ctlLoader = SiteClassLoaderFactory.valueOf(ctlContext).getClassLoader();
+            final ClassLoader ctlLoader = SiteClassLoaderFactory.instanceOf(ctlContext).getClassLoader();
 
             @SuppressWarnings("unchecked")
             final Class<? extends RunHandler> cls = (Class<? extends RunHandler>)ctlLoader.loadClass(name);

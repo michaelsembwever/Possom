@@ -84,7 +84,7 @@ public final class QueryTransformerFactory {
                 }
             };
 
-            final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.valueOf(ctrlCxt).getClassLoader();
+            final ClassLoader ctrlClassLoader = SiteClassLoaderFactory.instanceOf(ctrlCxt).getClassLoader();
 
             @SuppressWarnings("unchecked")
             final Class<? extends QueryTransformer> cls

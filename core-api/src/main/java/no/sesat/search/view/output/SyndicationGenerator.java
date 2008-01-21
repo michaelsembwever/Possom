@@ -134,7 +134,7 @@ public final class SyndicationGenerator {
         this.site = context.getSite();
 
         this.text = TextMessages.valueOf(getTextMessagesContext());
-        //this.channels = Channels.valueOf(getChannelContext());
+        //this.channels = Channels.instanceOf(getChannelContext());
 
         this.uri = context.getURL();
 

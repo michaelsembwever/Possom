@@ -52,7 +52,7 @@ public final class DataModelResultHandler implements ResultHandler{
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 64;
 
     /** !Concurrent-safe! weak cache of DataModelFactories
-     *  since hitting DataModelFactory.valueOf(..) hard becomes a bottleneck.
+     *  since hitting DataModelFactory.instanceOf(..) hard becomes a bottleneck.
      * read https://jira.sesam.no/jira/browse/SEARCH-3541 for more.
      */
     private static final ReferenceMap<Site,DataModelFactory> FACTORY_CACHE
@@ -143,11 +143,11 @@ public final class DataModelResultHandler implements ResultHandler{
 
         try{
             // application bottleneck https://jira.sesam.no/jira/browse/SEARCH-3541
-            //  DataModelFactory.valueOf(cxt) uses a ReentrantReadWriteLock in high-concurrency environment like here.
+            //  DataModelFactory.instanceOf(cxt) uses a ReentrantReadWriteLock in high-concurrency environment like here.
             // this is why we keep a local weak cache of the factories.
             //  the alternative would be to pollute DataModelFactory will this performance consideration and
             //  replace the ReentrantReadWriteLock that provides a synchronised api with a ConcurrentHashMap.
-            return DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt));
+            return DataModelFactory.instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt));
 
         }catch(SiteKeyedFactoryInstantiationException skfie){
             LOG.error(skfie.getMessage(), skfie);

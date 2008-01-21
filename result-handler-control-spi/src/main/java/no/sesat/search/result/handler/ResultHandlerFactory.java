@@ -81,7 +81,7 @@ public final class ResultHandlerFactory {
                     context
                 );
 
-            final ClassLoader ctlLoader = SiteClassLoaderFactory.valueOf(ctlContext).getClassLoader();
+            final ClassLoader ctlLoader = SiteClassLoaderFactory.instanceOf(ctlContext).getClassLoader();
 
             @SuppressWarnings("unchecked")
             final Class<? extends ResultHandler> cls = (Class<? extends ResultHandler>)ctlLoader.loadClass(name);

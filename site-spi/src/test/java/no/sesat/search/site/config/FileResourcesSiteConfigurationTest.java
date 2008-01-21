@@ -48,7 +48,7 @@ public final class FileResourcesSiteConfigurationTest extends SiteTestCase {
     }	    
 
     /**
-     * Test of valueOf method, of class no.sesat.search.configuration.SiteConfiguration.
+     * Test of instanceOf method, of class no.sesat.search.configuration.SiteConfiguration.
      */
     @Test
     public void testDefaultSite() {
@@ -73,7 +73,7 @@ public final class FileResourcesSiteConfigurationTest extends SiteTestCase {
     }
 
 
-    /** Utility wrapper to the valueOf(Context).
+    /** Utility wrapper to the instanceOf(Context).
      * <b>Makes the presumption we will be using the FileResourceLoader to load all resources.</b>
      *This is useful for tests that don't wont to rely on an application server being up to serve the config files.
      * @param site the site to obtain a SearchTabsCreator for
@@ -82,7 +82,7 @@ public final class FileResourcesSiteConfigurationTest extends SiteTestCase {
     public static SiteConfiguration valueOf(final Site site) {
 
         // SiteConfiguration.Context for this site & UrlResourceLoader.
-        final SiteConfiguration stc = SiteConfiguration.valueOf(new SiteConfiguration.Context() {
+        final SiteConfiguration stc = SiteConfiguration.instanceOf(new SiteConfiguration.Context() {
             public Site getSite()  {
                 return site;
             }

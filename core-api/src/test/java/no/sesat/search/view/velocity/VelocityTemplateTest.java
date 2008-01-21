@@ -102,7 +102,7 @@ public final class VelocityTemplateTest extends DataModelTestCase{
                 final DataModel datamodel = getDataModel();
                 getDataModelFactory().assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
                 final Site site = datamodel.getSite().getSite();
-                final VelocityEngine engine = VelocityEngineFactory.valueOf(
+                final VelocityEngine engine = VelocityEngineFactory.instanceOf(
                         new VelocityEngineFactory.Context(){
                             public Site getSite() {
                                 return site;

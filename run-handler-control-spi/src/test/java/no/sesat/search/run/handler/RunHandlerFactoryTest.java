@@ -44,7 +44,7 @@ import no.sesat.search.site.Site.Context;
 public class RunHandlerFactoryTest {
     @Test
     final public void testGetController() throws Exception {
-        final DataModelFactory factory = DataModelFactory.valueOf(new DataModelFactory.Context() {
+        final DataModelFactory factory = DataModelFactory.instanceOf(new DataModelFactory.Context() {
             public Site getSite() {
                 return Site.DEFAULT;
             }
@@ -73,7 +73,7 @@ public class RunHandlerFactoryTest {
             }
         };
         
-        final SiteConfiguration siteConfig = SiteConfiguration.valueOf(cxt);
+        final SiteConfiguration siteConfig = SiteConfiguration.instanceOf(cxt);
         
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,

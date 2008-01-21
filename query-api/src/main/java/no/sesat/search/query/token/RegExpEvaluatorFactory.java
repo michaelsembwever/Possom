@@ -175,7 +175,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      * @param cxt the contextual needs this factory must use to operate.
      * @return RegExpEvaluatorFactory for this site.
      */
-    public static RegExpEvaluatorFactory valueOf(final Context cxt) {
+    public static RegExpEvaluatorFactory instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
         RegExpEvaluatorFactory instance;
@@ -208,7 +208,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
         TokenEvaluator result = regExpEvaluators.get(token);
         if(result == null && null != context.getSite().getParent()){
 
-            result = valueOf(ContextWrapper.wrap(
+            result = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){

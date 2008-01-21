@@ -186,7 +186,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
         if (null != context.getSite().getParent()) {
 
-            return valueOf(ContextWrapper.wrap(
+            return instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
                         public Site getSite() {
@@ -364,7 +364,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
         if(null != context.getSite().getParent()) {
             
-            result.putAll(valueOf(ContextWrapper.wrap(
+            result.putAll(instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
                         public Site getSite() {
@@ -400,7 +400,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         }
 
         if(rule == null && null != context.getSite().getParent()) {
-            rule = valueOf(ContextWrapper.wrap(
+            rule = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
                         public Site getSite() {
@@ -428,7 +428,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      * @param cxt the contextual needs this factory must use to operate.
      * @return AnalysisRuleFactory for this site.
      */
-    public static AnalysisRuleFactory valueOf(final Context cxt) {
+    public static AnalysisRuleFactory instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
         assert null != site : "valueOf(cxt) got null site";

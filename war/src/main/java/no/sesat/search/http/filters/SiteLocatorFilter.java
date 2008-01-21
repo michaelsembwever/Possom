@@ -322,7 +322,7 @@ public final class SiteLocatorFilter implements Filter {
                 return result;
             }
         };
-        final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
+        final SiteConfiguration siteConf = SiteConfiguration.instanceOf(siteConfCxt);
         servletRequest.setAttribute(SiteConfiguration.NAME_KEY, siteConf);
 
         if(LOG.isTraceEnabled()){ // MessageFormat.format(..) is expensive

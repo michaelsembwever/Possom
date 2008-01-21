@@ -144,7 +144,7 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             context.put("configuration", null != datamodel && null != datamodel.getSite()
                     ? datamodel.getSite().getSiteConfiguration().getProperties()
                     // we haven't gone through the SiteLocatorFilter so get site manually
-                    : SiteConfiguration.valueOf(site).getProperties());
+                    : SiteConfiguration.instanceOf(site).getProperties());
             
             //context.put("channelCategories", Channel.Category.values());
 

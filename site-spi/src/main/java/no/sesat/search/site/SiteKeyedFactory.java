@@ -32,7 +32,10 @@ package no.sesat.search.site;
  */
 public interface SiteKeyedFactory {
     
-    /** Remove the factory the maps to the given site. **/
+    /** Remove the factory the maps to the given site. *
+     * @param site remove factory corresponding to this site.
+     * @return true if a factory was successfully removed.
+     */
     boolean remove(Site site);
     
 }

@@ -83,36 +83,36 @@ public final class FactoryReloads {
             case ALL:
             case SITE_CONFIGURATION:
         
-                performReload(site, SiteConfiguration.valueOf(
+                performReload(site, SiteConfiguration.instanceOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
         
             case SEARCH_TAB_FACTORY:
                 
-                performReload(site, SearchTabFactory.valueOf(
+                performReload(site, SearchTabFactory.instanceOf(
                         ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
                 
             case SEARCH_MODE_FACTORY:
 
-                performReload(site, SearchModeFactory.valueOf(
+                performReload(site, SearchModeFactory.instanceOf(
                         ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt)));
                 if( ReloadArg.ALL != reload){ break;}
         
             case ANALYSIS_RULES_FACTORY:
                 
-                performReload(site, AnalysisRuleFactory.valueOf(
+                performReload(site, AnalysisRuleFactory.instanceOf(
                         ContextWrapper.wrap(AnalysisRuleFactory.Context.class, genericCxt)));
         
             case REG_EXP_EVALUATOR_FACTORY:
                 
-                performReload(site, RegExpEvaluatorFactory.valueOf(
+                performReload(site, RegExpEvaluatorFactory.instanceOf(
                         ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
         
             case VELOCITY_ENGINE_FACTORY:
                 
-                performReload(site, VelocityEngineFactory.valueOf(
+                performReload(site, VelocityEngineFactory.instanceOf(
                         ContextWrapper.wrap(VelocityEngineFactory.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
             

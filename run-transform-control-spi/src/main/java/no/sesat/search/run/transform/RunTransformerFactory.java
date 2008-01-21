@@ -76,7 +76,7 @@ public final class RunTransformerFactory {
                     context
                 );
 
-            final ClassLoader ctlLoader = SiteClassLoaderFactory.valueOf(ctlContext).getClassLoader();
+            final ClassLoader ctlLoader = SiteClassLoaderFactory.instanceOf(ctlContext).getClassLoader();
 
             @SuppressWarnings("unchecked")
             final Class<? extends RunTransformer> cls = (Class<? extends RunTransformer>)ctlLoader.loadClass(name);

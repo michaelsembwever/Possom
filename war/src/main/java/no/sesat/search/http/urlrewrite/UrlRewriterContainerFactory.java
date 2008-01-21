@@ -93,7 +93,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
      * @param cxt 
      * @return 
      */
-    public static UrlRewriterContainerFactory valueOf(final Context cxt) {
+    public static UrlRewriterContainerFactory instanceOf(final Context cxt) {
 
         final Site site = cxt.getSite();
         assert null != site;

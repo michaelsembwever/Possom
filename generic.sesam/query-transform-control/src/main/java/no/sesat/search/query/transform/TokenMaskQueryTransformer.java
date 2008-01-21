@@ -191,7 +191,7 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
         final RegExpEvaluatorFactory.Context regExpEvalFactory = ContextWrapper.wrap(
                 RegExpEvaluatorFactory.Context.class, cxt);
 
-        regExpFactory = RegExpEvaluatorFactory.valueOf(regExpEvalFactory);
+        regExpFactory = RegExpEvaluatorFactory.instanceOf(regExpEvalFactory);
     }
 
 

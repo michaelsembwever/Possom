@@ -88,12 +88,12 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
                 return datamodel;
             }
             public SearchMode getSearchMode() {
-                return SearchModeFactory.valueOf(
+                return SearchModeFactory.instanceOf(
                         ContextWrapper.wrap(SearchModeFactory.Context.class, this, siteCxt))
                         .getMode(getSearchTab().getMode());
             }
             public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
+                return SearchTabFactory.instanceOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this, siteCxt))
                     .getTabByKey(key);
             }

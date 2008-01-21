@@ -53,14 +53,14 @@ public final class UrlResourcesSiteConfigurationtest extends SiteTestCase {
     }	     
     
     /**
-     * Test of valueOf method, of class no.sesat.search.configuration.SiteConfiguration.
+     * Test of instanceOf method, of class no.sesat.search.configuration.SiteConfiguration.
      */
     @Test
     public void testDefaultSite() {
 
         final Site site = Site.DEFAULT;
 
-        final SiteConfiguration result = SiteConfiguration.valueOf(site);
+        final SiteConfiguration result = SiteConfiguration.instanceOf(site);
         assertNotNull(FAIL_CONFIG_NOT_RUNNING, result);
     }
 
@@ -70,7 +70,7 @@ public final class UrlResourcesSiteConfigurationtest extends SiteTestCase {
     @Test
     public void testDefaultSiteGetProperties() {
 
-        final SiteConfiguration instance = SiteConfiguration.valueOf(Site.DEFAULT);
+        final SiteConfiguration instance = SiteConfiguration.instanceOf(Site.DEFAULT);
 
         final Properties result = instance.getProperties();
         assertNotNull(FAIL_CONFIG_NOT_RUNNING, result);

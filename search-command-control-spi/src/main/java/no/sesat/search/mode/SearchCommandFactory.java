@@ -80,7 +80,7 @@ public final class SearchCommandFactory {
                     context
                 );
 
-            final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.valueOf(classContext);
+            final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.instanceOf(classContext);
 
             @SuppressWarnings("unchecked")
             final Class<? extends SearchCommand> cls
