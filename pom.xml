@@ -608,6 +608,7 @@
           <id>Sesat</id>
           <name>Sesat Snapshot</name>
           <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
+          <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
     
