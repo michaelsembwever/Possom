@@ -52,6 +52,7 @@ import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.repository.Repository;
+import org.apache.maven.wagon.repository.RepositoryPermissions;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -82,9 +83,9 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     // Constants -----------------------------------------------------
 
     private static final String[] ENVIRONMENTS = new String[]{"alpha","nuclei","beta","electron","gamma","production"};
-    
+
     private static final String TAG_ON_DEPLOY = "tag.on.deploy";
-    
+
     private static final String DRY_RUN = "sesat.mojo.dryRun";
 
     // Attributes ----------------------------------------------------
@@ -320,7 +321,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         // alpha|nuclei|beta|electron|gamma|production deployment goes through scpexe
         try{
             if(ensureNoLocalModifications()){
-                
+
                 @SuppressWarnings("unchecked")
                 final List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(stripVersion);
 
@@ -343,29 +344,29 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                     // tag the code
                     if(Boolean.parseBoolean(project.getProperties().getProperty(TAG_ON_DEPLOY))
                             && !Boolean.getBoolean(DRY_RUN)){
-                        
+
                         tagDeploy();
                     }
 
                     // do the upload
                     getLog().info("Uploading " + artifact.getFile().getAbsolutePath()
                             + " to " + wagon.getRepository().getUrl() + '/' + destName + ".war");
-                    
+
                     if(!Boolean.getBoolean(DRY_RUN)){
                         wagon.put(artifact.getFile(), destName + ".war");
                     }
-                    
+
                     // update the version.txt
                     getLog().info("Updating " + wagon.getRepository().getUrl() + "/version.txt");
-                        
+
                     if(Boolean.getBoolean(DRY_RUN)){
-                        
+
                         final StringWriter sb = new StringWriter();
                         final BufferedWriter w = new BufferedWriter(sb);
                         updateArtifactEntry(new BufferedReader(new StringReader("")), w);
                         w.flush();
                         getLog().info("version.txt entry will be \n" + sb.toString());
-                        
+
                     }else{
 
                         updateVersionFile(wagon);
@@ -440,12 +441,12 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     }
 
     private void loadPomProject(){
-        
+
         if(null == pomProject){
             pomProject = project;
             do{
                 pomProject = pomProject.getParent();
-            }while(!"pom".equals(pomProject.getPackaging()));            
+            }while(!"pom".equals(pomProject.getPackaging()));
         }
     }
     /**
@@ -471,6 +472,10 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 final Repository wagonRepository = new Repository();
 
                 wagonRepository.setUrl(serverDeployLocation);
+
+                final RepositoryPermissions permissions = new RepositoryPermissions();
+                permissions.setFileMode("g+w");
+                wagonRepository.setPermissions(permissions);
 
                 wagon = (Wagon) container.lookup(Wagon.ROLE, protocol);
                 wagon.connect(wagonRepository);
@@ -508,9 +513,9 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
             }
         }
     }
-    
+
     private void tagDeploy() throws ComponentLookupException, ScmException{
-        
+
         final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
         final String date = new SimpleDateFormat("yyyyMMddHHmm").format(now);
 
@@ -521,16 +526,16 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 new ScmFileSet(pomProject.getBasedir()), // TODO server-side copy
                 profile + "-deployments/" + date + "-" + pomProject.getArtifactId(),
                 "sesat " + profile + " deployment");
-                
+
         if(!result.isSuccess()){
             getLog().error(result.getCommandOutput());
         }
     }
-    
+
     private boolean ensureNoLocalModifications() throws ComponentLookupException, ScmException, MojoExecutionException{
-        
+
         if(!Boolean.getBoolean("sesat.mojo.localModifications.ignore")){
-            
+
             final ScmManager scmManager = (ScmManager) container.lookup(ScmManager.ROLE);
 
             loadPomProject();
@@ -555,7 +560,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
             return result.isSuccess() && 0 == result.getChangedFiles().size();
         }
         return true; // sesat.mojo.localModifications.ignore
-    }    
+    }
 
     private void updateVersionFile(final Wagon wagon)
             throws IOException, TransferFailedException, ResourceDoesNotExistException, AuthorizationException{
