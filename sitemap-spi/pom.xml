@@ -12,11 +12,6 @@
     <description>
         This is the project for the SESAT Sitemap (http://www.sitemaps.org/) SPI. This allows skins to provide URLs that should go into the installation-wide sitemap.
     </description>
-    <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/sitemap-spi</connection>
-        <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/sitemap-spi</url>
-        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/sitemap-spi</developerConnection>
-    </scm>
 
     <build>
         <plugins>

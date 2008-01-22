@@ -23,8 +23,8 @@
     <name>Sesat Kernel</name>
     <version>2.16-SNAPSHOT</version>
     <description>
-        This is the project for Sesat Kernel. 
-        Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
+        This is the project for Sesat Kernel.
+        Read http://sesat.no/development-guidelines.html for developing help.
     </description>
     <developers>
         <developer>
@@ -82,8 +82,12 @@
             <archive>http://sesat.no/pipermail/kernel-development/</archive>
         </mailingList>
         <mailingList>
-            <name>Commit List</name>
+            <name>Commits List</name>
             <archive>http://sesat.no/pipermail/kernel-commits/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Builds List</name>
+            <archive>http://sesat.no/pipermail/kernel-builds/</archive>
         </mailingList>
      </mailingLists>
     <scm>
@@ -223,7 +227,7 @@
             <properties>
                 <sesam.site.generic>generic.nuclei.test.sesam.no</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/nuclei.test.sesam.no</serverDeployLocation>                
+                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/nuclei.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -259,7 +263,7 @@
             <properties>
                 <sesam.site.generic>generic.electron.test.sesam.no</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/electron.test.sesam.no</serverDeployLocation>                
+                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/electron.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -277,7 +281,7 @@
             <properties>
                 <sesam.site.generic>generic.gamma.test.sesam.no</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/gamma.test.sesam.no</serverDeployLocation>                
+                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/gamma.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -296,7 +300,7 @@
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <!-- IMPORTANT: production cannot handle writing to sesam.log at a lower threshold -->
                 <log.level>WARN</log.level>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/sesam.no</serverDeployLocation>                
+                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -611,5 +615,5 @@
           <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
-    
+
 </project>
