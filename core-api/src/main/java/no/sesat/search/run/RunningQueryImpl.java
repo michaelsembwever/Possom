@@ -641,6 +641,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         if (!queryStr.startsWith("(") && !queryStr.endsWith(")")
                 && datamodel.getQuery().getQuery().getTermCount() > 1) {
 
+            // DataModel's ControlLevel will be RUNNING_QUERY_CONSTRUCTION
+            //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
+            final DataModelFactory dataModelFactory =  DataModelFactory
+                    .instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, context, new SiteContext(){
+                        public Site getSite(){
+                            return datamodel.getSite().getSite();
+                        }
+                    }));
+            dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
+            
             // create and run a new RunningQueryImpl
             new RunningQueryImpl(context, '(' + queryStr + ')').run();
         }
