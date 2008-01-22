@@ -47,6 +47,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.Spi;
 import no.sesat.search.site.config.UrlResourceLoader;
 
+import no.sesat.search.view.navigation.NavigationHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -146,6 +147,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("number", new NumberTool());
         // date tool
         context.put("date", new DateTool());
+        // navigation helper
+        context.put("navigationHelper", new NavigationHelper());
         // boomerang
         context.put("boomerang", new Boomerang());
 
