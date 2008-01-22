@@ -93,7 +93,10 @@ PARSER_END(QueryParserImpl)
 /* ‐ ‑ ‒ – — ― */
 
 <DEFAULT,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <URL: "http://"<WORD>(("/")?(<WORD>)?("?"(<WORD>("="<WORD>)?))?)*> }
+// https?://([-\\w\\.]+)+(:\\d+)?(/~?([\\w/_\\.]*(\\?\\S+)?)?)? 
+TOKEN : { <URL: "http"("s")?"://"<WORD>(":"<INTEGER>)?(<URL_WORD>)*(("?"<URL_WORD>)?)*("#"<URL_WORD>)?>
+    | <#URL_WORD: (<WORD>|<ENCODED_CHAR>|"-"|"_"|"~"|"/")+>
+    | <#ENCODED_CHAR: "%"(<DIGIT>|"A"|"a"|"B"|"b"|"C"|"c"|"D"|"d"|"E"|"e"|"F"|"f"){2}>}
 
 <DEFAULT,URL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }
