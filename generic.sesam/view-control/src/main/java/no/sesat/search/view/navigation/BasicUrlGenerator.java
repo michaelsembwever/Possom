@@ -61,7 +61,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
                             
         final String prefix = getPrefix() == null ? "" : getPrefix();
 
-        this.urlBuilder = new StringBuilder(prefix).append(prefix.endsWith("/") ? "" : '/');
+        this.urlBuilder = new StringBuilder(prefix).append(prefix.endsWith("/") || prefix.length() == 0 ? "" : '/');
         this.prefixLength = urlBuilder.length();
     }
 
