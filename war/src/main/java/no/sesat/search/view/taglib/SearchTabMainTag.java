@@ -21,16 +21,18 @@
 package no.sesat.search.view.taglib;
 
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.run.RunningQueryImpl;
 import no.sesat.search.view.config.SearchTab;
 import no.sesat.search.view.config.SearchTab.Layout;
+
 import org.apache.log4j.Logger;
 
 
@@ -43,67 +45,61 @@ import org.apache.log4j.Logger;
 
 public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
 
-    
+
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(SearchTabMainTag.class);
     private static final String MISSING = "Missing_SearchTabMain_Template";
-    
+
     private static final String PAGES_DIRECTORY = "/pages/";
-    
-    
-    
+
+
+
     // Attributes ----------------------------------------------------
-        
+
 
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     // Public -------------------------------------------
-    
+
     /** Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
-     * 
+     *
      * Calling this tag also has the side effect of setting the layout in use into the context's attributes.
-     * 
-     * @throws javax.servlet.jsp.JspException 
+     *
+     * @throws javax.servlet.jsp.JspException
      */
     @Override
     public void doTag() throws JspException {
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
         final SearchTab tab = datamodel.getPage().getCurrentTab();
         final StringDataObject layoutDO = datamodel.getParameters().getValue(RunningQueryImpl.PARAM_LAYOUT);
-        final Layout layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO 
-                ? tab.getLayouts().get(layoutDO.getXmlEscaped()) 
+        final Layout layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO
+                ? tab.getLayouts().get(layoutDO.getXmlEscaped())
                 : tab.getDefaultLayout();
         cxt.setAttribute("layout", layout);
 
         final String front = null != layout.getFront() && 0 < layout.getFront().length()
                 ? layout.getFront()
                 : null;
-        
+
         final String include = datamodel.getQuery().getQuery().isBlank() && null != front
                 ? front
                 : layout.getMain();
-        
+
         if(null != include){
-        
-            try{
-                cxt.getOut().println("<!-- " + include + " -->");
-            }catch(IOException ioe){
-                LOG.warn("Failed to write include comment", ioe);
-            }
 
             final Map<String,Object> map = new HashMap<String,Object>();
 
             map.put("layout", layout);
-            
+
             importTemplate(include.startsWith("/") ? include : PAGES_DIRECTORY + include, map);
-            
+
         }else{
             // use the default httpDecorator.jsp
             cxt.setAttribute(MISSING, Boolean.TRUE);
@@ -116,6 +112,6 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }
