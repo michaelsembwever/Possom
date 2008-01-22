@@ -53,10 +53,6 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
         this.navigation = navigation;
         this.dataModel = dataModel;
         this.state = state;
-
-        if (getPrefix() == null || getPrefix().length() == 0) {
-            throw new IllegalArgumentException("Prefix can't be empty");
-        }
     }
 
     /**

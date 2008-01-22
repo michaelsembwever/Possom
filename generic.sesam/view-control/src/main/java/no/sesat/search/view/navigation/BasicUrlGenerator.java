@@ -59,10 +59,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
 
         super(dataModel, navigation, state);
                             
-        final String prefix = getPrefix();
-        if (prefix == null || prefix.length() == 0) {
-            throw new IllegalArgumentException("Prefix can't be empty");
-        }
+        final String prefix = getPrefix() == null ? "" : getPrefix();
 
         this.urlBuilder = new StringBuilder(prefix).append(prefix.endsWith("/") ? "" : '/');
         this.prefixLength = urlBuilder.length();
