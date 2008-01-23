@@ -56,6 +56,7 @@ public final class ImportPublish {
     private static final int CACHE_CAPACITY = 1000;
 
     private static final Logger LOG = Logger.getLogger(ImportPublish.class);
+    private static final Logger DUMP = Logger.getLogger("no.sesat.search.Dump");
     
     // Attributes ----------------------------------------------------
     
@@ -69,8 +70,8 @@ public final class ImportPublish {
      * 
      * @param page 
      * @param datamodel 
-     * @param out 
-     * @throws java.io.IOException 
+     * @return 
+     * @throws java.io.IOException
      */
     public static String importPage(
             final String page, 
@@ -87,6 +88,7 @@ public final class ImportPublish {
         String content = "";
         try{
             content = (String) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+            LOG.debug("found cached content for " + page);
         
         } catch (NeedsRefreshException nre) {
         
@@ -104,6 +106,8 @@ public final class ImportPublish {
                 content = builder.toString();
                 CACHE.putInCache(cacheKey, content);
                 updatedCache = true;
+                
+                LOG.debug("new content for " + page);
 
             }catch(IOException ioe){
                 content = (String) nre.getCacheContent();
@@ -115,6 +119,8 @@ public final class ImportPublish {
                 }
             }
         }
+        if(DUMP.isInfoEnabled()){ DUMP.info("Content for " + page + " is \n" + content); }
+        
         return content;
     }
          
@@ -122,8 +128,10 @@ public final class ImportPublish {
      * 
      * @param page 
      * @param datamodel 
-     * @param out 
-     * @throws java.io.IOException 
+     * @return 
+     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws org.xml.sax.SAXException 
      */
     public static Document importXml(
             final String page, 
