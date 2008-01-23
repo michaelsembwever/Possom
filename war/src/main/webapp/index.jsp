@@ -108,11 +108,11 @@
                 </div>
                 <div>
                     <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />
-                    <a href='<search:boomerang url="/search/?c=y" param="category:front_service"/>' onclick="return strep(this);">Bedriftss&#248;k</a>
+                    <a href='<search:boomerang url="/katalog/" param="category:front_service"/>' onclick="return strepKatalog(this);">Bedriftss&#248;k</a>
                 </div>
                 <div>
                     <img src="images/menu/icons/person.png" width="16" height="16" alt="" />
-                    <a href='<search:boomerang url="/search/?c=w" param="category:front_service"/>' onclick="return strep(this);">Persons&#248;k</a>
+                    <a href='<search:boomerang url="/person/" param="category:front_service"/>' onclick="return strepKatalog(this);">Persons&#248;k</a>
                 </div>
                 <div>
                     <img src="images/menu/icons/bilde.png" width="16" height="16" alt="" />
