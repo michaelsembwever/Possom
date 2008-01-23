@@ -33,7 +33,7 @@
     
     
     <!-- Everything non-specified falls back to the default search (unspecified c parameter) -->
-    <!-- TODO more work is needed to exclude 
+    <!-- We make the presumption that all the following urls (that we must still honour) contain a second '/'
       - /search/(.*)
       - /map/(.*)
       - /servlet/(.*)
@@ -41,7 +41,6 @@
       - /export/(.*)
       - /static/(.*)
       - /tradedoubler/(.*)
-      - before enabling the following very generic rewrite.
       -->
-    <!--rule><from>^/(.+)$</from><to>/search/?q=$1</to></rule-->
+    <rule><from>^/([^/]+)$</from><to>/search/?q=$1</to></rule>
 </urlrewrite>
