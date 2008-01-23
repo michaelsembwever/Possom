@@ -20,7 +20,7 @@
                     <phase>generate-resources</phase>
                     <configuration>
                       <tasks>
-                        <mkdir dir="${basedir}/target/.dir"/>
+                        <mkdir dir="${basedir}/target/.dir" />
                       </tasks>
                     </configuration>
                     <goals>
@@ -59,7 +59,7 @@
                             <phase>process-sources</phase>
                             <configuration>
                               <tasks>
-                                <mkdir dir="${basedir}/target/.dir"/>
+                                <mkdir dir="${basedir}/target/.dir" />
                               </tasks>
                             </configuration>
                             <goals>

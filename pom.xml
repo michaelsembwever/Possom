@@ -13,7 +13,7 @@
  *   GNU Affero General Public License for more details.
  *
  *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses />.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -91,9 +91,9 @@
         </mailingList>
      </mailingLists>
     <scm>
-        <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
-        <url>http://sesat.no/svn/sesat-kernel/trunk</url>
-        <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</developerConnection>
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/sesat-kernel/tags/2.16</connection>
+        <url>https://dev.schibstedsok.no/svn/sesat-kernel/tags/2.16</url>
+        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/sesat-kernel/tags/2.16</developerConnection>
     </scm>
 
     <modules>

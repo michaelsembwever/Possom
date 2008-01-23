@@ -14,7 +14,7 @@
  *   GNU Affero General Public License for more details.
  *
  *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses />.
  - $Id: project.xml 2296 2006-02-14 17:33:59Z magnuse $
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -149,7 +149,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <pluginManagement/>
+                <pluginManagement />
             </build>
             <properties>
 
@@ -195,7 +195,7 @@
 
         <profile>
             <id>alpha</id>
-            <build><pluginManagement/></build>
+            <build><pluginManagement /></build>
             <properties>
 
                 <sesam.site>generic.alpha.test.sesam.no</sesam.site>                
@@ -239,7 +239,7 @@
         </profile>
         <profile>
             <id>nuclei</id>
-            <build><pluginManagement/></build>
+            <build><pluginManagement /></build>
             <properties>
 
                 <sesam.site>generic.nuclei.test.sesam.no</sesam.site>   
@@ -283,7 +283,7 @@
         </profile>
         <profile>
             <id>beta</id>
-            <build><pluginManagement/></build>
+            <build><pluginManagement /></build>
             <properties>
 
                 <sesam.site>generic.beta.test.sesam.no</sesam.site>   
@@ -332,7 +332,7 @@
         </profile>
         <profile>
             <id>electron</id>
-            <build><pluginManagement/></build>
+            <build><pluginManagement /></build>
             <properties>
 
                 <sesam.site>generic.electron.test.sesam.no</sesam.site>   
@@ -376,7 +376,7 @@
         </profile>
         <profile>
             <id>gamma</id>
-            <build><pluginManagement/></build>
+            <build><pluginManagement /></build>
             <properties>
 
                 <sesam.site>generic.gamma.test.sesam.no</sesam.site>   
@@ -422,7 +422,7 @@
 
         <profile>
             <id>production</id>
-            <build><pluginManagement/></build>
+            <build><pluginManagement /></build>
             <properties>
 
                 <sesam.site>generic.sesam.no</sesam.site> 
