@@ -65,12 +65,15 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
     }
 
     /**
-     * Returns the static URL prefix. (e.g. /search)
+     * Returns the static URL prefix. (e.g. /search). If the URL is configured to be relative, the empty string is
+     * returned.
+     *
+     * @see no.sesat.search.view.navigation.NavigationConfig.Navigation#getPrefix() 
      *
      * @return the url prefix.
      */
     protected String getPrefix() {
-        return navigation.getPrefix();
+        return "RELATIVE".equals(navigation.getPrefix()) ? "" : navigation.getPrefix();
     }
 
     /**

@@ -234,7 +234,8 @@ public final class NavigationConfig implements Serializable {
         }
 
         /**
-         * Returns the prefix to use when generating URLs. The default is <tt>"/search"</tt>.
+         * Returns the prefix to use when generating URLs. The default is <tt>"/search"</tt>. If no prefix is desired,
+         * set the prefix to RELATIVE.
          *
          * @return the URL prefix.
          */
