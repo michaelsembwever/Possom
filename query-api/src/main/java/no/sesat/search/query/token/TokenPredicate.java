@@ -42,6 +42,8 @@ public enum TokenPredicate implements Predicate {
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
     
     /** */
+    ACTOR_DIRECTOR(Type.FAST),
+    /** */
     ANIMAL (Type.FAST),
     /** @deprecated FIXME!! What is blocket? we do not put specific names into this list */
     BLOCKET (Type.FAST),
@@ -90,6 +92,8 @@ public enum TokenPredicate implements Predicate {
     /** */
     MATERIAL (Type.FAST),
     /** */
+    MOVIE_TITLE(Type.FAST),
+    /** */
     PRIOCOMPANYNAME (Type.FAST),
     /** */
     EXACT_PRIOCOMPANYNAME (Type.FAST),
@@ -130,6 +134,8 @@ public enum TokenPredicate implements Predicate {
     PRODUCT_WATCH (Type.FAST),
     /** */
     PRODUCT_WEAPON (Type.FAST),
+    /** */
+    PROFESSION(Type.FAST),
     /** */
     OCEAN (Type.FAST),
     /** */
