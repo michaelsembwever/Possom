@@ -4,7 +4,7 @@
     <parent>
         <groupId>sesat</groupId>
         <artifactId>sesat-kernel</artifactId>
-        <version>2.16-SNAPSHOT</version>
+        <version>2.17-SNAPSHOT</version>
     </parent>
     <artifactId>sesat-sitemap-spi</artifactId>
     <packaging>jar</packaging>

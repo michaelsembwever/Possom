@@ -21,7 +21,7 @@
     <artifactId>sesat-kernel</artifactId>
     <packaging>pom</packaging>
     <name>Sesat Kernel</name>
-    <version>2.16-SNAPSHOT</version>
+    <version>2.17-SNAPSHOT</version>
     <description>
         This is the project for Sesat Kernel.
         Read http://sesat.no/development-guidelines.html for developing help.
@@ -91,9 +91,9 @@
         </mailingList>
      </mailingLists>
     <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/sesat-kernel/tags/2.16</connection>
-        <url>https://dev.schibstedsok.no/svn/sesat-kernel/tags/2.16</url>
-        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/sesat-kernel/tags/2.16</developerConnection>
+        <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
+        <url>http://sesat.no/svn/sesat-kernel/trunk</url>
+        <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</developerConnection>
     </scm>
 
     <modules>
