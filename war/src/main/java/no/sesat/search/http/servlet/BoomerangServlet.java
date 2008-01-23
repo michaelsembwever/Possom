@@ -97,7 +97,16 @@ public final class BoomerangServlet extends HttpServlet {
             kangerooGrub(entrails);
 
             LOG.debug("Ceremonial boomerang to " + destination.toString());
-            res.sendRedirect(destination.toString());
+            if(req.getHeader("User-agent").matches("(Googlebot|Slurp|Yahoo\\! Slurp)")){
+                // crawlers like permanent redirects. and we're not interested in their clicks so ok to cache.
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                res.setHeader("Location", destination.toString());
+                res.setHeader("Connection", "close");
+                
+            }else{
+                // default behaviour for users.
+                res.sendRedirect(destination.toString());
+            }
 
         }else{
 
