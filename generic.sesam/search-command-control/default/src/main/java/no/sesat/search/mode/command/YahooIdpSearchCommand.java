@@ -238,6 +238,16 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         return item;
     }
 
+    @Override
+    public String getTransformedQuery() {
+        final String tq = super.getTransformedQuery();
+        if(tq == null) {
+            LOG.debug("transformedQuery is null, using \"\"");
+            return "";
+        }
+        return tq;
+    }
+
     /** TODO comment me. **/
     protected void visitImpl(final PhraseClause clause) {
         if (clause.getField() == null) {
@@ -292,5 +302,4 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
-
 }
