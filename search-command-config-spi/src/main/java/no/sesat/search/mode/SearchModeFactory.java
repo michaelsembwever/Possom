@@ -43,6 +43,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -266,6 +267,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
 
                 final NodeList childNodes = modeE.getChildNodes();
+                final Collection<SearchConfiguration> searchConfigurations = new ArrayList<SearchConfiguration>();
 
                 for (int j = 0; j < childNodes.getLength(); ++j) {
                     final Node childNode = childNodes.item(j);
@@ -273,7 +275,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         continue;
                     }
                     final Element childElement = (Element) childNode;
-
+                    
                     if(SEARCH_CONFIGURATION_FACTORY.supported(childElement.getTagName(), context)){
 
                         // commands
@@ -281,7 +283,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                                 = SEARCH_CONFIGURATION_FACTORY.parseSearchConfiguration(context, childElement, mode);
 
                         modesCommands.put(sc.getName(), sc);
-                        mode.addSearchConfiguration(sc);
+                        searchConfigurations.add(sc);
 
 //                    }else if("navigation".equals(childElement.getTagName())){
 //                        // navigation
@@ -292,6 +294,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 //                        mode.setNavigationConfiguration(parseNavigation(id, navigationElements));
                     }
                 }
+                mode.setSearchConfigurations(searchConfigurations);
 
                 // add mode
                 try {

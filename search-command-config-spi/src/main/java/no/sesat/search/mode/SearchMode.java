@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.run.handler.RunHandlerConfig;
@@ -76,7 +77,7 @@ public final class SearchMode implements Serializable {
 
     private SearchCommandExecutorConfig searchCommandExecutor = SearchCommandExecutorConfig.SEQUENTIAL;
 
-    private Collection<SearchConfiguration> searchConfigurations = new ArrayList<SearchConfiguration>();
+    private Collection<SearchConfiguration> searchConfigurations;
     private SearchMode parentSearchMode;
     private boolean queryAnalysisEnabled = false;
     private String parentMode;
@@ -136,17 +137,8 @@ public final class SearchMode implements Serializable {
      * @param searchConfigurations
      */
     public void setSearchConfigurations(Collection<SearchConfiguration> searchConfigurations) {
-        this.searchConfigurations = searchConfigurations;
+        this.searchConfigurations = Collections.unmodifiableCollection(searchConfigurations);
     }
-
-    /**
-     *
-     * @param conf
-     */
-    public void addSearchConfiguration(SearchConfiguration conf) {
-        searchConfigurations.add(conf);
-    }
-
 
     /**
      *
@@ -232,7 +224,7 @@ public final class SearchMode implements Serializable {
      * @param runHandlers New list of run handlers
      */
     public void setRunHandlers(final List<RunHandlerConfig> runHandlers) {
-        this.runHandlers = runHandlers;
+        this.runHandlers = Collections.unmodifiableList(runHandlers);
     }
 
     /**
@@ -248,7 +240,7 @@ public final class SearchMode implements Serializable {
       * @param runTransformers New List of run transformers
       */
      public void setRunTransformers(final List<RunTransformerConfig> runTransformers) {
-         this.runTransformers = runTransformers;
+         this.runTransformers = Collections.unmodifiableList(runTransformers);
      }
 
      /**
@@ -258,6 +250,7 @@ public final class SearchMode implements Serializable {
      public List<RunTransformerConfig> getRunTransformers() {
          return runTransformers;
      }
+     
     // Inner classes -------------------------------------------------
 
 }

@@ -206,7 +206,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     /**
      * Thread run. Guts of the logic behind this class.
-     * XXX Insanely long method. Divide & Conquer.
+     * XXX long method. Divide & Conquer.
      *
      * @throws InterruptedException
      */
@@ -610,7 +610,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 },
                 context);
 
-        final List<RunHandlerConfig> rhcList = context.getSearchMode().getRunHandlers();
+        final List<RunHandlerConfig> rhcList 
+                = new ArrayList<RunHandlerConfig>(context.getSearchMode().getRunHandlers());
+        
         /* Adding NavigationRunHandler to all search modes */
         rhcList.add(new NavigationRunHandlerConfig());
 

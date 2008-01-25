@@ -50,7 +50,6 @@ import no.sesat.search.site.SiteContext;
 
 
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -121,13 +120,14 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         final StringBuilder operatorRegexpBuilder = new StringBuilder();
 
-        operatorRegexpBuilder.append("[");
+        operatorRegexpBuilder.append('(');
 
-        for (char c : QueryParser.OPERATOR_CHARACTERS) {
-            operatorRegexpBuilder.append('\\').append(c);
+        for (String c : QueryParser.OPERATORS) {
+            operatorRegexpBuilder.append('"' + Matcher.quoteReplacement(c) + "\"|");
         }
 
-        operatorRegexpBuilder.append("]");
+        operatorRegexpBuilder.setLength(operatorRegexpBuilder.length() - 1);
+        operatorRegexpBuilder.append(')');
 
         OPERATOR_REGEX = operatorRegexpBuilder.toString();
     }
@@ -157,8 +157,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         analysisResult = queryFast(context.getQueryString()
                 .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces.
                 .replaceAll(SKIP_REGEX, "")
-                .replaceAll(OPERATOR_REGEX, "")
-                .replaceAll("xxKEEPWSxx", " ")); // Hack to keep spaces.
+                .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.
+                .replaceAll(OPERATOR_REGEX, " ")); 
     }
 
     // Public --------------------------------------------------------
@@ -174,6 +174,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      * </ul>
      *
      * @param token  can be any of the above
+     * @param query 
      * @return true if the query contains any of the above
      */
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
@@ -192,7 +193,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                     }  else  {
 
                         // HACK since DefaultOperatorClause wraps its children in parenthesis
-                        // Also remove any operator characters. (SEARCH-3883)
+                        // Also remove any operator characters. (SEARCH-3883 & SEARCH-3967)
                         final String hackTerm = term.replaceAll("\\(|\\)","").replaceAll(OPERATOR_REGEX, "");
 
                         for (TokenMatch occurance : analysisResult.get(listname)) {
@@ -326,6 +327,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      * Search fast and find out if the given tokens are company, firstname, lastname etc
      * @param query
      */
+    @SuppressWarnings("unchecked")
     private Map<String, List<TokenMatch>> queryFast(final String query) throws VeryFastListQueryException{
 
         LOG.trace("queryFast( " + query + " )");

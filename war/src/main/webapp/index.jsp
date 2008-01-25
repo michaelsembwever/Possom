@@ -104,7 +104,7 @@
             <div class="navMain">
                 <div>
                     <img src="images/menu/icons/nyheter.png" width="16" height="16" alt="" />
-                    <a href='<search:boomerang url="/search/?c=m" param="category:front_service"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
+                    <a href='<search:boomerang url="/nyheter/siste/" param="category:front_service"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
                 </div>
                 <div>
                     <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />

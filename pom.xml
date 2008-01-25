@@ -142,10 +142,10 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.0-beta-6</version>
                     <configuration>
-                        <tagBase>https://dev.schibstedsok.no/svn/${artifactId}/tags</tagBase>
                         <generateReleasePom>false</generateReleasePom>
                         <testmode>false</testmode>
                         <commitByProject>true</commitByProject>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -556,25 +556,25 @@
                         <link>http://java.sun.com/javaee/5/docs/api/</link>
                         <link>http://logging.apache.org/log4j/docs/api/</link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-httpclient-api/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-httpclient-api/apidocs/
                         </link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-site-spi/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-site-spi/apidocs/
                         </link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-query-api/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-query-api/apidocs/
                         </link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-query-transform-spi/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-query-transform-spi/apidocs/
                         </link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-data-model-api/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-data-model-api/apidocs/
                         </link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-core-api/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-core-api/apidocs/
                         </link>
                         <link>
-                            https://dev.schibstedsok.no/maven2/SITE/schibstedsok-search/search-portal/sesat-war/apidocs/
+                            http://sesat.no/projects/sesat-kernel/sesat-war/apidocs/
                         </link>
                     </links>
                 </configuration>

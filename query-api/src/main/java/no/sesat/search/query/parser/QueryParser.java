@@ -17,8 +17,6 @@
  *
  * Created on 12 January 2006, 12:32
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.sesat.search.query.parser;
@@ -68,7 +66,10 @@ public interface QueryParser {
         {'\u2010', '\u2015'}        
     };
 
-    char[] OPERATOR_CHARACTERS = {'*', '-', '+', '(', ')'};
+    /**
+     * Duplication of the parser's operators. Must be kept uptodate!
+     */
+    String[] OPERATORS = {"*", " -", " +", "(", ")"};
 
     /** The Context an QueryParser implementation needs to work off.
      * The QueryParser is not responsible for

@@ -17,6 +17,8 @@
  */
 package no.sesat.search.mode.config;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.SearchMode;
@@ -68,7 +70,9 @@ public final class SearchModeTest extends DataModelTestCase {
         webCrawl.setSpellchecklanguage("no");
         webCrawl.setResultsToReturn(10);
 
-        mode.addSearchConfiguration(webCrawl);
+        final Collection<SearchConfiguration> searchConfigurations = new ArrayList<SearchConfiguration>();
+        searchConfigurations.add(webCrawl);
+        mode.setSearchConfigurations(searchConfigurations);
 
         final DataModel datamodel = getDataModel();
 
@@ -146,7 +150,10 @@ public final class SearchModeTest extends DataModelTestCase {
         searchConfiguration.setPartnerId("overturePartnerId");
         searchConfiguration.setUrl("/d/search/p/standard/eu/xml/rlb/?mkt=se&amp;adultFilter=clean&amp;accountFilters=schibstedsok_se");
         searchConfiguration.setEncoding("UTF-8");
-        mode.addSearchConfiguration(searchConfiguration);
+
+        final Collection<SearchConfiguration> searchConfigurations = new ArrayList<SearchConfiguration>();
+        searchConfigurations.add(searchConfiguration);
+        mode.setSearchConfigurations(searchConfigurations);
 
         final DataModel datamodel = getDataModel();
 

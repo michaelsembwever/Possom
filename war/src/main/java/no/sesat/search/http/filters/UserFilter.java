@@ -290,7 +290,8 @@ public final class UserFilter implements Filter {
             return (BasicUserService) new InitialContext(properties).lookup(jndi);
 
         } catch (final NamingException ne) {
-            LOG.error(ne.getMessage(), ne);
+            // acceptable for sesat not to have to have a user service backend
+            LOG.debug(ne.getMessage(), ne);
             return null;
         }
     }

@@ -44,11 +44,17 @@
                 </plugins>
             </build>
             <dependencies>
-                <dependency>
+                <dependency><!-- override making optional -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam.no-search-command-control</artifactId>
                     <version>${version}</version>
                     <optional>true</optional>
+                </dependency>
+                <dependency><!-- add the include-fast variant -->
+                    <groupId>sesat</groupId>
+                    <artifactId>generic.sesam.no-search-command-control</artifactId>
+                    <version>${version}</version>
+                    <classifier>include-fast</classifier>
                 </dependency>                
             </dependencies>
         </profile>
@@ -75,7 +81,7 @@
                   <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <configuration><classifier>alpha</classifier></configuration>
+                    <configuration><classifier>nuclei</classifier></configuration>
                   </plugin>
                 </plugins>
             </build>
@@ -89,7 +95,7 @@
                   <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <configuration><classifier>alpha</classifier></configuration>
+                    <configuration><classifier>beta</classifier></configuration>
                   </plugin>
                 </plugins>
             </build>
@@ -103,7 +109,7 @@
                   <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <configuration><classifier>alpha</classifier></configuration>
+                    <configuration><classifier>electron</classifier></configuration>
                   </plugin>
                 </plugins>
             </build>
@@ -117,7 +123,7 @@
                   <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <configuration><classifier>alpha</classifier></configuration>
+                    <configuration><classifier>gamma</classifier></configuration>
                   </plugin>
                 </plugins>
             </build>
@@ -131,7 +137,7 @@
                   <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <configuration><classifier>alpha</classifier></configuration>
+                    <configuration><classifier>production</classifier></configuration>
                   </plugin>
                 </plugins>
             </build>
@@ -182,13 +188,6 @@
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
             <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-control</artifactId>
-            <version>${version}</version>
-            <classifier>include-fast</classifier>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
