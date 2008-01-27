@@ -45,23 +45,30 @@
             <timezone>+1</timezone>
         </developer>
         <developer>
-            <id>itthkjer</id>
+            <id>ssthkjer</id>
             <name>Thomas Kjærstad</name>
             <email>itthkjer@sesam.no</email>
             <organization>Schibsted Søk AS</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
-            <id>magnuse</id>
+            <id>ssmaeklu</id>
             <name>Magnus Eklund</name>
             <email>magnus.eklund@sesam.no</email>
             <organization>Schibsted Søk AS</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
-            <id>anders</id>
+            <id>ssanjamt</id>
             <name>Anders Johan Jamtli</name>
             <email>anders.johan.jamtli@sesam.no</email>
+            <organization>Schibsted Søk AS</organization>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>ssmathyr</id>
+            <name>Magne Thyrhaug</name>
+            <email>magne@sesam.no</email>
             <organization>Schibsted Søk AS</organization>
             <timezone>+1</timezone>
         </developer>
