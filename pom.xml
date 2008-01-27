@@ -26,7 +26,7 @@
         This is the project for Sesat Kernel.
         Read http://sesat.no/development-guidelines.html for developing help.
     </description>
-    <url>http://sesat.no</url>
+    <url>http://sesat.no/projects/sesat-kernel/</url>
     <inceptionYear>2005</inceptionYear>
     <developers>
         <developer>
@@ -92,6 +92,10 @@
             <archive>http://sesat.no/pipermail/kernel-builds/</archive>
         </mailingList>
      </mailingLists>
+     <ciManagement>
+       <system>hudson</system>
+       <url>http://sesat.no/hudson/</url>
+     </ciManagement>
     <scm>
         <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
         <url>http://sesat.no/svn/sesat-kernel/trunk</url>
@@ -534,6 +538,15 @@
             <plugin>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
             </plugin>
+            <!-- maven-changelog-plugin disabled until http://jira.codehaus.org/browse/MCHANGELOG-75 is fixed. 
+            <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-changelog-plugin</artifactId>
+             <configuration>
+               <type>range</type>
+               <range>3650</range>
+             </configuration>
+            </plugin-->
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
@@ -546,9 +559,16 @@
                 <version>2.0-beta-1</version>
             </plugin>
             <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-jxr-plugin</artifactId>
+             <configuration>
+              <aggregate>true</aggregate>
+             </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <!--aggregate>true</aggregate-->
+                    <aggregate>true</aggregate>
                     <charset>UTF-8</charset>
                     <docencoding>UTF-8</docencoding>
                     <sourcepath>${project.basedir}/src/main/javadoc;${project.basedir}/src/main/java</sourcepath>
@@ -580,10 +600,6 @@
                         </link>
                     </links>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

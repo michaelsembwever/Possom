@@ -2,7 +2,7 @@
 SESAT Kernel
 
     The sesam kernel consists of a number of modular 
-[sesat-core-api/apidocs/no/sesat/search/doc-files/SearchPortalComponents2] components
+[../../../core-api/apidocs/no/sesat/search/doc-files/SearchPortalComponents2] components
 providing different 
 {{{http://openide.netbeans.org/tutorial/api-design.html}
 Application Programming Interfaces (APIs) and Service Provider Interfaces (SPIs)}}.
