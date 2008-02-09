@@ -19,6 +19,7 @@
 package no.sesat.search.mode.command;
 
 import java.io.IOException;
+import java.io.BufferedReader;
 
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.mode.config.AbstractXmlSearchConfiguration;
@@ -101,6 +102,18 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
         DUMP.info("Using " + url);
         return client.getXmlDocument(url);
     }
+
+    /**
+     *
+     * @return
+     * @throws java.io.IOException
+     */
+    protected final BufferedReader getHttpReader(final String encoding) throws IOException {
+        final String url = createRequestURL();
+        DUMP.info("Using " + url);
+        return client.getBufferedReader(url, encoding);
+    }
+    
 
     // Private -------------------------------------------------------
 

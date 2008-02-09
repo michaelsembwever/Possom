@@ -635,6 +635,20 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         // there were no hits for any of the search tabs!
         noHitsOutput.append("<absolute/>");
 
+        if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0
+                && !"NOCOUNT".equals(parameters.get("IGNORE"))){
+
+            final String output = null != parameters.get("output")
+                    ? parameters.get("output").getString()
+                    : null;
+
+            noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
+                    + (null != output ? "\" output=\"" + output : "") + "\">"
+                    + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
+            noHitsOutput.append("</no-hits>");
+            PRODUCT_LOG.info(noHitsOutput.toString());
+        }
+        
         // maybe we can modify the query to broaden the search
         // replace all DefaultClause with an OrClause
         //  [simply done with wrapping the query string inside ()'s ]
@@ -655,22 +669,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             
             // create and run a new RunningQueryImpl
             new RunningQueryImpl(context, '(' + queryStr + ')').run();
+            
+            // TODO put in some sort of feedback to user that query has been changed.
         }
 
-
-        if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0
-                && !"NOCOUNT".equals(parameters.get("IGNORE"))){
-
-            final String output = null != parameters.get("output")
-                    ? parameters.get("output").getString()
-                    : null;
-
-            noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
-                    + (null != output ? "\" output=\"" + output : "") + "\">"
-                    + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
-            noHitsOutput.append("</no-hits>");
-            PRODUCT_LOG.info(noHitsOutput.toString());
-        }
     }
 
     // Inner classes -------------------------------------------------

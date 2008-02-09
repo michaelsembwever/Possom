@@ -30,6 +30,7 @@ import java.util.*;
  * 
  * @author maek
  * @author Geir H. Pettersen(T-Rank)
+ * @version $Id$
  */
 public final class NavigationManager {
 
@@ -105,13 +106,22 @@ public final class NavigationManager {
              * @param nav the navigator. 
              * @param parameterName the parameter.
              *
-             * @return the value of the parameter.
+             * @return the value of the parameter. UTF-8 URL ENCODED.
              */
             public String getParameterValue(final NavigationConfig.Nav nav, final String parameterName) {
                 final String value = parameters.get(parameterName);
 
+                // TODO: SEARCH-4105 - put this logic somewhere else to make things faster. look at OptionNavigationController:152
+                //  or the c parameter should be put into nav.getStaticParameters() 
+                // (where it would be used in peference to here in AbstractUrlGenerator.getUrlComponentValue(..))
+                
+                // Overriding the tab with the one defined in the config.
+                if ("c".equals(parameterName) && null != nav.getTab()) {
+                    return nav.getTab();
+                }
+
                 if (null == value && null != dataModel.getParameters().getValue(parameterName)) {
-                    return dataModel.getParameters().getValue(parameterName).getString();
+                    return dataModel.getParameters().getValue(parameterName).getUtf8UrlEncoded();
                 }
 
                 return value;

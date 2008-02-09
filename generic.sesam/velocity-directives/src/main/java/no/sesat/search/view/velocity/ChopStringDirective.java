@@ -96,7 +96,7 @@ public final class ChopStringDirective extends AbstractDirective {
             final boolean chopWord = argCount > 3 && Boolean.parseBoolean(getArgument(context, node, 3));
             
             final String chopSuey = esc
-                    ? StringEscapeUtils.escapeHtml(StringChopper.chop(s, length, chopWord))
+                    ? StringEscapeUtils.escapeXml(StringChopper.chop(s, length, chopWord))
                     : StringChopper.chop(s, length, chopWord);
             
             writer.write(chopSuey);

@@ -68,8 +68,8 @@
             <img src="images/searchbar/dropdown.png" id="dropdownImg" width="19" height="24" alt="Pil ned" />
             <a id="searchtip" href='<search:boomerang url="/search/?q=&amp;page=1&amp;parent=37&amp;catid=82" param="category:static;subcategory=header"/>'>S&#248;ketips</a>
             <div id="searchRadio">
-                <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
-                <input type="radio" name="c" value="g" /> Verden
+                <input type="radio" name="c" value="d" checked="checked" /> P&#229; nettet &nbsp;&nbsp;
+                <input type="radio" name="c" value="g" onclick="globalsearch()" /> <span id="radioG">P&#229; norsk</span> 
             </div>
             <div id="front_button_layer">
                 <div id="cn" class="nb">Nyhetss&#248;k</div>
@@ -104,7 +104,7 @@
             <div class="navMain">
                 <div>
                     <img src="images/menu/icons/nyheter.png" width="16" height="16" alt="" />
-                    <a href='<search:boomerang url="/nyheter/siste/" param="category:front_service"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
+                    <a href='<search:boomerang url="/nyheter/siste/" param="category:front_service"/>' onclick="return strepNews(this);">Nyhetss&#248;k</a>
                 </div>
                 <div>
                     <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />

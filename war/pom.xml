@@ -290,9 +290,6 @@
        <profile>
             <id>beta</id>
             <activation />
-            <build>
-                <finalName>ROOT.beta</finalName>
-            </build>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -306,9 +303,6 @@
        <profile>
             <id>electron</id>
             <activation />
-            <build>
-                <finalName>ROOT.electron</finalName>
-            </build>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -322,9 +316,6 @@
        <profile>
             <id>gamma</id>
             <activation />
-            <build>
-                <finalName>ROOT.gamma</finalName>
-            </build>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -338,9 +329,6 @@
         <profile>
             <id>production</id>
             <activation />
-            <build>
-                <finalName>ROOT.production</finalName>
-            </build>
             <properties>
                 <sesam.site.default>generic.sesam.no</sesam.site.default>
                 <server.port>80</server.port>

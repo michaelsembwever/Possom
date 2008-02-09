@@ -170,7 +170,7 @@ public final class UserFilter implements Filter {
 
         }else{
 
-            LOG.warn("Couldn't find the basic user service.");
+            LOG.debug("Couldn't find the basic user service.");
             return;
         }
     }

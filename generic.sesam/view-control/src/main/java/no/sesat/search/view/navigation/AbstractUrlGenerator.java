@@ -31,6 +31,7 @@ import java.util.Set;
  * The term url component is used to denote a part of a URL, be it a part of the path or a parameter.
  *
  * @author maek
+ * @version $Id$
  */
 public abstract class AbstractUrlGenerator implements UrlGenerator {
 
@@ -82,6 +83,7 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
      * @param nav the navigator.
      * @param extraParameters any extra parameters that should go into the URL.
      *
+     * @param newValue 
      * @return the set of parameter names.
      */
     protected final Set<String> getUrlComponentNames(
@@ -109,7 +111,8 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
      * @param nav the navigator
      * @param componentName the name of the url component.
      *
-     * @return the value.
+     * @param extraParameters 
+     * @return the value. UTF-8 URL ENCODED.
      */
     protected String getUrlComponentValue(
             final NavigationConfig.Nav nav,
@@ -131,7 +134,8 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
         return dataModel;
     }
 
-    private String getFirstNotNull(String ... strings) {
+    private String getFirstNotNull(final String ... strings) {
+        
         for (final String string : strings) {
             if (string != null) {
                 return string;

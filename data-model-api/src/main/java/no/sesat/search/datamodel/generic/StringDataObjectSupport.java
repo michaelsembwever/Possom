@@ -23,13 +23,9 @@
 
 package no.sesat.search.datamodel.generic;
 
-import no.sesat.search.datamodel.generic.DataObject;
-import no.sesat.search.datamodel.*;
-import no.sesat.search.datamodel.generic.StringDataObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -87,7 +83,9 @@ public class StringDataObjectSupport implements StringDataObject{
     
     public String getXmlEscaped(){
         
-        return null != getString() ? StringEscapeUtils.escapeXml(getString()) : null;
+        return null != getString() 
+                ? StringEscapeUtils.escapeXml(getString()).replaceAll("&apos;", "&#39;") // see SEARCH-4057
+                : null;
     }
     
     

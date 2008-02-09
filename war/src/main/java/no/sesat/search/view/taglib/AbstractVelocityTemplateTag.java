@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,9 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
- */
-/*
+ *
  * AbstractImportVelocityTemplateTag.java
  *
  * Created on May 26, 2006, 3:17 PM
@@ -35,10 +33,15 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.http.filters.SiteLocatorFilter;
+import no.sesat.search.run.RunningQueryImpl;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.TextMessages;
+import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.view.config.SearchTab.Layout;
 import no.sesat.search.view.velocity.VelocityEngineFactory;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -75,6 +78,28 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
+    
+    /** Find (and initialise into the PageContext) the layout this request is to use.
+     * 
+     * @param datamodel
+     * @return
+     */
+    protected final Layout findLayout(final DataModel datamodel){
+        
+        Layout layout = null;
+        final PageContext cxt = (PageContext) getJspContext();
+        if(null != cxt && null != datamodel && null != datamodel.getPage()){
+            final SearchTab tab = datamodel.getPage().getCurrentTab();
+            final ParametersDataObject params = datamodel.getParameters();
+            final StringDataObject layoutDO = null != params ? params.getValue(RunningQueryImpl.PARAM_LAYOUT) : null;
+            layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO && null != tab && null != tab.getLayouts()
+                    ? tab.getLayouts().get(layoutDO.getXmlEscaped())
+                    : null != tab ? tab.getDefaultLayout() : null;
+            cxt.setAttribute("layout", layout);
+        }
+        return layout;
+    }
+    
     protected final Site getSiteManually(final PageContext cxt) {
         Site site = null;
         try {

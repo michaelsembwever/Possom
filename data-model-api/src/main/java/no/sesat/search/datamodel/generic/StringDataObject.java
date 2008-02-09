@@ -13,8 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- */
-/*
+ *
  * StringDataObject.java
  *
  * Created on 23 January 2007, 12:43
@@ -24,8 +23,8 @@
 package no.sesat.search.datamodel.generic;
 
 import java.io.Serializable;
-import no.sesat.search.datamodel.generic.DataObject;
-import no.sesat.search.datamodel.*;
+import static no.sesat.search.datamodel.access.ControlLevel.VIEW_CONSTRUCTION;
+import no.sesat.search.datamodel.access.AccessDisallow;
 
 /**
  *
@@ -38,6 +37,7 @@ public interface StringDataObject extends Serializable{
      * 
      * @return 
      */
+    @AccessDisallow({VIEW_CONSTRUCTION})
     String getString();
     /**
      * 

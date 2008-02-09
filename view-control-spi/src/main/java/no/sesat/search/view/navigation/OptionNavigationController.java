@@ -18,6 +18,13 @@
  */
 package no.sesat.search.view.navigation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.generic.StringDataObjectSupport;
@@ -26,12 +33,12 @@ import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
-import java.util.*;
 
 /**
  *
  * @author Geir H. Pettersen(T-Rank)
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @version $Id$
  */
 public class OptionNavigationController
         implements NavigationController, NavigationControllerFactory<OptionsNavigationConfig> {
@@ -111,10 +118,13 @@ public class OptionNavigationController
           }
     }
 
-    private void addAll(final Collection<OptionsNavigationConfig.Option> optionsToAdd, final DataModel dataModel, final Context context) {
+    private void addAll(
+            final Collection<OptionsNavigationConfig.Option> optionsToAdd, 
+            final DataModel dataModel, 
+            final Context context) {
 
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
-            final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
+        final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
 
         boolean selectionDone = false;
@@ -125,6 +135,7 @@ public class OptionNavigationController
                     ? dataModel.getSearch(option.getCommandName()).getResults()
                     : null;
 
+            // value is an unencoded value.
             String value = option.getValue();
             if (option.getValueRef() != null && searchResult != null) {
                 final String tmp = searchResult.getField(option.getValueRef());
@@ -134,32 +145,34 @@ public class OptionNavigationController
             }
             if (value != null) {
 
-
-
-                final Map<String, String> urlParameters;
+                final Map<String,String> urlParameters;
 
                 if (option.getTab() != null) {
-                    urlParameters = new HashMap<String, String>(1);
+                    urlParameters = new HashMap<String,String>(1);
                     urlParameters.put("c", option.getTab());
                 } else {
-                    urlParameters = Collections.emptyMap();
+                    urlParameters = Collections.<String,String>emptyMap();
                 }
 
                 final NavigationItem navigator = new BasicNavigationItem(
                         option.getDisplayName(),
                         context.getUrlGenerator().getURL(value, config.getParent(), urlParameters),
                         -1);
+                
                 parentResult.addResult(navigator);
+                
                 if (!selectionDone
                         && (optionSelectedValue == null || "".equals(optionSelectedValue.getString()))
                         && isOptionDefaultSelected(searchResult, option)) {
 
                     navigator.setSelected(true);
                     selectionDone = true;
+                    
                 } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
                     navigator.setSelected(true);
                     selectionDone = true;
                 }
+                
                 if (option.isUseHitCount() && option.getCommandName() != null) {
                     navigator.setHitCount(dataModel.getSearch(option.getCommandName()).getResults().getHitCount());
                 }

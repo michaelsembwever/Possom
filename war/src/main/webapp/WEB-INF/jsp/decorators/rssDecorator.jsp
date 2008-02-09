@@ -1,4 +1,4 @@
-<!-- Copyright (2007) Schibsted Søk AS
+<%-- Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,8 +13,6 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
--->
-<%--
 --%><%@ page import="no.sesat.search.view.config.SearchTab"%><%--
 --%><%@ page import="no.sesat.search.view.output.SyndicationGenerator"%><%--
 --%><%@ page import="no.sesat.search.site.Site"%><%--

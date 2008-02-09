@@ -259,6 +259,31 @@ public final class HTTPClient {
 
     /**
      * @param path
+     * @param encoding
+     * @return
+     * @throws java.io.IOException
+     */
+    public BufferedReader getBufferedReader(final String path, final String encoding) throws IOException {
+
+        loadUrlConnection(path);
+
+        try {
+            final long start = System.nanoTime();
+
+            final BufferedReader result = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), encoding));
+
+            Statistic.getStatistic(this.id).addInvocation(System.nanoTime() - start);
+
+            return result;
+
+        } catch (IOException e) {
+            throw interceptIOException(e);
+
+        }
+    }
+
+    /**
+     * @param path
      * @return
      * @throws java.io.IOException
      */

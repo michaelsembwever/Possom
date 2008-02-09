@@ -23,13 +23,10 @@
 package no.sesat.search.datamodel.request;
 
 import java.util.Map;
-import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.generic.MapDataObject;
 import no.sesat.search.datamodel.access.AccessAllow;
-import no.sesat.search.datamodel.access.AccessDisallow;
 import no.sesat.search.datamodel.generic.DataNode;
 import no.sesat.search.datamodel.generic.StringDataObject;
-import static no.sesat.search.datamodel.access.ControlLevel.*;
 
 /** The ParameterDataObject class is a container for all request based information.
  *  This mainly includes parameters, but also headers and attributes.

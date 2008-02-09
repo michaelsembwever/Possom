@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -77,12 +77,7 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
 
         final PageContext cxt = (PageContext) getJspContext();
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
-        final SearchTab tab = datamodel.getPage().getCurrentTab();
-        final StringDataObject layoutDO = datamodel.getParameters().getValue(RunningQueryImpl.PARAM_LAYOUT);
-        final Layout layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO
-                ? tab.getLayouts().get(layoutDO.getXmlEscaped())
-                : tab.getDefaultLayout();
-        cxt.setAttribute("layout", layout);
+        final Layout layout = findLayout(datamodel);
 
         final String front = null != layout.getFront() && 0 < layout.getFront().length()
                 ? layout.getFront()

@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,9 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
- */
-/*
+ *
  * ImportSearchTabIncludeTag.java
  *
  * Created on May 26, 2006, 3:17 PM
@@ -68,6 +66,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
 
     /**
      * Setter for the template attribute.
+     * @param include 
      */
     public void setInclude(final String include) {
         this.include = include;
@@ -76,18 +75,14 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
+     * @throws javax.servlet.jsp.JspException
+     * @throws java.io.IOException 
      */
     @Override
     public void doTag() throws JspException, IOException {
         
         final PageContext cxt = (PageContext) getJspContext();
-        final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
-        final SearchTab tab = datamodel.getPage().getCurrentTab();
-        final StringDataObject layoutDO = datamodel.getParameters().getValue(RunningQueryImpl.PARAM_LAYOUT);
-        final Layout layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO 
-                ? tab.getLayouts().get(layoutDO.getXmlEscaped()) 
-                : tab.getDefaultLayout();
-        cxt.setAttribute("layout", layout);
+        final Layout layout = findLayout((DataModel) cxt.findAttribute(DataModel.KEY));
         
         if(null != layout.getInclude(include) && layout.getInclude(include).length() > 0 ){
             

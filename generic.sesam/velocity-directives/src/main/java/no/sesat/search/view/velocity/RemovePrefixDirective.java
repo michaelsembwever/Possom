@@ -89,8 +89,9 @@ public final class RemovePrefixDirective extends Directive {
             returnString = returnString.trim();
         }
 
-        if ("html".equalsIgnoreCase(encoding)) {
-            writer.write(StringEscapeUtils.escapeHtml(returnString));
+        if ("html".equalsIgnoreCase(encoding) || "xml".equalsIgnoreCase(encoding)) {
+            // sesat prefers xhtml
+            writer.write(StringEscapeUtils.escapeXml(returnString));
         } else {
             writer.write(URLEncoder.encode(returnString, encoding));
         }

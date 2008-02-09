@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
  * components (e.g. /search/param1Value/?param2=param2value).
  *
  * @author maek
+ * @version $Id$
  * @since 2.16
  */
 public class BasicUrlGenerator extends AbstractUrlGenerator {
@@ -66,30 +67,37 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
     }
 
     /**
-     * Returns the navigation URL for navigating nav to the given value. The navigation state is used to retrieve the
+     * Returns the navigation URL for navigating nav to the given encodedValue. The navigation state is used to retrieve the
      * state of all the other navigators on the page.
      *
-     * @param value the value.
+     * @param unencodedValue the unencoded value.
      * @param nav the navigator to navigate.
      *
      * @return the URL for the state.
      */
-    public final synchronized String getURL(final String value, final NavigationConfig.Nav nav) {
-        return doGetURL(value, nav, Collections.<String, String>emptyMap());
+    public final synchronized String getURL(
+            final String unencodedValue, 
+            final NavigationConfig.Nav nav) {
+        
+        return doGetURL(unencodedValue, nav, Collections.<String, String>emptyMap());
     }
 
     /**
-     * Returns the navigation URL for navigating nav to the given value. The navigation state is used to retrieve the
+     * Returns the navigation URL for navigating nav to the given encodedValue. The navigation state is used to retrieve the
      * state of all the other navigators on the page.
      *
-     * @param val the value.
+     * @param unencodedValue the unencoded value.
      * @param nav the navigator to navigate.
-     * @param extraComponents any extra components that should go into the URL.
+     * @param extraComponents any extra components that should go into the URL. these should be all unencoded.
      *
      * @return the URL for the state.
      */
-    public String getURL(final String val, final NavigationConfig.Nav nav, final Map<String, String> extraComponents) {
-        return doGetURL(val, nav ,extraComponents);
+    public String getURL(
+            final String unencodedValue, 
+            final NavigationConfig.Nav nav, 
+            final Map<String, String> extraComponents) {
+        
+        return doGetURL(unencodedValue, nav, extraComponents);
     }
 
     /**
@@ -103,7 +111,8 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
      * @return List of path components.
      */
     protected List<String> getPathComponents(final NavigationConfig.Nav nav) {
-        return Collections.emptyList();
+        
+        return Collections.<String>emptyList();
     }
 
     /**
@@ -129,40 +138,52 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
     }
 
     /**
-     * Appends the component as a path component. This implementetion adds the value plus a slash. Value may be null or
+     * Appends the component as a path component. This implementetion adds the encodedValue plus a slash. Value may be null or
      * empty.
      *
      * @param component the component.
      * @param value the value of the component.
      */
     protected void appendPathComponent(final String component, final String value) {
-        if (null != value)
+        if (null != value) {
             urlBuilder.append(value).append("/");
+        }
     }
 
     /**
-     * Appends the component and its value as a parameter component. This implementetion adds
-     * <tt>component=value&</tt> if the value isn't empty.
+     * Appends the component and its encodedValue as a parameter component. This implementetion adds
+     * <tt>component=encodedValue&</tt> if the encodedValue isn't empty.
      *
      * @param component the component.
-     * @param value the value of the component.
+     * @param encodedValue the encodedValue of the component.
      */
-    protected void appendParameterComponent(final String component, final String value) {
-        if (null != value && value.length() > 0) {
+    protected void appendParameterComponent(final String component, final String encodedValue) {
+        
+        if (null != encodedValue && encodedValue.length() > 0) {
             urlBuilder.append(component);
             urlBuilder.append("=");
-            urlBuilder.append(value);
+            urlBuilder.append(encodedValue);
             urlBuilder.append("&amp;");
         }
     }
 
+    /**
+     * 
+     * @param parameter the parameter's name/key.
+     * @param unencodedValue
+     * @param nav
+     * @param extraParameters
+     * @return the value to use for the parameter. UTF-8 URL ENCODED.
+     */
     protected String getParameterValue(
             final String parameter,
-            final String value,
+            final String unencodedValue,
             final NavigationConfig.Nav nav,
             final Map<String, String> extraParameters) {
 
-        return parameter.equals(nav.getField()) ? enc(value) : getUrlComponentValue(nav, parameter, extraParameters);
+        return parameter.equals(nav.getField()) 
+                ? enc(unencodedValue) 
+                : getUrlComponentValue(nav, parameter, extraParameters);
     }
 
     /**
@@ -175,28 +196,29 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
     }
 
     private synchronized String doGetURL(
-            final String value,
+            final String unencodedValue,
             final NavigationConfig.Nav nav,
             final Map<String, String> extraParameters) {
 
         try {
 
             final List<String> pathComponents = getPathComponents(nav);
-            final Set<String> parameterComponents = getParameterComponents(nav, extraParameters.keySet(), value);
+            final Set<String> parameterComponents = getParameterComponents(nav, extraParameters.keySet(), unencodedValue);
 
             for (final String component : pathComponents) {
-                appendPathComponent(component, getParameterValue(component, value, nav, extraParameters));
+                appendPathComponent(component, getParameterValue(component, unencodedValue, nav, extraParameters));
             }
 
             urlBuilder.append('?');
 
             for (final String component : parameterComponents) {
-                appendParameterComponent(component, getParameterValue(component, value, nav, extraParameters));
+                appendParameterComponent(component, getParameterValue(component, unencodedValue, nav, extraParameters));
             }
 
             if (!pathComponents.contains(nav.getField()) && !parameterComponents.contains(nav.getField())) {
-                if (null != nav.getField())
-                    appendParameterComponent(nav.getField(), getParameterValue(nav.getField(), value, nav, extraParameters));
+                if (null != nav.getField()) {
+                    appendParameterComponent(nav.getField(), getParameterValue(nav.getField(), unencodedValue, nav, extraParameters));
+                }
             }
 
             return SEPARATOR_END.matcher(urlBuilder).replaceFirst("");

@@ -43,6 +43,8 @@ import org.apache.velocity.runtime.parser.node.Node;
  * </code>
  *
  * @author magnuse
+ * @version $Id$
+ * @deprecated use XmlEscapeDirective instead as we render xhtml pages.
  */
 public final class HtmlEscapeDirective extends Directive {
 

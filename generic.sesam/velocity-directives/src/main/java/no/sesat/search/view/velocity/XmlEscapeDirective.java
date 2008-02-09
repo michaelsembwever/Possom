@@ -37,6 +37,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  *
  * @author maek
+ * @version $Id$
  */
 public class XmlEscapeDirective extends Directive {
 
