@@ -38,7 +38,7 @@
         <servlet-class>no.sesat.commons.resourcefeed.ResourceServlet</servlet-class>
         <init-param>
             <param-name>ipaddresses.allowed</param-name>
-            <param-value>80.91.33.</param-value>
+            <param-value>80.91.33.,193.90.148.58</param-value>
         </init-param>
         <init-param>
             <param-name>resources.restricted</param-name>
