@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - Copyright (2008) Schibsted Søk AS
+ *   This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses />.
+ - $Id: project.xml 2296 2006-02-14 17:33:59Z magnuse $
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+      <parent>
+          <groupId>sesat</groupId>
+          <artifactId>sesat-kernel</artifactId>
+          <version>2.17-SNAPSHOT</version>
+      </parent>
+    <name>Sesam.com skin</name>
+    <artifactId>pom.sesam.com</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <!-- Uncomment as needed. -->
+        <!--module>query-transform-config</module>
+        <module>query-transform-control</module>
+        <module>result-handler-config</module>
+        <module>result-handler-control</module>
+        <module>search-command-config</module>
+        <module>search-command-control</module>
+        <module>velocity-directives</module>
+        <module>result</module>
+        <module>view-config</module>
+        <module>view-control</module-->
+        <module>war</module>
+    </modules>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/conf</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.xml</include>
+                    <include>*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/css</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.css</include>
+                    <include>**/*.css</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/templates</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.vm</include>
+                    <include>*.html</include>
+                    <include>**/*.vm</include>
+                    <include>**/*.html</include>
+                    <include>*.jsp</include>
+                    <include>**/*.jsp</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/images</directory>
+                <includes>
+                    <include>*.gif</include>
+                    <include>*.jpg</include>
+                    <include>*.png</include>
+                    <include>*.ico</include>
+                    <include>*.swf</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.png</include>
+                    <include>**/*.ico</include>
+                    <include>**/*.swf</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/javascript</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.js</include>
+                    <include>**/*.js</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>-ea -Xmx512m -Dfile.encoding=UTF-8</argLine>
+                    <!--argLine>-ea -Xmx512m -Dfile.encoding=UTF-8 -Xdebug -Xrunjdwp:transport=dt_socket,address=54321,server=y,suspend=y</argLine-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+
+        <!-- DEVELOPMENT PROFILE -->
+        <profile>
+            <id>development</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+              <finalName>localhost.com</finalName>
+              <plugins>
+                    <plugin>
+                        <groupId>sesat</groupId>
+                        <artifactId>sesat-mojo</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sesat-warfiles</id>
+                                <phase>install</phase>
+                                <goals><goal>deploy</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>sesat</groupId>
+                                            <artifactId>sesat-war</artifactId>
+                                            <type>war</type>
+                                            <version>${parent.version}</version>
+                                            <destFileName>ROOT.war</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>sesat</groupId>
+                                            <artifactId>generic.sesam.no</artifactId>
+                                            <type>war</type>
+                                            <version>${parent.version}</version>
+                                            <destFileName>${sesam.site.generic}.war</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${custom.install}</outputDirectory>
+                                    <overWriteSnapshots>false</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+              </plugins>
+            </build>
+            <properties>
+                <sesam.site>localhost.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.sesam:8080</sesam.site.parent>
+            </properties>
+        </profile>
+
+        <!-- TEST PROFILES -->
+        <profile>
+            <id>alpha</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <sesam.site>alpha.test.sesam.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.alpha.test.sesam.no</sesam.site.parent>
+            </properties>
+        </profile>
+        <profile>
+            <id>nuclei</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <sesam.site>nuclei.test.sesam.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.nuclei.test.sesam.no</sesam.site.parent>
+            </properties>
+        </profile>
+        <profile>
+            <id>beta</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <sesam.site>beta.test.sesam.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.beta.test.sesam.no</sesam.site.parent>
+            </properties>
+        </profile>
+        <profile>
+            <id>electron</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <sesam.site>electron.test.sesam.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.electron.test.sesam.no</sesam.site.parent>
+            </properties>
+        </profile>
+        <profile>
+            <id>gamma</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <sesam.site>gamma.test.sesam.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.gamma.test.sesam.no</sesam.site.parent>
+            </properties>
+        </profile>
+
+        <!-- PRODUCTION PROFILE -->
+        <profile>
+            <id>production</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <sesam.site>sesam.com</sesam.site>
+                <!-- The parent Site -->
+                <sesam.site.parent>generic.sesam.no</sesam.site.parent>
+            </properties>
+        </profile>
+    </profiles>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-site-spi</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>commons-ioc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <!-- FOR TESTS -->
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-httpclient-api</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-site-spi</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-javabean-impl</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-core-api</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-transform-control-spi</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-core-api</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "http://sesam.no/dtds/views.dtd">
+<!-- Copyright (2006) Schibsted Søk AS
+    Document   : views.xml
+    Created on : 4 April 2006, 16:25
+    Author     : mick
+    Description:
+        Purpose of the document follows.
+-->
+
+<views>
+    <!-- DEFAULTS -->
+
+    <!-- "absolute-ordering" means that the navigator sources should be sorted according to the 
+prority attribute of the navigation hints -->
+
+    <tab id="default" display-css="true">
+        <layout>
+            <include key="head-element" template="head/head"/>
+            <include key="header"/>            
+            <include key="left-col-one"/>
+            <include key="left-col-two"/>
+            <include key="left-col-three"/>
+
+            <include key="error-msg"/>
+            <include key="middle-col-one"/>
+            <include key="middle-col-two"/>
+            <include key="middle-col-three"/>
+            <include key="middle-col-four"/>
+
+            <include key="right-col-one"/>
+
+            <include key="publishing-page"/>
+            <include key="no-hits"/>
+            
+            <include key="bottom-one"/>
+            <include key="bottom-two"/>
+            <include key="bottom-three"/>
+            <include key="bottom-four"/>
+            <include key="bottom-five"/>
+            <include key="bottom-six"/>
+            <include key="bottom-seven"/>
+            <include key="bottom-eight"/>
+        </layout>
+    </tab>
+</views>

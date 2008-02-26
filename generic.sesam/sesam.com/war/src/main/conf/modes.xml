@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (2006-2007) Schibsted Søk AS
+ *   This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+
+    Document   : modes.xml
+    Created on : 4 April 2006, 16:09
+    Author     : mick
+    Description:
+        Purpose of the document follows.
+-->
+
+<modes template-prefix="default-">
+
+
+    <!-- defaults -->
+    <mode id="default-empty-mode" executor="parallel" analysis="false"></mode>
+
+    <mode id="default-mode" executor="parallel" analysis="false">
+
+        <command id="default-command"
+                 field-filters="site,size"
+                 paging="false"
+                 query-parameter=""
+                 result-fields=""
+                 results-to-return="1"/>
+
+        <fast-command id="default-fast-command" inherit="default-command"
+                      clustering="false"
+                      collapsing="false"
+                      collections=""
+                      filter=""
+                      keyword-clustering="false"
+                      ignore-navigation="false"
+                      lemmatize="false"
+                      offensive-score-limit="0"
+                      qt-pipeline=""
+                      query-server-url=""
+                      sort-by=""
+                      spam-score-limit="0"
+                      spellcheck="false"
+                      synonyms="false"/>
+
+        <static-command id="default-static-command" inherit="default-command"/>
+
+        <esp-fast-command id="default-esp-fast-command" inherit="default-command"/>
+
+        <math-command id="default-math-command" inherit="default-command"/>
+
+
+        <!-- when overriding this command, remember to adjust partnerid according to this:
+             https://dev.schibstedsok.no/confluence/display/TECHDEV/Technology+Documentation+-+Overture+PPC
+             This must also be done with new sitesearches.
+        -->
+        <overture-ppc-command id="default-overture-ppc-command" inherit="default-command"
+                              encoding="iso-8859-1"
+                              host="overtureHost"
+                              partner-id="overturePartnerId"
+                              port="overturePort"
+                              results-to-return="6"
+                              url="/d/search/p/schibstedsok/xml/no/?mkt=no&amp;adultFilter=clean"
+                              statistical-name="overture_ads"/>
+
+        <platefood-ppc-command id="default-platefood-ppc-command" inherit="default-command"
+                               encoding="UTF-8"
+                               host="platefoodHost"
+                               host-header="pfp.sesam.no"
+                               port="platefoodPort"
+                               results-to-return="4"
+                               url="/publisher/search?"
+                               statistical-name="platefood_ads"/>
+
+
+        <yahoo-idp-command id="default-yahoo-command" inherit="default-command"
+                           encoding="utf-8"
+                           field-filters="site AS domain"
+                           filter="-porn"
+                           port="yahooIdpPort"
+                           region-mix=""
+                           language-mix=""
+                           language=""
+                           region=""
+                           result-fields="title.html.hl AS title,dispURL AS url,redirecturl AS clickurl,abstract.best.html.hl AS body"
+                           results-to-return="10"
+                           spell-state="disabled"
+                           unique="doc,host%202">
+
+            <result-handlers>
+                <field-chooser target="title" fields="title,url"/>
+            </result-handlers>
+        </yahoo-idp-command>
+        
+        <yahoo-idp-command id="default-yahoo-i18n-command" inherit="default-yahoo-command"
+                           port="yahooIdpPort"/>
+
+        <yahoo-idp-command id="defaultno-yahoo-i18n-command" inherit="default-yahoo-i18n-command"
+                           database="www-no"
+                           host="yahooIdpHost"
+                           language="albanian,arabic,bulgarian,catalan,chinese-simplified,chinese-traditional,croatian,czech,danish,dutch,english,estonian,finnish,french,german,greek,hebrew,hungarian,icelandic,italian,japanese,korean,latvian,lithuanian,persian,polish,portuguese,romanian,russian,slovak,slovenian,spanish,swedish,thai,turkish,unknown"
+                           partner-id="yahooIdpPartnerId"
+                           region="centralafrica,northafrica,ar,latinamerica,au,at,be,br,ca,cz,cn,ee,dk,fi,fr,gr,de,hk,hu,is,in,ie,it,jp,kr,lu,my,mx,nl,nz,pl,pt,sg,sv,za,formersovietunion,es,ch,tw,tr,uk,us,yu,nonregional"/>
+
+        <yahoo-media-command
+                id="default-yahoo-image-command"
+                partner-id="yahooMediaPartnerId"
+                statistical-name="yahoo-image"
+                result-fields="turl AS thumb_url, rcur AS page_url, tgeo AS thumb_geometry, geo AS geometry, fsz AS filesize,thumb_width,thumb_height"
+                host="yahooImageServer"
+                port="yahooImageServerPort"/>
+
+        <yahoo-media-command
+                id="default-yahoo-image-count-command"
+                inherit="default-yahoo-image-command"
+                results-to-return="1"/>
+
+        <yahoo-media-command
+                id="default-yahoo-image-enrichment-command"
+                field-filters="PICTURE_TRIGGER AS +"
+                inherit="default-yahoo-image-command"
+                results-to-return="3">
+            <query-transformers>
+                <token-mask mask="exclude" position="any" predicates="PICTURE_TRIGGER"/>
+                <token-mask mask="exclude" position="prefix" predicates="PICTURE_MAGIC"/>
+            </query-transformers>
+        </yahoo-media-command>
+
+        <picture-command id="default-picture-command"
+                         query-server-host="picsearch.host"
+                         query-server-port="picsearch.port"
+                         inherit="default-command"/>
+
+        <picture-command id="default-picture-count-command" results-to-return="1" inherit="default-picture-command"/>
+
+        <news-command
+                id="default-news-command"
+                collapsing="true"
+                field-filters="size,nyhetskilde AS newssource,NEWS_TRIGGER AS  "
+                inherit="default-fast-command">
+            <query-transformers>
+                <token-mask position="prefix"
+                            predicates="WIKIPEDIA_MAGIC,CATALOGUE_MAGIC,YELLOW_MAGIC,WHITE_MAGIC,PICTURE_MAGIC,NEWS_MAGIC"/>
+            </query-transformers>
+        </news-command>
+        
+        <news-command id="default-news-count-command"
+                      collections="retriever"
+                      filtertype="adv"
+                      query-server-url="queryServerURL.1"
+                      lemmatise="false"
+                      result-fields=""
+                      statistical-name="news-counter"
+                      results-to-return="1"
+                      inherit="default-news-command"/>
+
+        <sensis-command id="default-sensis-command"
+                        collapsing="true"
+                        field-filters="STOCK_MAGIC AS +"
+                        query-server-url="queryServerURL.3"
+                        result-fields="title,url,body"
+                        spam-score-limit="10"
+                        statistical-name="sensis_globalweb"
+                        inherit="default-fast-command"/>
+
+        <stock-command id="default-stock-command" inherit="default-command">
+            <query-transformers>
+                <token-mask mask="exclude" position="prefix" predicate="STOCK_MAGIC"/>
+            </query-transformers>
+        </stock-command>
+
+         <!-- TODO rename to more appropriate. still specific to norway and sweden -->
+        <yahoo-idp-command id="default-web-command" inherit="default-yahoo-command">
+
+            <query-transformers>
+                <token-mask position="prefix"
+                            predicates="WIKIPEDIA_MAGIC,CATALOGUE_MAGIC,YELLOW_MAGIC,WHITE_MAGIC,PICTURE_MAGIC,NEWS_MAGIC"/>
+                <simple-site-search parameter="ssr"/>
+            </query-transformers>
+        </yahoo-idp-command>
+
+         <!-- TODO rename to more appropriate. still specific to norway and sweden -->
+        <yahoo-idp-command id="default-web-counter-only" results-to-return="0" inherit="default-web-command"/>
+
+    </mode>
+
+    <!-- Magic search mode template -->
+    <mode id="default-magic" analysis="true" inherit="default-mode">
+
+        <sensis-command id="default-globalSearchEnrichment"
+                        always-run="false"
+                        results-to-return="3"
+                        statistical-name="sensis_globalweb"
+                        inherit="default-sensis-command">
+
+            <result-handlers>
+                <field-chooser target="title" fields="title,url"/>
+            </result-handlers>
+        </sensis-command>
+
+
+        <fast-command id="default-relevantQueries"
+                      query-server-url="relevantqueries.url"
+                      qt-pipeline="lookupword"
+                      relevant-queries="true"
+                      results-to-return="1"
+                      synonyms="true"
+                      inherit="default-fast-command"/>
+
+        <fast-command id="default-wikipedia"
+                      always-run="false"
+                      collections="nowikipedia"
+                      field-filters="WIKIPEDIA_TRIGGER AS +"
+                      query-server-url="queryServerURL.4"
+                      result-fields="title,url,description"
+                      sort-by="standard"
+                      statistical-name="fast_wikipedia"
+                      inherit="default-fast-command">
+
+            <query-transformers>
+                <token-mask mask="exclude" position="any" predicates="WIKIPEDIA_TRIGGER"/>
+                <token-mask mask="exclude" position="prefix" predicates="WIKIPEDIA_MAGIC"/>
+                <exact-match field="titles"/>
+            </query-transformers>
+            <result-handlers>
+                <field-chooser target="wikibody" fields="wikibody,wikibodyteaser"/>
+            </result-handlers>
+        </fast-command>
+
+        <math-command id="default-mathExpression"
+                      always-run="false"
+                      statistical-name="mathExpression"
+                      inherit="default-math-command"/>
+
+        <picture-command id="default-picSearchEnrichment"
+                         always-run="false"
+                         field-filters="PICTURE_TRIGGER AS +"
+                         result-fields="thumb_url,page_url,thumb_width,thumb_height,height,width,filesize"
+                         results-to-return="3"
+                         statistical-name="picsearch_picsearch"
+                         inherit="default-picture-command">
+
+            <query-transformers>
+                <token-mask mask="exclude" position="any" predicates="PICTURE_TRIGGER"/>
+                <token-mask mask="exclude" position="prefix" predicates="PICTURE_MAGIC"/>
+            </query-transformers>
+        </picture-command>
+
+        <stock-command id="default-stockEnrichment"
+                       always-run="false"
+                       inherit="default-stock-command">
+        </stock-command>
+
+    </mode>
+
+</modes>
+
