@@ -133,7 +133,7 @@
         <!-- Log4j -->
         <log.level>WARN</log.level>
         <log.file>${project.artifactId}</log.file>
-        <!-- Mail -->
+        <!-- Mail - This ONLY works for Schibsted Søk AS. It must be overridden by everybody else. -->
         <mail.smtp.host>ssmail.sesat.no</mail.smtp.host>
     </properties>
 
