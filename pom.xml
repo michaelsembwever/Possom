@@ -192,6 +192,15 @@
                         <overWriteSnapshots>true</overWriteSnapshots>
                     </configuration>
                 </plugin>
+               <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.3</version>
+               </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jdepend-maven-plugin</artifactId>
+                    <version>2.0-beta-1</version>
+                </plugin>
             </plugins>
         <!--/pluginManagement--> <!-- See http://jira.codehaus.org/browse/MNG-3018 .Uncomment when fixed. -->
     </build>
@@ -559,13 +568,12 @@
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <configLocation>http://sesat.wever.org/schibstedsok_checks.xml</configLocation>
+                    <configLocation>http://sesat.no/svn/sesat-commons/checkstyle/conf/schibstedsok_checks.xml</configLocation>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jdepend-maven-plugin</artifactId>
-                <version>2.0-beta-1</version>
             </plugin>
             <plugin>
              <groupId>org.apache.maven.plugins</groupId>
@@ -580,33 +588,12 @@
                     <aggregate>true</aggregate>
                     <charset>UTF-8</charset>
                     <docencoding>UTF-8</docencoding>
-                    <sourcepath>${project.basedir}/src/main/javadoc;${project.basedir}/src/main/java</sourcepath>
+                    <source>1.6</source>
                     <docfilessubdirs>true</docfilessubdirs>
                     <links>
                         <link>http://java.sun.com/javase/6/docs/api/</link>
                         <link>http://java.sun.com/javaee/5/docs/api/</link>
                         <link>http://logging.apache.org/log4j/docs/api/</link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-httpclient-api/apidocs/
-                        </link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-site-spi/apidocs/
-                        </link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-query-api/apidocs/
-                        </link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-query-transform-spi/apidocs/
-                        </link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-data-model-api/apidocs/
-                        </link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-core-api/apidocs/
-                        </link>
-                        <link>
-                            http://sesat.no/projects/sesat-kernel/sesat-war/apidocs/
-                        </link>
                     </links>
                 </configuration>
             </plugin>
