@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>pom.sesam.com</id>
+  <resources>
+    <resource>war/src/main/conf/configuration.properties</resource>
+    <resource>war/src/main/conf/messages_en.properties</resource>
+    <resource>war/src/main/conf/modes.xml</resource>
+    <resource>war/src/main/conf/views.xml</resource>
+    <resource>war/src/main/conf/log4j.dtd</resource>
+    <resource>war/src/main/conf/log4j.xml</resource>
+    <resource>war/src/main/webapp/WEB-INF/web.xml</resource>
+    <resource>war/src/test/resources/testng.xml</resource>
+    <resource>war/src/test/resources/core.properties</resource>
+    <resource>war/src/test/resources/log4j.xml</resource>
+    <resource>war/LICENSE.txt</resource>
+    <resource>war/pom.xml</resource>
+    <resource>query-transform-config/pom.xml</resource>
+    <resource>view-control/pom.xml</resource>
+    <resource>query-transform-control/pom.xml</resource>
+    <resource>view-config/pom.xml</resource>
+    <resource>velocity-directives/pom.xml</resource>
+    <resource>result-handler-control/pom.xml</resource>
+    <resource>LICENSE.txt</resource>
+    <resource>search-command-control/src/test/resources/testng.xml</resource>
+    <resource>search-command-control/pom.xml</resource>
+    <resource>result/pom.xml</resource>
+    <resource>result-handler-config/pom.xml</resource>
+    <resource>search-command-config/pom.xml</resource>
+  </resources>
+</archetype>
