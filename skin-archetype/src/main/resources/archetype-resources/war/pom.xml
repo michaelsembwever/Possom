@@ -29,6 +29,19 @@
     <name>${artifactId}</name>
     <packaging>war</packaging>
     <description>A Skin. Will probably break. Might even blow your house up.</description>
+
+    <build>
+     <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- back to the default -->
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                </configuration>
+            </plugin>
+     </plugins>
+    </build>
     
     <profiles>
         <!-- DEVELOPMENT PROFILE -->

@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
       <parent>
           <groupId>sesat</groupId>
-          <artifactId>pom.generic.sesam</artifactId>
+          <artifactId>pom.generic.sesam.no</artifactId>
           <version>2.17-SNAPSHOT</version>
       </parent>
     <name>${artifactId} skin</name>
