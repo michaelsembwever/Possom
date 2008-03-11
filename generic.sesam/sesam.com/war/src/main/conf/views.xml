@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE rules SYSTEM "http://sesam.no/dtds/views.dtd">
-<!-- Copyright (2006) Schibsted Søk AS
+<!DOCTYPE views SYSTEM "http://sesam.no/dtds/views.dtd">
+<!-- Copyright (2008) Schibsted Søk AS
+ *   This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *
     Document   : views.xml
     Created on : 4 April 2006, 16:25
     Author     : mick
     Description:
         Purpose of the document follows.
 -->
-
 <views>
-    <!-- DEFAULTS -->
-
-    <!-- "absolute-ordering" means that the navigator sources should be sorted according to the 
-prority attribute of the navigation hints -->
-
-    <tab id="default" display-css="true">
-        <layout>
-            <include key="head-element" template="head/head"/>
-            <include key="header"/>            
-            <include key="left-col-one"/>
-            <include key="left-col-two"/>
-            <include key="left-col-three"/>
-
-            <include key="error-msg"/>
-            <include key="middle-col-one"/>
-            <include key="middle-col-two"/>
-            <include key="middle-col-three"/>
-            <include key="middle-col-four"/>
-
-            <include key="right-col-one"/>
-
-            <include key="publishing-page"/>
-            <include key="no-hits"/>
-            
-            <include key="bottom-one"/>
-            <include key="bottom-two"/>
-            <include key="bottom-three"/>
-            <include key="bottom-four"/>
-            <include key="bottom-five"/>
-            <include key="bottom-six"/>
-            <include key="bottom-seven"/>
-            <include key="bottom-eight"/>
+    <tab id="international" inherit="default-internet"
+            key="g" 
+            mode="international" 
+            page-size="10"
+            rss-result-name="globalSearch">
+        <navigation>
+            <navigation id="offset">
+              <result-paging id="offset" command-name="globalSearch" page-size="10" number-of-pages="10" hitcount-source="totalhits"/>
+            </navigation>
+        </navigation>
+        <layout main="sesam.com/main.jsp">
+            <include key="header-element" template="sesam.com/head.jsp"/>
+            <include key="top-col-one" template="sesam.com/searchbar-top.jsp"/>
+            <include key="main-col-three" template="sesam.com/globalSearch.jsp"/>
+            <include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
+            <include key="bottom-col-three" template="sesam.com/footer.jsp"/>
+            <include key="bottom-col-two" template="sesam.com/searchbar-bottom.jsp"/>
+            <include key="offsetPagerLogo" template="sesam.com/offsetPagerYahooLogo.jsp"/>          
+            <include key="no-hits" template="sesam.com/no-hits.jsp"/>   
         </layout>
     </tab>
 </views>
