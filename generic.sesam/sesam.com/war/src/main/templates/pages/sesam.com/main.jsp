@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><%-- 
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+        xmlns:jsp="http://java.sun.com/JSP/Page"
+        xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since this never exists in the skin -->
+    <jsp:output 
+        doctype-root-element="html" 
+        doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
+        doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<!-- 
  * Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
@@ -18,14 +26,7 @@
     Document   : main
     Author     : mick
     Version    : $Id$
---%>
-<jsp:root version="2.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><%-- XXX a little awkward since this never exists in the skin --%>
-<jsp:output 
-    doctype-root-element="html" 
-    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <search:include include="head-element"/>
@@ -41,7 +42,7 @@
             <tr>
                 <td style="vertical-align: top; border-right: 1px solid #DADADA;">
                     <div id="main">
-                        <div id="dummy">&nbsp;</div>
+                        <div id="dummy"><jsp:text><![CDATA[&nbsp;]]></jsp:text></div>
                         <search:include include="main-col-one" />
                         <search:include include="main-col-two" />
                         <search:include include="main-col-three" />

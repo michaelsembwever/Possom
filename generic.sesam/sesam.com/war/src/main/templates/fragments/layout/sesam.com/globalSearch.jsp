@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><%-- 
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since this never exists in the skin -->
+<!-- 
  * Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
@@ -19,26 +24,21 @@
     Created on : 7/03/2008, 10:27:24
     Author     : mick
     Version    : $Id$
---%>
-<jsp:root version="2.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core_rt"
-    xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><%-- XXX a little awkward since this never exists in the skin --%>
-
-    <c:test>
-        <c:when test="${datamodel.searches[commandName].results.hitCount gt 0}">
+-->
+    <c:choose>
+        <c:when test="${DataModel.searches[commandName].results.hitCount gt 0}">
 
             <div id="resultlist">
                 <div id="resultHits">
                     <c:set var="msg_international_icon_alt"><search:text key="international_icon_alt"/></c:set>
                     <img src="/images/menu/icons/nettsok.png" width="16" height="16" alt="${msg_international_icon_alt}"/>
                     <span>                        
-                        <c:set var="hitcount"><search:hitcount hitcount="${$datamodel.searches[commandName].results.hitCount}"/></c:set>
+                        <c:set var="hitcount"><search:hitcount hitcount="${$DataModel.searches[commandName].results.hitCount}"/></c:set>
                         <search:text key="international_search_results" 
-                            arg0="${datamodel.navigation.navigations.offset.fields.currentPageFromCount}" 
-                            arg1="${datamodel.navigation.navigations.offset.fields.currentPageToCount}" 
+                            arg0="${DataModel.navigation.navigations.offset.fields.currentPageFromCount}" 
+                            arg1="${DataModel.navigation.navigations.offset.fields.currentPageToCount}" 
                             arg2="${hitcount}" 
-                            arg3="${datamodel.query.utf8UrlEncoded}"/>
+                            arg3="${DataModel.query.utf8UrlEncoded}"/>
                     </span>
                     
                     <c:set var="msg_rss_link"><search:text key="rss_link"/></c:set>
@@ -48,14 +48,14 @@
                     <div class="clear"></div>
                 </div>
 
-                <c:foreach items="${datamodel.searches[commandName].results.results}" var="item" index="i">
-                    <c:set var="pos" value="${datamodel.navigation.navigations.offset.fields.currentPageFromCount + i}"/>               
+                <c:forEach items="${DataModel.searches[commandName].results.results}" var="item" index="i">
+                    <c:set var="pos" value="${DataModel.navigation.navigations.offset.fields.currentPageFromCount + i}"/>               
 
                     <p id="p${i}">
                         <jsp:element name="a">
                             <jsp:attribute name="href"><search:boomerang url="${item.fields.url}" param="category:results;pos:${pos}"/></jsp:attribute>
                             <jsp:attribute name="class">search_big_url</jsp:attribute>
-                            <jsp:body>${item.fields.title}</jsp:body> <%-- FIXME needs triming at like 70 characters --%>
+                            <jsp:body>${item.fields.title}</jsp:body> <!-- FIXME needs triming at like 70 characters -->
                         </jsp:element>                        
                         <br/>
 
@@ -69,17 +69,17 @@
                         <span class="search_small_url">
                             ${item.fields.body}
 
-                            <%-- More hits from --%>
-                            <c:if test="${not empty $datamodel.parameters.values.domain and $datamodel.parameters.values.domain.xmlEscaped eq $item.fields.site}">
+                            <!-- More hits from -->
+                            <c:if test="${not empty $DataModel.parameters.values.domain and $DataModel.parameters.values.domain.xmlEscaped eq $item.fields.site}">
                               -
                                 <jsp:element name="a">
-                                    <jsp:attribute name="href"><search:boomerang url="/search/?c=${tab.key}&amp;q=${datamodel.searches[$commandName].query.utf8UrlEncoded}&domain=${item.fields.site}" param="category:results;pos:${pos}"/></jsp:attribute>
+                                    <jsp:attribute name="href"><search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[$commandName].query.utf8UrlEncoded}&amp;domain=${item.fields.site}" param="category:results;pos:${pos}"/></jsp:attribute>
                                     <jsp:attribute name="class">more_hits_link</jsp:attribute>
                                     <jsp:body><search:text key="moreHitsFrom"/></jsp:body>
                                 </jsp:element> 
                             </c:if>
 
-                            <%-- To website's front page --%>
+                            <!-- To website's front page -->
                             <c:set var="site" value="http://${item.fields.site}"/>
                             <c:if test="${site ne item.fields.url}">
                               -
@@ -92,13 +92,13 @@
                         </span>
                     </p>
 
-                </c:foreach>
+                </c:forEach>
             </div>
 
         </c:when>
         <c:otherwise>
             <search:include include="no-hits" />
         </c:otherwise>
-    </c:test>
+    </c:choose>
 
 </jsp:root>
