@@ -17,7 +17,6 @@
  */
 package no.sesat.search.site.config;
 
-import no.sesat.search.site.*;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -57,7 +56,10 @@ public final class TextMessages {
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
 
     /** Find the correct instance handling this Site.
-     **/
+     *
+     * @param cxt
+     * @return 
+     */
     public static TextMessages valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
@@ -77,6 +79,8 @@ public final class TextMessages {
 
     /**
      * Utility wrapper to the instanceOf(Context).
+     * @param site
+     * @return 
      */
     public static TextMessages valueOf(final Site site) {
 

@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -15,46 +15,39 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * BoomerangTag.java
- *
- * Created on May 27, 2006, 5:55 PM
+ * HitCountTag.java
  */
 
 package no.sesat.search.view.taglib;
 
+import java.io.IOException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.result.Boomerang;
+import no.sesat.search.result.HitCount;
 import no.sesat.search.site.Site;
 
-/**
+/** SimpleTagSupport around the HitCount utility class.
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
- * @version
+ * @version $Id$
  */
+public final class HitCountTag extends SimpleTagSupport {
 
-public final class BoomerangTag extends SimpleTagSupport {
-
-    /**
-     * Initialization of url property.
-     */
-    private String url;
+    private int hitcount;
 
     /**
-     * Initialization of param property.
+    * Called by the container to invoke this tag. 
+    * The implementation of this method is provided by the tag library developer,
+    * and handles all tag processing, body iteration, etc.
+     * @throws javax.servlet.jsp.JspException 
      */
-    private String param;
-
-    /**Called by the container to invoke this tag.
-     * The implementation of this method is provided by the tag library developer,
-     * and handles all tag processing, body iteration, etc.
-     */
+    @Override
     public void doTag() throws JspException {
-
+        
         final PageContext cxt = (PageContext) getJspContext();
         final JspWriter out = cxt.getOut();
 
@@ -68,26 +61,15 @@ public final class BoomerangTag extends SimpleTagSupport {
             final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
             final Site site = datamodel.getSite().getSite();
 
-            out.print(Boomerang.getUrl(site, url, param));
+            out.print(HitCount.present(hitcount, site.getLocale()));
 
-        }catch(Exception e){
+        }catch(IOException e){
             throw new JspException(e);
         }
 
     }
 
-    /**
-     * Setter for the url attribute.
-     */
-    public void setUrl(String value) {
-        this.url = value;
+    public void setHitcount(int hitcount) {
+        this.hitcount = hitcount;
     }
-
-    /**
-     * Setter for the param attribute.
-     */
-    public void setParam(String value) {
-        this.param = value;
-    }
-
 }

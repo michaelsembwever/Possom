@@ -26,10 +26,9 @@ import org.apache.log4j.Logger;
 
 import java.io.Writer;
 import java.io.IOException;
-import java.text.Format;
-import java.text.NumberFormat;
 import java.text.MessageFormat;
 
+import no.sesat.search.result.HitCount;
 import no.sesat.search.result.ResultList;
 
 /**
@@ -86,19 +85,7 @@ public final class HitCountDirective extends AbstractDirective {
 
         final ResultList results = (ResultList) getObjectArgument(cxt, node, 0);
         
-        switch(results.getHitCount()){
-            
-            case -1:
-                writer.append('?');
-                break;
-                
-            default:
-                final Format formatter 
-                        = NumberFormat.getIntegerInstance(getDataModel(cxt).getSite().getSite().getLocale());
-                
-                writer.append(formatter.format(results.getHitCount()));
-                break;
-        }
+        writer.append(HitCount.present(results.getHitCount(), getDataModel(cxt).getSite().getSite().getLocale()));
 
         return true;
     }

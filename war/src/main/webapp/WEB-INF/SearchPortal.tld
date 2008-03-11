@@ -79,10 +79,17 @@
       <rtexprvalue>true</rtexprvalue>
       <type>java.lang.String</type>
     </attribute>
+    <dynamic-attributes>true</dynamic-attributes>
+  </tag>
+  <tag>
+    <name>hitcount</name>
+    <tag-class>no.sesat.search.view.taglib.HitCountTag</tag-class>
+    <body-content>empty</body-content>
     <attribute>
-      <name>args</name>
+      <name>hitcount</name>
+      <required>true</required>
       <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.Object</type>
+      <type>int</type>
     </attribute>
   </tag>
 </taglib>

@@ -22,22 +22,27 @@
 package no.sesat.search.view.taglib;
 
 import java.io.IOException;
-import javax.servlet.jsp.tagext.*;
+import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-import no.sesat.search.site.Site;
 import no.sesat.search.site.config.TextMessages;
 
-/**
+/** Wraps functionality found in TextMessages into a custom tag.
+ * 
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
 
-public final class TextMessageTag extends SimpleTagSupport {
+public final class TextMessageTag extends SimpleTagSupport implements DynamicAttributes{
 
     /**
      * Initialization of key property.
@@ -47,12 +52,14 @@ public final class TextMessageTag extends SimpleTagSupport {
     /**
      * Initialization of args property.
      */
-    private Object args;
+    private final List<Object> args = new ArrayList<Object>();
     
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
+     * @throws javax.servlet.jsp.JspException 
      */
+    @Override
     public void doTag() throws JspException {
         
         final PageContext cxt = (PageContext) getJspContext();
@@ -66,7 +73,7 @@ public final class TextMessageTag extends SimpleTagSupport {
             }
             final TextMessages text = (TextMessages)cxt.findAttribute("text");
             
-            out.print(text.getMessage(key, args));
+            out.print(text.getMessage(key, args.toArray()));
             
         } catch (IOException ex) {
             throw new JspException(ex.getMessage());
@@ -76,15 +83,25 @@ public final class TextMessageTag extends SimpleTagSupport {
 
     /**
      * Setter for the key attribute.
+     * @param value 
      */
-    public void setKey(String value) {
+    public void setKey(final String value) {
         this.key = value;
     }
 
-    /**
-     * Setter for the args attribute.
-     */
-    public void setArgs(Object value) {
-        this.args = value;
+    public void setDynamicAttribute(
+            final String uri,
+            final String localName, 
+            final Object value) throws JspException {
+        
+        assert localName.startsWith("args") : "Only dynamic attributes of format argX are supported";
+        
+        final int i = Integer.valueOf(localName.replaceAll("arg", ""));
+        while(args.size() <= i){
+            args.add("");
+        }
+        args.set(i, value);
     }
+    
+    
 }
