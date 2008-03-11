@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.view.navigation.ResultPagingNavigationConfig;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -172,8 +173,10 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
             final RunningQuery.Context rqCxt){
         
         
-        if (map.get("offset") == null || "".equals(map.get("offset"))) {
-            map.put("offset", "0");
+        if (map.get(ResultPagingNavigationConfig.OFFSET_KEY) == null 
+                || "".equals(map.get(ResultPagingNavigationConfig.OFFSET_KEY))) {
+            
+            map.put(ResultPagingNavigationConfig.OFFSET_KEY, "0");
         }
 
         map.put("contextPath", "/");

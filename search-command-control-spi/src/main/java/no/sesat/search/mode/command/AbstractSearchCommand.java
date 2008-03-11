@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -62,6 +62,7 @@ import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
 import no.sesat.search.view.config.SearchTab;
+import static no.sesat.search.view.navigation.ResultPagingNavigationConfig.OFFSET_KEY;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -70,6 +71,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import no.sesat.search.datamodel.access.DataModelAccessException;
+import no.sesat.search.view.navigation.NavigationConfig.Nav;
 
 /** The base abstraction for Search Commands providing a large framework for commands to run against.
  *                                                                                                          <br/><br/>
@@ -425,6 +427,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     // Protected -----------------------------------------------------
 
     /** Get the results from another search command waiting if neccessary.
+     * @param id 
+     * @param datamodel 
+     * @return
+     * @throws java.lang.InterruptedException 
      */
     protected final ResultList<? extends ResultItem> getSearchResult(
             final String id,
@@ -471,19 +477,19 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         final StopWatch watch = new StopWatch();
         watch.start();
 
-        final String query = getTransformedQuery().trim();
+        final String notNullQuery = null != getTransformedQuery() ? getTransformedQuery().trim() : "";
         Integer hitCount = null;
 
         try {
 
             // we will be executing the command IF there's a valid query or filter,
             // or if the configuration specifies that we should run anyway.
-            boolean executeQuery = "*".equals(datamodel.getQuery().getString());
-            executeQuery |= query.length() > 0 || getSearchConfiguration().isRunBlank();
+            boolean executeQuery = null != datamodel.getQuery() && "*".equals(datamodel.getQuery().getString());
+            executeQuery |= notNullQuery.length() > 0 || getSearchConfiguration().isRunBlank();
             executeQuery |= null != filter && 0 < filter.length();
             executeQuery |= null != additionalFilter && 0 < additionalFilter.length();
 
-            LOG.info("executeQuery==" + executeQuery + " ; query:" + query + " ; filter:" + filter);
+            LOG.info("executeQuery==" + executeQuery + " ; query:" + notNullQuery + " ; filter:" + filter);
 
             final ResultList<? extends ResultItem> result = executeQuery
                     ? execute()
@@ -565,53 +571,57 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @param i the current offset.
      * @return i plus the offset of the current page.
+     * 
+     * @deprecated instead use getOffset() + i
      */
     protected int getCurrentOffset(final int i) {
 
-        final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
-        final Object v = parameters.get("offset");
-
-        if (null != v && getSearchConfiguration().isPaging()) {
-            return i + Integer.parseInt(v instanceof String[] && ((String[]) v).length == 1
-                    ? ((String[]) v)[0]
-                    : (String) v);
-        } else {
-            return i;
+        return i + getOffset();
+    }
+    
+    /**
+     * Returns the offset applicable to this command.
+     * Zero if the command has no "offset" navigator configured,
+     *  the value of the offset parameter otherwise.
+     *
+     * @return i plus the offset of the current page.
+     */    
+    protected int getOffset(){
+        
+        int offset = 0;
+        
+        if(isPaginated()){
+            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(OFFSET_KEY);
+            if( null != offsetString ){
+                offset = Integer.parseInt(offsetString.getUtf8UrlEncoded());
+            }
         }
+        return offset;
+    }
+    
+    public boolean isPaginated(){
+        
+        final boolean navMapExists = null != context.getDataModel().getNavigation()
+                && null != context.getDataModel().getNavigation().getConfiguration();
+        
+        final Nav offsetNav = navMapExists
+                ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(OFFSET_KEY)
+                : null;
+        
+        return null != offsetNav && getSearchConfiguration().getName().equals(offsetNav.getCommandName());
     }
 
     /**
-     * TODO comment me. *
+     * Returns parameter value. 
+     *  Changed since 2.16.1 so that only request parameters are searched.
      *
-     * @return
-     */
-    protected Map<String, Object> getParameters() {
-
-        final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
-        return parameters;
-    }
-
-    /**
-     * Returns parameter value. In case the parameter is multi-valued only the
-     * first value is returned. If the parameter does not exist or is empty
-     * the empty string is returned.
-     *
-     * @param paramName
+     * @param paramName the name of the parameter to look for.
+     * @return the parameter value, unescaped, or null if parameter does not exist.
      */
     protected String getParameter(final String paramName) {
 
-        final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
-        if (parameters.containsKey(paramName)) {
-            if (parameters.get(paramName) instanceof String[]) {
-                final String[] val = (String[]) parameters.get(paramName);
-                if (val.length > 0 && val[0].length() > 0) {
-                    return val[0];
-                }
-            } else if (parameters.get(paramName) instanceof String) {
-                return (String) parameters.get(paramName);
-            }
-        }
-        return "";
+        final Map<String, StringDataObject> parameters = datamodel.getParameters().getValues();
+        return parameters.containsKey(paramName) ? parameters.get(paramName).getString() : null;
     }
 
     // <-- Query Representation state methods (useful while the inbuilt visitor is in operation)
@@ -997,7 +1007,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 filterBuilder.append(' ');
 
                 LOG.debug(transformer.getClass().getSimpleName() + "--> TransformedQuery=" + transformedQuery);
-                LOG.debug(transformer.getClass().getSimpleName() + "--> Filter=" + filter);
+                LOG.debug(transformer.getClass().getSimpleName() + "--> Filter=" + filterBuilder.toString());
             }
             // avoid the trailing space.
             filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim();

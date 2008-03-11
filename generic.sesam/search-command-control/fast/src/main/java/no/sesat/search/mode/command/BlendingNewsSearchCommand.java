@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -103,16 +103,9 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
         this.additionalFilter = filter;
     }
 
-    /**
-     * Returns the offset in the result set. If paging is enabled for the
-     * current search configuration the offset to the current page will be
-     * added to the parameter.
-     *
-     * @param i the current offset.
-     * @return i plus the offset of the current page.
-     */
-    protected int getCurrentOffset(final int i) {
-        return Integer.parseInt(getParameter("offset")) / cfg.getFiltersToBlend().size();
+
+    protected int getOffset(){
+        return super.getOffset() / cfg.getFiltersToBlend().size();
     }
 
     protected int getResultsToReturn() {

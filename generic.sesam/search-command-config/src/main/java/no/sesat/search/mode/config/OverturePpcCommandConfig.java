@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * @version <tt>$Id$</tt>
  */
 @Controller("OverturePPCSearchCommand")
-public final class OverturePpcCommandConfig extends AbstractYahooSearchConfiguration {
+public class OverturePpcCommandConfig extends AbstractYahooSearchConfiguration {
 
     /**
      * Holds value of property url.

@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
+import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.TextMessages;
@@ -113,12 +114,9 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                 dateParts[1] = Long.valueOf(age / (60 * 60 * 1000) % 24);
                 dateParts[2] = Long.valueOf(age / (60 * 1000) % 60);
 
-                final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
+                final StringDataObject csDO = datamodel.getParameters().getValue("contentsource");
+                final String s = null != csDO ? csDO.getString() : null;
                 String ageString = "";
-
-                final String s = parameters.get("contentsource") instanceof String[]
-                        ? ((String[]) parameters.get("contentsource"))[0]
-                        : (String) parameters.get("contentsource");
 
                 final TextMessages txtMsgs = TextMessages.valueOf(ContextWrapper.wrap(
                         TextMessages.Context.class,
@@ -167,8 +165,6 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
             } catch (ParseException e) {
                 LOG.warn("Unparsable date: " + docTime);
             }
-        } else {
-            LOG.warn(config.getSourceField() + " is null against " + item.getTitle());
         }
 
         return item;

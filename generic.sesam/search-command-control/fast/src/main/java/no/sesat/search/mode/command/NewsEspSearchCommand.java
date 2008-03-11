@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -104,9 +104,6 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         }
 
         query.setParameter(BaseParameter.HITS, Math.max(config.getCollapsingMaxFetch(), config.getResultsToReturn()));
-        if (config.isIgnoreOffset()) {
-            query.setParameter(new SearchParameter(BaseParameter.OFFSET, 0));
-        }
 
         if (config.getMaxAge() != null) {
             final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -165,18 +162,6 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         return super.createSearchResult(result);
     }
 
-    /** Get the offset.
-     * @return
-     */
-    protected int getOffset() {
-
-        int offset = 0;
-        if (datamodel.getJunkYard().getValue("offset") != null) {
-            offset = Integer.parseInt((String) datamodel.getJunkYard().getValue("offset"));
-        }
-        return offset;
-    }
-
     private void addMedium(final Clause clause) {
 
         if (getQuery().getRootClause() == clause) {
@@ -191,14 +176,14 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
                     appendToQueryRepresentation(',');
                     appendToQueryRepresentation(config.getMediumPrefix());
                     appendToQueryRepresentation(':');
-                    appendToQueryRepresentation(medium);
+                    appendToQueryRepresentation("\"" + medium + "\"");
                     appendToQueryRepresentation(')');
                     LOG.debug("Added medium");
                     return;
                 } else if (getQuery().getQueryString() != null && getQuery().getQueryString().trim().equals("*")) {
                     appendToQueryRepresentation(config.getMediumPrefix());
                     appendToQueryRepresentation(':');
-                    appendToQueryRepresentation(medium);
+                    appendToQueryRepresentation("\"" + medium + "\"");
                     LOG.debug("Added medium");
                     return;
                 }
@@ -368,7 +353,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         searchResult.setHitCount(result.getDocCount());
         int collectedHits = 0;
         int analyzedHits = 0;
-        final int firstHit = config.isIgnoreOffset() ? 0 : offset;
+        final int firstHit = offset;
         for (int i = firstHit; i < result.getDocCount() && analyzedHits < config.getCollapsingMaxFetch(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);

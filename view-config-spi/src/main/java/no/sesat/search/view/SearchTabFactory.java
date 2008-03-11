@@ -36,7 +36,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.site.config.AbstractConfigFactory;
 import no.sesat.search.view.navigation.NavigationConfig;
-import no.sesat.search.site.config.ResourceContext;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.config.ResourceContext;
 import no.sesat.search.site.Site;
@@ -325,6 +324,26 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String allJavascript = parseString(tabE.getAttribute("javascript"), null);
                 final String[] javascript = allJavascript != null ? allJavascript.split(",") : new String[]{};
 
+                // enrichment placement hints
+                final NodeList placementsNodeList = tabE.getElementsByTagName("enrichment-placement");
+                final Collection<SearchTab.EnrichmentPlacementHint> placements = new ArrayList<SearchTab.EnrichmentPlacementHint>();
+                for(int j = 0 ; j < placementsNodeList.getLength(); ++j){
+                    final Element e = (Element) placementsNodeList.item(j);
+                    final String placementId = e.getAttribute("id");
+                    final int threshold = parseInt(e.getAttribute("threshold"), 0);
+                    final int max = parseInt(e.getAttribute("max"), 0);
+                    final Map<String,String> properties = new HashMap<String,String>();
+                    final NodeList nodeList = e.getChildNodes();
+                    for (int l = 0; l < nodeList.getLength(); l++) {
+                        final Node propNode = nodeList.item(l);
+                        if (propNode instanceof Element){
+                            final Element propE = (Element)propNode;
+                            properties.put(propE.getNodeName(), propE.getFirstChild().getNodeValue());
+                        }
+                    }
+                    
+                    placements.add(new SearchTab.EnrichmentPlacementHint(placementId, threshold, max, properties));
+                }
 
                 // enrichment hints
                 final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
@@ -337,10 +356,24 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     final int threshold = parseInt(e.getAttribute("threshold"), 0);
                     final float weight = parseFloat(e.getAttribute("weight"), 0);
                     final String command = e.getAttribute("command");
-                    final boolean alwaysvisible = parseBoolean(e.getAttribute("always-visable"),false);
+                    final Map<String,String> properties = new HashMap<String,String>();
+                    final NodeList nodeList = e.getChildNodes();
+                    for (int l = 0; l < nodeList.getLength(); l++) {
+                        final Node propNode = nodeList.item(l);
+                        if (propNode instanceof Element){
+                            final Element propE = (Element)propNode;
+                            properties.put(propE.getNodeName(), propE.getFirstChild().getNodeValue());
+                        }
+                    }
 
-                    final SearchTab.EnrichmentHint enrichment
-                            = new SearchTab.EnrichmentHint(rule, baseScore, threshold, weight, command, alwaysvisible);
+                    final SearchTab.EnrichmentHint enrichment = new SearchTab.EnrichmentHint(
+                            rule, 
+                            baseScore, 
+                            threshold, 
+                            weight, 
+                            command, 
+                            properties);
+                    
                     enrichments.add(enrichment);
                 }
 
@@ -407,24 +440,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         tabE.getAttribute("rss-result-name"),
                         parseBoolean(tabE.getAttribute("rss-hidden"), false),
                         navConf,
-                        parseInt(tabE.getAttribute("enrichment-limit"), inherit != null
-                            ? inherit.getEnrichmentLimit()
-                            : -1),
-                        parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null
-                            ? inherit.getEnrichmentOnTop()
-                            : -1),
-                        parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null
-                            ? inherit.getEnrichmentOnTopScore()
-                            : -1),
+                        placements,
                         enrichments,
                         adCommand,
                         parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
                         parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
                         Arrays.asList(css),
                         Arrays.asList(javascript),
-                        parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null
-                            ? inherit.isAbsoluteOrdering()
-                            : false),
                         parseBoolean(tabE.getAttribute("display-css"), true),
                         parseBoolean(tabE.getAttribute("execute-on-blank"), inherit != null
                         ? inherit.isExecuteOnBlank()

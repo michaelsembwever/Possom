@@ -170,18 +170,31 @@ public final class ResourceServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); // correct encoding
 
         // Get resource name. Also strip the version number out of the resource
-        final String configName = request.getPathInfo().replaceAll("/(\\d)+/","/");
+        final String pathInfo;
+        final String directory;
+        if(null != request.getPathInfo()){
+            // simple scenerio where servlet-mapping was a prefix match.
+            pathInfo = request.getPathInfo();
+            directory = request.getServletPath();
+        }else{
+            // servlet-mapping was extension based
+            pathInfo = request.getServletPath().substring(request.getServletPath().indexOf('/', 1));
+            directory = request.getServletPath().substring(0, request.getServletPath().indexOf('/', 1));
+        }
+        LOG.debug("pathInfo: " + pathInfo + " ; directory: " + directory);
+        assert null != pathInfo : "Invalid resource " + pathInfo;
         
-        assert null != configName : "Invalid resource " + request.getPathInfo();
-        assert 0 < configName.trim().length() : "Invalid resource " + request.getPathInfo();
-        assert 0 < configName.lastIndexOf('.') : "Invalid resource extension " + request.getPathInfo();
+        final String configName = pathInfo.replaceAll("/(\\d)+/","/");
+        
+        assert 0 < configName.trim().length() : "Invalid resource " + pathInfo;
+        assert 0 < configName.lastIndexOf('.') : "Invalid resource extension " + pathInfo;
 
         if (configName != null && configName.trim().length() > 0) {
 
             final String extension = configName.substring(configName.lastIndexOf('.') + 1).toLowerCase();
             
-            assert null != extension : "Invalid resource extension" + request.getPathInfo();
-            assert 0 < extension.trim().length() : "Invalid resource extension " + request.getPathInfo();
+            assert null != extension : "Invalid resource extension" + pathInfo;
+            assert 0 < extension.trim().length() : "Invalid resource extension " + pathInfo;
             
             final String ipAddr = null != request.getAttribute(REMOTE_ADDRESS_KEY)
                 ? (String) request.getAttribute(REMOTE_ADDRESS_KEY)
@@ -191,7 +204,6 @@ public final class ResourceServlet extends HttpServlet {
             response.setContentType(CONTENT_TYPES.get(extension) + ";charset=UTF-8");
 
             // Path check. Resource can only be loaded through correct path.
-            final String directory = request.getServletPath();
             if (null != CONTENT_PATHS.get(extension) && directory.indexOf(CONTENT_PATHS.get(extension)) >= 0) {
 
                 // ok, check configuration resources are private.

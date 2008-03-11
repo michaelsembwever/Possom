@@ -24,9 +24,11 @@ package no.sesat.search.view.taglib;
 import com.opensymphony.module.sitemesh.Page;
 import com.opensymphony.module.sitemesh.RequestConstants;
 import com.opensymphony.module.sitemesh.util.OutputConverter;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.Map;
+import javax.servlet.ServletException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -110,15 +112,32 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
         }
         return site;
     }
+        
+    /** Imports the specified jsp.
+     * 
+     * @param include must contain ".jsp" suffix.
+     * @throws java.io.IOException
+     * @throws javax.servlet.ServletException 
+     */
+    protected final void importJsp(final String include) throws JspException{
+        
+        try{
+            ((PageContext)getJspContext()).include(include);
+            
+        }catch(IOException ioe){
+            throw new JspException(ioe);
+        }catch(ServletException ioe){
+            throw new JspException(ioe);
+        }
+    }  
 
-    /**Called by the container to invoke this tag.
-     * The implementation of this method is provided by the tag library developer,
-     * and handles all tag processing, body iteration, etc.
-     * @param templateName 
-     * @param map 
+    /** Imports the specified velocity template.
+     * 
+     * @param templateName may or may not contain ".vm" extension.
+     * @param map key-value pairs to put into the velocity's context.
      * @throws javax.servlet.jsp.JspException 
      */
-    protected final void importTemplate(final String templateName, final Map<String,Object> map) throws JspException {
+    protected final void importVelocity(final String templateName, final Map<String,Object> map) throws JspException {
 
         final String missing = "Missing_" + templateName.replaceAll("/","") + "_Template";
 
@@ -151,7 +170,10 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
 
             final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
 
-            final Template template = VelocityEngineFactory.getTemplate(engine, site, templateName);
+            final Template template = VelocityEngineFactory.getTemplate(
+                    engine, 
+                    site, 
+                    templateName.replaceAll(".vm$", ""));
 
             final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
 

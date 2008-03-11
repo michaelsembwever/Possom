@@ -51,8 +51,6 @@ public final class SearchTab implements Serializable{
     // Attributes ----------------------------------------------------
 
     private final String id;
-    private final int enrichmentLimit;
-    private final int enrichmentOnTop;
     private final String adCommand;
     private final int adLimit;
     private final int adOnTop;
@@ -61,12 +59,11 @@ public final class SearchTab implements Serializable{
     private final String parentKey;
     private final String rssResultName;
     private final boolean rssHidden;
-    private final boolean absoluteOrdering;
     private final boolean displayCss;
     private final boolean executeOnBlank;
-    private final Collection<EnrichmentHint> enrichments = new ArrayList<EnrichmentHint> ();
+    private final Collection<EnrichmentPlacementHint> placements = new ArrayList<EnrichmentPlacementHint>();
+    private final Collection<EnrichmentHint> enrichments = new ArrayList<EnrichmentHint>();
     private final String mode;
-    private final int enrichmentOnTopScore;
     private final List<String> css = new ArrayList<String>();
     private final List<String> javascript = new ArrayList<String>();
     private final Layout defaultLayout;
@@ -87,16 +84,13 @@ public final class SearchTab implements Serializable{
      * @param rssResultName
      * @param rssHidden
      * @param navConf
-     * @param enrichmentLimit
-     * @param enrichmentOnTop
-     * @param enrichmentOnTopScore
+     * @param placements 
      * @param enrichments
      * @param adCommand
      * @param adLimit
      * @param adOnTop
      * @param css
      * @param javascript
-     * @param absoluteOrdering
      * @param defaultLayout
      * @param displayCss
      * @param executeOnBlank
@@ -112,16 +106,13 @@ public final class SearchTab implements Serializable{
                 final String rssResultName,
                 final boolean rssHidden,
                 final NavigationConfig navConf,
-                final int enrichmentLimit,
-                final int enrichmentOnTop,
-                final int enrichmentOnTopScore,
+                final Collection<EnrichmentPlacementHint> placements,
                 final Collection<EnrichmentHint> enrichments,
                 final String adCommand,
                 final int adLimit,
                 final int adOnTop,
                 final List<String> css,
                 final List<String> javascript,
-                final boolean absoluteOrdering,
                 final boolean displayCss,
                 final boolean executeOnBlank,
                 final Layout defaultLayout,
@@ -138,11 +129,7 @@ public final class SearchTab implements Serializable{
                 ? parentKey
                 : inherit != null ? inherit.parentKey : null;
         this.navigationConfig = navConf;
-        this.enrichmentLimit = enrichmentLimit >=0 || inherit == null ? enrichmentLimit : inherit.enrichmentLimit;
-        this.enrichmentOnTop = enrichmentOnTop >=0 || inherit == null ? enrichmentOnTop : inherit.enrichmentOnTop;
-        this.enrichmentOnTopScore = enrichmentOnTopScore >=0 || inherit == null
-                ? enrichmentOnTopScore
-                : inherit.enrichmentOnTopScore;
+        this.placements.addAll(placements);
         this.enrichments.addAll(enrichments);
         this.adCommand = adCommand != null && adCommand.trim().length() >0
                 ? adCommand
@@ -154,13 +141,13 @@ public final class SearchTab implements Serializable{
             // we cannot inherit navigators because there require a live reference to the applicable SearchTabFactory
             // but we do inherit enrichments and css
             this.enrichments.addAll(inherit.enrichments);
+            this.placements.addAll(inherit.placements);
             this.css.addAll(inherit.css);
             this.layouts.putAll(inherit.layouts);
         }
         this.rssResultName = rssResultName;
         this.css.addAll(css);
         this.javascript.addAll(javascript);
-        this.absoluteOrdering = absoluteOrdering;
         this.executeOnBlank = executeOnBlank;
         this.rssHidden = rssHidden;
         this.defaultLayout = defaultLayout;
@@ -178,22 +165,6 @@ public final class SearchTab implements Serializable{
      */
     public String getId() {
         return this.id;
-    }
-
-    /**
-     * Getter for property enrichmentLimit.
-     * @return Value of property enrichmentLimit.
-     */
-    public int getEnrichmentLimit() {
-        return this.enrichmentLimit;
-    }
-
-    /**
-     * Getter for property enrichmentOnTop.
-     * @return Value of property enrichmentOnTop.
-     */
-    public int getEnrichmentOnTop() {
-        return this.enrichmentOnTop;
     }
 
     /**
@@ -294,28 +265,11 @@ public final class SearchTab implements Serializable{
     }
 
     /**
-     * Getter for property absoluteOrdering
-     * @return
-     * @deprecated Not JavaBean compatable. Use isAbsoluteOrdering() instead.
-     */
-    public boolean getAbsoluteOrdering() {
-        return absoluteOrdering;
-    }
-
-    /**
      * Getter for property executeOnFront
      * @return
      */
     public boolean isExecuteOnBlank() {
         return executeOnBlank;
-    }
-
-    /**
-     * Getter for property absoluteOrdering
-     * @return
-     */
-    public boolean isAbsoluteOrdering() {
-        return absoluteOrdering;
     }
 
     /**
@@ -326,6 +280,16 @@ public final class SearchTab implements Serializable{
         return displayCss;
     }
 
+    public EnrichmentPlacementHint getEnrichmentPlacement(final String id){
+
+        for(EnrichmentPlacementHint p : placements){
+            if(p.getId().equals(id)){
+                return p;
+            }
+        }
+        return null;
+    }
+    
     /**
      * Getter for property enrichments.
      * @return Value of property enrichments.
@@ -360,14 +324,6 @@ public final class SearchTab implements Serializable{
     @Override
     public String toString(){
         return id + (inherit != null ? " --> " + inherit.toString() : "");
-    }
-
-    /**
-     * Getter for property enrichmentScoreOnTop.
-     * @return Value of property enrichmentScoreOnTop.
-     */
-    public int getEnrichmentOnTopScore() {
-        return this.enrichmentOnTopScore;
     }
 
     /**
@@ -438,7 +394,7 @@ public final class SearchTab implements Serializable{
          * @param threshold
          * @param weight
          * @param command
-         * @param alwaysvisible
+         * @param properties 
          */
         public EnrichmentHint(
                 final String rule,
@@ -446,14 +402,14 @@ public final class SearchTab implements Serializable{
                 final int threshold,
                 final float weight,
                 final String command,
-                final boolean alwaysvisible){
+                final Map<String,String> properties){
 
             this.rule = rule;
             this.baseScore = baseScore;
             this.threshold = threshold;
             this .weight = weight;
             this.command = command;
-            this.alwaysvisible=alwaysvisible;
+            this.properties.putAll(properties);
         }
 
 
@@ -462,7 +418,7 @@ public final class SearchTab implements Serializable{
         private final int threshold;
         private final String command;
         private final float weight;
-        private final boolean alwaysvisible;
+        private final Map<String,String> properties = new HashMap<String,String>();
 
         /**
          * Getter for property rule.
@@ -511,16 +467,46 @@ public final class SearchTab implements Serializable{
             return rule + '[' + command + ']';
         }
 
-        /**
-         * Getter for property alwaysvisible.
-         *  alwaysvisible = means that there is no "firstPage" limitation if the
-         *  enrichments should be visible or not.
-         * @return Value of property alwaysvisible.
-         */
-        public boolean isAlwaysvisible(){
-        	return this.alwaysvisible;
+        public Map<String,String> getProperties(){
+            return Collections.unmodifiableMap(properties);
         }
-
+        
+        public String getProperty(final String key){
+            return properties.get(key);
+        }
+    }
+    
+    /** Immutable POJO holdng Enrichment Placement properties for a given placement on a given tab. **/
+    public static final class EnrichmentPlacementHint implements Serializable {
+        private final String id;
+        private final int threshold;
+        private final int max;
+        private final Map<String,String> properties = new HashMap<String,String>();
+        
+        public EnrichmentPlacementHint(
+                final String id,
+                final int threshold,
+                final int max,
+                final Map<String,String> properties){
+            
+            this.id = id;
+            this.threshold = threshold;
+            this.max = max;
+            this.properties.putAll(properties);
+        }
+        
+        public String getId(){
+            return id;
+        }
+        public int getThreshold(){
+            return threshold;
+        }
+        public int getMax(){
+            return max;
+        }
+        public String getProperty(final String key){
+            return properties.get(key);
+        }
     }
 
     /** POJO holding defaultLayout information for the given tab.

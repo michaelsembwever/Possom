@@ -322,7 +322,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if (searchResult != null) {
 
                                 // Information we need about and for the enrichment
-                                final SearchConfiguration config = results.get(task).getSearchConfiguration();
+                                final SearchCommand command = results.get(task);
+                                final SearchConfiguration config = command.getSearchConfiguration();
 
                                 final String name = config.getName();
                                 final EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
@@ -335,7 +336,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 hitsToShow |= searchResult.getHitCount() > 0;
                                 hits.put(name, searchResult.getHitCount());
 
-                                if( searchResult.getHitCount() <= 0 && config.isPaging() ){
+                                if( searchResult.getHitCount() <= 0 && command.isPaginated() ){
                                     noHitsOutput.append("<command id=\"" + config.getName()
                                             + "\" name=\""  + config.getStatisticalName()
                                             + "\" type=\"" + config.getClass().getSimpleName()
@@ -348,6 +349,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                     searchResult.addField(EnrichmentHint.NAME_KEY, name);
                                     searchResult.addObjectField(EnrichmentHint.SCORE_KEY, score);
                                     searchResult.addObjectField(EnrichmentHint.HINT_KEY, eHint);
+                                    for(Map.Entry<String,String> property : eHint.getProperties().entrySet()){
+                                        searchResult.addObjectField(property.getKey(), property.getValue());
+                                    }
                                 }
                             }
                         }catch(ExecutionException ee){
@@ -433,16 +437,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
 
-        // TODO simplify with new pager architecture
-        final boolean firstPage = null == parameters.get("offset")
-                || "0".equals(parameters.get("offset").getString());
-
         // TODO 'collapse' is not a sesat standard. standardise or move out.
         final boolean collapse = null == parameters.get("collapse")
                 || "".equals(parameters.get("collapse").getString());
 
-        if (context.getSearchMode().isAnalysis() && (firstPage||eHint.isAlwaysvisible())
-                && collapse && eHint.getWeight() > 0){
+        if (context.getSearchMode().isAnalysis() && collapse && eHint.getWeight() > 0){
 
             int score = eHint.getBaseScore();
 

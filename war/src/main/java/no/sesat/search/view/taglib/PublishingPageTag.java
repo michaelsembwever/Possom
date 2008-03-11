@@ -77,7 +77,7 @@ public final class PublishingPageTag extends AbstractVelocityTemplateTag {
                     
                     final Map<String,Object> map = new HashMap<String,Object>();
                     map.put("document", ImportPublish.importXml(page, datamodel));
-                    importTemplate(template, map);
+                    importVelocity(template, map);
 
                 } catch (ParserConfigurationException e) {
                     LOG.error("Failed to import " + page + ".html");

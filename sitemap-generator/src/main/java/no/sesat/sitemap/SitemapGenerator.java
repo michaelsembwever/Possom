@@ -38,6 +38,7 @@ import java.util.*;
  * </ul>
  *
  * @author maek
+ * @version $Id$
  */
 public final class SitemapGenerator {
 
@@ -101,6 +102,7 @@ public final class SitemapGenerator {
      * @throws IOException If the files can't be written.
      */
     public SitemapGenerator(final URI site, final File dest, final URI url) throws IOException {
+        
         this(new ArrayList<PageProvider>(), dest, url);
 
         for (PageProvider provider : ServiceLoader.load(PageProvider.class, getClassLoader(site))) {
@@ -328,7 +330,9 @@ public final class SitemapGenerator {
      * @todo This should really be using the site-spi, but SEARCH-3732 needs to be resolved first.
      */
     private ClassLoader getClassLoader(final URI site) throws MalformedURLException {
+        
         final URL url = site.resolve("/" + site.getHost() + "/lib/sitemap.jar").toURL();
+        LOG.info("skin's sitemap.jar at " + url);
         return new URLClassLoader((new URL[] {url}));
     }
 

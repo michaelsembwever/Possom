@@ -34,8 +34,13 @@ import no.sesat.search.view.config.SearchTab.Layout;
 import org.apache.log4j.Logger;
 
 
-/** Imports (and merges) a velocity template from a site-config into the jsp according to the SearchTab's includes. 
+/** Imports a template into the jsp according to the SearchTab's includes. 
  *
+ * The template may be either a velocity template or a JavaServer page.
+ * If the extension is not specified it defaults to ".vm".
+ *
+ * A relative path is relative to templates/fragments/layout/
+ * 
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -72,7 +77,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         this.include = include;
     }
     
-    /**Called by the container to invoke this tag.
+    /** Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
      * @throws javax.servlet.jsp.JspException
@@ -86,21 +91,34 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         
         if(null != layout.getInclude(include) && layout.getInclude(include).length() > 0 ){
             
-            final String template = LAYOUT_DIRECTORY + layout.getInclude(include);
             try{
                 cxt.getOut().println("<!-- " + include + " -->");
             }catch(IOException ioe){
                 LOG.warn("Failed to write include comment", ioe);
             }
+            
+            String template = layout.getInclude(include);
+            template = include.startsWith("/") 
+                    ? template
+                    : LAYOUT_DIRECTORY + template;
 
             final Map<String,Object> map = new HashMap<String,Object>();
+            map.put("layout", layout);                  
+            map.put("commandName", layout.getOrigin());  
 
-            map.put("layout", layout);
-            // HACK the pager until the datamodel provides methods to access "paging" commands in the current mode.
-            map.put("commandName", layout.getOrigin());
-            // end-HACK
+            if(template.endsWith(".jsp")){
 
-            importTemplate(template, map);
+                importJsp(template);
+
+            }else if(template.endsWith(".vm")){
+
+                importVelocity(template, map);
+
+            }else{
+                // legacy
+                importVelocity(template, map);
+            }
+
 
         }else{
             // could not find include

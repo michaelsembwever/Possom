@@ -21,9 +21,11 @@
 package no.sesat.search.view.taglib;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -38,6 +40,11 @@ import org.apache.log4j.Logger;
 
 /** Import's the SearchTab's main template from the appropriate layout.
  * Will use the "front" template if the layout defines it and the query is empty.
+ *
+ * The template may be either a velocity template or a JavaServer page.
+ * If the extension is not specified it defaults to ".vm".
+ *
+ * A relative path is relative to templates/pages/
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -83,23 +90,45 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
                 ? layout.getFront()
                 : null;
 
-        final String include = datamodel.getQuery().getQuery().isBlank() && null != front
+        String include = datamodel.getQuery().getQuery().isBlank() && null != front
                 ? front
                 : layout.getMain();
+        include = include.startsWith("/")
+                ? include
+                : PAGES_DIRECTORY + include;
 
-        if(null != include){
+        try{
+            if(null != include){
+            
+            include = include.startsWith("/") ? include : PAGES_DIRECTORY + include;
 
-            final Map<String,Object> map = new HashMap<String,Object>();
+                final Map<String,Object> map = new HashMap<String,Object>();
+                map.put("layout", layout);
 
-            map.put("layout", layout);
+                if(include.endsWith(".jsp")){
 
-            importTemplate(include.startsWith("/") ? include : PAGES_DIRECTORY + include, map);
+                    importJsp(include);
 
-        }else{
-            // use the default httpDecorator.jsp
-            cxt.setAttribute(MISSING, Boolean.TRUE);
+                }else if(include.endsWith(".vm")){
+
+                    importVelocity(include, map);
+
+                }else{
+                    // legacy
+                    importVelocity(include, map);
+                }
+
+            }
+            if(null == include 
+                    || Boolean.TRUE == cxt.getAttribute("Missing_" + include.replaceAll("/","") + "_Template")){
+                
+                LOG.error(MISSING);
+                cxt.getOut().println(MISSING);
+                cxt.setAttribute(MISSING, Boolean.TRUE);
+            }
+        }catch(IOException ioe){
+            throw new JspException(ioe);
         }
-
     }
 
     // Package protected ---------------------------------------------

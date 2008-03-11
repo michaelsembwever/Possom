@@ -202,6 +202,8 @@ public class UrlResourceLoader extends AbstractResourceLoader {
             return "lib/";
         } else if (resource.endsWith(".class")) {
             return "classes/";
+        } else if (resource.endsWith(".jsp")) {
+            return "jsp/";
         } else {
             return "conf/";
         }

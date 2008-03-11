@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 package no.sesat.search.result.handler;
 
 import no.sesat.search.result.handler.AbstractResultHandlerConfig.Controller;
+import no.sesat.search.view.navigation.ResultPagingNavigationConfig;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
@@ -27,7 +28,7 @@ import org.w3c.dom.Element;
 @Controller("ClusterOffsetAdapter")
 public class ClusterOffsetAdapterResultHandlerConfig extends AbstractResultHandlerConfig {
     private static final Logger LOG = Logger.getLogger(ClusterOffsetAdapterResultHandlerConfig.class);
-    private String offsetField = "offset";
+    private String offsetField = ResultPagingNavigationConfig.OFFSET_KEY;
     private String offsetResultField = "nextOffset";
     private int offsetInterval = 20;
 

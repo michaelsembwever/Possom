@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ public final class SearchConstants {
 
     public static final String REQUEST_KEYPARAM_QUERY = "q";
     public static final String REQUEST_KEYPARAM_LANGUAGE = "lan";
-    public static final String REQUEST_KEYPARAM_OFFSET = "offset";
+
     public static final String REQUEST_KEYPARAM_DOCUMENTS_TO_RETURN = "d";
     public static final String REQUEST_KEYPARAM_COLLECTION = "c";
     public static final String REQUEST_PARAM_DEFAULT_COLLECTIONS = "d";
@@ -78,7 +78,6 @@ public final class SearchConstants {
     
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
 
-    public static final Object PARAMETER_OFFSET = "offset";
 
 }
 

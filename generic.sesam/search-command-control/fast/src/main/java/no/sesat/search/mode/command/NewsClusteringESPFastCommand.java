@@ -124,7 +124,7 @@ public class NewsClusteringESPFastCommand extends NewsEspSearchCommand {
         ResultList<ResultItem> clusterEntry = null;
 
         LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", offset=" + offset);
-        final int firstHit = config.isIgnoreOffset() ? 0 : offset;
+        final int firstHit = offset;
 
         for (int i = firstHit; i < result.getDocCount(); i++) {
             try {

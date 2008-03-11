@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -342,11 +342,6 @@ public final class SearchServlet extends HttpServlet {
 
 
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
-        final ParametersDataObject parametersDO = datamodel.getParameters();
-
-        if (null == parametersDO.getValue("offset") || 0 == parametersDO.getValue("offset").getString().length()) {
-            request.setAttribute("offset", "0"); // TODO remove, access through datamodel instead.
-        }
 
          // TODO remove next two, access through datamodel instead.
         request.setAttribute("text",TextMessages.valueOf(ContextWrapper.wrap(
@@ -516,7 +511,7 @@ public final class SearchServlet extends HttpServlet {
                     }
                 }
 
-
+                // FIXME move out to a RunHandler implementation.
                 checkFinn(request, response, datamodel);
 
             } catch (InterruptedException e) {

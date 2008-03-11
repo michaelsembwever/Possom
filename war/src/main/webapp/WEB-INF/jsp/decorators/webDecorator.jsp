@@ -19,10 +19,5 @@
   -- @author <a href="mailto:mick@semb.wever.org">Michael Semb Wever</a>
   -- @version $Id$
   --%>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
-
 <search:main/>
-<c:if test="${!empty Missing_SearchTabMain_Template}">
-    <%@ include file="httpDecorator.jsp" %>
-</c:if>

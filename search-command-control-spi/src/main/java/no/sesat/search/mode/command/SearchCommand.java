@@ -1,5 +1,5 @@
 /*
-* Copyright (2005-2007) Schibsted Søk AS
+* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import no.sesat.search.query.token.TokenEvaluationEngineContext;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
-/** Behavour requirements for any implementation Search Command.
+/** Behavour requirements for any implementating Search Command.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
@@ -55,5 +55,7 @@ public interface SearchCommand extends Callable<ResultList<? extends ResultItem>
     boolean handleCancellation();
     
     boolean isCancelled();
+    
+    boolean isPaginated();
     
 }

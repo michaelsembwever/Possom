@@ -132,8 +132,10 @@
         <module>sitemap-spi</module>
         <module>core-api</module>
         <module>search-servlet-handler-spi</module>
-        <module>war</module>
         <module>generic.sesam</module>
+        <!-- sitemap-generator must be after generic.sesam-search-command-control because they both use assembly -->
+        <module>sitemap-generator</module>
+        <module>war</module>
     </modules>
 
     <build>
@@ -500,7 +502,6 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>

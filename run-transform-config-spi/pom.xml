@@ -55,11 +55,6 @@
             <classifier>jdk15</classifier>
         </dependency>
 
-        <dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>newsadmin-services</artifactId>
-        </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>sesat</groupId>

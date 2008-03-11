@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 /**
  * Adds a navigatable geograpic modifier hirarcy. (Can not use FAST navigators since the have no knowlege
  * of the hirarcy)
+ * @deprecated Create a NavigationController instead. SEARCH-3427
  *
  * @author Geir H. Pettersen (T-Rank)
  * @version $Id$

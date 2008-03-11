@@ -76,6 +76,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         </init-param>
     </filter>
     
+    <filter>
+        <filter-name>SiteJspLoaderFilter</filter-name>
+        <filter-class>no.sesat.search.http.filters.SiteJspLoaderFilter</filter-class>
+    </filter>
     
     <filter>
         <filter-name>UserFilter</filter-name>
@@ -102,7 +106,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <filter-mapping>
         <filter-name>DataModelFilter</filter-name>
         <url-pattern>/*</url-pattern>
-        <dispatcher>INCLUDE</dispatcher> 
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
@@ -127,6 +130,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher> 
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>SiteJspLoaderFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
     
     <!-- Servlets -->
 
@@ -142,17 +150,17 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
-           <servlet-name>jsp</servlet-name>
-           <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
         <init-param>
             <param-name>development</param-name>
             <param-value>false</param-value>
         </init-param>
         <init-param>
-            <param-name>reloading</param-name>
-            <param-value>false</param-value>
+            <!-- Because SiteJspLoaderFilter dynamically updates our jsp files check very frequently for changes -->
+            <param-name>checkInterval</param-name>
+            <param-value>5</param-value>
         </init-param>
-
         <load-on-startup>3</load-on-startup>
     </servlet>
 
@@ -181,15 +189,20 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <servlet-class>no.sesat.search.http.servlet.SendMailServlet</servlet-class>
     </servlet>
     
-    <servlet>
+    <!-- Uncomment to enable DWR. 
+      -  The dwr dependency in the pom.xml and code in DataModelWrapper.java will also need to be uncommented.   -->
+    <!--servlet>
       <servlet-name>dwr-invoker</servlet-name>
-      <display-name>DWR Servlet</display-name>
       <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
       <init-param>
          <param-name>debug</param-name>
          <param-value>true</param-value>
       </init-param>
     </servlet>
+    <servlet-mapping>
+      <servlet-name>dwr-invoker</servlet-name>
+      <url-pattern>/dwr/*</url-pattern>
+    </servlet-mapping-->
 
     <!-- Servlet Mappings -->
     <servlet-mapping>
@@ -197,11 +210,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <url-pattern>/servlet/VelocityDebug</url-pattern>
     </servlet-mapping>
     
-    <servlet-mapping>
-      <servlet-name>dwr-invoker</servlet-name>
-      <url-pattern>/dwr/*</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>search servlet</servlet-name>
         <url-pattern>/search/*</url-pattern>

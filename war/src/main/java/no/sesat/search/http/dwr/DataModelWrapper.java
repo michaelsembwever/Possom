@@ -44,8 +44,8 @@ public class DataModelWrapper {
     public static DataModel getDataModel() {
        
         HttpSession session = null;
-//  Uncomment the following two codelines to enable DWR.
-//    The dwr dependency in the pom.xml will also need to be uncommented.        
+//  Uncomment the following two codelines to enable DWR. 
+//    The dwr dependency in the pom.xml and servlet in the web.xml will also need to be uncommented.  
 //        final org.directwebremoting.WebContext webContext = org.directwebremoting.WebContextFactory.get();
 //        session = webContext.getSession(false);
         

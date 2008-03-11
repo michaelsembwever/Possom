@@ -19,6 +19,9 @@ package no.sesat.search.result.handler;
 import no.sesat.search.result.handler.AbstractResultHandlerConfig.Controller;
 import org.w3c.dom.Element;
 
+/** 
+ * @deprecated Create a NavigationController instead.  SEARCH-3427
+ */
 @Controller("AddGeographicNavigationResultHandler")
 public class AddGeographicNavigationResultHandlerConfig extends AbstractResultHandlerConfig {
     private String geoXml = "geographic.xml";

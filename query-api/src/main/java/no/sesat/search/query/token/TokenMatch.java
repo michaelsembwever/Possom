@@ -20,13 +20,16 @@ package no.sesat.search.query.token;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
+/** Used by VeryFastTokenEvaluator for matches against part of the query to a fast list.
+ * 
+ * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version $Id$
  **/
-public final class TokenMatch implements Comparable {
+final class TokenMatch implements Comparable {
 
     private final String token;
     private final String match;
+    private final String value;
     private final Integer start;
     private final Integer end;
     private final Pattern matcher;
@@ -35,9 +38,10 @@ public final class TokenMatch implements Comparable {
      */
     private boolean touched = false;
 
-    public TokenMatch(final String token, final String match, final int start, final int end) {
+    public TokenMatch(final String token, final String match, final String value, final int start, final int end) {
         this.token = token;
         this.match = match;
+        this.value = value;
         this.start = Integer.valueOf(start);
         this.end = Integer.valueOf(end);
         // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
@@ -71,6 +75,7 @@ public final class TokenMatch implements Comparable {
     /**
      * Get the regular expression Matcher to use to find a sub-match.
      *
+     * @param string 
      * @return the match.
      */
     public Matcher getMatcher(final String string) {
@@ -84,6 +89,15 @@ public final class TokenMatch implements Comparable {
      */
     public String getToken() {
         return token;
+    }
+
+    /**
+     * Get the Fast value.
+     *
+     * @return the value.
+     */
+    public String getValue() {
+        return value;
     }
 
     /**
@@ -109,5 +123,15 @@ public final class TokenMatch implements Comparable {
      */
     public void setTouched(final boolean touched) {
         this.touched = touched;
+    }
+
+    @Override
+    public String toString() {
+       return "token=\"" + token
+               + "\"; match=\"" + match
+               + "\"; value=" + (value == null ? "null" : "\"" + value + "\"") 
+               + "; start=" + start 
+               + "; end=" + end
+               + "; matcher=" + matcher + ";";     
     }
 }

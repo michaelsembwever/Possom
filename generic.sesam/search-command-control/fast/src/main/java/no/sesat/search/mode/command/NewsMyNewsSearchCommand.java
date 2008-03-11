@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -143,14 +143,6 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
             LOG.debug("Setting next offset to: " + (offset + returnedResults));
             NewsEspSearchCommand.addNextOffsetField(offset + returnedResults, searchResult);
         }
-    }
-
-    private int getOffset() {
-        int offset = 0;
-        if (datamodel.getJunkYard().getValue("offset") != null) {
-            offset = Integer.parseInt((String) datamodel.getJunkYard().getValue("offset"));
-        }
-        return offset;
     }
 
     @Override

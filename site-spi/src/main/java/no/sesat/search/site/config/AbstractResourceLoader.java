@@ -209,8 +209,12 @@ public abstract class AbstractResourceLoader
 
         if (resourceType == Resource.BYTECODE) {
             // Convert package structure to path.
-            this.resource = resource.replace(".", "/") + ".class";
-
+            if(!resource.endsWith(".jsp")){
+                this.resource = resource.replace(".", "/") + ".class";
+            }else{
+                this.resource = resource;
+            }
+            
             if (jarFileName != null) {
                 // Construct the path portion of a JarUrl.
                 this.resource = jarFileName + "!/" + this.resource;
@@ -225,9 +229,9 @@ public abstract class AbstractResourceLoader
         
         future = EXECUTOR.submit(this);
         
-        if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
+        if(LOG.isTraceEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
             final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
-            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+            LOG.trace(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
         }
     }
 
@@ -243,8 +247,7 @@ public abstract class AbstractResourceLoader
             
             final long time = System.currentTimeMillis();
             future.get();
-            LOG.debug("abut() for " + getResource(context.getSite()) + '\n' 
-                    + "waited " + (System.currentTimeMillis() - time) + "ms\n");
+            LOG.debug("abut(" + (System.currentTimeMillis() - time) + "ms) for " + getResource(context.getSite()));
             
 
         } catch (InterruptedException ex) {

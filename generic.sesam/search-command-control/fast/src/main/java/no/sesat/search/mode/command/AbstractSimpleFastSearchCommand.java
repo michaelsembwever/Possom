@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -252,7 +252,7 @@ import no.sesat.search.result.WeightedSuggestion;
             }
 
 
-            if (getSearchConfiguration().isRelevantQueries() && !getParameters().containsKey("qs")) {
+            if (getSearchConfiguration().isRelevantQueries() && null == getParameter("qs")) {
                 collectRelevantQueries(result, searchResult);
             }
 
@@ -486,7 +486,7 @@ import no.sesat.search.result.WeightedSuggestion;
         }
 
         final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
-        final int cnt = getCurrentOffset(0);
+        final int cnt = getOffset();
 
         final int maxIndex = Math.min(cnt + getResultsToReturn(), result.getDocCount());
 
@@ -559,10 +559,8 @@ import no.sesat.search.result.WeightedSuggestion;
         String queryString = getTransformedQuery();
 
         if (getSearchConfiguration().isKeywordClusteringEnabled()) {
-            if (getParameters().containsKey("kw")) {
-                kwString = getParameters().get("kw") instanceof String[]
-                        ? StringUtils.join((String[]) getParameters().get("kw"), " ")
-                        : getParameter("kw");
+            if (null != getParameter("kw")) {
+                kwString = getParameter("kw");
             }
 
             if (!kwString.equals("")) {
@@ -683,12 +681,12 @@ import no.sesat.search.result.WeightedSuggestion;
             }
         }
 
-        if (getParameters().containsKey("rank")) {
+        if (null != getParameter("rank")) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getParameter("rank")));
         }
 
         // This  now uses sort order from canfiguration, old ones still here for backwards compability untill all are uppdated
-        if (getParameters().containsKey("userSortBy")) {
+        if (null != getParameter("userSortBy")) {
 
             final String sortBy = getParameter("userSortBy");
             LOG.debug("createQuery: SortBy " + sortBy);

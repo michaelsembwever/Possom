@@ -33,7 +33,7 @@ Copyright (2006-2007) Schibsted Søk AS
 
         <command id="default-command"
                  field-filters="site,size"
-                 paging="false"
+                 
                  query-parameter=""
                  result-fields=""
                  results-to-return="1"/>
@@ -180,7 +180,7 @@ Copyright (2006-2007) Schibsted Søk AS
             </query-transformers>
         </stock-command>
 
-         <!-- TODO rename to more appropriate. still specific to norway and sweden -->
+         <!-- TODO rename to more appropriate. only sweden uses it. -->
         <yahoo-idp-command id="default-web-command" inherit="default-yahoo-command">
 
             <query-transformers>
@@ -190,7 +190,7 @@ Copyright (2006-2007) Schibsted Søk AS
             </query-transformers>
         </yahoo-idp-command>
 
-         <!-- TODO rename to more appropriate. still specific to norway and sweden -->
+         <!-- TODO rename to more appropriate. only sweden uses it. -->
         <yahoo-idp-command id="default-web-counter-only" results-to-return="0" inherit="default-web-command"/>
 
     </mode>

@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -183,7 +183,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             query.setParameter(new SearchParameter("sesat:uniqueId",
                     context.getDataModel().getParameters().getUniqueId()));
 
-            query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
+            query.setParameter(new SearchParameter(BaseParameter.OFFSET, getOffset()));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
             query.setParameter(new SearchParameter(BaseParameter.SORT_BY, sortBy));
             query.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, cfg.isLemmatize()));            
@@ -216,7 +216,11 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     }
 
     private String appendFilter(final String filter, final String q) {
-        return filter.length() > 0 ? "and(" + q + "," + "filter(" + filter + "))" : q;
+        if (q.length() == 0 && filter.length() > 0) {
+            return "filter(" + filter + ")";
+        } else {
+            return filter.length() > 0 ? "and(" + q + "," + "filter(" + filter + "))" : q;
+        }
     }
 
     // Z implementation ----------------------------------------------
@@ -242,7 +246,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     protected String getSortBy() {
         String sortBy = cfg.getSortBy();
 
-        if (getParameters().containsKey("userSortBy")) {
+        if (null != getParameter("userSortBy")) {
 
             final String userSortBy = getParameter("userSortBy");
             LOG.debug("execute: SortBy " + userSortBy);
@@ -302,7 +306,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
 
         final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
-        final int cnt = getCurrentOffset(0);
+        final int cnt = getOffset();
         final int maxIndex = getMaxDocIndex(result, cnt, cfg);
 
         searchResult.setHitCount(result.getDocCount());

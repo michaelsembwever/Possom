@@ -73,6 +73,8 @@
                     <include>*.html</include>
                     <include>**/*.vm</include>
                     <include>**/*.html</include>
+                    <include>*.jsp</include>
+                    <include>**/*.jsp</include>
                 </includes>
             </resource>
             <resource>

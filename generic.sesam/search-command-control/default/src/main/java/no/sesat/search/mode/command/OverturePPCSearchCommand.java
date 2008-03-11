@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  *
  * @version $Id$
  */
-public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
+public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String OVERTURE_PPC_ELEMENT = "Listing";
     // Old school sitesearches
@@ -180,7 +180,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         // FIXME. When the site searches have their own context
         // remove this and use the property partnerId of OverturePPCConfiguration
         // instead.
-        return getParameters().containsKey("ss")
+        return null != getParameter("ss")
                 ? SITE_SEARCH_OVERTURE_PARTNER_ID
                 : super.getPartnerId();
     }

@@ -528,7 +528,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                 "sesat " + profile + " deployment");
 
         if(!result.isSuccess()){
-            getLog().error(result.getCommandOutput());
+            throw new ScmException(result.getCommandOutput());
         }
     }
 

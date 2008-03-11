@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,7 +27,8 @@ import java.util.Map;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import org.w3c.dom.Element;
 
-/**
+/** Minimum behavior defined for any SearchConfiguration implementation.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
@@ -48,7 +49,7 @@ public interface SearchConfiguration extends Serializable {
     void addQueryTransformer(QueryTransformerConfig transformer);
 
     /**
-     * Returns a list of {@link no.sesat.search.result.handler.ResultHandlerConfig} that should act on the search
+     * Returns a (defensive copy) list of {@link no.sesat.search.result.handler.ResultHandlerConfig} that should act on the search
      * result.
      *
      * @return The list of handlers.
@@ -77,15 +78,6 @@ public interface SearchConfiguration extends Serializable {
     int getResultsToReturn();
 
     /**
-     * Returns true if paging shoud be enabled to this configuration. This
-     * is typically only set to true for one of the configurations in a
-     * {@link no.sesat.search.mode.SearchMode}
-     *
-     * @return true if paging is enabled.
-     */
-    boolean isPaging();
-
-    /**
      * @return
      */
 
@@ -98,7 +90,7 @@ public interface SearchConfiguration extends Serializable {
 
     /**
      * Sets the number of results to return. This is typically set to the
-     * page size.
+     * page size defined in the view.xml.
      *
      * @param numberOfResults
      */

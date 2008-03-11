@@ -15,7 +15,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
+ *
     Document   : urlrewrite.xml
     Created on : 19 March 2007, 14:43
     Author     : mick
@@ -31,6 +31,11 @@
     <rule><from>^/robots.txt$</from><to>/robots.jsp</to></rule>
     <rule><from>^/psearch/(.*)$</from><to>/search/$1</to></rule>
     
+    <!-- makes it easy to upload google verification html files -->
+    <!-- the /export/ directory has some history behind it in that both norway and sweden 
+            use it as a apache configured location to serve off-disk static content for each vhost.
+          But this doesn't have to be the case. the file can just as easily be dumped into the tomcat webapps/ROOT/export directory -->
+    <rule><from>^/google(.*).html$</from><to type="permanent-redirect">/export/google$1.html</to></rule>
     
     <!-- Everything non-specified falls back to the default search (unspecified c parameter) -->
     <!-- We make the presumption that all the following urls (that we must still honour) contain a second '/'

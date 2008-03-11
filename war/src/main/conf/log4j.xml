@@ -225,6 +225,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="org.apache"><level value="INFO"/></logger>
     <logger name="httpclient.wire"><level value="INFO"/></logger>
     <logger name="com.opensymphony.oscache"><level value="INFO"/></logger>
+    <logger name="no.sesat.search.site.config.SpiClassLoader"><level value="INFO"/></logger>
 
     <root>
         <!-- IMPORTANT: production cannot handle writing to sesam.log at a lower threshold than WARN  -->

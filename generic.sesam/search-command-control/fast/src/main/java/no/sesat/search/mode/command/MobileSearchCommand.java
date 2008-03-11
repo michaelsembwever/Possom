@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,9 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
- */
-/*
+ *
  * MobileSearchCommand.java
  *
  * Created on March 10, 2006, 2:22 PM
@@ -93,14 +91,14 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             params.setParameter(new SearchParameter(
                     BaseParameter.QUERY, getTransformedQuery()));
             params.setParameter(new SearchParameter(
-                    "offset", getCurrentOffset(0)));
+                    "offset", getOffset())); // BaseParameter.OFFSET not in Fast4
 
             if (getParameter("msite") != null)  {
                 String filter = "+(";
                 String [] arr = getParameter("msite").split(";");
-                for (int i=0;i<arr.length;i++)
+                for (int i=0;i<arr.length;i++){
                     filter = filter + " domain:" + arr[i];
-
+                }
                 filter = filter + ")";
                 params.setParameter(new SearchParameter(
                         BaseParameter.FILTER, filter ));
@@ -148,7 +146,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
             if( null != result ){
 
-                final int cnt = getCurrentOffset(0);
+                final int cnt = getOffset();
                 final int maxIndex = Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
 
                 searchResult.setHitCount(result.getDocCount());
@@ -184,7 +182,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
         IDeviceCapabilities cap = null;
 
-        if (getParameters().containsKey(USER_AGENT_PARAMETER)) {
+        if (null != getParameter(USER_AGENT_PARAMETER)) {
             final String userAgent = (getParameter(USER_AGENT_PARAMETER));
             cap = DeviceCapabilitiesFactory.getDeviceCapabilities();
             cap.setUserAgent(userAgent);

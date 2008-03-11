@@ -111,4 +111,8 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
     public boolean isCancelled(){
         return false;
     }
+
+    public boolean isPaginated() {
+        return false;
+    }
 }

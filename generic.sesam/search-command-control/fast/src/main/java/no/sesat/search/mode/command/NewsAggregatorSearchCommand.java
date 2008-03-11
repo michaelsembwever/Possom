@@ -105,6 +105,8 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         String newString = StringUtils.replaceChars(replaceString.toLowerCase(), "\u00E6", "ae");
         newString = StringUtils.replaceChars(newString, '\u00F8', 'o');
         newString = StringUtils.replaceChars(newString, '\u00E5', 'a');
+        newString = StringUtils.replaceChars(newString, "\u00E4", "ae");
+        newString = StringUtils.replaceChars(newString, '\u00F6', 'o');
         newString = StringUtils.replaceChars(newString, ' ', '_');
         return newString;
     }
@@ -353,7 +355,6 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                         addResult(config, searchResultItem, tmpSearchResult, collapseMap, true);
                     }
                     sortResults(tmpSearchResult, sort);
-                    offset = config.isIgnoreOffset() ? 0 : offset;
                     int lastIndex = Math.min(tmpSearchResult.getResults().size(), offset + config.getResultsToReturn());
                     for (int i = offset; i < lastIndex; i++) {
                         searchResult.addResult(tmpSearchResult.getResults().get(i));

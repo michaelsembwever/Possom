@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,18 +25,29 @@ import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.TextMessages;
+import static no.sesat.search.view.navigation.ResultPagingNavigationConfig.OFFSET_KEY;
 import org.apache.log4j.Logger;
 
 
 /** Paging navigation controller.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version $Id$
  */
 public final class ResultPagingNavigationController
         implements NavigationControllerFactory<ResultPagingNavigationConfig>, NavigationController {
 
     private static final Logger LOG = Logger.getLogger(ResultPagingNavigationController.class);
+    
+    public static final String CURRENT_PAGE = "currentPage";
+    public static final String NUMBER_OF_PAGES = "numberOfPages";
+    public static final String FIRST_VISIBLE_PAGE = "firstVisiblePage";
+    public static final String LAST_VISIBLE_PAGE = "lastVisiblePage";
+    public static final String CURRENT_PAGE_FROM_COUNT = "currentPageFromCount";
+    public static final String CURRENT_PAGE_TO_COUNT = "currentPageToCount";
+    
+    private static final String MSG_PREV = "prev";
+    private static final String MSG_NEXT = "next";
 
     private ResultPagingNavigationConfig config;
 
@@ -58,13 +69,13 @@ public final class ResultPagingNavigationController
 
             final ResultList<? extends ResultItem> searchResult = search.getResults();
 
-            int hitCount;
+            final int hitCount;
             if(config.getHitcountSource().length() > 0 && null != searchResult.getField(config.getHitcountSource())) {
                 hitCount = Integer.parseInt(searchResult.getField(config.getHitcountSource()));
             }else {
                 hitCount = searchResult.getHitCount();
             }
-            final StringDataObject offsetString = context.getDataModel().getParameters().getValue("offset");
+            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(OFFSET_KEY);
             final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
 
             item = new BasicNavigationItem();
@@ -72,10 +83,19 @@ public final class ResultPagingNavigationController
             final PagingHelper pager
                     = new PagingHelper(hitCount, config.getPageSize(), offset, config.getNumberOfPages());
 
-            searchResult.addField("currentPage", Integer.toString(pager.getCurrentPage()));
-            searchResult.addField("numberOfPages", Integer.toString(pager.getNumberOfPages()));
-            searchResult.addField("firstVisiblePage", Integer.toString(pager.getFirstVisiblePage()));
-            searchResult.addField("lastVisiblePage", Integer.toString(pager.getLastVisiblePage()));
+            // it is useful to have these fields in most the original search command and in the NavigationItem
+            searchResult.addField(CURRENT_PAGE, Integer.toString(pager.getCurrentPage()));
+            item.addField(CURRENT_PAGE, searchResult.getField(CURRENT_PAGE));
+            searchResult.addField(NUMBER_OF_PAGES, Integer.toString(pager.getNumberOfPages()));
+            item.addField(NUMBER_OF_PAGES, searchResult.getField(NUMBER_OF_PAGES));
+            searchResult.addField(FIRST_VISIBLE_PAGE, Integer.toString(pager.getFirstVisiblePage()));
+            item.addField(FIRST_VISIBLE_PAGE, searchResult.getField(FIRST_VISIBLE_PAGE));
+            searchResult.addField(LAST_VISIBLE_PAGE, Integer.toString(pager.getLastVisiblePage()));
+            item.addField(LAST_VISIBLE_PAGE, searchResult.getField(LAST_VISIBLE_PAGE));
+            searchResult.addField(CURRENT_PAGE_FROM_COUNT, Integer.toString(pager.getCurrentPageFromCount()));
+            item.addField(CURRENT_PAGE_FROM_COUNT, searchResult.getField(CURRENT_PAGE_FROM_COUNT));
+            searchResult.addField(CURRENT_PAGE_TO_COUNT, Integer.toString(pager.getCurrentPageToCount()));
+            item.addField(CURRENT_PAGE_TO_COUNT, searchResult.getField(CURRENT_PAGE_TO_COUNT));
 
             final TextMessages messages = TextMessages.valueOf(context.getSite());
 
@@ -83,7 +103,7 @@ public final class ResultPagingNavigationController
             if (pager.getCurrentPage() > 1) {
                 final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
                 final String url = context.getUrlGenerator().getURL(pageOffset, config);
-                item.addResult(new BasicNavigationItem(messages.getMessage("prev"), url, config.getPageSize()));
+                item.addResult(new BasicNavigationItem(messages.getMessage(MSG_PREV), url, config.getPageSize()));
             }
 
             // Add navigation items for the individual pages.
@@ -104,7 +124,7 @@ public final class ResultPagingNavigationController
             if (pager.getCurrentPage() < pager.getNumberOfPages()) {
                 final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() + 1));
                 final String url = context.getUrlGenerator().getURL(pageOffset, config);
-                item.addResult(new BasicNavigationItem(messages.getMessage("next"), url, config.getPageSize()));
+                item.addResult(new BasicNavigationItem(messages.getMessage(MSG_NEXT), url, config.getPageSize()));
             }
         }
         return item;

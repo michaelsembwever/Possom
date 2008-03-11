@@ -33,16 +33,14 @@ import org.apache.commons.collections.Predicate;
 public enum TokenPredicate implements Predicate {
 
     // Common predicates.
-    
+
     /** @deprecated this is silly. there are better ways to accomplish this, eg enrichment's baseScore. */
     ALWAYSTRUE (Type.GENERIC),
 
     // Fast TokenPredicates
     //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
-    
-    /** */
-    ACTOR_DIRECTOR(Type.FAST),
+
     /** */
     ANIMAL (Type.FAST),
     /** @deprecated FIXME!! What is blocket? we do not put specific names into this list */
@@ -51,6 +49,8 @@ public enum TokenPredicate implements Predicate {
     CATEGORY (Type.FAST),
     /** */
     CELEBRITY (Type.FAST),
+    /** */
+    EXACT_CELEBRITY (Type.FAST),
     /** */
     CLASSIFIED_CATEGORY (Type.FAST),
     /** */
@@ -63,6 +63,8 @@ public enum TokenPredicate implements Predicate {
     COMPANY_KEYWORD (Type.FAST),
     /** */
     COMPANY_KEYWORD_RESERVED (Type.FAST),
+    /** */
+    BIGCOMPANY (Type.FAST),
     /** */
     DISEASE (Type.FAST),
     /** */
@@ -91,8 +93,22 @@ public enum TokenPredicate implements Predicate {
     EXACT_LAST (Type.FAST),
     /** */
     MATERIAL (Type.FAST),
+    /** @deprecated remove. use MOVIE_TITLE TokenPredicates instead. */
+    MOVIE (Type.FAST),
+    /** @deprecated remove. use EXACT_MOVIE_TITLE TokenPredicates instead. */
+    EXACT_MOVIE (Type.FAST),
     /** */
     MOVIE_TITLE(Type.FAST),
+    /** */
+    EXACT_MOVIE_TITLE(Type.FAST),
+    /** */
+    MOVIE_ACTOR(Type.FAST),
+    /** */
+    EXACT_MOVIE_ACTOR(Type.FAST),
+    /** */
+    MOVIE_DIRECTOR(Type.FAST),
+    /** */
+    EXACT_MOVIE_DIRECTOR(Type.FAST),
     /** */
     PRIOCOMPANYNAME (Type.FAST),
     /** */
@@ -101,6 +117,7 @@ public enum TokenPredicate implements Predicate {
     PRODUCT_BICYCLE (Type.FAST),
     /** */
     PRODUCT_CAR (Type.FAST),
+    /** */
     EXACT_PRODUCT_CAR (Type.FAST),
     /** */
     PRODUCT_CHILDREN (Type.FAST),
@@ -137,6 +154,8 @@ public enum TokenPredicate implements Predicate {
     /** */
     PROFESSION(Type.FAST),
     /** */
+    EXACT_PROFESSION(Type.FAST),
+    /** */
     OCEAN (Type.FAST),
     /** */
     EXACT_TOP3 (Type.FAST),
@@ -162,20 +181,15 @@ public enum TokenPredicate implements Predicate {
     EXACT_WIKI (Type.FAST),
     /** */
 
-    /** for video */
-    ACTOR (Type.FAST),
-    EXACT_ACTOR (Type.FAST),
     ARTIST (Type.FAST),
     EXACT_ARTIST (Type.FAST),
     FICTION_CHARACTER (Type.FAST),
     EXACT_FICTION_CHARACTER (Type.FAST),
     MOTOR_SPORT (Type.FAST),
     EXACT_MOTOR_SPORT (Type.FAST),
-    MOVIE (Type.FAST),
-    EXACT_MOVIE (Type.FAST),
     PUBLIC_SERVICE_BROADCASTING (Type.FAST),
     EXACT_PUBLIC_SERVICE_BROADCASTING (Type.FAST),
-    
+
     IMAGES (Type.FAST),
     /** */
     EXACT_IMAGE (Type.FAST),
@@ -196,6 +210,8 @@ public enum TokenPredicate implements Predicate {
     /** */
     CATALOGUE_MAGIC (Type.REGEX),
     /** */
+    EXACT_CATALOGUE_MAGIC (Type.REGEX),
+    /** */
     CLASSIFIED_MAGIC (Type.REGEX),
     /** */
     EXACT_CLASSIFIED_MAGIC (Type.REGEX),
@@ -206,11 +222,17 @@ public enum TokenPredicate implements Predicate {
     /** */
     NEWS_MAGIC (Type.REGEX),
     /** */
+    EXACT_NEWS_MAGIC (Type.REGEX),
+    /** */
     OCEAN_MAGIC (Type.REGEX),
     /** */
     PICTURE_MAGIC (Type.REGEX),
     /** */
+    EXACT_PICTURE_MAGIC (Type.REGEX),
+    /** */
     VIDEO_MAGIC (Type.REGEX),
+    /** */
+    EXACT_VIDEO_MAGIC (Type.REGEX),
     /** */
     RECEIPE_MAGIC (Type.REGEX),
     /** */
@@ -218,19 +240,39 @@ public enum TokenPredicate implements Predicate {
     /** */
     STOCK_MAGIC (Type.REGEX),
     /** */
+    EXACT_STOCK_MAGIC (Type.REGEX),
+    /** */
     TV_MAGIC (Type.REGEX),
+    /** */
+    EXACT_TV_MAGIC (Type.REGEX),
     /** */
     WEATHER_MAGIC (Type.REGEX),
     /** */
+    EXACT_WEATHER_MAGIC (Type.REGEX),
+    /** */
     WEBTV_MAGIC (Type.REGEX),
+    /** */
+    EXACT_WEBTV_MAGIC (Type.REGEX),
     /** */
     WHITE_MAGIC (Type.REGEX),
     /** */
+    EXACT_WHITE_MAGIC (Type.REGEX),
+    /** */
     WIKIPEDIA_MAGIC (Type.REGEX),
+    /** */
+    EXACT_WIKIPEDIA_MAGIC (Type.REGEX),
     /** */
     YELLOW_MAGIC (Type.REGEX),
     /** */
+    EXACT_YELLOW_MAGIC (Type.REGEX),
+    /** */
     MAP_MAGIC(Type.REGEX),
+    /** */
+    EXACT_MAP_MAGIC (Type.REGEX),
+    /** */
+    BLOG_MAGIC (Type.REGEX),
+    /** */
+    EXACT_BLOG_MAGIC (Type.REGEX),
     
 
     // RegExp TokenPredicates -- trigger words/phrases

@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,9 +25,13 @@ import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @version $Id$
  */
 @ControllerFactory("no.sesat.search.view.navigation.ResultPagingNavigationController")
 public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
+    
+    /** Used for both the id of the configuration AND the parameter name. **/
+    public static final String OFFSET_KEY = "offset";
 
     private int pageSize;
     private int numberOfPages;

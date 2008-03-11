@@ -29,12 +29,12 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.Site;
 import no.sesat.search.view.config.SearchTab;
+import org.apache.velocity.Template;
 import static no.sesat.search.view.config.SearchTab.EnrichmentHint.*;
 import org.apache.velocity.app.VelocityEngine;
 
@@ -42,13 +42,17 @@ import org.apache.velocity.app.VelocityEngine;
  * Handles presenting the enrichments
  *
  * The first argument allow inclusion/exclusion of each enrichment according to the subclasses implementation of
- *  placementCorrect(tab, placement, i, e)
+ *  placementCorrect(tab, placement, i, e)      <br/><br/>
  *
  * The second argument specifies the a string to use in beginning wrapping around each enrichment.
  * a third argument is expected for end wrapping.
- *  If no argument is specified no div is written around each enrichment.
+ *  If no argument is specified no div is written around each enrichment.)      <br/><br/>
+ * 
+ * The enrichments that are rendered are those named as the results field for EnrichmentHint.NAME_KEY within the
+ * "templates/enrichments/${placement}/" directory. If this is not found then the same named template 
+ * within the "templates/enrichments/" directory is used.
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick Semb Wever</a>
  * @version $Id$
  */
 public abstract class AbstractEnrichmentDirective extends AbstractDirective {
@@ -143,7 +147,7 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
 
 
                 // enrichments
-                if (placementCorrect(tab, placement, i, e)){
+                if (placementCorrect(getDataModel(cxt), placement, i, e)){
 
                     if(3 == node.jjtGetNumChildren()){
                         writer.append(getArgument(cxt, node, 1));
@@ -151,9 +155,19 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
 
                     cxt.put("commandName", e.getField(NAME_KEY));
                     
-                    VelocityEngineFactory
-                            .getTemplate(engine, site, "/enrichments/" + e.getField(NAME_KEY))
-                            .merge(cxt, writer);
+                    Template template = null;
+                    try{
+                        template = VelocityEngineFactory
+                                .getTemplate(engine, site, "/enrichments/" + placement + '/' + e.getField(NAME_KEY));
+                        
+                    }catch(ResourceNotFoundException rnfe){
+                        LOG.debug(rnfe.getMessage(), rnfe); // not important
+                        
+                        template = VelocityEngineFactory
+                                .getTemplate(engine, site, "/enrichments/" + e.getField(NAME_KEY));
+                    }
+                    
+                    template.merge(cxt, writer);
 
                     if(3 == node.jjtGetNumChildren()){
                         writer.append(getArgument(cxt, node, 2));
@@ -171,6 +185,6 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
         return false;
     }
 
-    protected abstract boolean placementCorrect(SearchTab tab, String placement, int i, ResultList e);
+    protected abstract boolean placementCorrect(DataModel datamodel, String placement, int i, ResultList e);
 
 }

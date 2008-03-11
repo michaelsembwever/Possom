@@ -39,8 +39,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private String userSortParameter;
     private String sortField;
     private String defaultSort;
-
-    private boolean ignoreOffset = false;
     private String relevanceSortField;
     private String maxAge;
     private int maxAgeAmount;
@@ -161,21 +159,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         this.mediumParameter = mediumParameter;
     }
 
-    /** Getter for the ignoreOffset property.
-     * @return the ignoreOffset value
-     */
-    public boolean isIgnoreOffset() {
-        return ignoreOffset;
-    }
-
-    /** Setter for the ignoreOffset property.
-     * @param ignoreOffset the new ignoreOffset value
-     */
-    public void setIgnoreOffset(final boolean ignoreOffset) {
-        this.ignoreOffset = ignoreOffset;
-    }
-
-
     /** Getter for the relevanceSortField property.
      * @return the relevanceSortField value
      */
@@ -257,8 +240,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
                 .fillBeanProperty(this, inherit, "nestedResultsField", ParseType.String, element, "entries");
         AbstractDocumentFactory
                 .fillBeanProperty(this, inherit, "collapsingMaxFetch", ParseType.Int, element, "10");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "ignoreOffset", ParseType.Boolean, element, "false");
 
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortField", ParseType.String, element, "publishedtime");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "defaultSort", ParseType.String, element, "descending");

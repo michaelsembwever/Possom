@@ -121,6 +121,12 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
+            <artifactId>sesat-sitemap-generator</artifactId>
+            <version>${version}</version>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>
@@ -155,7 +161,6 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>

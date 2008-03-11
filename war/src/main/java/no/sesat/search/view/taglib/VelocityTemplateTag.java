@@ -75,7 +75,7 @@ public final class VelocityTemplateTag extends AbstractVelocityTemplateTag {
         final Map<String,Object> map = new HashMap<String,Object>();
         map.put("layout", layout);
         map.put("commandName", command != null ? command : this.template);
-        importTemplate(this.template, map);
+        importVelocity(this.template, map);
 
     }
 

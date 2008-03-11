@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
                     cfg.getCustomerId(),
                     cfg.getResultsToReturn(),
                     query,
-                    getCurrentOffset(1),
+                    getOffset()+1,
                     siteFilter,
                     color,
                     size);

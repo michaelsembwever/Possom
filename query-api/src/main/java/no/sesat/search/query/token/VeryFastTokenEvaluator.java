@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +47,7 @@ import no.sesat.search.site.config.PropertiesContext;
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.query.QueryStringContext;
 import no.sesat.search.query.parser.QueryParser;
+import static no.sesat.search.query.parser.AbstractQueryParser.SKIP_REGEX;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 
@@ -94,7 +97,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final int REFRESH_PERIOD = 60; // one minute
     private static final int CACHE_CAPACITY = 100; // smaller than usual as each entry can contain up to 600 values!
     
-    private static final String SKIP_REGEX;
     private static final String OPERATOR_REGEX;
 
     // Attributes ----------------------------------------------------
@@ -108,16 +110,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     static{
         CACHE.setCacheCapacity(CACHE_CAPACITY);
         
-        // build our skip regular expression
-        final StringBuilder builder = new StringBuilder();
-        for(char[] range : QueryParser.SKIP_CHARACTER_RANGES){
-            builder.append("[\\" + range[0] + "-\\" + range[1] + "]|");
-        }
-        // remove trailing '|'
-        builder.setLength(builder.length() - 1);
-        // our skip regular expression
-        SKIP_REGEX = '(' + builder.toString() + ')';
-
+        // build our operator regular expression
         final StringBuilder operatorRegexpBuilder = new StringBuilder();
 
         operatorRegexpBuilder.append('(');
@@ -136,7 +129,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     
     /**
      * Search fast and initialize analysis result.
-     * @param query
+     * @param cxt 
      */
     VeryFastTokenEvaluator(final Context cxt) throws VeryFastListQueryException{
 
@@ -217,7 +210,44 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return evaluation;
     }
 
-    /** 
+
+    /**
+     * get all match values and values for given Fast list .
+     *
+     * @param token
+     * @param term 
+     * @return a list of Tokens
+     */
+    public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+        
+        final Set<String> values = new HashSet<String>();
+        
+        final String[] listnames = getListNames(token);
+        if(null != listnames){
+            for(int i = 0; i < listnames.length; i++){
+                final String listname = listnames[i];
+                if (analysisResult.containsKey(listname)) {
+                    
+                    // HACK since DefaultOperatorClause wraps its children in parenthesis
+                    // Also remove any operator characters. (SEARCH-3883 & SEARCH-3967)
+                    final String hackTerm = term.replaceAll("\\(|\\)","").replaceAll(OPERATOR_REGEX, "");
+                    
+                    for (TokenMatch occurance : analysisResult.get(listname)) {
+                        
+                        final Matcher m = occurance.getMatcher(hackTerm);
+
+                        // keep track of which TokenMatch's we've used.
+                        if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
+                            values.add(occurance.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        return Collections.unmodifiableSet(values);
+    }
+
+    /**
      * 
      * @param predicate
      * @return
@@ -367,19 +397,23 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                                     + LIST_SUFFIX
                                 : null;
 
-                        if(custom.endsWith("->") && usesListName(name, exactname)){
+                        if(custom.matches(".+->.*") && usesListName(name, exactname)){ 
 
                             final String match = (custom.indexOf("->") >0
                                     ? custom.substring(0, custom.indexOf("->"))
                                     : custom)
                                     // remove words made solely of characters that the parser considers whitespace
                                     .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
+                            
+                            final String value = custom.indexOf("->") > 0 
+                                    ? custom.substring(custom.indexOf("->") + 2) 
+                                    : null;
 
-                            addMatch(name, match, query, result);
+                            addMatch(name, match, value,query, result);
 
                             if (match.equalsIgnoreCase(query.trim())) {
 
-                                addMatch(exactname, match, query, result);
+                                addMatch(exactname, match, value, query, result);
                             }
                         }
                     }
@@ -410,11 +444,12 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     }
 
     private static void addMatch(
-            final String name, 
-            final String match, 
+            final String name,
+            final String match,
+            final String value,
             final String query,
             final Map<String, List<TokenMatch>> result) {
-        
+
         final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
         final String qNew = query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
@@ -423,9 +458,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 qNew);
 
         while (m.find()) {
+            final TokenMatch tknMatch = new TokenMatch(name, match, value, m.start(), m.end());
 
-            final TokenMatch tknMatch = new TokenMatch(name, match, m.start(), m.end());
-            
             if (!result.containsKey(name)) {
                 result.put(name, new ArrayList<TokenMatch>());
             }

@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,6 +21,8 @@ import org.apache.log4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.view.navigation.ResultPagingNavigationConfig;
 
 
 /**
@@ -80,9 +82,16 @@ public final class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
      */
     protected int getOffset() {
 
-        return null != getContext().getDataModel().getJunkYard().getValue("offset")
-                ? Integer.parseInt((String) getContext().getDataModel().getJunkYard().getValue("offset"))
-                : 0;
+        int offset = 0;
+        
+        final StringDataObject offsetString 
+                = getContext().getDataModel().getParameters().getValue(ResultPagingNavigationConfig.OFFSET_KEY);
+        
+        if( null != offsetString ){
+            offset = Integer.parseInt(offsetString.getUtf8UrlEncoded());
+        }
+
+        return offset;
     }
 
     private String transformQuery(final String myNews) {

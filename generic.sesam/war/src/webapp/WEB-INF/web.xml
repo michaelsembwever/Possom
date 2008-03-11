@@ -42,11 +42,11 @@
         </init-param>
         <init-param>
             <param-name>resources.restricted</param-name>
-            <param-value>properties,xml,vm,html,class,jar</param-value>
+            <param-value>properties,xml,vm,html,class,jar,jsp</param-value>
         </init-param>
         <init-param>
             <param-name>content.paths</param-name>
-            <param-value>properties=conf,xml=conf,vm=templates,html=templates,css=css,js=javascript,jpg=images,gif=images,png=images,class=classes,jar=lib</param-value>
+            <param-value>properties=conf,xml=conf,vm=templates,html=templates,css=css,js=javascript,jpg=images,gif=images,png=images,class=classes,jar=lib,jsp=jsp</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -55,11 +55,6 @@
         <servlet-name>resource servlet</servlet-name>
         <url-pattern>/javascript/*</url-pattern>
     </servlet-mapping>
-
-    <welcome-file-list>
-        <welcome-file>/images/logo.jpg</welcome-file>
-    </welcome-file-list>
-
     <servlet-mapping>
         <servlet-name>resource servlet</servlet-name>
         <url-pattern>/css/*</url-pattern>
@@ -71,6 +66,10 @@
     <servlet-mapping>
         <servlet-name>resource servlet</servlet-name>
         <url-pattern>/conf/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resource servlet</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>resource servlet</servlet-name>

@@ -50,6 +50,8 @@ public abstract class AbstractQueryParser implements QueryParser {
 
     // Constants -----------------------------------------------------
     
+    public static final String SKIP_REGEX;
+    
     /** Protected so an .jj file implementing this class can reuse.
      **/
     protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
@@ -76,6 +78,18 @@ public abstract class AbstractQueryParser implements QueryParser {
 
     // Static --------------------------------------------------------
 
+    static{
+        
+        // build our skip regular expression
+        final StringBuilder builder = new StringBuilder();
+        for(char[] range : QueryParser.SKIP_CHARACTER_RANGES){
+            builder.append("[\\" + range[0] + "-\\" + range[1] + "]|");
+        }
+        // remove trailing '|'
+        builder.setLength(builder.length() - 1);
+        // our skip regular expression
+        SKIP_REGEX = '(' + builder.toString() + ')';
+    }
 
     // Constructors --------------------------------------------------
     
@@ -96,13 +110,15 @@ public abstract class AbstractQueryParser implements QueryParser {
      */
     public Query getQuery(){
         if( query == null ){
-            final String queryStr = context.getQueryString();
+            final String q = context.getQueryString();
+            
             if( context == null ){
                 throw new IllegalStateException(ERR_EMPTY_CONTEXT);
             }
+            
             final ParentFinder parentFinder = new ParentFinder();
             try{
-                if( null != queryStr && 0 < queryStr.trim().length() && !"*".equals(queryStr) ){
+                if( null != q && 0 < q.replaceAll(SKIP_REGEX, "").trim().length() && !"*".equals(q) ){
 
                     // Uncomment the following line, and comment the line after than, to disable RotationAlternation.
                     //final Clause root = parse();
@@ -112,16 +128,16 @@ public abstract class AbstractQueryParser implements QueryParser {
                 }
 
             }catch(ParseException pe){
-                LOG.warn(ERR_PARSING + queryStr, pe);
+                LOG.warn(ERR_PARSING + q, pe);
                 // also let product department know these queries are not working
                 PRODUCT_LOG.info("<invalid-query type=\"ParseException\">" 
-                        + StringEscapeUtils.escapeXml(queryStr) + "</invalid-query>");
+                        + StringEscapeUtils.escapeXml(q) + "</invalid-query>");
                 
             } catch (TokenMgrError tme)  {
-                LOG.error(ERR_PARSING + queryStr, tme);
+                LOG.error(ERR_PARSING + q, tme);
                 // also let product department know these queries are not working
                 PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">" 
-                        + StringEscapeUtils.escapeXml(queryStr) + "</invalid-query>");
+                        + StringEscapeUtils.escapeXml(q) + "</invalid-query>");
             }
 
             if( query == null ){

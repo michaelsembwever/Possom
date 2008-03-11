@@ -73,7 +73,6 @@ public class CommandConfig implements SearchConfiguration {
 
     private final Map<String,String> resultFields = new HashMap<String,String>();
     private int resultsToReturn;
-    private boolean paging = false;
 
     private String queryParameter;
     private boolean alwaysRun = true;
@@ -95,18 +94,6 @@ public class CommandConfig implements SearchConfiguration {
     public CommandConfig(){}
 
     // Public --------------------------------------------------------
-    
-    /**
-     * Sets the paging enabled status of this configuration. The default is
-     * false.
-     *
-     * @param pagingEnabled
-     */
-    public final void setPaging(final boolean pagingEnabled) {
-
-        LOG.trace("setPagingEnabled() " + pagingEnabled);
-        this.paging = pagingEnabled;
-    }
 
     /**
      * Returns a (defensive copy) list of {@link QueryTransformerConfig} that should be applied
@@ -147,11 +134,6 @@ public class CommandConfig implements SearchConfiguration {
      */
     public final void setName(final String name) {
         this.name = name;
-    }
-
-    /** {@inheritDoc} **/
-    public final boolean isPaging() {
-        return paging;
     }
 
     /** {@inheritDoc} **/
@@ -313,7 +295,6 @@ public class CommandConfig implements SearchConfiguration {
             }
         }
 
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "paging", ParseType.Boolean, element, "false");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryParameter", ParseType.String, element, "");
 
         // result-fields

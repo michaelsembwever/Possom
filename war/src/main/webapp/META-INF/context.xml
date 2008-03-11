@@ -1,0 +1,2 @@
+<!-- Since we dynamically add files into our deployment directory we must turn caching off. See SiteJspLoaderFilter.java--> 
+<Context cachingAllowed="false" cacheMaxSize="0" cacheTTL="0"  override="true"/>

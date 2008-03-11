@@ -108,12 +108,22 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     // Static --------------------------------------------------------
 
+    
+    /** Find the appropriate velocity Template by its name against a given engine and site.
+     * Will throw a ResourceNotFoundException if not found.
+     * 
+     * @param engine the VelocityEngine appropriate for the current site.
+     * @param site the current site.
+     * @param templateName the name of the template. must not contain ".vm" suffix.
+     * @return returns the template.
+     * @throws org.apache.velocity.exception.ResourceNotFoundException if the template was not found.
+     */
     public static Template getTemplate(
             final VelocityEngine engine,
             final Site site,
             final String templateName) throws ResourceNotFoundException{
 
-        final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
+        final String templateUrl = site.getTemplateDir() + '/' + templateName + ".vm";
 
         try {
             return engine.getTemplate(templateUrl);
