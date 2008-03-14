@@ -42,6 +42,7 @@
       <module>search-command-control</module>
       <module>view-control</module>
       <module>velocity-directives</module>
+      <module>sesam.com</module>
     </modules>
 
     <build>

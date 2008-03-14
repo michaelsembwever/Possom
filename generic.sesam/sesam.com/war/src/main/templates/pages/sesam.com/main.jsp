@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jsp:root version="2.0"
+<?xml version="1.0" encoding="UTF-8"?><jsp:root version="2.0"
         xmlns:jsp="http://java.sun.com/JSP/Page"
-        xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since this never exists in the skin -->
-    <jsp:output 
+        xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin --><jsp:output 
         doctype-root-element="html" 
         doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
         doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />

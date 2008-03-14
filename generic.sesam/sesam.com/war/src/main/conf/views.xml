@@ -34,14 +34,14 @@
             </navigation>
         </navigation>
         <layout main="sesam.com/main.jsp">
-            <!--include key="header-element" template="sesam.com/head.jsp"/>
-            <include key="top-col-one" template="sesam.com/searchbar-top.jsp"/-->
+            <include key="header-element" template="sesam.com/head.jsp"/>
+            <include key="top-col-one" template="sesam.com/searchbar-top.jsp"/>
             <include key="main-col-three" template="sesam.com/globalSearch.jsp"/>
-            <!--include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
+            <include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
             <include key="bottom-col-three" template="sesam.com/footer.jsp"/>
             <include key="bottom-col-two" template="sesam.com/searchbar-bottom.jsp"/>
             <include key="offsetPagerLogo" template="sesam.com/offsetPagerYahooLogo.jsp"/>          
-            <include key="no-hits" template="sesam.com/no-hits.jsp"/-->   
+            <include key="no-hits" template="sesam.com/no-hits.jsp"/>   
         </layout>
     </tab>
 </views>
