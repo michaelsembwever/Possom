@@ -4,7 +4,7 @@
         xmlns:c="http://java.sun.com/jsp/jstl/core"
         xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin -->
 <!-- 
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008) Schibsted Sï¿½k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,8 +25,7 @@
     Version    : $Id$
 -->
 <div id="footer_help">
-    <span>&copy;2008</span>
-    <jsp:text><![CDATA[&nbsp;&nbsp;]]></jsp:text>
+    <jsp:text><![CDATA[<span>&copy;2008</span><![CDATA[&nbsp;&nbsp;]]></jsp:text>
     <search:boomerang key="poweredBySesat"/>
 </div>
 </jsp:root>
