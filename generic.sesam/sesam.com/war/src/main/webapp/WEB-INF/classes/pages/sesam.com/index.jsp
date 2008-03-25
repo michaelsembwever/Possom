@@ -3,9 +3,8 @@
         xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin --><jsp:output 
         doctype-root-element="html" 
         doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
-        doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
-<!-- 
- * Copyright (2008) Schibsted Søk AS
+        doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" /><!-- 
+ * Copyright (2008) Schibsted SÃ¸k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,11 +20,10 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
-    Document   : main
+    Document   : index
     Author     : mick
     Version    : $Id$
--->
-<html xmlns="http://www.w3.org/1999/xhtml">
+--><html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <search:include include="head-element"/>
 </head>
@@ -36,26 +34,6 @@
             <search:include include="top-col-two" />
             <search:include include="top-col-three" />
         </div>
-        <table cellspacing="0" cellpadding="0" style="width: 100%;">
-            <tr>
-                <td style="vertical-align: top; border-right: 1px solid #DADADA;">
-                    <div id="main">
-                        <div id="dummy"><jsp:text><![CDATA[&nbsp;]]></jsp:text></div>
-                        <search:include include="main-col-one" />
-                        <search:include include="main-col-two" />
-                        <search:include include="main-col-three" />
-                        <search:include include="main-col-four" />
-                    </div>
-                </td>
-                <td style="vertical-align: top;">
-                    <div id="sidebar">
-                        <search:include include="sidebar-col-one" />
-                        <search:include include="sidebar-col-two" />
-                        <search:include include="sidebar-col-three" />                   
-                    </div>
-                </td>
-            </tr>
-        </table>
         <div id="footer">
             <search:include include="bottom-col-one" />
             <search:include include="bottom-col-two" />

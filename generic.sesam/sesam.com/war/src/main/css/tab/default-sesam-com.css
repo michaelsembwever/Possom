@@ -1,0 +1,177 @@
+/** Copyright (2008) Schibsted Søk AS
+ *   This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+    Created on : 25/03/2008, 19:30:49
+    Author     : mick
+    Description:
+        Default styles for sesam.com skin.
+*/
+
+#frame {
+    width: 100%;
+}
+
+#header {
+    width: 100%;
+}
+
+#footer {
+    width: 100%;
+}
+
+/* =Header */
+
+#logo {
+}
+
+/* =Search boxes */
+
+#sf {
+    min-width: 800px;
+    background: url(/images/searchbar/bg.png) repeat-x;
+    margin-left: 15px;
+    padding-right: 15px;
+}
+
+#inputBox {   
+    float: left;
+    margin: 27px 0px 0px 20px;
+    border: 1px solid #bcc5cc;
+    padding: 4px 2px 3px 2px;
+    font-weight: bold;
+    height: 16px;
+}
+
+#inputButton {
+    float: left;
+    margin: 27px 0px 0px 0px;
+    padding-right: 8px;
+}
+
+/* =Search Results */
+
+.resultlist a:visited {
+    color: #990099;
+}
+
+#resultlist {
+    clear: both;
+    padding-right: 15px;
+}
+
+#resultlist p {
+    padding-top: 18px;
+}
+
+#resultlist .search_summary {
+    display: block;
+    padding: 2px 0px;
+}
+
+#resultlist .search_big_url {
+    font-size: 0.9em;
+}
+
+#resultlist .search_big_url_icon {
+    vertical-align: bottom;
+}
+
+#resultlist .search_small_url {
+    color: #008000;
+    text-decoration: none;
+    display: block;
+}
+
+#resultHits {
+    font-size: 1.1em;
+    padding: 20px 0px 10px 0px;
+}
+
+#resultHits span {
+    float: left;
+}
+
+#resultHits img {
+    vertical-align: middle;
+    float: left;
+    padding-right: 8px;
+}
+
+#resultHits a {
+    float: right;
+    padding-left: 10px;
+}
+
+#resultHits #rss {
+    float: right;    
+    padding: 2px 0px 0px 0px;
+}
+
+.more_hits_link {
+    color: #7777CC;
+}
+.more_hits_link_hide {
+    color: #7777CC;
+    display: none;
+}
+/* ------------------------------------------------------------------ */
+/* =FOOTER  */
+
+#offset {
+    padding: 20px 0px 10px 15px;  
+    clear: both;
+}
+
+#offset a {
+    text-decoration: none;
+    color: #3566d7;
+}
+
+#offset .active {
+    border: none;
+}
+
+#offset span {
+    float: left;
+    margin-left: 9px;
+    padding: 2px 6px;
+    border:1px solid #ccdbe4;    
+}
+
+#offset div {
+    float: left;
+    padding: 2px 10px 0px 0px;
+}
+
+#offset img {
+    padding-left: 15px;
+}
+
+#footer_help {
+    clear: both;
+    padding: 20px 0px 20px 15px;
+}
+
+/* ------------------------------------------------------------------ */
+/* =NO HITS  */
+
+#no_hits {
+    margin: 20px 0 0 10px;
+}
+
+#no_hits p {
+    margin-top: 10px;
+}

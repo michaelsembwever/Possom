@@ -4,7 +4,7 @@
         xmlns:c="http://java.sun.com/jsp/jstl/core"
         xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since this never exists in the skin -->
 <!-- 
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008) Schibsted SÃ¸k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 -->
 <c:set var="link_action"><search:boomerang url="/search/" param="category:search;subcategory:bottom"/></c:set>
 <form name="sf" id="sf" action="${link_action}">
-    <c:set var="img_inputButton"><search:findResource url="/images/searchbar/search.gif"/></c:set>
+    <c:set var="img_inputButton"><search:findResource url="/images/search_button.png"/></c:set>
     <input type="text" id="inputBox" name="q" size="60" value="${DataModel.query.xmlEscaped}"/>
     <input type="image" id="inputButton" src="${img_inputButton}"/>
     <div class="clearEl"><jsp:text><![CDATA[&nbsp;]]></jsp:text></div>

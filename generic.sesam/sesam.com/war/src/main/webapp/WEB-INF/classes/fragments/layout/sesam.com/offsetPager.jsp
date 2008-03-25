@@ -4,7 +4,7 @@
         xmlns:c="http://java.sun.com/jsp/jstl/core"
         xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin -->
 <!-- 
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008) Schibsted SÃ¸k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -24,7 +24,20 @@
     Author     : mick
     Version    : $Id$
 -->
-<c:set var="img_yahooLogo"><search:findResource url="/images/yahoo.gif"/></c:set>
-<c:set var="msg_logo_alt"><search:text key="poweredByYahoo"/></c:set>
-<img src="${img_yahooLogo}" id="yahooSearch" alt="${msg_logo_alt}" />
+<c:if test="${DataModel.navigation.navigations['offset'].resultsSize gt 1}">
+    <c:set var="pages" value="${DataModel.navigation.navigations['offset'].results}"/>
+    <div id="offset">
+        <span class="active"><search:text key="result_pages"/><jsp:text><![CDATA[&nbsp;]]></jsp:text></span>
+        <c:forEach var="page" items="${pages}">
+            <c:choose>
+                <c:when test="${page.selected}">
+                    <span class="active">${page.title}</span>
+                </c:when><c:otherwise>
+                    <c:set var="link_page"><search:boomerang url="${page.url}" param="category:navigation;subcategory:paging"/></c:set>                    
+                    <a href="${link_page}"><span>${page.title}</span></a>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </div>
+</c:if>
 </jsp:root>

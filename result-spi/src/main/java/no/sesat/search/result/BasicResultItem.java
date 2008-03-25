@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple implementation of a search result item.
@@ -38,6 +39,7 @@ public class BasicResultItem implements ResultItem {
     private static final String TITLE_KEY = "title";
 
     private final HashMap<String,Serializable> fields = new HashMap<String,Serializable>();
+    private final Map<String,Serializable> fieldsReadOnly = Collections.unmodifiableMap(fields);
     
     /**
      * 
@@ -87,6 +89,14 @@ public class BasicResultItem implements ResultItem {
 
         final String fieldValue = (String) fields.get(field);
         return fieldValue != null && fieldValue.trim().length() > 0 ? fieldValue : null;
+    }
+    
+    /**
+     * JavaBean standards access (read-only) to the fields map. Useful for JSPs.
+     * @return the fields map, via Collections.unmodifiableMap(..)
+     */
+    public Map<String,Serializable> getFields(){
+        return fieldsReadOnly;
     }
 
     /**

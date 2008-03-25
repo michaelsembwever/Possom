@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (2008) Schibsted Søk AS
+ *   This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *
+    Author     : mick
+    Version    : $Id$
+-->
 <taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
   <tlib-version>1.0</tlib-version>
   <short-name>searchportal</short-name>
@@ -90,6 +110,17 @@
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <type>int</type>
+    </attribute>
+  </tag>
+  <tag>
+    <name>findResource</name>
+    <tag-class>no.sesat.search.view.taglib.FindResourceTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>url</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
     </attribute>
   </tag>
 </taglib>

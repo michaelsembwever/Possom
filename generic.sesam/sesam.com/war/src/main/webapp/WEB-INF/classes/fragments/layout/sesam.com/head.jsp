@@ -4,7 +4,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since this never exists in the skin -->
 <!-- 
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008) Schibsted SÃ¸k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,11 +46,10 @@
 <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
 <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
 
-<link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&#38;c=${tab.key}&#38;output=opensearch"/>
+<!-- OpenSearch -->
+<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&#38;c=${tab.key}&#38;output=opensearch"/>
 
 <!-- JavaScript -->
-<c:set var="js_link"><search:findResource url="/javascript/external/prototype.js"/></c:set>
-<script type='text/javascript' src="${js_link}"></script>
 <c:set var="js_link"><search:findResource url="/javascript/common.js"/></c:set>
 <script type='text/javascript' src="${js_link}"></script>
 

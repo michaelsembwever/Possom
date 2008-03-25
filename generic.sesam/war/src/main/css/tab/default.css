@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jsp:root version="2.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since this never exists in the skin -->
-<!-- 
- * Copyright (2008) Schibsted Søk AS
+/** Copyright (2008) Schibsted SÃ¸k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,11 +14,54 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
+    Created on : 25/03/2008, 19:30:49
     Author     : mick
-    Version    : $Id$
--->
-<div id="nohits">
-    <p><search:text key="noHits" arg0="${DataModel.query.xmlEscaped}"/></p>
-    <p><search:text key="noHitsPossibleReasons"/></p>
-</div>
-</jsp:root>
+    Description:
+        Global CSS definitions for Sesat. 
+        Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+html{
+    font-size: 62.5%;
+}
+
+body {
+    font-family: arial, sans-serif;
+    font-size: 1.3em;
+    background-color: #fff;
+    padding-right: 15px;
+}
+
+li {
+    list-style: none;
+}
+
+img {
+    border: none;
+}
+
+a {
+    color: #0000CC;
+}
+
+#main {
+    padding-left: 15px;
+}
+
+.clearEl {
+    clear: both;
+    height: 0px;
+}
+
+.clear {
+    clear: both;
+}
+
+#dummy {
+    height: 0px;
+}

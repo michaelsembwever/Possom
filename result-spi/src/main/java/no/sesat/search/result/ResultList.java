@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -87,6 +87,7 @@ public interface ResultList<T extends ResultItem> extends ResultItem{
     void removeResults();
 
     /** Sorts the results according to the order induced by the specified comparator.
+     * @param comparator 
      */
     void sortResults(final Comparator comparator);
     

@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jsp:root version="2.0"
-        xmlns:jsp="http://java.sun.com/JSP/Page"
-        xmlns:c="http://java.sun.com/jsp/jstl/core"
-        xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin -->
-<!-- 
- * Copyright (2008) Schibsted S�k AS
+/** Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,12 +14,49 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
-    Document   : main
+    Created on : 25/03/2008, 19:30:49
     Author     : mick
-    Version    : $Id$
--->
-<div id="footer_help">
-    <jsp:text><![CDATA[<span>&copy;2008</span><![CDATA[&nbsp;&nbsp;]]></jsp:text>
-    <search:boomerang key="poweredBySesat"/>
-</div>
-</jsp:root>
+    Description:
+        Default print styles for sesam.com skin.
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    font-size: 62.5%;
+}
+
+body {
+    font-family: arial, sans-serif;
+    font-size: 1.1em;
+    background-color: #fff;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+li {
+    list-style: none;
+}
+
+img {
+    border: none;
+}
+
+a {
+    color: #0000CC;
+}
+
+
+.printhide{
+    display:none;
+}
+
+.timestamp {
+    color: gray;
+    margin-left: 10px;
+}
