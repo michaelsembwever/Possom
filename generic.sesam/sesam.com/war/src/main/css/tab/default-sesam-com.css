@@ -124,6 +124,7 @@ body { /* overridden from default.css */
 
 .more_hits_link {
     color: #7777CC;
+    font-size: 0.9em;
 }
 .more_hits_link_hide {
     color: #7777CC;

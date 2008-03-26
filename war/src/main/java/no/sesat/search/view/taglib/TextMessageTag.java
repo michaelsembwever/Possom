@@ -36,7 +36,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.sesat.search.site.config.TextMessages;
 
 /** Wraps functionality found in TextMessages into a custom tag.
- * 
+ *
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -53,37 +53,37 @@ public final class TextMessageTag extends SimpleTagSupport implements DynamicAtt
      * Initialization of args property.
      */
     private final List<Object> args = new ArrayList<Object>();
-    
+
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
-     * @throws javax.servlet.jsp.JspException 
+     * @throws javax.servlet.jsp.JspException
      */
     @Override
     public void doTag() throws JspException {
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         final JspWriter out = cxt.getOut();
-        
+
         try {
-            
+
             final JspFragment f = getJspBody();
-            if (f != null){  
+            if (f != null){
                 f.invoke(out);
             }
             final TextMessages text = (TextMessages)cxt.findAttribute("text");
-            
+
             out.print(text.getMessage(key, args.toArray()));
-            
+
         } catch (IOException ex) {
             throw new JspException(ex.getMessage());
         }
-        
+
     }
 
     /**
      * Setter for the key attribute.
-     * @param value 
+     * @param value
      */
     public void setKey(final String value) {
         this.key = value;
@@ -91,17 +91,17 @@ public final class TextMessageTag extends SimpleTagSupport implements DynamicAtt
 
     public void setDynamicAttribute(
             final String uri,
-            final String localName, 
+            final String localName,
             final Object value) throws JspException {
-        
-        assert localName.startsWith("args") : "Only dynamic attributes of format argX are supported";
-        
+
+        assert localName.startsWith("arg") : "Only dynamic attributes of format argX are supported: " + localName;
+
         final int i = Integer.valueOf(localName.replaceAll("arg", ""));
         while(args.size() <= i){
             args.add("");
         }
         args.set(i, value);
     }
-    
-    
+
+
 }

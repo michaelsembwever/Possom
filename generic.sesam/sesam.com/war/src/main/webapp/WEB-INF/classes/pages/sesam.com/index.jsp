@@ -28,14 +28,14 @@
     <search:include include="head-element"/>
 </head>
 <body>
-    <div id="frame">
+    <table id="frame"><tr><td><!-- use a table instead of a div here to get automatic width plus centering. -->
         <div id="header">
             <search:include include="top-col-one" />
         </div>
         <div id="footer">
             <search:include include="bottom-col-four" />
         </div>      
-    </div>
+    </td></tr></table>
 
 </body>
 </html>

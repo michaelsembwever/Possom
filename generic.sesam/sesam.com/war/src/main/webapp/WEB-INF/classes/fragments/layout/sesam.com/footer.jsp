@@ -26,5 +26,7 @@
 <div id="footer_help">
     <jsp:text><![CDATA[<span>&copy;2008</span>&nbsp;&nbsp;]]></jsp:text>
     <search:text key="builtWithSesat"/>
+    <jsp:text><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></jsp:text>
+    <search:text key="resultsFromYahoo"/>
 </div>
 </jsp:root>
