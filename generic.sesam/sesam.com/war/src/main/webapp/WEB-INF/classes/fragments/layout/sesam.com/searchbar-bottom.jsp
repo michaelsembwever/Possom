@@ -23,6 +23,7 @@
     Author     : mick
     Version    : $Id$
 -->
+<div class="clearEl"><jsp:text><![CDATA[&nbsp;]]></jsp:text></div>
 <c:set var="link_action"><search:boomerang url="/search/" param="category:search;subcategory:bottom"/></c:set>
 <form name="sf" id="sf" action="${link_action}">
     <c:set var="img_inputButton"><search:findResource url="/images/search_button.png"/></c:set>

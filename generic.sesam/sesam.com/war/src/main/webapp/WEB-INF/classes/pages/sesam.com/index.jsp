@@ -31,13 +31,8 @@
     <div id="frame">
         <div id="header">
             <search:include include="top-col-one" />
-            <search:include include="top-col-two" />
-            <search:include include="top-col-three" />
         </div>
         <div id="footer">
-            <search:include include="bottom-col-one" />
-            <search:include include="bottom-col-two" />
-            <search:include include="bottom-col-three" />
             <search:include include="bottom-col-four" />
         </div>      
     </div>

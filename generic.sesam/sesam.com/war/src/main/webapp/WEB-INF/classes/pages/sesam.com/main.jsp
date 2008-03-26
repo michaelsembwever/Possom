@@ -28,7 +28,7 @@
     <search:include include="head-element"/>
 </head>
 <body>
-    <div id="frame">
+    <table id="frame"><tr><td><!-- use a table instead of a div here to get automatic width plus centering. -->
         <div id="header">
             <search:include include="top-col-one" />
             <search:include include="top-col-two" />
@@ -46,8 +46,8 @@
             <search:include include="bottom-col-two" />
             <search:include include="bottom-col-three" />
             <search:include include="bottom-col-four" />
-        </div>      
-    </div>
+        </div>
+    </td></tr></table>
 
 </body>
 </html>

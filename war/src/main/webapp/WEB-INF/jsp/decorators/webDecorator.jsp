@@ -18,6 +18,4 @@
   --
   -- @author <a href="mailto:mick@semb.wever.org">Michael Semb Wever</a>
   -- @version $Id$
-  --%>
-<%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
-<search:main/>
+  --%><%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><search:main/>

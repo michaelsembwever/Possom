@@ -20,16 +20,17 @@
         Default styles for sesam.com skin.
 */
 
+body { /* overridden from default.css */
+    font-family: arial, sans-serif;
+    font-size: 1.3em;
+    background-color: #fff;
+    padding-right: 15px;
+    text-align: center;
+}
+
 #frame {
-    width: 100%;
-}
-
-#header {
-    width: 100%;
-}
-
-#footer {
-    width: 100%;
+    margin: 10px auto;
+    text-align: left;
 }
 
 /* =Header */
@@ -40,7 +41,7 @@
 /* =Search boxes */
 
 #sf {
-    min-width: 800px;
+    /*min-width: 800px;*/
     background: url(/images/searchbar/bg.png) repeat-x;
     margin-left: 15px;
     padding-right: 15px;
@@ -98,6 +99,7 @@
 #resultHits {
     font-size: 1.1em;
     padding: 20px 0px 10px 0px;
+    margin-left: 15px;
 }
 
 #resultHits span {
