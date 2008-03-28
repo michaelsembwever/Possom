@@ -143,8 +143,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         super(cxt);
         this.datamodel = cxt.getDataModel();
 
-        assert null == datamodel.getQuery();
-
         LOG.trace("RunningQuery(cxt," + query + ')');
 
         final String queryStr = trimDuplicateSpaces(query);

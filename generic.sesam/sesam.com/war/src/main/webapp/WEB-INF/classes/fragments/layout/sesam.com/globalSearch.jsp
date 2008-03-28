@@ -34,11 +34,10 @@
                     <c:set var="msg_international_icon_alt"><search:text key="international_icon_alt"/></c:set>
                     <img src="/images/international_icon.png" width="16" height="16" alt="${msg_international_icon_alt}"/>
                     <span>
-                        <c:set var="hitcount"><search:hitcount hitcount="${$DataModel.searches[commandName].results.hitCount}"/></c:set>
                         <search:text key="international_search_results"
                             arg0="${DataModel.navigation.navigations.offset.fields.currentPageFromCount}"
                             arg1="${DataModel.navigation.navigations.offset.fields.currentPageToCount}"
-                            arg2="${hitcount}"
+                            arg2="${DataModel.searches[commandName].results.hitCount}"
                             arg3="${DataModel.query.utf8UrlEncoded}"/>
                     </span>
                 </div>
@@ -48,7 +47,7 @@
                     <c:set var="pos" value="${DataModel.navigation.navigations.offset.fields.currentPageFromCount + i}"/>
 
                     <p id="p${i}">
-                        <img class="search_big_url_icon" src="http://${item.fields.site}/favicon.ico"/>
+                        <img class="search_big_url_icon" src="http://${item.fields.site}/favicon.ico" width="16" height="16"/>
                         <jsp:text><![CDATA[&nbsp;]]></jsp:text>
                         <c:set var="item_href"><search:boomerang url="${item.fields.clickurl}" param="category:results;pos:${pos}"/></c:set>
                         <a href="${item_href}" class="search_big_url">${item.fields.title}</a>
@@ -65,9 +64,9 @@
                             ${item.fields.url}
 
                             <!-- More hits from -->
-                            <c:if test="${empty $DataModel.parameters.values.domain or $DataModel.parameters.values.domain.xmlEscaped ne $item.fields.site}">
+                            <c:if test="${empty $DataModel.parameters.values.moreHits}">
                               -
-                                <c:set var="moreHits_href"><search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[commandName].query.utf8UrlEncoded}&amp;domain=${item.fields.site}" param="category:results;pos:${pos}"/></c:set>
+                                <c:set var="moreHits_href"><search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[commandName].query.utf8UrlEncoded}+site%3A${item.fields.site}&amp;moreHits=true" param="category:results;pos:${pos}"/></c:set>
                                 <a href="${moreHits_href}" class="more_hits_link"><search:text key="moreHitsFrom"/></a>
                             </c:if>
 

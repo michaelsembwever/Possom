@@ -28,7 +28,7 @@
             <!-- mode inheritence is a restricted one child to one parent relationship
                     so we inherit default-magic -->  
 
-        <yahoo-idp-command id="default-yahoo-i18n-command" inherit="default-yahoo-i18n-command"
+        <yahoo-idp-command id="default-yahoo-idp-command" inherit="default-yahoo-i18n-command"
                            database="www-no"
                            host="yahooIdpHost"
                            language=""
@@ -44,10 +44,26 @@
             </result-handlers>
         </yahoo-idp-command>
         
+
+        <yahoo-web-command id="default-yahoo-web-command"
+                           appid="YahooDemo"
+                           field-filters="site"
+                           host="yahooWebHost"
+                           language="en"
+                           port="yahooWebPort"
+                           result-fields="Title AS title,Summary AS body,Url AS url,ClickUrl AS clickurl"
+                           results-to-return="10">                                            
+            <result-handlers>
+                <field-chooser target="title" fields="title,url"/>
+                <regexp field="url" target="site" regexp="http://([^/]*)/?"/>
+            </result-handlers>
+        </yahoo-web-command>        
+        
     </mode>
     
     <mode id="international" inherit="default-mode">
-        <yahoo-idp-command id="globalSearch" inherit="default-yahoo-i18n-command"/>
+        <!--yahoo-idp-command id="globalSearch" inherit="default-yahoo-i18n-command"/-->
+        <yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/>
     </mode>
     
 </modes>

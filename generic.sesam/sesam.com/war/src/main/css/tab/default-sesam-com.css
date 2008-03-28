@@ -33,6 +33,10 @@ body { /* overridden from default.css */
     text-align: left;
 }
 
+#footer {
+    width: 100%;
+}
+
 /* =Header */
 
 #logo {
@@ -41,7 +45,6 @@ body { /* overridden from default.css */
 /* =Search boxes */
 
 #sf {
-    /*min-width: 800px;*/
     background: url(/images/searchbar/bg.png) repeat-x;
     margin-left: 15px;
     padding-right: 15px;
@@ -49,7 +52,7 @@ body { /* overridden from default.css */
 
 #inputBox {   
     float: left;
-    margin: 27px 0px 0px 20px;
+    margin: 0px 0px 0px 20px;
     border: 1px solid #bcc5cc;
     padding: 4px 2px 3px 2px;
     font-weight: bold;
@@ -58,7 +61,7 @@ body { /* overridden from default.css */
 
 #inputButton {
     float: left;
-    margin: 27px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
     padding-right: 8px;
 }
 
@@ -166,6 +169,12 @@ body { /* overridden from default.css */
 #footer_help {
     clear: both;
     padding: 20px 0px 20px 15px;
+    width: 100%;
+}
+
+#footer_help div {
+    float: left;
+    padding-right: 40px;
 }
 
 /* ------------------------------------------------------------------ */

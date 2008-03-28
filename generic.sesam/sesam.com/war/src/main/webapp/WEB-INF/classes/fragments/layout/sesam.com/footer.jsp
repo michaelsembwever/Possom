@@ -24,9 +24,8 @@
     Version    : $Id$
 -->
 <div id="footer_help">
-    <jsp:text><![CDATA[<span>&copy;2008</span>&nbsp;&nbsp;]]></jsp:text>
-    <search:text key="builtWithSesat"/>
-    <jsp:text><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></jsp:text>
-    <search:text key="resultsFromYahoo"/>
+    <jsp:text><![CDATA[<div id="copyright">&copy;2008</div>]]></jsp:text>
+    <div id="builtWithSesat"><search:text key="builtWithSesat"/></div>
+    <div id="resultsFromYahoo"><search:text key="resultsFromYahoo"/></div>
 </div>
 </jsp:root>
