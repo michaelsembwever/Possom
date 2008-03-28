@@ -658,7 +658,7 @@ import no.sesat.search.result.WeightedSuggestion;
         }
 
         // XXX Move out. This code is specific to Norway's mobileYellowGeo mode!
-        if (getParameter("c").equals("yg")) {
+        if (null != getParameter("c") && getParameter("c").equals("yg")) {
             if (getParameter("type").equals("f")) {
                 params.setParameter(new SearchParameter(
                         "qtf_geosearch:center",

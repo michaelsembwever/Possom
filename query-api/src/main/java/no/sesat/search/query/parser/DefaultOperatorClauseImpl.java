@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
     static {
-        final Collection<TokenPredicate> predicates = new ArrayList();
+        final Collection<TokenPredicate> predicates = new ArrayList<TokenPredicate>();
 
         // Add all TokenPredicates. Unfortunately we have no way of globally knowing
         //  which TokenPredicates can be multi-term (multi-word) matches.

@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ public final class SearchTab implements Serializable{
 
     // Constants -----------------------------------------------------
 
+    public static final String PARAMETER_KEY = "c";
+
     private static final Logger LOG = Logger.getLogger(SearchTab.class);
 
     // Attributes ----------------------------------------------------
@@ -84,7 +86,7 @@ public final class SearchTab implements Serializable{
      * @param rssResultName
      * @param rssHidden
      * @param navConf
-     * @param placements 
+     * @param placements
      * @param enrichments
      * @param adCommand
      * @param adLimit
@@ -95,7 +97,7 @@ public final class SearchTab implements Serializable{
      * @param displayCss
      * @param executeOnBlank
      * @param layouts
-     * @param scope 
+     * @param scope
      */
     public SearchTab(
                 final SearchTab inherit,
@@ -289,7 +291,7 @@ public final class SearchTab implements Serializable{
         }
         return null;
     }
-    
+
     /**
      * Getter for property enrichments.
      * @return Value of property enrichments.
@@ -365,7 +367,7 @@ public final class SearchTab implements Serializable{
     public Layout getDefaultLayout() {
         return defaultLayout;
     }
-    
+
     public Map<String,Layout> getLayouts(){
         return Collections.unmodifiableMap(layouts);
     }
@@ -373,7 +375,7 @@ public final class SearchTab implements Serializable{
     public NavigationConfig getNavigationConfiguration(){
         return navigationConfig;
     }
-    
+
     public Scope getScope(){
         return scope;
     }
@@ -394,7 +396,7 @@ public final class SearchTab implements Serializable{
          * @param threshold
          * @param weight
          * @param command
-         * @param properties 
+         * @param properties
          */
         public EnrichmentHint(
                 final String rule,
@@ -470,31 +472,31 @@ public final class SearchTab implements Serializable{
         public Map<String,String> getProperties(){
             return Collections.unmodifiableMap(properties);
         }
-        
+
         public String getProperty(final String key){
             return properties.get(key);
         }
     }
-    
+
     /** Immutable POJO holdng Enrichment Placement properties for a given placement on a given tab. **/
     public static final class EnrichmentPlacementHint implements Serializable {
         private final String id;
         private final int threshold;
         private final int max;
         private final Map<String,String> properties = new HashMap<String,String>();
-        
+
         public EnrichmentPlacementHint(
                 final String id,
                 final int threshold,
                 final int max,
                 final Map<String,String> properties){
-            
+
             this.id = id;
             this.threshold = threshold;
             this.max = max;
             this.properties.putAll(properties);
         }
-        
+
         public String getId(){
             return id;
         }
@@ -545,7 +547,7 @@ public final class SearchTab implements Serializable{
         public String getId(){
             return id;
         }
-        
+
         /**
          *
          * @return

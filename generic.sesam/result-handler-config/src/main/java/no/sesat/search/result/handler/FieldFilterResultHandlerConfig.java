@@ -41,10 +41,18 @@ public class FieldFilterResultHandlerConfig extends AbstractResultHandlerConfig 
         return recursiveField;
     }
 
+    public void setRecursiveField(String string) {
+        recursiveField = string;
+    }
+
     public String getFilterSrc() {
         return filterSrc;
     }
 
+    public void setFilterSrc(String string) {
+        filterSrc = string;
+    }
+    
     public Set<String> getMatchListSet() {
         if (matchListSet == null) {
             matchListSet = new HashSet<String>();
@@ -75,12 +83,28 @@ public class FieldFilterResultHandlerConfig extends AbstractResultHandlerConfig 
     public String getMatchList() {
         return matchList;
     }
+    
+    public void setMatchList(String string) {
+    	matchList = string;
+    }
 
     public String getRemoveFields() {
         return removeFields;
     }
 
-    @Override
+    public void setRemoveFields(String string) {
+    	removeFields = string;
+    }
+        
+    public String getSrcPrefixes() {
+		return srcPrefixes;
+	}
+
+	public void setSrcPrefixes(String srcPrefixes) {
+		this.srcPrefixes = srcPrefixes;
+	}
+
+	@Override
     public AbstractResultHandlerConfig readResultHandler(final Element element) {
         recursiveField = element.getAttribute("recursive-field");
         filterSrc = element.getAttribute("filter-src");

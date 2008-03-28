@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted Søk
+ * Copyright (2007-2008) Schibsted Søk
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * The basics of a UrlGenerator.
  *
- * Extend this class to create your own UrlGenerator. This ensures that configuration contracts are upheld. 
+ * Extend this class to create your own UrlGenerator. This ensures that configuration contracts are upheld.
  *
  * The term url component is used to denote a part of a URL, be it a part of the path or a parameter.
  *
@@ -69,7 +69,7 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
      * Returns the static URL prefix. (e.g. /search). If the URL is configured to be relative, the empty string is
      * returned.
      *
-     * @see no.sesat.search.view.navigation.NavigationConfig.Navigation#getPrefix() 
+     * @see no.sesat.search.view.navigation.NavigationConfig.Navigation#getPrefix()
      *
      * @return the url prefix.
      */
@@ -83,7 +83,7 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
      * @param nav the navigator.
      * @param extraParameters any extra parameters that should go into the URL.
      *
-     * @param newValue 
+     * @param newValue
      * @return the set of parameter names.
      */
     protected final Set<String> getUrlComponentNames(
@@ -111,7 +111,7 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
      * @param nav the navigator
      * @param componentName the name of the url component.
      *
-     * @param extraParameters 
+     * @param extraParameters
      * @return the value. UTF-8 URL ENCODED.
      */
     protected String getUrlComponentValue(
@@ -119,10 +119,12 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
             final String componentName,
             final Map<String, String> extraParameters) {
 
-        return getFirstNotNull(
-                extraParameters.get(componentName),
-                nav.getStaticParameters().get(componentName),
-                state.getParameterValue(nav, componentName));
+        // return the first non-null value found.
+        return null != extraParameters.get(componentName)
+                ? /*return*/ extraParameters.get(componentName)
+                : null != nav.getStaticParameters().get(componentName)
+                    ? /*return*/ nav.getStaticParameters().get(componentName)
+                    : /*return*/ state.getParameterValue(nav, componentName);
     }
 
     /**
@@ -134,14 +136,4 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
         return dataModel;
     }
 
-    private String getFirstNotNull(final String ... strings) {
-        
-        for (final String string : strings) {
-            if (string != null) {
-                return string;
-            }
-        }
-
-        return null;
-    }
 }

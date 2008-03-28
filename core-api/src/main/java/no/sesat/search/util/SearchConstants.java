@@ -58,10 +58,7 @@ public final class SearchConstants {
     public static final String REQUEST_KEYPARAM_LANGUAGE = "lan";
 
     public static final String REQUEST_KEYPARAM_DOCUMENTS_TO_RETURN = "d";
-    public static final String REQUEST_KEYPARAM_COLLECTION = "c";
-    public static final String REQUEST_PARAM_DEFAULT_COLLECTIONS = "d";
-    public static final String REQUEST_PARAM_MEDIA_COLLECTIONS = "m";
-    public static final String REQUEST_PARAM_GLOBAL_INDEX = "g";
+
     public static final Object REQUEST_PARAM_WIKICOLLECTION = "wiki";
 
     public static final String STD_CONTENT_TYPE = "text/html";
@@ -75,9 +72,6 @@ public final class SearchConstants {
     public static final String NORDIC_NEWS_COLLECTION = "retrievernordic";
     public static final String PIC_SEARCH_HOST = "license.picsearch.com";
     public static final String WEATHER_SEARCH_HOST = "www.storm.no/kunder/schibsted";
-    
-    public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
-
 
 }
 

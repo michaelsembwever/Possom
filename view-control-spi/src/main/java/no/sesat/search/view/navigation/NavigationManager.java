@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted Søk
+ * Copyright (2007-2008) Schibsted Søk
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import java.util.*;
 
 /**
  * Class responsible for assembling the current navigation state.
- * 
+ *
  * @author maek
  * @author Geir H. Pettersen(T-Rank)
  * @version $Id$
@@ -103,22 +103,14 @@ public final class NavigationManager {
             /**
              * Returns the value for the given navigation parameter.
              *
-             * @param nav the navigator. 
+             * @param nav the navigator.
              * @param parameterName the parameter.
              *
              * @return the value of the parameter. UTF-8 URL ENCODED.
              */
             public String getParameterValue(final NavigationConfig.Nav nav, final String parameterName) {
-                final String value = parameters.get(parameterName);
 
-                // TODO: SEARCH-4105 - put this logic somewhere else to make things faster. look at OptionNavigationController:152
-                //  or the c parameter should be put into nav.getStaticParameters() 
-                // (where it would be used in peference to here in AbstractUrlGenerator.getUrlComponentValue(..))
-                
-                // Overriding the tab with the one defined in the config.
-                if ("c".equals(parameterName) && null != nav.getTab()) {
-                    return nav.getTab();
-                }
+                final String value = parameters.get(parameterName);
 
                 if (null == value && null != dataModel.getParameters().getValue(parameterName)) {
                     return dataModel.getParameters().getValue(parameterName).getUtf8UrlEncoded();

@@ -100,7 +100,7 @@ public final class TokenMaskQueryTransformerConfig extends AbstractQueryTransfor
         super.readQueryTransformer(qt);
         addPredicates(qt.getAttribute("predicates").split(","));
         if(qt.getAttribute("match").length() > 0){
-            setMatch(Position.valueOf(qt.getAttribute("position").toUpperCase()));
+            setPosition(Position.valueOf(qt.getAttribute("position").toUpperCase()));
         }
         if(qt.getAttribute("mask").length() >0){
             setMask(Mask.valueOf(qt.getAttribute("mask").toUpperCase()));
@@ -121,7 +121,7 @@ public final class TokenMaskQueryTransformerConfig extends AbstractQueryTransfor
      *
      * @return Value of property position.
      */
-    public Position getMatch() {
+    public Position getPosition() {
         return position;
     }
 
@@ -130,7 +130,7 @@ public final class TokenMaskQueryTransformerConfig extends AbstractQueryTransfor
      *
      * @param position New value of property position.
      */
-    public void setMatch(final Position position) {
+    public void setPosition(final Position position) {
         this.position = position;
     }
 

@@ -77,7 +77,7 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
 
         clause.getFirstClause().accept(this);
 
-        if(Position.ANY == config.getMatch() || Mask.INCLUDE == config.getMask()){
+        if(Position.ANY == config.getPosition() || Mask.INCLUDE == config.getMask()){
             clause.getSecondClause().accept(this);
         }
     }
@@ -97,7 +97,7 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
 
             clause.getFirstClause().accept(this);
 
-            if(Position.ANY == config.getMatch() || Mask.INCLUDE == config.getMask()){
+            if(Position.ANY == config.getPosition() || Mask.INCLUDE == config.getMask()){
                 clause.getSecondClause().accept(this);
             }
         }
@@ -137,8 +137,8 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
 
         boolean transform = false;
 
-        boolean check = Position.ANY == config.getMatch();
-        check |= Position.PREFIX == config.getMatch() && clause == getContext().getQuery().getFirstLeafClause();
+        boolean check = Position.ANY == config.getPosition();
+        check |= Position.PREFIX == config.getPosition() && clause == getContext().getQuery().getFirstLeafClause();
 
         if (check) {
             final TokenEvaluationEngine engine = getContext().getTokenEvaluationEngine();
@@ -160,8 +160,8 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
 
         boolean transform = false;
 
-        boolean check = Position.ANY == config.getMatch();
-        check |= Position.PREFIX == config.getMatch() && clause == getContext().getQuery().getFirstLeafClause();
+        boolean check = Position.ANY == config.getPosition();
+        check |= Position.PREFIX == config.getPosition() && clause == getContext().getQuery().getFirstLeafClause();
 
         if (check) {
             final TokenEvaluationEngine engine = getContext().getTokenEvaluationEngine();

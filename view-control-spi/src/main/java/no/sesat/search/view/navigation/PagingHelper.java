@@ -80,6 +80,6 @@ public final class PagingHelper {
     }
     
     public int getCurrentPageToCount(){
-        return offset + pageSize;
+        return Math.min(offset + pageSize, hitCount);
     }
 }

@@ -90,6 +90,7 @@ public class NewsSearchCommand extends FastSearchCommand {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuilder(super.getAdditionalFilter());
 
+                // <-start- TODO this needs to be put into its own NewsSearchCOmmand.getAdditionalFilter() in genericse.seam.se
                 if ("se".equals(getSearchConfiguration().getProject())) {
                     // Add filter to retrieve all documents.
                     if (containsJustThePrefix() || getTransformedQuery().equals("")) {
@@ -113,7 +114,8 @@ public class NewsSearchCommand extends FastSearchCommand {
                         if (newsCountry != null && !newsCountry.equals("")) {
                             filterBuilder.append(" +newscountry:"+ newsCountry);
                         }
-                    }
+                    } // -end->
+                    
                 // need a date clause in the query to get the last 50 dates for the lastnews navigator
                 } else if ("lastnews".equals(getSearchConfiguration().getProject())) {
                     GregorianCalendar calendar = new java.util.GregorianCalendar();

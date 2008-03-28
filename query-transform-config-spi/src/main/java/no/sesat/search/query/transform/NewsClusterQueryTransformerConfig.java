@@ -53,12 +53,24 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
         return paramFields;
     }
 
+    public void setParamFields(String[] paramFields) {
+        this.paramFields = paramFields;
+    }
+
     public String getTimestampField() {
         return timestampField;
     }
 
+    public void setTimestampField(String timestampField) {
+        this.timestampField = timestampField;
+    }
+
     public String getClusterField() {
         return clusterField;
+    }
+
+    public void setClusterField(String clusterField) {
+        this.clusterField = clusterField;
     }
 
     public String getClusterIdField() {

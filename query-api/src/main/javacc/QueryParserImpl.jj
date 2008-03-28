@@ -1,4 +1,4 @@
-/** Copyright (2005-2007) Schibsted Søk AS 
+/** Copyright (2005-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.ArrayList;
 import no.sesat.search.query.*;
 
-/** This class is NOT synchronized. You must use a separate instance for each query. 
+/** This class is NOT synchronized. You must use a separate instance for each query.
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -65,14 +65,14 @@ public final class QueryParserImpl extends AbstractQueryParser{
 
 PARSER_END(QueryParserImpl)
 
-/** Skip these characters, they are considered "white space" 
+/** Skip these characters, they are considered "white space"
  * See http://www.unicode.org/charts/ for unicode charts.
  *
  * WARNING!! These ranges are duplicated in QueryParser.java
  *             !! Always update it after any changes here !!
 **/
 <*>SKIP : {
-      " " | "!" 
+      " " | "!"
     | < [ "\u0023"-"\u0027" ] >
     | < [ "\u002a"-"\u002c" ] >
     | < [ "\u002e"-"\u002f" ] >
@@ -85,15 +85,15 @@ PARSER_END(QueryParserImpl)
 }
 
 /* These are the the above skip characters */
-/* # % & ' */	
-/* * + , */	
+/* # % & ' */
+/* * + , */
 /* . / */
 /* ; < = > ? @ */
 /* [ \ ] ^ _ ` */
 /* ‐ ‑ ‒ – — ― */
 
 <DEFAULT,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
-// https?://([-\\w\\.]+)+(:\\d+)?(/~?([\\w/_\\.]*(\\?\\S+)?)?)? 
+// https?://([-\\w\\.]+)+(:\\d+)?(/~?([\\w/_\\.]*(\\?\\S+)?)?)?
 TOKEN : { <URL: "http"("s")?"://"<WORD>(":"<INTEGER>)?(<URL_WORD>)*(("?"<URL_WORD>)?)*("#"<URL_WORD>)?>
     | <#URL_WORD: (<WORD>|<ENCODED_CHAR>|"-"|"_"|"~"|"/"|"+"|"&")+>
     | <#ENCODED_CHAR: "%"(<DIGIT>|"A"|"a"|"B"|"b"|"C"|"c"|"D"|"d"|"E"|"e"|"F"|"f"){2}>}
@@ -101,7 +101,7 @@ TOKEN : { <URL: "http"("s")?"://"<WORD>(":"<INTEGER>)?(<URL_WORD>)*(("?"<URL_WOR
 <DEFAULT,URL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }
 
-// Very generic to match any Internation Phone Number !! 
+// Very generic to match any Internation Phone Number !!
 //   TODO deal with optional area codes. eg australian numbers can be written (02) 4878 9336
 // number_group_disabled is a super state to phone_number_disabled
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,QUOTED_WORD_DISABLED>
@@ -117,7 +117,7 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
 <*>TOKEN : {
       <AND: ("AND"|"+")>
     | <OR:  ("OR"|"|")>
-    | <NOT: "NOT"|"-">              
+    | <NOT: "NOT"|"-">
     | <ANDNOT: ("ANDNOT")>
     | <INTEGER: ((<DIGIT>)+)>
     | <WORD: (<LETTER>|<DIGIT>|<WORD_SYMBOL_PREFIX>)(<LETTER>|<DIGIT>|<WORD_SYMBOL_MIDDLE>)*("*")?>
@@ -127,8 +127,8 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <#PHONE_SYMBOL: (".")|("-")|("/")>
     | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
     | <#WORD_SYMBOL_MIDDLE: (".")|<HYPON>|("_")|("+")>
-    | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
-            " ", "!", 
+    | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration. see SKIP comment!
+            " ", "!",
             "\u0023"-"\u0040",
             "\u005b"-"\u0060",
             "\u007b"-"\u00bf",
@@ -173,11 +173,11 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
           ]>
 }
 
-Clause parse() : { 
+Clause parse() : {
   Clause clause;
   LOG.info("parsing: "+context.getQueryString());
 }{
-        (clause = rootPrecedence()) {return clause;}        
+        (clause = rootPrecedence()) {return clause;}
 }
 
 /** PRECEDENCES **/
@@ -196,16 +196,16 @@ Clause noPrecedence() :{
     (clause = hiddenDefaultOperation()) { try{return clause;}finally{exitMethod();} }
     |
     (clause = looseJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
-    
+
 }
 
 Clause looseJoinPrecedence() :{
     Clause clause;
     enterMethod("looseJoinPrecedence()");
 }{
-    (clause = orOperation()) { try{return clause;}finally{exitMethod();} }  
+    (clause = orOperation()) { try{return clause;}finally{exitMethod();} }
     |
-    (clause = strongJoinPrecedence()) { try{return clause;}finally{exitMethod();} } 
+    (clause = strongJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
 }
 
 Clause strongJoinPrecedence() :{
@@ -215,7 +215,7 @@ Clause strongJoinPrecedence() :{
     (clause = andOperation()) { try{return clause;}finally{exitMethod();} }
     |
     (clause = leafPrecedence()) { try{return clause;}finally{exitMethod();} }
-    
+
 
 }
 
@@ -226,7 +226,7 @@ Clause leafPrecedence() :{
     (clause = notOperation()) { try{return clause;}finally{exitMethod();} }
     |
     (clause = andNotOperation()) { try{return clause;}finally{exitMethod();} }
-    | 
+    |
     (clause = leaf()) { try{return clause;}finally{exitMethod();} }
 }
 
@@ -236,7 +236,7 @@ DefaultOperatorClause hiddenDefaultOperation() :{
     Clause left,right;
     enterMethod("hiddenDefaultOperation()");
 }{
-    ((left = looseJoinPrecedence())(right = noPrecedence())) 
+    ((left = looseJoinPrecedence())(right = noPrecedence()))
         { try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();} }
 }
 
@@ -246,7 +246,7 @@ AndNotClause andNotOperation() :{
     enterMethod("andNotOperation()");
 }{
     (<ANDNOT>(right = noPrecedence())) { try{return context.createAndNotClause(right);}finally{exitMethod();} }
-}  
+}
 
 Clause orOperation() :{
     Clause left,right;
@@ -255,7 +255,7 @@ Clause orOperation() :{
 }{
     ("("(clause = hiddenOrOperation())")") { try{return clause;}finally{exitMethod();} }
     |
-    ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence())) 
+    ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
 }
 
@@ -263,7 +263,7 @@ AndClause andOperation() :{
     Clause left,right;
     enterMethod("andOperation()");
 }{
-    ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) 
+    ((left = leafPrecedence())<AND>(right = strongJoinPrecedence()))
         { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
@@ -271,10 +271,10 @@ AndClause hiddenAndOperation() :{
     Clause left,right;
     enterMethod("hiddenAndOperation()");
 }{
-    ((left = leafPrecedence())(right = hiddenAndOperation())) 
+    ((left = leafPrecedence())(right = hiddenAndOperation()))
         { try{return context.createAndClause(left,right);}finally{exitMethod();} }
     |
-    ((left = leafPrecedence())(right = strongJoinPrecedence())) 
+    ((left = leafPrecedence())(right = strongJoinPrecedence()))
         { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
@@ -282,17 +282,17 @@ Clause hiddenOrOperation() :{
     Clause left,right;
     enterMethod("hiddenOrOperation()");
 }{
-    
+
     // These are the real hidden or operands
-    ((left = leafPrecedence())(right = hiddenOrOperation())) 
+    ((left = leafPrecedence())(right = hiddenOrOperation()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
-    ((left = strongJoinPrecedence())(right = looseJoinPrecedence())) 
+    ((left = strongJoinPrecedence())(right = looseJoinPrecedence()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
     // Not really an OR clause. Just () wrapped around something else. Therefore ignore the ()'s
     (left = leafPrecedence()) { try{return left;}finally{exitMethod();} }
-    
+
 }
 
 NotClause notOperation() :{
@@ -313,20 +313,20 @@ Clause leaf() :{
     // A real field
     ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
     |
-    // An accidential field. 
+    // An accidential field.
     // XXX This could cause problems as it destroys the construction of a right-leaning forests.
-    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null)) 
+    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null))
         {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
     |
     (clause = fieldedLeaf(null)) {try{return clause;}finally{exitMethod();}}
 }
-    
+
 
 Clause fieldedLeaf(final Token field) :{
     enterMethod("fieldedLeaf()");
 }{
-    <PHONE_NUMBER> 
-        { 
+    <PHONE_NUMBER>
+        {
             try{
                 // remove the PHONE_SYMBOL sub-tokens
                 final String term = token.image.replaceAll("\\.|-|/| |\\(|\\)","");
@@ -340,9 +340,9 @@ Clause fieldedLeaf(final Token field) :{
 
             }finally{exitMethod();}
         }
-    | 
+    |
     <NUMBER_GROUP>
-        { 
+        {
             try{
                 // Remove whitespace
                 final String term = token.image.trim().replaceAll(" ","");
@@ -358,7 +358,7 @@ Clause fieldedLeaf(final Token field) :{
         }
     |
     <QUOTED_WORD>
-        { 
+        {
             try{
                 final String f = field == null ? null : field.image;
                 final PhraseClause phClause = context.createPhraseClause(token.image, f );
@@ -371,18 +371,18 @@ Clause fieldedLeaf(final Token field) :{
 
             }finally{exitMethod();}
         }
-    | 
+    |
     <WORD>
-        { 
+        {
             try{
                 final String f = field == null ? null : field.image;
                 return context.createWordClause(token.image, f);
 
             }finally{exitMethod();}
         }
-    | 
+    |
     <INTEGER>
-        { 
+        {
             try{
                 final String f = field == null ? null : field.image;
                 return context.createIntegerClause(token.image, f);
@@ -391,16 +391,16 @@ Clause fieldedLeaf(final Token field) :{
         }
     |
     <URL>
-        { 
+        {
             try{
                 final String f = field == null ? null : field.image;
                 return context.createUrlClause(token.image, f);
 
             }finally{exitMethod();}
         }
-    | 
+    |
     <EMAIL>
-        { 
+        {
             try{
                 final String f = field == null ? null : field.image;
                 return context.createEmailClause(token.image, f);

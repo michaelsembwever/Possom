@@ -76,7 +76,7 @@ public final class DateFormatHandler implements ResultHandler {
 
         for (final ResultItem item : cxt.getSearchResult().getResults()) {
 
-            final String docDateTime = item.getField(config.getSourceField());
+            final String docDateTime = item.getField(config.getSource());
 
             if (docDateTime != null) {
                 
@@ -88,12 +88,12 @@ public final class DateFormatHandler implements ResultHandler {
                 final String second = docDateTime.substring(17, 19);
                 
                 cxt.getSearchResult().replaceResult(item, 
-                    item.addField(config.getFieldPrefix() + Fields.YEAR.name(), year)
-                            .addField(config.getFieldPrefix() + Fields.MONTH.name(), month)
-                            .addField(config.getFieldPrefix() + Fields.DAY.name(), day)
-                            .addField(config.getFieldPrefix() + Fields.HOUR.name(), hour)
-                            .addField(config.getFieldPrefix() + Fields.MINUTE.name(), minute)
-                            .addField(config.getFieldPrefix() + Fields.SECOND.name(), second)
+                    item.addField(config.getPrefix() + Fields.YEAR.name(), year)
+                            .addField(config.getPrefix() + Fields.MONTH.name(), month)
+                            .addField(config.getPrefix() + Fields.DAY.name(), day)
+                            .addField(config.getPrefix() + Fields.HOUR.name(), hour)
+                            .addField(config.getPrefix() + Fields.MINUTE.name(), minute)
+                            .addField(config.getPrefix() + Fields.SECOND.name(), second)
                     );
             }
 

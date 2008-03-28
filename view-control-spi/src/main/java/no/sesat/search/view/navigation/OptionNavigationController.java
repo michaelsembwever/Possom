@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
+import no.sesat.search.view.config.SearchTab;
 
 
 /**
@@ -67,7 +68,7 @@ public class OptionNavigationController
         // Only modifies the result of the parent. Return null.
         return null;
     }
-                                            
+
     private void removeAll(final Collection<OptionsNavigationConfig.Option> options, final DataModel dataModel) {
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         for (final Iterator<NavigationItem> iterator = parentResult.getResults().iterator(); iterator.hasNext();) {
@@ -100,7 +101,7 @@ public class OptionNavigationController
 
                       if ((selectedValue == null || "".equals(selectedValue.getString()))
                               && isOptionDefaultSelected(searchResult, option)) {
-                          
+
                           navigator.setSelected(true);
                           selectedValue = new StringDataObjectSupport("dummy");
                       }
@@ -119,8 +120,8 @@ public class OptionNavigationController
     }
 
     private void addAll(
-            final Collection<OptionsNavigationConfig.Option> optionsToAdd, 
-            final DataModel dataModel, 
+            final Collection<OptionsNavigationConfig.Option> optionsToAdd,
+            final DataModel dataModel,
             final Context context) {
 
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
@@ -145,34 +146,25 @@ public class OptionNavigationController
             }
             if (value != null) {
 
-                final Map<String,String> urlParameters;
-
-                if (option.getTab() != null) {
-                    urlParameters = new HashMap<String,String>(1);
-                    urlParameters.put("c", option.getTab());
-                } else {
-                    urlParameters = Collections.<String,String>emptyMap();
-                }
-
                 final NavigationItem navigator = new BasicNavigationItem(
                         option.getDisplayName(),
-                        context.getUrlGenerator().getURL(value, config.getParent(), urlParameters),
+                        context.getUrlGenerator().getURL(value, config.getParent()),
                         -1);
-                
+
                 parentResult.addResult(navigator);
-                
+
                 if (!selectionDone
                         && (optionSelectedValue == null || "".equals(optionSelectedValue.getString()))
                         && isOptionDefaultSelected(searchResult, option)) {
 
                     navigator.setSelected(true);
                     selectionDone = true;
-                    
+
                 } else if (optionSelectedValue != null && optionSelectedValue.getString().equals(value)) {
                     navigator.setSelected(true);
                     selectionDone = true;
                 }
-                
+
                 if (option.isUseHitCount() && option.getCommandName() != null) {
                     navigator.setHitCount(dataModel.getSearch(option.getCommandName()).getResults().getHitCount());
                 }
@@ -181,9 +173,9 @@ public class OptionNavigationController
     }
 
     private boolean isOptionDefaultSelected(
-            final ResultList<? extends ResultItem> result, 
+            final ResultList<? extends ResultItem> result,
             final OptionsNavigationConfig.Option option) {
-        
+
         final String valueRef = option.getDefaultSelectValueRef();
 
         return option.isDefaultSelect()

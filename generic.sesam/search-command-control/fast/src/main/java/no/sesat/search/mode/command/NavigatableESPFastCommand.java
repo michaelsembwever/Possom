@@ -240,12 +240,13 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     
     @Override
     protected String getAdditionalFilter() {
+        
+        final StringBuilder result = new StringBuilder();
         if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
-        final Collection navStrings = createNavigationFilterStrings();
-            return StringUtils.join(navStrings.iterator(), " ");
-        } else {
-            return null;
+            final Collection navStrings = createNavigationFilterStrings();
+            result.append( StringUtils.join(navStrings.iterator(), " "));
         }
+        return result.append(' ' + super.getAdditionalFilter()).toString().trim();
     }
 
     protected boolean isNavigatable() { return true; }

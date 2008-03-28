@@ -39,6 +39,7 @@ import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.access.ControlLevel;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.datamodel.generic.StringDataObjectSupport;
 import no.sesat.search.datamodel.page.PageDataObject;
 import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.http.servlet.FactoryReloads.ReloadArg;
@@ -112,8 +113,6 @@ public final class SearchServlet extends HttpServlet {
 
     // Protected -----------------------------------------------------
 
-    /** {@inheritDoc}
-     */
     @Override
     protected void doGet(
             final HttpServletRequest request,
@@ -121,7 +120,7 @@ public final class SearchServlet extends HttpServlet {
                 throws ServletException, IOException {
 
         logAccessRequest(request);
-        
+
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
         final Site site = datamodel.getSite().getSite();
@@ -164,7 +163,7 @@ public final class SearchServlet extends HttpServlet {
         // DataModel's ControlLevel will be VIEW_CONSTRUCTION (safe setting set by DataModelFilter)
         //  Bring it back to VIEW_CONSTRUCTION.
         dmFactory.assignControlLevel(datamodel, ControlLevel.REQUEST_CONSTRUCTION);
-                
+
         try{
 
             if (!isEmptyQuery(datamodel, response, genericCxt)) {
@@ -327,8 +326,8 @@ public final class SearchServlet extends HttpServlet {
             final String charset = "utf-8";
             response.setCharacterEncoding(charset);
             response.setContentType("text/xml; charset=" + charset);
-        } else if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){ 
-            response.setContentType("text/html; charset=iso-8859-1"); // for external javascript document.write(), where server uses iso encoding 
+        } else if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
+            response.setContentType("text/html; charset=iso-8859-1"); // for external javascript document.write(), where server uses iso encoding
             response.setCharacterEncoding("iso-8859-1");
         } else {
             final String charset = "utf-8";
@@ -371,7 +370,7 @@ public final class SearchServlet extends HttpServlet {
 
                 if (datamodel.getSearch("catalogue").getResults().getHitCount() == 1) {
                     final ResultItem sri = datamodel.getSearch("catalogue").getResults().getResults().get(0);
-                    final String recordid = sri.getField("contentid").toString();                    
+                    final String recordid = sri.getField("contentid").toString();
                     final String url = "/search/?c=yip&q=" + datamodel.getQuery().getQuery().getQueryString()
                             + "&companyId=" + recordid
                             + "&companyId_x=" + new MD5Generator("S3SAM rockz").generateMD5(recordid)
@@ -389,23 +388,22 @@ public final class SearchServlet extends HttpServlet {
     }
 
     private static SearchTab updateSearchTab(
-            final HttpServletRequest request, 
+            final HttpServletRequest request,
             final DataModelFactory dmFactory,
             final BaseContext genericCxt){
 
-        // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
+        // determine the c parameter.
+        //  default comes from SiteConfiguration unless there exists a page parameter when it becomes 'i'.
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
-        final StringDataObject c = parametersDO.getValue("c");
+        final StringDataObject c = parametersDO.getValue(SearchTab.PARAMETER_KEY);
         final StringDataObject page = parametersDO.getValue("page");
-        final String defaultSearchTabKey 
+        final String defaultSearchTabKey
                 = datamodel.getSite().getSiteConfiguration().getProperty(SiteConfiguration.DEFAULTTAB_KEY);
-        
+
         final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
                 ? c.getString()
-                : null != page && null != page.getString() && 0 < page.getString().length() 
-                    ? "i" 
-                    : null != defaultSearchTabKey && 0 < defaultSearchTabKey.length() ? defaultSearchTabKey: "c";
+                : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : defaultSearchTabKey;
 
         LOG.info("searchTabKey:" +searchTabKey);
 
@@ -415,31 +413,36 @@ public final class SearchServlet extends HttpServlet {
                 ContextWrapper.wrap(
                     SearchTabFactory.Context.class,
                     genericCxt));
-            
+
             result = stFactory.getTabByKey(searchTabKey);
-            
+
             if(null == datamodel.getPage()){
-                
+
                 final PageDataObject pageDO = dmFactory.instantiate(
                         PageDataObject.class,
                         datamodel,
                         new DataObject.Property("tabs", stFactory.getTabsByName()),
                         new DataObject.Property("currentTab", result));
-                
+
                 datamodel.setPage(pageDO);
             }else{
                 datamodel.getPage().setCurrentTab(result);
             }
-            
+
             // this is legacy. shorter to write in templates than $datamodel.page.currentTab
             request.setAttribute("tab", datamodel.getPage().getCurrentTab());
-            
+
         }catch(AssertionError ae){
             // it's not normal to catch assert errors but we really want a 404 not 500 response error.
             LOG.error("Caught Assertion: " + ae);
         }
         if(null==result){
             LOG.error(ERR_MISSING_TAB + searchTabKey);
+            // first going to fallback to defaultSearchTabKey in preference to the pending 404 response error.
+            if(!defaultSearchTabKey.equals(searchTabKey)){
+                parametersDO.setValue(SearchTab.PARAMETER_KEY, new StringDataObjectSupport(defaultSearchTabKey));
+                result = updateSearchTab(request, dmFactory, genericCxt);
+            }
         }
         return result;
     }
@@ -494,7 +497,7 @@ public final class SearchServlet extends HttpServlet {
                 final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
 
                 if( !datamodel.getQuery().getQuery().isBlank() || searchTab.isExecuteOnBlank() ){
-                    
+
                     query.run();
                     stopWatch.stop();
                     LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());
@@ -524,7 +527,7 @@ public final class SearchServlet extends HttpServlet {
 
     // next to duplicate from SiteLocatorFilter
     private static void logAccessRequest(final HttpServletRequest request){
-       
+
         final String url = request.getRequestURI()
                 + (null != request.getQueryString() ? '?' + request.getQueryString() : "");
         final String referer = request.getHeader("Referer");
@@ -533,7 +536,7 @@ public final class SearchServlet extends HttpServlet {
         final String userAgent = request.getHeader("User-Agent");
         final String sesamId = getCookieValue(request, "SesamID");
         final String sesamUser = getCookieValue(request, "SesamUser");
-            
+
         ACCESS_LOG.info("<search-servlet>"
                 + "<real-url method=\"" + method + "\">" + StringEscapeUtils.escapeXml(url) + "</real-url>"
                 + (null != referer ? "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>" : "")
@@ -541,10 +544,10 @@ public final class SearchServlet extends HttpServlet {
                 + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
                 + "</search-servlet>");
     }
-    
+
     // probably apache commons could simplify this // duplicated in SiteLocatorFilter
     private static String getCookieValue(final HttpServletRequest request, final String cookieName){
-    
+
         String value = "";
         // Look in attributes (it could have already been updated this request)
         if( null != request ){
@@ -562,7 +565,7 @@ public final class SearchServlet extends HttpServlet {
 
         return value;
     }
-    
+
     // Inner classes -------------------------------------------------
 
 }

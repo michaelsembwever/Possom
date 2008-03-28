@@ -405,9 +405,10 @@ public final class SiteLocatorFilter implements Filter {
 
     static String getRequestId(final ServletRequest servletRequest){
 
-        return null != servletRequest.getAttribute("UNIQUE_ID")
-                ? (String)servletRequest.getAttribute("UNIQUE_ID")
-                : UUID.randomUUID().toString();
+        if(null == servletRequest.getAttribute("UNIQUE_ID")){
+            servletRequest.setAttribute("UNIQUE_ID", UUID.randomUUID().toString());
+        }
+        return (String)servletRequest.getAttribute("UNIQUE_ID");
     }
 
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)

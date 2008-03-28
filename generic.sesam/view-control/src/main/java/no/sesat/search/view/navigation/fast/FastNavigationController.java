@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -85,10 +85,11 @@ public class FastNavigationController implements NavigationController {
                     if (selectedValue != null && selectedValue.getString().equals(i.getTitle())) {
                         i.setSelected(true);
                     }
-                    
+
                     // If an item is selected all other items on the same navigation level are excluded.
-                    if (!nav.isExcludeOtherMatches() || selectedValue == null || i.isSelected())
+                    if (!nav.isExcludeOtherMatches() || selectedValue == null || i.isSelected()){
                         item.addResult(i);
+                    }
 
                     if (sizeCounter == maxsize) {
                         break;

@@ -446,7 +446,7 @@ public class FastCommandConfig extends CommandConfig {
         this.project = project;
     }
 
-    void setSpamScoreLimit(final int i) {
+    public void setSpamScoreLimit(final int i) {
         spamScoreLimit = i;
     }
 
@@ -464,7 +464,7 @@ public class FastCommandConfig extends CommandConfig {
      * @param collectionFilterString New value of property collectionFilterString.
      */
     public void setCollectionFilterString(final String collectionFilterString) {
-        this.collectionString = collectionString;
+        this.collectionString = collectionFilterString;
     }
 
     /**

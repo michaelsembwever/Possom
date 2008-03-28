@@ -62,13 +62,13 @@ public final class FieldChooser implements ResultHandler {
                 
                 for (String field : fields) {
                     if (item.getField(field) != null) {
-                        item = item.addField(config.getTargetField(), item.getField(field));
+                        item = item.addField(config.getTarget(), item.getField(field));
                         break;
                     }
                 }
                 
-                if (config.getDefaultValue() != null && item.getField(config.getTargetField()) == null) {
-                    item = item.addField(config.getTargetField(), config.getDefaultValue());
+                if (config.getDefaultValue() != null && item.getField(config.getTarget()) == null) {
+                    item = item.addField(config.getTarget(), config.getDefaultValue());
                 }
                 
                 if (item instanceof ResultList<?>) {                    

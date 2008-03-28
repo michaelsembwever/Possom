@@ -71,7 +71,7 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
             for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
                 getContext().getTransformedTerms().put(keyClause, "");
             }
-            if (config.isUnclusteredDelayFilter()) {
+            if (config.isUnclusteredDelay()) {
                 transformedQuery = addUnclusteredDelayFilter(transformedQuery);
             }
             LOG.debug("New query is: '" + transformedQuery + "'");

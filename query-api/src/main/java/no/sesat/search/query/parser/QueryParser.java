@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -51,19 +51,17 @@ public interface QueryParser {
 
     /**
      * Duplication of the parser's definition of SKIP. Must be kept uptodate!
+     * It's actually a duplication of the WORD_SEPARATOR (but that is itself a duplication of SKIP.
      */
     char[][] SKIP_CHARACTER_RANGES = {
         {' ', ' '},
         {'!', '!'},
-        {'\u0023', '\''/*\u0027*/},
-        {'\u002a', '\u002c'},
-        {'\u002e', '\u002f'},
-        {'\u003b', '\u0040'},
+        {'\u0023', '\u0040'},
         {'\u005b', '\u0060'},
         {'\u007b', '\u00bf'},
         {'\u00d7', '\u00d7'},
         {'\u00f7', '\u00f7'},
-        {'\u2010', '\u2015'}        
+        {'\u2010', '\u2015'}
     };
 
     /**
@@ -72,10 +70,10 @@ public interface QueryParser {
     String[] OPERATORS = {"*", " -", " +", "(", ")"};
 
     /** The Context an QueryParser implementation needs to work off.
-     * The QueryParser is not responsible for
+     * The QueryParser's context is responsible for:
      *  - holding the user's orginal inputted query string,
      *  - holding the tokenEvalautorFactory responsible for tokenPredicate to evaluator mappings,
-     *  - creation of Clause subtypes.
+     *  - creation of Clause subtypes (using the flyweight pattern).
      **/
     public interface Context extends BaseContext, QueryStringContext, TokenEvaluationEngineContext {
 
@@ -186,7 +184,7 @@ public interface QueryParser {
          * Creator wrapper method for NumberGroupClause objects.
          * The methods also allow a chunk of creation logic for the NumberGroupClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a OrOrganisationNumberClauseImplnstance matching the term, left and right child clauses.

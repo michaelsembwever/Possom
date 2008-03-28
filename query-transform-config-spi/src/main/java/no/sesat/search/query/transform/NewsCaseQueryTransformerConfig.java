@@ -72,12 +72,24 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return queryType;
     }
 
+    public void setQueryType(String string) {
+        queryType = string;
+    }
+
     public String getQueryParameter() {
         return queryParameter;
     }
 
+    public void setQueryParameter(String string) {
+        queryParameter = string;
+    }
+
     public String getTypeParameter() {
         return typeParameter;
+    }
+
+    public void setTypeParameter(String type) {
+        typeParameter = type;
     }
 
     public Map<String, String[]> getTypeConversions() {
@@ -88,19 +100,28 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return defaultType;
     }
     
+    public void setDefaultType(String string) {
+    	defaultType = string;
+    }
+    
     public int getAggregatorId() {
-    	
     	return aggregatorId;
 	}
 
-
-
-    public boolean isUnclusteredDelayFilter() {
+    public boolean isUnclusteredDelay() {
         return unclusteredDelayFilter;
+    }
+    
+    public void setUnclusteredDelay(boolean filtered) {
+    	unclusteredDelayFilter = filtered;
     }
 
     public int getUnclusteredDelayInMinutes() {
         return unclusteredDelayInMinutes;
+    }
+    
+    public void setUnclusteredDelayInMinutes(int minutes){
+    	unclusteredDelayInMinutes = minutes;
     }
 
     public String getTimeZone() {

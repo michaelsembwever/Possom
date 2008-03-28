@@ -44,6 +44,12 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
     public void addField(final String fieldName) {
         fields.add(fieldName);
     }
+    
+    public void addFields(final String[] fieldNames) {
+        for (int i = 0; i < fieldNames.length; i++) {
+            addField(fieldNames[i]);
+        }
+    }
 
     /**
      * @return
@@ -55,14 +61,14 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
     /**
      * @param fieldName
      */
-    public void setTargetField(final String fieldName) {
+    public void setTarget(final String fieldName) {
         targetField = fieldName;
     }
 
     /**
      * @return
      */
-    public String getTargetField() {
+    public String getTarget() {
         return targetField;
     }
 
@@ -88,7 +94,7 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
 
         super.readResultHandler(element);
 
-        setTargetField(element.getAttribute("target"));
+        setTarget(element.getAttribute("target"));
         String optAttr = element.getAttribute("recursive-field");
         if (optAttr != null && optAttr.length() > 0) {
             recursiveField = optAttr;

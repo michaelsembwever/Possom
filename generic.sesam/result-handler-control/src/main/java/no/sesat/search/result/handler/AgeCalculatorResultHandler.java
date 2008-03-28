@@ -97,7 +97,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
             final Context cxt,
             final String ageFormatKey) {
 
-        final String docTime = item.getField(config.getSourceField());
+        final String docTime = item.getField(config.getSource());
 
         if (docTime != null) {
 
@@ -159,7 +159,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                 LOG.trace("Resulting age string is " + ageString);
 
                 if (stamp > 0) {
-                    item = item.addField(config.getTargetField(), ageString);
+                    item = item.addField(config.getTarget(), ageString);
                 }
 
             } catch (ParseException e) {

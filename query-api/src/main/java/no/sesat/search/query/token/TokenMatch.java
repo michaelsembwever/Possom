@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,51 +17,93 @@
  */
 package no.sesat.search.query.token;
 
+import java.lang.ref.Reference;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import no.sesat.commons.ref.ReferenceMap;
 
 /** Used by VeryFastTokenEvaluator for matches against part of the query to a fast list.
- * 
+ *
+ * <b>Immutable</b>
+ *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version $Id$
  **/
-final class TokenMatch implements Comparable {
+final class TokenMatch{
+
+    // Constants -----------------------------------------------------
+
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
+
+    private static final ReferenceMap<Integer,TokenMatch> WEAK_CACHE
+            = new ReferenceMap<Integer,TokenMatch>(
+                ReferenceMap.Type.WEAK,
+                new ConcurrentHashMap<Integer,Reference<TokenMatch>>(
+                    WEAK_CACHE_INITIAL_CAPACITY,
+                    WEAK_CACHE_LOAD_FACTOR,
+                    WEAK_CACHE_CONCURRENCY_LEVEL));
+
+    // Static --------------------------------------------------------
+
+    /** Hands out an instance given the 'constructing arguments'.
+     * We use the flyweight pattern since instances are immutable.
+     *
+     * @param token
+     * @param match
+     * @param value
+     * @return
+     */
+    public static TokenMatch instanceOf(
+            final String token,
+            final String match,
+            final String value) {
+
+        final int hashCode = computeHashCode(token, match, value);
+
+        TokenMatch tm = WEAK_CACHE.get(hashCode);
+
+        if(null == tm){
+            tm = new TokenMatch(token, match, value);
+            WEAK_CACHE.put(hashCode, tm);
+        }
+
+        return tm;
+    }
+
+    private static int computeHashCode(
+            final String token,
+            final String match,
+            final String value) {
+
+        int result = 17;
+        result = 37*result + token.hashCode();
+        result = 37*result + match.hashCode();
+        result = 37*result + value.hashCode();
+        return result;
+    }
+
+    // Attributes ----------------------------------------------------
 
     private final String token;
     private final String match;
     private final String value;
-    private final Integer start;
-    private final Integer end;
     private final Pattern matcher;
-    /**
-     * Holds value of property _touched.
-     */
-    private boolean touched = false;
 
-    public TokenMatch(final String token, final String match, final String value, final int start, final int end) {
+    // Constructors -------------------------------------------------
+
+    private TokenMatch(final String token, final String match, final String value) {
+
         this.token = token;
         this.match = match;
         this.value = value;
-        this.start = Integer.valueOf(start);
-        this.end = Integer.valueOf(end);
         // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
         matcher = Pattern.compile("(^|\\s)" + match + "($|\\s)", RegExpEvaluatorFactory.REG_EXP_OPTIONS);
     }
 
-    public int compareTo(final Object o) {
-        final TokenMatch other = (TokenMatch) o;
-
-        return start.compareTo(other.getStart());
-    }
-
-    /**
-     * Get the start index.
-     *
-     * @return the end index.
-     */
-    public Integer getStart() {
-        return start;
-    }
+    // Public --------------------------------------------------------
 
     /**
      * Get the match.
@@ -75,7 +117,7 @@ final class TokenMatch implements Comparable {
     /**
      * Get the regular expression Matcher to use to find a sub-match.
      *
-     * @param string 
+     * @param string
      * @return the match.
      */
     public Matcher getMatcher(final String string) {
@@ -100,38 +142,23 @@ final class TokenMatch implements Comparable {
         return value;
     }
 
-    /**
-     * Get the end.
-     *
-     * @return the end.
-     */
-    public Integer getEnd() {
-        return end;
-    }
-
-    /**
-     * Getter for property touched.
-     * @return Value of property touched.
-     */
-    public boolean isTouched() {
-        return touched;
-    }
-
-    /**
-     * Setter for property touched.
-     * @param touched New value of property touched.
-     */
-    public void setTouched(final boolean touched) {
-        this.touched = touched;
-    }
-
     @Override
     public String toString() {
        return "token=\"" + token
                + "\"; match=\"" + match
-               + "\"; value=" + (value == null ? "null" : "\"" + value + "\"") 
-               + "; start=" + start 
-               + "; end=" + end
-               + "; matcher=" + matcher + ";";     
+               + "\"; value=" + (value == null ? "null" : "\"" + value + "\"")
+               + "; matcher=" + matcher + ";";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof TokenMatch && obj.hashCode() == hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return computeHashCode(token, match, value);
+    }
+
+
 }

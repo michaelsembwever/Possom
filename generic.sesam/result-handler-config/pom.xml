@@ -22,5 +22,11 @@
             <version>${version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-view-config-spi</artifactId>
+            <version>${version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted Søk
+ * Copyright (2007-2008) Schibsted Søk
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,9 +20,11 @@ package no.sesat.search.view.navigation;
 import java.util.Map;
 
 /**
- * Description.
  *
  * You should probably not implement this interface directly but extend the AbstractUrlGenerator instead.
+ *
+ * @author maek
+ * @version $Id: AbstractUrlGenerator.java 6066 2008-01-30 11:27:42Z ssmiweve $
  */
 public interface UrlGenerator {
     /**
@@ -40,7 +42,7 @@ public interface UrlGenerator {
      *
      * @param value the value to navigate to.
      * @param nav the navigator to navigate.
-     *
+     * @param extraParameters
      * @return the URL including given parameters.
      */
     String getURL(String value, NavigationConfig.Nav nav, Map<String, String> extraParameters);

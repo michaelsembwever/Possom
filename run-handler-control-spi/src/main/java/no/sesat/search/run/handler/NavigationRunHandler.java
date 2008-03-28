@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,18 +21,27 @@ import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.navigation.NavigationDataObject;
 import no.sesat.search.view.NavigationControllerSpiFactory;
-import no.sesat.search.view.navigation.*;
 import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
-import no.sesat.search.site.config.*;
 
 import java.util.List;
 import java.util.Properties;
 import java.lang.reflect.Constructor;
 
 import javax.xml.parsers.DocumentBuilder;
+import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.site.config.DocumentLoader;
+import no.sesat.search.site.config.PropertiesLoader;
+import no.sesat.search.site.config.SiteClassLoaderFactory;
+import no.sesat.search.site.config.Spi;
+import no.sesat.search.view.navigation.NavigationConfig;
+import no.sesat.search.view.navigation.NavigationController;
+import no.sesat.search.view.navigation.NavigationControllerFactory;
+import no.sesat.search.view.navigation.NavigationManager;
+import no.sesat.search.view.navigation.NavigationState;
+import no.sesat.search.view.navigation.UrlGenerator;
 
 
 /**
@@ -121,7 +130,9 @@ public final class NavigationRunHandler implements RunHandler{
                 navDO.setNavigation(nav.getId(), items);
 
                 // Create a "back" navigation item.
-                final NavigationItem reset = new BasicNavigationItem("reset_" + nav.getId(), urlGenerator.getURL("", nav) ,0);
+                final NavigationItem reset
+                        = new BasicNavigationItem("reset_" + nav.getId(), urlGenerator.getURL("", nav), 0);
+
                 navDO.setNavigation("reset_" + nav.getId(), reset);
 
             }
@@ -140,7 +151,9 @@ public final class NavigationRunHandler implements RunHandler{
         return factory.get(navEntry).getNavigationItems(navCxt);
     }
 
-    private NavigationController.Context createNavigationControllerContext(final UrlGenerator urlGenerator, final Context context) {
+    private NavigationController.Context createNavigationControllerContext(
+            final UrlGenerator urlGenerator,
+            final Context context) {
 
         return new NavigationController.Context() {
 
@@ -170,22 +183,31 @@ public final class NavigationRunHandler implements RunHandler{
         };
     }
 
-    private UrlGenerator getUrlGeneratorInstance(SiteClassLoaderFactory.Context classLoadingContext, NavigationConfig.Navigation navigation, Context context) {
+    private UrlGenerator getUrlGeneratorInstance(
+            final SiteClassLoaderFactory.Context classLoadingContext,
+            final NavigationConfig.Navigation navigation,
+            final Context context) {
+
         try {
             final SiteClassLoaderFactory f = SiteClassLoaderFactory.instanceOf(classLoadingContext);
 
             final Class clazz = f.getClassLoader().loadClass(navigation.getUrlGenerator());
 
             @SuppressWarnings("unchecked")
-            final Constructor<? extends UrlGenerator> s = clazz.getConstructor(DataModel.class, NavigationConfig.Navigation.class, NavigationState.class);
+            final Constructor<? extends UrlGenerator> s
+                    = clazz.getConstructor(DataModel.class, NavigationConfig.Navigation.class, NavigationState.class);
 
             return s.newInstance(context.getDataModel(), navigation, navigationManager.getNavigationState());
+
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to load desired url generator: " + navigation.getUrlGenerator(), e);
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    e);
         }
     }
 
     private SiteClassLoaderFactory.Context createClassLoadingContext(final Context context) {
+
         return new SiteClassLoaderFactory.Context() {
             public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
                 return context.newBytecodeLoader(siteContext, className, jarFileName);

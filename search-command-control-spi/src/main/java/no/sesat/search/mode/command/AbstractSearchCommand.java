@@ -224,6 +224,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public ResultList<? extends ResultItem> call() {
 
         MDC.put(Site.NAME_KEY, datamodel.getSite().getSite().getName());
+        MDC.put("UNIQUE_ID", datamodel.getParameters().getUniqueId());
         thread = Thread.currentThread();
 
         final String t = thread.getName();

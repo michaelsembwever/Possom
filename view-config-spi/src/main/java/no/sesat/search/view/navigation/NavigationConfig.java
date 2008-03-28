@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
+import no.sesat.search.view.config.SearchTab;
 
 /**
  * This is a command to help generating navigation urls in the view. I got tired of all
@@ -285,7 +286,7 @@ public final class NavigationConfig implements Serializable {
         private boolean out;
         private int maxsize;
 
-        private Map<String, String> staticParameters;
+        private Map<String,String> staticParameters = new HashMap<String,String>();
         private List<Nav> childNavs;
         private final Navigation navigation;
         private final Nav parent;
@@ -312,11 +313,8 @@ public final class NavigationConfig implements Serializable {
             fillBeanProperty(this, null, "maxsize", ParseType.Int, navElement, "100");
             fillBeanProperty(this, null, "backText", ParseType.String, navElement, "");
             fillBeanProperty(this, null, "autoNavigation", ParseType.Boolean, navElement, "true");
-
-
-            final List<Element> optionElements = getDirectChildren(navElement, OPTION_ELEMENT);
+            // staticParameters
             final List<Element> staticParamElements = getDirectChildren(navElement, STATIC_PARAMETER_ELEMENT);
-            staticParameters = new HashMap<String, String>();
             for (Element staticParamElement : staticParamElements) {
                 String name = staticParamElement.getAttribute("name");
                 String value = staticParamElement.getAttribute("value");
@@ -355,7 +353,7 @@ public final class NavigationConfig implements Serializable {
         }
 
         public Map<String, String> getStaticParameters() {
-            return staticParameters;
+            return Collections.unmodifiableMap(staticParameters);
         }
 
         public void setStaticParameters(final Map<String, String> staticParameters) {
@@ -375,7 +373,10 @@ public final class NavigationConfig implements Serializable {
         }
 
         public void setTab(final String tab) {
+
             this.tab = tab;
+            // The tab property takes preference over any url parameters. intialse it here and use against urlGenerator.
+            staticParameters.put(SearchTab.PARAMETER_KEY, tab);
         }
 
         public boolean isOut() {

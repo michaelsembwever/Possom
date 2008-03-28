@@ -61,7 +61,7 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
     /**
      * @return
      */
-    public String getTargetField() {
+    public String getTarget() {
         return targetField;
     }
 
@@ -69,7 +69,7 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
     /**
      * @param targetField
      */
-    public void setTargetField(final String targetField) {
+    public void setTarget(final String targetField) {
         this.targetField = targetField;
     }
 
@@ -77,14 +77,14 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
     /**
      * @param string
      */
-    public void setSourceField(final String string) {
+    public void setSource(final String string) {
         sourceField = string;
     }
 
     /**
      * @return
      */
-    public String getSourceField() {
+    public String getSource() {
         return sourceField;
     }
 
@@ -115,8 +115,8 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
 
         super.readResultHandler(element);
 
-        setTargetField(element.getAttribute("target"));
-        setSourceField(element.getAttribute("source"));
+        setTarget(element.getAttribute("target"));
+        setSource(element.getAttribute("source"));
         AbstractDocumentFactory.fillBeanProperty(this, null, "asDate", ParseType.Boolean, element, "false");
         AbstractDocumentFactory.fillBeanProperty(this, null, "recursiveField", ParseType.String, element, null);
         AbstractDocumentFactory.fillBeanProperty(this, null, "ageFormatKey", ParseType.String, element, "age");

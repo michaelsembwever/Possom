@@ -23,7 +23,9 @@ Copyright (2006-2007) Schibsted Søk AS
         Purpose of the document follows.
 -->
 
-<modes template-prefix="default-">
+<modes template-prefix="default-"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="modes.xsd">
 
 
     <!-- defaults -->
@@ -43,16 +45,15 @@ Copyright (2006-2007) Schibsted Søk AS
                       collapsing="false"
                       collections=""
                       filter=""
-                      keyword-clustering="false"
+                      keyword-clustering-enabled="false"
                       ignore-navigation="false"
-                      lemmatize="false"
+                      lemmatise="false"
                       offensive-score-limit="0"
                       qt-pipeline=""
                       query-server-url=""
                       sort-by=""
                       spam-score-limit="0"
-                      spellcheck="false"
-                      synonyms="false"/>
+                      spellcheck="false"/>
 
         <static-command id="default-static-command" inherit="default-command"/>
 
@@ -176,7 +177,7 @@ Copyright (2006-2007) Schibsted Søk AS
 
         <stock-command id="default-stock-command" inherit="default-command">
             <query-transformers>
-                <token-mask mask="exclude" position="prefix" predicate="STOCK_MAGIC"/>
+                <token-mask mask="exclude" position="prefix" predicates="STOCK_MAGIC"/>
             </query-transformers>
         </stock-command>
 
@@ -186,7 +187,6 @@ Copyright (2006-2007) Schibsted Søk AS
             <query-transformers>
                 <token-mask position="prefix"
                             predicates="WIKIPEDIA_MAGIC,CATALOGUE_MAGIC,YELLOW_MAGIC,WHITE_MAGIC,PICTURE_MAGIC,NEWS_MAGIC"/>
-                <simple-site-search parameter="ssr"/>
             </query-transformers>
         </yahoo-idp-command>
 
@@ -215,7 +215,6 @@ Copyright (2006-2007) Schibsted Søk AS
                       qt-pipeline="lookupword"
                       relevant-queries="true"
                       results-to-return="1"
-                      synonyms="true"
                       inherit="default-fast-command"/>
 
         <fast-command id="default-wikipedia"

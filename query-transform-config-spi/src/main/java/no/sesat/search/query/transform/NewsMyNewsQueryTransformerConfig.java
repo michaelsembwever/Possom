@@ -58,6 +58,10 @@ public class NewsMyNewsQueryTransformerConfig extends AbstractQueryTransformerCo
         return queryParameter;
     }
 
+    public void setQueryParameter(String string) {
+    	queryParameter = string;
+    }
+    
     @Override
     public NewsMyNewsQueryTransformerConfig readQueryTransformer(final Element element) {
         type = element.getAttribute(TYPE);

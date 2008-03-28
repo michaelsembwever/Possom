@@ -24,7 +24,13 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.collections.Predicate;
 
-/** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
+/** A Categorisation of knowledge that attaches itself 
+ *   as meta-data to words and groups of words (clauses) within a query. <br/><br/>
+ * The break down of these categories should roughly follow what is found at 
+ *   http://en.wikipedia.org/wiki/Portal:Contents/Categorical_index
+ * 
+ *  <br/><br/>
+ * Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
  * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -52,6 +58,10 @@ public enum TokenPredicate implements Predicate {
     /** */
     EXACT_CELEBRITY (Type.FAST),
     /** */
+    COMPANYBRANCH (Type.FAST),
+    /** */
+    COMPANYBRANCHKEYWORD (Type.FAST),
+    /** */
     CLASSIFIED_CATEGORY (Type.FAST),
     /** */
     COMPANY_CHAIN (Type.FAST),
@@ -66,6 +76,8 @@ public enum TokenPredicate implements Predicate {
     /** */
     BIGCOMPANY (Type.FAST),
     /** */
+    EXACT_BIGCOMPANY (Type.FAST),
+    /** */
     DISEASE (Type.FAST),
     /** */
     ENGLISHWORDS (Type.FAST),
@@ -77,6 +89,20 @@ public enum TokenPredicate implements Predicate {
     EXACT_GEOLOCAL (Type.FAST),
     /** */
     EXACT_GEOGLOBAL (Type.FAST),
+    /** */
+    GEO_BOROUGH (Type.FAST),
+    /** */
+    GEO_COUNTY (Type.FAST),
+    /** */
+    GEO_STREET (Type.FAST),
+    /** */
+    GEO_MUNICIPALITY (Type.FAST),
+    /** */
+    GEO_AREA (Type.FAST),
+    /** */
+    GEO_ZIPCODE (Type.FAST),
+    /** */
+    GEO_POSTALPLACE (Type.FAST), /** TODO: RENAME! */
     /** */
     FIRSTNAME (Type.FAST),
     /** */
@@ -109,6 +135,14 @@ public enum TokenPredicate implements Predicate {
     MOVIE_DIRECTOR(Type.FAST),
     /** */
     EXACT_MOVIE_DIRECTOR(Type.FAST),
+    /** */
+    NEWSCASE (Type.FAST),
+    /** */
+    NOPICTURE (Type.FAST),
+    /** */
+    PICTURE (Type.FAST),
+    /** */
+    EXACT_PICTURE (Type.FAST),
     /** */
     PRIOCOMPANYNAME (Type.FAST),
     /** */
@@ -152,6 +186,8 @@ public enum TokenPredicate implements Predicate {
     /** */
     PRODUCT_WEAPON (Type.FAST),
     /** */
+    PRODUCT_TORGET (Type.FAST),
+    /** */
     PROFESSION(Type.FAST),
     /** */
     EXACT_PROFESSION(Type.FAST),
@@ -173,6 +209,14 @@ public enum TokenPredicate implements Predicate {
     STYLE (Type.FAST),
     /** */
     TNS (Type.FAST),
+    /** */
+    EXACT_TNS (Type.FAST),
+    /** */
+    TVPROGRAM (Type.FAST),
+    /** */
+    EXACT_TVPROGRAM (Type.FAST),
+    /** */
+    TVCHANNEL (Type.FAST),
     /** */
     TRADEMARK (Type.FAST),
     /** */

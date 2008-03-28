@@ -38,7 +38,7 @@ public final class DateFormatResultHandlerConfig extends AbstractResultHandlerCo
      *
      * @return
      */
-    public String getFieldPrefix() {
+    public String getPrefix() {
         return fieldPrefix;
     }
 
@@ -46,7 +46,7 @@ public final class DateFormatResultHandlerConfig extends AbstractResultHandlerCo
      *
      * @param fieldPrefix
      */
-    public void setFieldPrefix(final String fieldPrefix) {
+    public void setPrefix(final String fieldPrefix) {
         this.fieldPrefix = fieldPrefix;
     }
 
@@ -54,7 +54,7 @@ public final class DateFormatResultHandlerConfig extends AbstractResultHandlerCo
      *
      * @param sourceField
      */
-    public void setSourceField(final String sourceField) {
+    public void setSource(final String sourceField) {
        this.sourceField = sourceField;
     }
 
@@ -62,7 +62,7 @@ public final class DateFormatResultHandlerConfig extends AbstractResultHandlerCo
      *
      * @return
      */
-    public String getSourceField() {
+    public String getSource() {
         return sourceField;
     }
 
@@ -72,9 +72,9 @@ public final class DateFormatResultHandlerConfig extends AbstractResultHandlerCo
         super.readResultHandler(element);
 
         if (element.hasAttribute("prefix")) {
-            setFieldPrefix(element.getAttribute("prefix"));
+            setPrefix(element.getAttribute("prefix"));
         }
-        setSourceField(element.getAttribute("source"));
+        setSource(element.getAttribute("source"));
 
         return this;
     }
