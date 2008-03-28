@@ -48,6 +48,7 @@ body { /* overridden from default.css */
     background: url(/images/searchbar/bg.png) repeat-x;
     margin-left: 15px;
     padding-right: 15px;
+    min-width: 570px;
 }
 
 #inputBox {   

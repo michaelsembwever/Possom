@@ -28,6 +28,7 @@
 
     <!-- tomcat puts in the name of the welcome page -->
     <rule><from>^/index.jsp$</from><to>/</to></rule>
+    <rule><from>^/$</from><to>/search/?</to></rule>
     <rule><from>^/robots.txt$</from><to>/robots.jsp</to></rule>
     <rule><from>^/psearch/(.*)$</from><to>/search/$1</to></rule>
     
