@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public interface ResultItem extends Serializable{

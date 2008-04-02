@@ -136,9 +136,36 @@ public class CommandConfig implements SearchConfiguration {
         this.name = name;
     }
 
+    /**
+     * Same as setName
+     *
+     * @param id Name for this configuration.
+     */
+    public final void setId(final String id) {
+        this.name = id;
+    }
+
     /** {@inheritDoc} **/
     public final void addResultField(final String... fieldName) {
         resultFields.put(fieldName[0].trim(), (fieldName.length >1 ? fieldName[1] : fieldName[0]).trim());
+    }
+
+    /**
+     * @param resultField
+     *            String seperated with ' AS '.
+     */
+    private final void addResultField(final String resultField) {
+        addResultField(resultField.trim().split(" AS "));
+    }
+
+    /**
+     * @param resultFields
+     *            Result fields to add.
+     */
+    public final void addResultFields(final String[] resultFields) {
+        for (String string : resultFields) {
+            addResultField(string);
+        }
     }
 
     /** {@inheritDoc} **/
@@ -229,12 +256,27 @@ public class CommandConfig implements SearchConfiguration {
         return getClass().getSimpleName() + " [" + name + "]";
     }
 
+    /**
+     * @param fieldAndFilter
+     *            String containing name of field and filter seperated with ' AS '.
+     */
+    private void setFieldFilter(final String fieldAndFilter) {
+        String parsed[] = fieldAndFilter.trim().split(" AS ");
+        String field = parsed[0].trim();
+        fieldFilters.put(field, (parsed.length > 1) ? parsed[1].trim() : field);
+    }
 
     /**
-     * @param field 
+     * Syntax: field-filters="size, nyhetskilde AS newssource"
+     * 
+     * Just "size" will be the same as writing "size AS size" 
+     * 
+     * @param fieldFilters Array of field filters.
      */
-    public void addFieldFilter(final String field, final String filter){
-        fieldFilters.put(field, filter);
+    public void setFieldFilters(final String[] fieldFilters) {
+        for (String string : fieldFilters) {
+            setFieldFilter(string);
+        }
     }
 
     /**
@@ -279,15 +321,8 @@ public class CommandConfig implements SearchConfiguration {
         }
         if (element.hasAttribute("field-filters")) {
             if (element.getAttribute("field-filters").length() > 0) {
-                final String[] fieldFilters = element.getAttribute("field-filters").split(",");
-                for (String fieldFilter : fieldFilters) {
-                    if (fieldFilter.contains(" AS ")) {
-                        final String[] ff = fieldFilter.split(" AS ");
-                        addFieldFilter(ff[0].trim(), ff[1].trim());
-                    } else {
-                        addFieldFilter(fieldFilter, fieldFilter);
-                    }
-                }
+                setFieldFilters(element.getAttribute("field-filters").split(","));
+
             } else {
                 // If attribute is present and empty, clear the field filters. This creates an option
                 // for child commands to not inherit field filters.
@@ -302,10 +337,7 @@ public class CommandConfig implements SearchConfiguration {
             resultFields.putAll(inherit.getResultFields());
         }
         if (element.getAttribute("result-fields").length() > 0) {
-            final String[] resultFields = element.getAttribute("result-fields").split(",");
-            for (String resultField : resultFields) {
-                addResultField(resultField.trim().split(" AS "));
-            }
+            addResultFields(element.getAttribute("result-fields").split(","));
         }
         
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsToReturn", ParseType.Int, element, "-1");

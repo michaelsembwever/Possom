@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public interface Suggestion extends Serializable{

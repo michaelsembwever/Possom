@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -50,19 +47,6 @@ public final class NumberGroupClauseImpl extends AbstractLeafClause implements N
      */
     private static final Map<Site, ReferenceMap<String, NumberGroupClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,NumberGroupClauseImpl>>();
-
-    /* A IntegerClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-
-    static {
-        final Collection<TokenPredicate> predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.ORGNR);
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
-    }
 
     /**
      * Creator method for NumberGroupClauseImpl objects. By avoiding the constructors,
@@ -106,7 +90,7 @@ public final class NumberGroupClauseImpl extends AbstractLeafClause implements N
                 term,
                 field,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, weakCache);
+                weakCache);
     }
 
     /**

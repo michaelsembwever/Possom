@@ -20,7 +20,7 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 @Controller("NewsMyNewsSearchCommand")

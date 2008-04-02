@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,17 +50,6 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
      */
     private static final Map<Site,ReferenceMap<String,OrClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,OrClauseImpl>>();
-
-    /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-
-    static {
-        final Collection<TokenPredicate> predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
-    }
 
     private final Clause secondClause;
 
@@ -128,7 +114,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
                     first,
                     second,
                     engine,
-                    PREDICATES_APPLICABLE, weakCache);
+                    weakCache);
 
         }finally{
             engine.setState(null);

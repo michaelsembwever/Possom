@@ -28,7 +28,7 @@ import no.sesat.search.query.parser.*;
 
 /** Simple visitor used to count the number of leaves under a given clause.
  * 
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class Counter extends AbstractReflectionVisitor implements Serializable {

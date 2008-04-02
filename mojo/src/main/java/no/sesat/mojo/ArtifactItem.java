@@ -20,7 +20,7 @@ package no.sesat.mojo;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public class ArtifactItem extends org.apache.maven.plugin.dependency.fromConfiguration.ArtifactItem{

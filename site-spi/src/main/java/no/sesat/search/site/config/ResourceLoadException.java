@@ -23,7 +23,7 @@ package no.sesat.search.site.config;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  */
 public final class ResourceLoadException extends RuntimeException{ // TODO this is not a RuntimeException!
     

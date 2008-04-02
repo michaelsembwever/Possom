@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ package no.sesat.search.query.parser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
@@ -60,7 +59,6 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      * @param term the term the clause we are about to create (or find) will have.
      * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      * @return Either a clause already in use that matches this term and field, or a newly created cluase for this term and field.
      */
@@ -70,7 +68,6 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
             final Clause left,
             final Clause right,
             final TokenEvaluationEngine engine,
-            final Collection<TokenPredicate> predicates2check,
             final ReferenceMap<String,T> weakCache) {
 
 
@@ -85,7 +82,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
 
             // find the applicale predicates now
-            final boolean healthy = findPredicates(engine, predicates2check);
+            final boolean healthy = findPredicates(engine);
             try {
                 // find the constructor...
                 final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
@@ -132,6 +129,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
     /**
      * Create clause with the given term, known and possible predicates.
      * @param term the term (query string) for this clause.
+     * @param first
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */

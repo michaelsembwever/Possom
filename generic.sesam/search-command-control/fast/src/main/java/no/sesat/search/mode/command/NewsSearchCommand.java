@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ public class NewsSearchCommand extends FastSearchCommand {
     /** Creates a new instance of NewsSearchCommand
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public NewsSearchCommand(final Context cxt) {
 
@@ -115,7 +114,7 @@ public class NewsSearchCommand extends FastSearchCommand {
                             filterBuilder.append(" +newscountry:"+ newsCountry);
                         }
                     } // -end->
-                    
+
                 // need a date clause in the query to get the last 50 dates for the lastnews navigator
                 } else if ("lastnews".equals(getSearchConfiguration().getProject())) {
                     GregorianCalendar calendar = new java.util.GregorianCalendar();
@@ -219,8 +218,8 @@ public class NewsSearchCommand extends FastSearchCommand {
         final LeafClause firstLeaf = getQuery().getFirstLeafClause();
 
         return getQuery().getRootClause() == firstLeaf
-          && (firstLeaf.getKnownPredicates().contains(TokenPredicate.NEWS_MAGIC)
-              || firstLeaf.getPossiblePredicates().contains(TokenPredicate.NEWS_MAGIC));
+          && (firstLeaf.getKnownPredicates().contains(TokenPredicate.Categories.NEWS_MAGIC)
+              || firstLeaf.getPossiblePredicates().contains(TokenPredicate.Categories.NEWS_MAGIC));
     }
 
 }

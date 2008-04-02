@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,16 +50,6 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
      */
     private static final Map<Site,ReferenceMap<String,NotClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,NotClauseImpl>>();
-
-    /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-
-    static {
-        final Collection<TokenPredicate> predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
-    }
 
     /**
      * Creator method for NotClauseImpl objects. By avoiding the constructors,
@@ -115,7 +102,7 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
                     first,
                     null,
                     engine,
-                    PREDICATES_APPLICABLE, weakCache);
+                    weakCache);
 
         }finally{
             engine.setState(null);

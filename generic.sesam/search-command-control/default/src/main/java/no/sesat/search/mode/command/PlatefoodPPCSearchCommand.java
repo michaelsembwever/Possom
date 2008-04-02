@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -66,9 +66,6 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
     /**
      * Create new Platefood command.
      *
-     * @param query
-     * @param configuration
-     * @param parameters
      */
     public PlatefoodPPCSearchCommand(final Context cxt) {
 
@@ -86,6 +83,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
      * @return the search result
      */
     public ResultList<? extends ResultItem> execute() {
+        
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
@@ -94,10 +92,10 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         final PlatefoodPpcCommandConfig ppcConfig
             = (PlatefoodPpcCommandConfig) context.getSearchConfiguration();
 
-
-        top = rq.getEngine().evaluateQuery(TokenPredicate.LOAN_TRIGGER, rq.getQuery());
-        top |= rq.getEngine().evaluateQuery(TokenPredicate.SUDOKU_TRIGGER, rq.getQuery());
-        top &= rq.getEngine().evaluateQuery(TokenPredicate.EXACT_PPCTOPLIST, rq.getQuery());
+        // TODO smelling of non-sesat business logic here. AND presentation logic. move out.
+        top = rq.getEngine().evaluateQuery(TokenPredicate.Categories.LOAN_TRIGGER, rq.getQuery());
+        top |= rq.getEngine().evaluateQuery(TokenPredicate.Categories.SUDOKU_TRIGGER, rq.getQuery());
+        top &= rq.getEngine().evaluateQuery(TokenPredicate.Categories.EXACT_PPCTOPLIST, rq.getQuery());
 
         try {
             final Document doc = getXmlResult();

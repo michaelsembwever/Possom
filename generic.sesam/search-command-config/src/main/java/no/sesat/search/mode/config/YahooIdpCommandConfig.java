@@ -24,7 +24,7 @@ import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
 /**
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version <tt>$Id$</tt>
  */
 @Controller("YahooIdpSearchCommand")

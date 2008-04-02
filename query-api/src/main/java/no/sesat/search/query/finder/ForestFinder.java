@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class ForestFinder extends AbstractReflectionVisitor {

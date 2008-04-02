@@ -152,7 +152,7 @@ public class DataModelSerializeTest {
         searchResults.setHitCount(SEARCH_HIT_COUNT);
      
         final Set<TokenPredicate> tokenPredicateSet = new HashSet<TokenPredicate>();
-        tokenPredicateSet.add(TokenPredicate.FOOD);
+        tokenPredicateSet.add(TokenPredicate.Categories.FOOD);
         
         final Clause root = ClauseFactory.createClause(QUERY_STRING, tokenPredicateSet);
         /* new Clause() {

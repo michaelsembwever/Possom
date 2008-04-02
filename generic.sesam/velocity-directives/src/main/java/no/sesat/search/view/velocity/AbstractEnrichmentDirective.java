@@ -34,6 +34,7 @@ import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.Site;
 import no.sesat.search.view.config.SearchTab;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.velocity.Template;
 import static no.sesat.search.view.config.SearchTab.EnrichmentHint.*;
 import org.apache.velocity.app.VelocityEngine;
@@ -115,9 +116,14 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
             final Set<ResultList> enrichments = enrichmentsExisting
                     ? (Set<ResultList>)cxt.get("enrichments")
                     : new TreeSet<ResultList>(new Comparator<ResultList>(){
+                
                 public int compare(ResultList o1, ResultList o2) {
                     // highest scores first, ie descending order.
-                    return (int)((Float)o2.getObjectField(SCORE_KEY) - (Float)o1.getObjectField(SCORE_KEY));
+                    final int result = (int)((Float)o2.getObjectField(SCORE_KEY) - (Float)o1.getObjectField(SCORE_KEY));
+                    // never return zero. in a treeset it means overriding the other enrichment.
+                    return 0 != result 
+                            ? result 
+                            : String.CASE_INSENSITIVE_ORDER.compare(o1.getField(NAME_KEY), o2.getField(NAME_KEY)); 
                 }
             });
 

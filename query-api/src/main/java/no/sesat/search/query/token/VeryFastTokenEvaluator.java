@@ -320,7 +320,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                         final String tokenName = list.getAttribute("token");
                         LOG.info(" ->list@token: " + tokenName);
 
-                        final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                        final TokenPredicate token = null != TokenPredicate.Static.getTokenPredicate(tokenName)
+                                ? TokenPredicate.Static.getTokenPredicate(tokenName)
+                                : TokenPredicate.Static.createAnonymousTokenPredicate(tokenName, TokenPredicate.Type.FAST);
 
                         final String[] listNameArr = list.getAttribute("list-name").split(",");
                         LOG.info(" ->lists: " + list.getAttribute("list-name"));

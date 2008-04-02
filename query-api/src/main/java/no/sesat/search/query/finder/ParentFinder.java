@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
 /** Visitor used to find a clause's parents.
  * Clauses' do not keep references to their parents as they are immutable and can thus be reused within different trees.
  * 
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class ParentFinder extends AbstractReflectionVisitor implements Serializable {

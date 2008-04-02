@@ -69,6 +69,7 @@ public final class SearchServlet extends HttpServlet {
 
     /** The serialVersionUID. */
     private static final long serialVersionUID = 3068140845772756438L;
+    private static final String REMOTE_ADDRESS_KEY = "REMOTE_ADDR";
 
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
     private static final Logger ACCESS_LOG = Logger.getLogger("no.sesat.Access");
@@ -174,7 +175,15 @@ public final class SearchServlet extends HttpServlet {
                 final StopWatch stopWatch = new StopWatch();
                 stopWatch.start();
 
-                performFactoryReloads(request.getParameter("reload"), genericCxt);
+                final String ipAddr = null != request.getAttribute(REMOTE_ADDRESS_KEY)
+                    ? (String) request.getAttribute(REMOTE_ADDRESS_KEY)
+                    : request.getRemoteAddr();
+
+                performFactoryReloads(
+                        request.getParameter("reload"),
+                        genericCxt,
+                        ipAddr,
+                        datamodel.getSite().getSiteConfiguration());
 
                 updateContentType(site, response, request);
 
@@ -255,9 +264,23 @@ public final class SearchServlet extends HttpServlet {
 
     private static void performFactoryReloads(
             final String reload,
-            final SiteContext genericCxt){
+            final SiteContext genericCxt,
+            final String ipAddr,
+            final SiteConfiguration siteConf){
 
-        if (null != reload && reload.length() > 0){
+        // check if user ipaddress is permitted to perform a factory reload.
+        boolean allowed =
+                ipAddr.startsWith("127.") || ipAddr.startsWith("10.") || ipAddr.startsWith("0:0:0:0:0:0:0:1%0");
+
+        final String[] ipaddress = null != siteConf.getProperty("sesat.factoryReload.ipaddresses.allowed")
+                ? siteConf.getProperty("sesat.factoryReload.ipaddresses.allowed").split(",")
+                : new String[]{};
+
+        for (String s : ipaddress) { allowed |= ipAddr.startsWith(s); }
+
+        if(!allowed){ LOG.warn("ipaddress " + ipAddr + "trying to performFactoryReload(..)"); }
+
+        if (allowed && null != reload && reload.length() > 0){
             try{
                 final ReloadArg arg = ReloadArg.valueOf(reload.toUpperCase());
                 FactoryReloads.performReloads(genericCxt, arg);

@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
 
             INSTANCES.put(context.getSite(), this);
             init();
-            
+
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
         }
@@ -122,9 +122,9 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                 loader.abut();
                 LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
                 final Document doc = loader.getDocument();
-                
+
                 assert null != doc : "No document loaded for " + context.getSite().getName();
-                
+
                 final Element root = doc.getDocumentElement();
                 if(null != root){
                     final NodeList evaluators = root.getElementsByTagName("evaluator");
@@ -135,14 +135,16 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                         final String tokenName = evaluator.getAttribute("token");
                         LOG.info(" ->evaluator@token: " + tokenName);
 
-                        final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                        final TokenPredicate token = null != TokenPredicate.Static.getTokenPredicate(tokenName)
+                                ? TokenPredicate.Static.getTokenPredicate(tokenName)
+                                : TokenPredicate.Static.createAnonymousTokenPredicate(tokenName, TokenPredicate.Type.REGEX);
 
                         final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
                         LOG.info(" ->evaluator@query-dependant: " + queryDep);
 
-                        final Collection compiled = new ArrayList();
+                        final Collection<Pattern> compiled = new ArrayList<Pattern>();
 
-                        final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
+                        final NodeList patterns = evaluator.getElementsByTagName("pattern");
                         for (int j = 0; j < patterns.getLength(); ++j) {
                             final Element pattern = (Element) patterns.item(j);
 
@@ -204,7 +206,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      * @return the RegExpTokenEvaluator to use.
      */
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
-        
+
         TokenEvaluator result = regExpEvaluators.get(token);
         if(result == null && null != context.getSite().getParent()){
 

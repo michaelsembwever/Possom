@@ -29,7 +29,7 @@ import java.util.List;
 /**
  *
  * @param T 
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public interface ResultList<T extends ResultItem> extends ResultItem{

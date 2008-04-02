@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +26,7 @@ import no.sesat.search.query.WordClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.site.Site;
+
 /**
  * Represent a word in the query. May contain the optional field (field:word).
  * May contain both character and digits but cannot contain only digits
@@ -48,26 +46,6 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
      */
     private static final Map<Site,ReferenceMap<String,WordClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,WordClauseImpl>>();
-
-    /* A WordClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-
-    static {
-        final Collection<TokenPredicate> predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Predicates from RegExpEvaluators
-        predicates.addAll(TokenPredicate.getMagicTokenPredicates());
-        predicates.addAll(TokenPredicate.getTriggerTokenPredicates());
-
-
-        predicates.add(TokenPredicate.COMPANYSUFFIX);
-        predicates.add(TokenPredicate.ORGNR);
-        predicates.add(TokenPredicate.SITEPREFIX);
-
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
-    }
 
     /**
      * Creator method for WordClauseImpl objects. By avoiding the constructors,
@@ -109,7 +87,7 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
                 term,
                 field,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, weakCache);
+                weakCache);
     }
 
     /**

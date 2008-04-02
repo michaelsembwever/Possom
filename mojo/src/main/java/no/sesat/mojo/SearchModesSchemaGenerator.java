@@ -16,68 +16,75 @@ import org.apache.maven.project.MavenProject;
  */
 public class SearchModesSchemaGenerator extends AbstractMojo {
 
-	/**
-	 * The maven project.
-	 * 
-	 * @parameter expression="${project}"
-	 * @required
-	 * @readonly
-	 * @description "the maven project to use"
-	 */
-	private MavenProject project;
+    /**
+     * The Maven project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     * @description "the maven project to use"
+     */
+    private MavenProject project;
 
-	/**
-	 * Classpath
-	 * 
-	 * @parameter
-	 */
-	private List<String> classpaths;
+    /**
+     * Classpath
+     *
+     * @parameter
+     */
+    private List<String> classpaths;
 
-	/**
-	 * Output directory
-	 * 
-	 * @parameter
-	 */
-	private String outputDir;
+    /**
+     * Output directory
+     *
+     * @parameter
+     */
+    private String outputDir;
 
-	public void execute() throws MojoExecutionException {
-		getLog().info(this.getClass().getName());
+    /**
+     * @see org.apache.maven.plugin.Mojo#execute()
+     */
+    public void execute() throws MojoExecutionException {
+        getLog().info(this.getClass().getName());
 
-		if (classpaths == null)
-			getLog().error("classpaths variable must be spesified");
+        if (classpaths == null) {
+            getLog().error("classpaths variable must be specified");
+        }
 
-		if (outputDir == null)
-			getLog().error("outputDir variable must be spesified");
+        if (outputDir == null) {
+            getLog().error("outputDir variable must be specified");
+        }
 
-		String classpath = "";
-		for (Iterator<String> iterator = classpaths.iterator(); iterator.hasNext();) {
-			String name = (String) iterator.next();
-			File file = new File(name);
-			if (!file.isAbsolute()) {
-				file = new File(project.getBasedir(), name);
-			}
-			if (file.exists()) {
-				try {
-					classpath += file.getCanonicalPath() + File.separator;
-				} catch (IOException e) {
-					getLog().warn(e);
-				}
-				if (iterator.hasNext())
-					classpath += File.pathSeparator;
-			} else {
-				getLog().warn("Classpath not found : " + file.getAbsolutePath());
-			}
-		}
+        String classpath = "";
+        for (final Iterator<String> iterator = classpaths.iterator(); iterator.hasNext();) {
+            final String name = iterator.next();
+            File file = new File(name);
+            if (!file.isAbsolute()) {
+                file = new File(project.getBasedir(), name);
+            }
+            if (file.exists()) {
+                try {
+                    classpath += file.getCanonicalPath() + File.separator;
+                } catch (IOException e) {
+                    getLog().warn(e);
+                }
+                if (iterator.hasNext()) {
+                    classpath += File.pathSeparator;
+                }
+            } else {
+                getLog().warn("Classpath not found : " + file.getAbsolutePath());
+            }
+        }
 
-		File outputDirFile = new File(outputDir);
-		if (!outputDirFile.isAbsolute())
-			outputDirFile = new File(project.getBasedir(), outputDir);
+        File outputDirFile = new File(outputDir);
+        if (!outputDirFile.isAbsolute()) {
+            outputDirFile = new File(project.getBasedir(), outputDir);
+        }
 
-		outputDir = outputDirFile.getAbsolutePath();
+        outputDir = outputDirFile.getAbsolutePath();
 
-		getLog().info("Using: classpath = " + classpath);
-		getLog().info("Using: outputDir = " + outputDir);
+        getLog().info("Using: classpath = " + classpath);
+        getLog().info("Using: outputDir = " + outputDir);
 
-		Builder.Build(classpath, outputDir);
-	}
+        Builder.build(classpath, outputDir, project.getName());
+    }
 }

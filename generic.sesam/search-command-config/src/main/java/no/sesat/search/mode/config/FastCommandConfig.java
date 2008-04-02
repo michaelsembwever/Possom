@@ -106,11 +106,13 @@ public class FastCommandConfig extends CommandConfig {
     }
 
     /**
-     *
-     * @param collectionName
+     * @param collectionArray
+     *            Add collections to this configuration.
      */
-    public void addCollection(final String collectionName) {
-        collections.add(collectionName);
+    public void addCollections(final String[] collectionArray) {
+        for (String string : collectionArray) {
+            collections.add(string);
+        }
     }
 
     /**
@@ -178,14 +180,16 @@ public class FastCommandConfig extends CommandConfig {
     }
 
     /**
-     *
-     * @param parameterName
-     * @param parameterValue
+     * @param parameters
+     *            Add search parameters
      */
-    public void setParameter(final String parameterName, final String parameterValue) {
-        searchParameters.put(parameterName, parameterValue);
+    public void setSearchParameters(final String[] parameters) {
+        for (String parameter : parameters) {
+            final String[] paramSplit = parameter.split("=");
+            searchParameters.put(paramSplit[0].trim(), paramSplit[1].trim());
+        }
     }
-
+    
     /**
      *
      * @return
@@ -531,24 +535,17 @@ public class FastCommandConfig extends CommandConfig {
 
         // collections
         if (element.getAttribute("collections").length() > 0) {
-            final String[] collections = element.getAttribute("collections").split(",");
-            for (String collection : collections) {
-                addCollection(collection);
-            }
+            addCollections(element.getAttribute("collections").split(","));
         }else if(null != fscInherit){
             collections.addAll(fscInherit.getCollections());
         }
-        
+
         // search parameters
         if(null != fscInherit){
             searchParameters.putAll(fscInherit.getSearchParameters());
         }
         if (element.getAttribute("search-parameters").length() > 0) {
-            final String[] parameters = element.getAttribute("search-parameters").split(",");
-            for (String parameter : parameters) {
-                final String[] paramSplit = parameter.split("=");
-                setParameter(paramSplit[0], paramSplit[1]);
-            }
+            setSearchParameters(element.getAttribute("search-parameters").split(","));
         }
 
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "");

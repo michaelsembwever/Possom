@@ -38,7 +38,7 @@ import no.sesat.search.result.ResultList;
  * 
  * The argument must be a ResultList instance.
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class HitCountDirective extends AbstractDirective {

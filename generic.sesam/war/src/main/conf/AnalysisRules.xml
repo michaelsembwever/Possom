@@ -342,7 +342,6 @@
         <score predicate="priocompanyNameWithoutFirstNameAndGeo">400</score>
         <score predicate="exactWiki-notCompanyUnlessFullname">300</score>
         <score predicate="NEWS_TRIGGER">250</score>
-        <score predicate="ALWAYSTRUE">100</score>
         <score predicate="companyNameWithoutPrioCompanyName">-20</score>
         <score predicate="tnsOrCompanyNotPerson">-20</score>
         <score predicate="anyMagic">-500</score>

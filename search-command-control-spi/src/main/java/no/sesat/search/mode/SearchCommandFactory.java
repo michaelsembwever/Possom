@@ -38,7 +38,7 @@ import no.sesat.search.site.config.Spi;
 
 /** This factory creates the appropriate command for a given SearchConfiguration.
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id: SearchCommandFactory.java 3359 2006-08-03 08:13:22Z mickw $
  */
 public final class SearchCommandFactory {

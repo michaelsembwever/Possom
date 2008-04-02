@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ public interface TokenEvaluationEngine {
      *
      * @param token
      * @return
+     * @throws no.sesat.search.query.token.VeryFastListQueryException TODO remove this throws
      */
     TokenEvaluator getEvaluator(TokenPredicate token) throws VeryFastListQueryException;
 
@@ -71,22 +72,37 @@ public interface TokenEvaluationEngine {
      */
     String getQueryString();
 
-     /** TODO comment me. **/
+     /**
+      *
+      * @return
+      */
     Site getSite();
 
     /** Utility method to perform one-off evaluations on terms from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
-     **/
+     *
+     * @param predicate
+     * @param term
+     * @return
+     */
     boolean evaluateTerm(TokenPredicate predicate, String term);
 
     /** Utility method to perform one-off evaluations on clauses from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
-     **/
+     *
+     * @param predicate
+     * @param clause
+     * @return
+     */
     boolean evaluateClause(TokenPredicate predicate, Clause clause);
 
     /** Utility method to perform one-off evaluations on queries from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
-     **/
+     *
+     * @param predicate
+     * @param query
+     * @return
+     */
     boolean evaluateQuery(TokenPredicate predicate, Query query);
 
     Thread getOwningThread();

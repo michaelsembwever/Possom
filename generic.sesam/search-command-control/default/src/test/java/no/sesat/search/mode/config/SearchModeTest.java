@@ -60,9 +60,8 @@ public final class SearchModeTest extends DataModelTestCase {
 
         webCrawl.setName("test-fast-search-configuration");
         webCrawl.setQueryServerUrl("queryServerURL.1");
-        webCrawl.addCollection("webcrawlno1");
-        webCrawl.addCollection("webcrawlno1deep1");
-        webCrawl.addCollection("webcrawlno2");
+        webCrawl.addCollections(new String[]{"webcrawlno1", "webcrawlno1deep1"});
+        webCrawl.addCollections(new String[]{"webcrawlno2"});
 //        webCrawl.addResultHandler(new TextOutputResultHandler());
         webCrawl.addResultField("url");
         webCrawl.addResultField("title");

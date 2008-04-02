@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,11 +23,7 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
@@ -48,7 +44,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractClause implements Clause {
-    
+
     private static final Logger LOG = Logger.getLogger(AbstractClause.class);
     /**
      * Error message when reflection cannot find the required constructor.
@@ -114,13 +110,10 @@ public abstract class AbstractClause implements Clause {
      *
      * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @param predicates2check the complete list of predicates that could apply
      *   to the current clause we are finding predicates for.
-     * @return 
+     * @return
      */
-    protected static final boolean findPredicates(
-            final TokenEvaluationEngine engine,
-            final Collection<TokenPredicate> predicates2check) {
+    protected static final boolean findPredicates(final TokenEvaluationEngine engine) {
 
         boolean success = true;
 
@@ -129,7 +122,7 @@ public abstract class AbstractClause implements Clause {
         final String currTerm = engine.getState().getTerm();
 
 
-        for (TokenPredicate token : predicates2check) {
+        for (TokenPredicate token : TokenPredicate.Static.getTokenPredicates()) {
 
             // check it hasn't already been added
             if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){

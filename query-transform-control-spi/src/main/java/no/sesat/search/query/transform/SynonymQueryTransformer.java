@@ -84,8 +84,8 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
     private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
             Arrays.asList(
-                TokenPredicate.STOCKMARKETFIRMS,
-                TokenPredicate.STOCKMARKETTICKERS
+                (TokenPredicate)TokenPredicate.Categories.STOCKMARKETFIRMS,
+                (TokenPredicate)TokenPredicate.Categories.STOCKMARKETTICKERS
             ));
 
     /** Synonym expansion are only performed for clauses matching the predicates
@@ -218,7 +218,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             if (customPredicates == null && predicateNames != null && predicateNames.size() > 0) {
                 final Collection<TokenPredicate> cp = new ArrayList<TokenPredicate>();
                 for (String tp : predicateNames) {
-                    cp.add(TokenPredicate.valueOf(tp));
+                    cp.add(TokenPredicate.Static.getTokenPredicate(tp));
                 }
                 customPredicates = Collections.unmodifiableCollection(cp);
             }

@@ -264,19 +264,13 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         Predicate result = null;
         // first check our predicateMap
         if (predicateMap.containsKey(name)) {
-            result = (Predicate) predicateMap.get(name);
+            result = predicateMap.get(name);
         } else if (parentPredicateMap.containsKey(name)) {
-            result = (Predicate) parentPredicateMap.get(name);
+            result = parentPredicateMap.get(name);
         } else {
             // second check TokenPredicate enumerations.
-            try  {
-                result = (Predicate) TokenPredicate.class.getField(name).get(null);
+            result = TokenPredicate.Static.getTokenPredicate(name);
 
-            }  catch (NoSuchFieldException ex) {
-                LOG.error(ERR_UNABLE_TO_FIND_PREDICATE + name, ex);
-            }  catch (IllegalAccessException ex) {
-                LOG.error(ERR_UNABLE_TO_FIND_PREDICATE + name, ex);
-            }
 
         }
 

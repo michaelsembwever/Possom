@@ -24,7 +24,7 @@ package no.sesat.search.result;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public class BasicNavigationItem extends BasicResultList<NavigationItem> implements NavigationItem{

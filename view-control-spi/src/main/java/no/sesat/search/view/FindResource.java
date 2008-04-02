@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 /** https://jira.sesam.no/jira/browse/SEARCH-3452
  * Move 302 resource redirects to internal resource directives
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class FindResource {

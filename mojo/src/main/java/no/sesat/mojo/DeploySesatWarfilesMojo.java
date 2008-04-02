@@ -75,7 +75,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
  * TODO abstract override of parameters from CopyMojo.
  *
  * @goal deploy
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextualizable{

@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,19 +53,6 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
     private static final Map<Site,ReferenceMap<String,AndNotClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,AndNotClauseImpl>>();
 
-    /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-
-    static {
-        final Collection<TokenPredicate> predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Predicates from RegExpEvaluators
-
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
-    }
-
     /**
      * Creator method for AndNotClauseImpl objects. By avoiding the constructors,
      * and assuming all AndNotClauseImpl objects are immutable, we can keep track
@@ -79,7 +63,6 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      *
      *
      * @param first the left child clause of the operation clause we are about to create (or find).
-     * @param second the right child clause of the operation clause we are about to create (or find).
      * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @return returns a AndAndNotClauseImplstance matching the term, left and right child clauses.
@@ -122,7 +105,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                     first,
                     null,
                     engine,
-                    PREDICATES_APPLICABLE, weakCache);
+                    weakCache);
 
         }finally{
             engine.setState(null);

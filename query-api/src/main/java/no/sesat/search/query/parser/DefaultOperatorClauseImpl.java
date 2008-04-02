@@ -18,9 +18,6 @@
 package no.sesat.search.query.parser;
 
 import java.lang.ref.Reference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,18 +50,6 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
      */
     private static final Map<Site,ReferenceMap<String,DefaultOperatorClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,DefaultOperatorClauseImpl>>();
-
-    /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-
-    static {
-        final Collection<TokenPredicate> predicates = new ArrayList<TokenPredicate>();
-
-        // Add all TokenPredicates. Unfortunately we have no way of globally knowing
-        //  which TokenPredicates can be multi-term (multi-word) matches.
-        predicates.addAll(TokenPredicate.getTokenPredicates());
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
-    }
 
     private final Clause secondClause;
 
@@ -129,7 +114,7 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
                     first,
                     second,
                     engine,
-                    PREDICATES_APPLICABLE, weakCache);
+                    weakCache);
 
         }finally{
             engine.setState(null);

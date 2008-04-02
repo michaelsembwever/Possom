@@ -28,7 +28,7 @@ import no.sesat.search.query.Query;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  */
 public class EvaluationState implements TokenEvaluationEngine.State{
     

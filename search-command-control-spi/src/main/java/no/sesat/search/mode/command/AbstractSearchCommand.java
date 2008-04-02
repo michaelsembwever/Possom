@@ -814,7 +814,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 final TokenEvaluationEngine engine = getEngine();
                 for (String fieldFilter : fieldFilters.keySet()) {
                     try {
-                        final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
+                        final TokenPredicate tp = TokenPredicate.Static.getTokenPredicate(fieldFilter);
                         // if the field is the token then mask the field and include the term.
                         // XXX why are we checking the known and possible predicates?
                         boolean result = clause.getKnownPredicates().contains(tp);

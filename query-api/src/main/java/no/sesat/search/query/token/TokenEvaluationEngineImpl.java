@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -87,9 +87,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     /**
      * Create a new TokenEvaluationEngine.
      *
-     * @param query
-     * @param params
-     * @param properties
+     * @param cxt
      */
     public TokenEvaluationEngineImpl(final Context cxt) {
 
@@ -105,30 +103,24 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         jedEvaluator = new JepTokenEvaluator(context.getQueryString());
     }
 
-    /** @inherit **/
+
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws VeryFastListQueryException {
 
-        switch(token.getType()){
-            case GENERIC:
-                switch(token){
-                    case ALWAYSTRUE:
-                        return ALWAYS_TRUE_EVALUATOR;
-                    default:
-                        throw new IllegalArgumentException(ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL + token);
-                }
-            case FAST:
-                return getFastEvaluator();
-            case REGEX:
-                return RegExpEvaluatorFactory.instanceOf(
+        // TODO clean up when implementing SEARCH-3540. can be configured through annotations.
+        if(TokenPredicate.Type.FAST == token.getType()){
+            return getFastEvaluator();
+
+        }else if(TokenPredicate.Type.REGEX == token.getType()){
+            return RegExpEvaluatorFactory.instanceOf(
                         ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class,context)).getEvaluator(token);
-            case JEP:
-                return jedEvaluator;
-            default:
-                throw new IllegalArgumentException(ERR_TOKENTYPE_WIHOUT_IMPL + token);
+
+        }else if(TokenPredicate.Type.JEP == token.getType()){
+            return jedEvaluator;
+
         }
+        throw new IllegalArgumentException(ERR_TOKENTYPE_WIHOUT_IMPL + token);
     }
 
-    /** @inherit **/
     public String getQueryString() {
         return context.getQueryString();
     }
@@ -152,31 +144,26 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         return fastEvaluator;
     }
 
-    /** @inherit **/
     public Site getSite() {
         return context.getSite();
     }
 
-    /** @inherit **/
     public synchronized boolean evaluateTerm(final TokenPredicate predicate, final String term) {
 
         return evaluateImpl(predicate, new EvaluationState(term, Collections.EMPTY_SET, Collections.EMPTY_SET));
     }
 
-    /** @inherit **/
     public synchronized boolean evaluateClause(final TokenPredicate predicate, final Clause clause) {
 
         return evaluateImpl(predicate, new EvaluationState(clause));
     }
 
-    /** @inherit **/
     public synchronized boolean evaluateQuery(final TokenPredicate predicate, final Query query) {
 
         return evaluateImpl(predicate, query.getEvaluationState());
     }
 
-    private boolean evaluateImpl(
-            final TokenPredicate predicate, final State state) {
+    private boolean evaluateImpl(final TokenPredicate predicate, final State state) {
 
         final Thread origThread = owningThread;
         try{
@@ -212,18 +199,10 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     }
 
-    /**
-     * Getter for property state.
-     * @return Value of property state.
-     */
     public State getState() {
         return state;
     }
 
-    /**
-     * Setter for property state.
-     * @param state New value of property state.
-     */
     public void setState(final State state) {
         this.state = state;
     }

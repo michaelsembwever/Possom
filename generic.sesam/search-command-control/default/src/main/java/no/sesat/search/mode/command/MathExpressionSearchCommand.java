@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
         try{
             final Complex result = ((JepTokenEvaluator)getEngine()
-                    .getEvaluator(TokenPredicate.MATHPREDICATE))
+                    .getEvaluator(TokenPredicate.Categories.MATHPREDICATE))
                     .getComplex();
 
             if (result != null) {

@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,449 +17,61 @@
 package no.sesat.search.query.token;
 
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.apache.commons.collections.Predicate;
 
-/** A Categorisation of knowledge that attaches itself 
+/** A Categorisation of knowledge that attaches itself
  *   as meta-data to words and groups of words (clauses) within a query. <br/><br/>
- * The break down of these categories should roughly follow what is found at 
- *   http://en.wikipedia.org/wiki/Portal:Contents/Categorical_index
- * 
+ *
  *  <br/><br/>
  * Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
  * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
  *
+ * @todo improve design. inner classes providing functionality inside an interface is frowned upon.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-public enum TokenPredicate implements Predicate {
-
-    // Common predicates.
-
-    /** @deprecated this is silly. there are better ways to accomplish this, eg enrichment's baseScore. */
-    ALWAYSTRUE (Type.GENERIC),
-
-    // Fast TokenPredicates
-    //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
-    // TODO make ExactFast tokens a separate Type referencing the original Fast token.
-
-    /** */
-    ANIMAL (Type.FAST),
-    /** @deprecated FIXME!! What is blocket? we do not put specific names into this list */
-    BLOCKET (Type.FAST),
-    /** @todo rename to COMPANY_CATEGORY **/
-    CATEGORY (Type.FAST),
-    /** */
-    CELEBRITY (Type.FAST),
-    /** */
-    EXACT_CELEBRITY (Type.FAST),
-    /** */
-    COMPANYBRANCH (Type.FAST),
-    /** */
-    COMPANYBRANCHKEYWORD (Type.FAST),
-    /** */
-    CLASSIFIED_CATEGORY (Type.FAST),
-    /** */
-    COMPANY_CHAIN (Type.FAST),
-    /** @todo rename to just COMPANY */
-    COMPANYENRICHMENT (Type.FAST),
-    /** */
-    EXACT_COMPANYENRICHMENT (Type.FAST),
-    /** */
-    COMPANY_KEYWORD (Type.FAST),
-    /** */
-    COMPANY_KEYWORD_RESERVED (Type.FAST),
-    /** */
-    BIGCOMPANY (Type.FAST),
-    /** */
-    EXACT_BIGCOMPANY (Type.FAST),
-    /** */
-    DISEASE (Type.FAST),
-    /** */
-    ENGLISHWORDS (Type.FAST),
-    /** */
-    GEOLOCAL (Type.FAST),
-    /** */
-    GEOGLOBAL (Type.FAST),
-    /** */
-    EXACT_GEOLOCAL (Type.FAST),
-    /** */
-    EXACT_GEOGLOBAL (Type.FAST),
-    /** */
-    GEO_BOROUGH (Type.FAST),
-    /** */
-    GEO_COUNTY (Type.FAST),
-    /** */
-    GEO_STREET (Type.FAST),
-    /** */
-    GEO_MUNICIPALITY (Type.FAST),
-    /** */
-    GEO_AREA (Type.FAST),
-    /** */
-    GEO_ZIPCODE (Type.FAST),
-    /** */
-    GEO_POSTALPLACE (Type.FAST), /** TODO: RENAME! */
-    /** */
-    FIRSTNAME (Type.FAST),
-    /** */
-    FOOD (Type.FAST),
-    /** */
-    EXACT_FIRST (Type.FAST),
-    /** */
-    FULLNAME (Type.FAST),
-    /** */
-    EXACT_FULLNAME (Type.FAST),
-    /** */
-    LASTNAME (Type.FAST),
-    /** */
-    EXACT_LAST (Type.FAST),
-    /** */
-    MATERIAL (Type.FAST),
-    /** @deprecated remove. use MOVIE_TITLE TokenPredicates instead. */
-    MOVIE (Type.FAST),
-    /** @deprecated remove. use EXACT_MOVIE_TITLE TokenPredicates instead. */
-    EXACT_MOVIE (Type.FAST),
-    /** */
-    MOVIE_TITLE(Type.FAST),
-    /** */
-    EXACT_MOVIE_TITLE(Type.FAST),
-    /** */
-    MOVIE_ACTOR(Type.FAST),
-    /** */
-    EXACT_MOVIE_ACTOR(Type.FAST),
-    /** */
-    MOVIE_DIRECTOR(Type.FAST),
-    /** */
-    EXACT_MOVIE_DIRECTOR(Type.FAST),
-    /** */
-    NEWSCASE (Type.FAST),
-    /** */
-    NOPICTURE (Type.FAST),
-    /** */
-    PICTURE (Type.FAST),
-    /** */
-    EXACT_PICTURE (Type.FAST),
-    /** */
-    PRIOCOMPANYNAME (Type.FAST),
-    /** */
-    EXACT_PRIOCOMPANYNAME (Type.FAST),
-    /** */
-    PRODUCT_BICYCLE (Type.FAST),
-    /** */
-    PRODUCT_CAR (Type.FAST),
-    /** */
-    EXACT_PRODUCT_CAR (Type.FAST),
-    /** */
-    PRODUCT_CHILDREN (Type.FAST),
-    /** */
-    PRODUCT_CLOTHING (Type.FAST),
-    /** */
-    PRODUCT_CONSTRUCTION (Type.FAST),
-    /** */
-    PRODUCT_COSTUME (Type.FAST),
-    /** */
-    PRODUCT_ELECTRONIC (Type.FAST),
-    /** */
-    PRODUCT_FURNITURE (Type.FAST),
-    /** */
-    PRODUCT_GARDEN (Type.FAST),
-    /** */
-    PRODUCT_HOBBY (Type.FAST),
-    /** */
-    PRODUCT_HOUSEHOLD (Type.FAST),
-    /** */
-    PRODUCT_JEWELRY (Type.FAST),
-    /** */
-    PRODUCT_MOTOR (Type.FAST),
-    /** */
-    PRODUCT_MUSIC (Type.FAST),
-    /** */
-    PRODUCT_SHOE (Type.FAST),
-    /** */
-    PRODUCT_SPORT (Type.FAST),
-    /** */
-    PRODUCT_WATCH (Type.FAST),
-    /** */
-    PRODUCT_WEAPON (Type.FAST),
-    /** */
-    PRODUCT_TORGET (Type.FAST),
-    /** */
-    PROFESSION(Type.FAST),
-    /** */
-    EXACT_PROFESSION(Type.FAST),
-    /** */
-    OCEAN (Type.FAST),
-    /** */
-    EXACT_TOP3 (Type.FAST),
-    /** */
-    EXACT_PPCTOPLIST (Type.FAST),
-    /** */
-    STOCKMARKETTICKERS (Type.FAST),
-    /** */
-    STOCKMARKETFIRMS (Type.FAST),
-    /** */
-    EXACT_STOCKMARKETTICKERS (Type.FAST),
-    /** */
-    EXACT_STOCKMARKETFIRMS (Type.FAST),
-    /** */
-    STYLE (Type.FAST),
-    /** */
-    TNS (Type.FAST),
-    /** */
-    EXACT_TNS (Type.FAST),
-    /** */
-    TVPROGRAM (Type.FAST),
-    /** */
-    EXACT_TVPROGRAM (Type.FAST),
-    /** */
-    TVCHANNEL (Type.FAST),
-    /** */
-    TRADEMARK (Type.FAST),
-    /** */
-    WIKIPEDIA (Type.FAST),
-    /** */
-    EXACT_WIKI (Type.FAST),
-    /** */
-
-    ARTIST (Type.FAST),
-    EXACT_ARTIST (Type.FAST),
-    FICTION_CHARACTER (Type.FAST),
-    EXACT_FICTION_CHARACTER (Type.FAST),
-    MOTOR_SPORT (Type.FAST),
-    EXACT_MOTOR_SPORT (Type.FAST),
-    PUBLIC_SERVICE_BROADCASTING (Type.FAST),
-    EXACT_PUBLIC_SERVICE_BROADCASTING (Type.FAST),
-
-    IMAGES (Type.FAST),
-    /** */
-    EXACT_IMAGE (Type.FAST),
-    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
-    PRISJAKT_CATEGORIES_AND_MANUFACTURERS (Type.FAST),
-    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
-    PRISJAKT_CATEGORIES (Type.FAST),
-    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
-    PRISJAKT_MANUFACTURERS (Type.FAST),
-    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
-    PRISJAKT_PRODUCTS (Type.FAST),
-    /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
-    PRISJAKT_SHOPS (Type.FAST),
-
-
-    // RegExp TokenPredicates -- magic words
-    BOOK_MAGIC (Type.REGEX),
-    /** */
-    CATALOGUE_MAGIC (Type.REGEX),
-    /** */
-    EXACT_CATALOGUE_MAGIC (Type.REGEX),
-    /** */
-    CLASSIFIED_MAGIC (Type.REGEX),
-    /** */
-    EXACT_CLASSIFIED_MAGIC (Type.REGEX),
-    /** */
-    CULTURE_MAGIC (Type.REGEX),
-    /** */
-    MOVIE_MAGIC (Type.REGEX),
-    /** */
-    NEWS_MAGIC (Type.REGEX),
-    /** */
-    EXACT_NEWS_MAGIC (Type.REGEX),
-    /** */
-    OCEAN_MAGIC (Type.REGEX),
-    /** */
-    PICTURE_MAGIC (Type.REGEX),
-    /** */
-    EXACT_PICTURE_MAGIC (Type.REGEX),
-    /** */
-    VIDEO_MAGIC (Type.REGEX),
-    /** */
-    EXACT_VIDEO_MAGIC (Type.REGEX),
-    /** */
-    RECEIPE_MAGIC (Type.REGEX),
-    /** */
-    SKIINFO_MAGIC (Type.REGEX),
-    /** */
-    STOCK_MAGIC (Type.REGEX),
-    /** */
-    EXACT_STOCK_MAGIC (Type.REGEX),
-    /** */
-    TV_MAGIC (Type.REGEX),
-    /** */
-    EXACT_TV_MAGIC (Type.REGEX),
-    /** */
-    WEATHER_MAGIC (Type.REGEX),
-    /** */
-    EXACT_WEATHER_MAGIC (Type.REGEX),
-    /** */
-    WEBTV_MAGIC (Type.REGEX),
-    /** */
-    EXACT_WEBTV_MAGIC (Type.REGEX),
-    /** */
-    WHITE_MAGIC (Type.REGEX),
-    /** */
-    EXACT_WHITE_MAGIC (Type.REGEX),
-    /** */
-    WIKIPEDIA_MAGIC (Type.REGEX),
-    /** */
-    EXACT_WIKIPEDIA_MAGIC (Type.REGEX),
-    /** */
-    YELLOW_MAGIC (Type.REGEX),
-    /** */
-    EXACT_YELLOW_MAGIC (Type.REGEX),
-    /** */
-    MAP_MAGIC(Type.REGEX),
-    /** */
-    EXACT_MAP_MAGIC (Type.REGEX),
-    /** */
-    BLOG_MAGIC (Type.REGEX),
-    /** */
-    EXACT_BLOG_MAGIC (Type.REGEX),
-    
-
-    // RegExp TokenPredicates -- trigger words/phrases
-    CATALOGUE_TRIGGER (Type.REGEX),
-    /** */
-    CLASSIFIED_TRIGGER (Type.FAST),
-    /** */
-    LOAN_TRIGGER (Type.REGEX),
-    /** */
-    NEWS_TRIGGER (Type.REGEX),
-    /** */
-    OCEAN_TRIGGER(Type.REGEX),
-    /** */
-    PICTURE_TRIGGER (Type.REGEX),
-    /** */
-    VIDEO_TRIGGER (Type.REGEX),
-    /** */
-    SKIINFO_TRIGGER (Type.REGEX),
-    /** */
-    SUDOKU_TRIGGER (Type.REGEX),
-    /** */
-    TV_TRIGGER (Type.REGEX),
-    /** */
-    WEATHER_TRIGGER (Type.REGEX),
-    /** */
-    /** */
-    WIKIPEDIA_TRIGGER (Type.REGEX),
-
-    // RegExp TokenPredicates -- prefixes
-    /** */
-    SITEPREFIX (Type.REGEX),
-
-    // RegExp TokenPredicates -- suffixes
-    /** */
-    COMPANYSUFFIX (Type.REGEX),
-
-    // RegExp TokenPredicates -- general expression
-    /** */
-    ORGNR (Type.REGEX),
-    /** */
-    PHONENUMBER (Type.REGEX),
-    /** */
-    ONLYSKIINFO (Type.REGEX),
-    /** */
-    EMPTYQUERY (Type.REGEX),
-
-    /** JepTokenPredicate. **/
-    MATHPREDICATE (Type.JEP);
+public interface TokenPredicate extends Predicate, Serializable{
 
     /** The types of TokenPredicates that exist.
+     * @todo will need to become a class that can be extended. SEARCH-3540. a mapping to the Evaluation implementation.
      */
-    public enum Type { GENERIC, FAST, REGEX, JEP }
+    public static final class Type implements Serializable{
+        
+        public static final Type FAST = new Type("FAST", VeryFastTokenEvaluator.class);
+        public static final Type REGEX = new Type("REGEX", RegExpTokenEvaluator.class);
+        public static final Type JEP = new Type("JEP", JepTokenEvaluator.class);
 
-    /**
-     * Because the enum declarations must come first and they are static,
-     *      their constructor when referencing other static members are referencing them
-     *      before they themselves have been statically initialised.
-     * That is without the wrapping class declaration to FAST_TOKENS it would have a value
-     *      of null when referenced to in the constructor.
-     * By wrapping it inside an inner class because all static initialisors of the inner class are run first
-     *      it ensures FAST_TOKENS will not be null.
-     **/
-    private static final class Static{
-        public static final Set<TokenPredicate> MAGIC_TOKENS = new HashSet<TokenPredicate>();
-        public static final Set<TokenPredicate> TRIGGER_TOKENS = new HashSet<TokenPredicate>();
-        public static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
-    }
+        private final String name;
+        private final Class<? extends TokenEvaluator> cls;
 
-    // instance fields
+        public Type(final String name, final Class<? extends TokenEvaluator> cls){
 
-    private final Type type;
-
-
-    private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
-            = "Argument to evaluate must be an instance of a TokenEvaluationEngine";
-    private static final String ERR_TOKEN_NOT_FOUND = "Token argument not found ";
-    private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS
-            = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
-    private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
-
-    /**
-     * Create a new TokenPredicate that will return true if it applies to the
-     * query.
-     *
-     * @param type     the fastListName type.
-     */
-    TokenPredicate(final Type type) {
-
-        this.type = type;
-
-        switch(type){
-            case REGEX:
-                if(name().endsWith("_MAGIC")){
-                    Static.MAGIC_TOKENS.add(this);
-
-                }else if(name().endsWith("_TRIGGER")){
-                    Static.TRIGGER_TOKENS.add(this);
-                }
-                break;
-            case FAST:
-                Static.FAST_TOKENS.add(this);
-                break;
-            default:
-                break;
+            this.name = name;
+            this.cls = cls;
+            TokenPredicateImpl.TOKENS_BY_TYPE.put(this, new CopyOnWriteArraySet<TokenPredicate>());
         }
     }
 
-    /**
+    /** The name of the TokenPredicate. Must be uppercase. Must be unique across all skins.
+     * 
+     * @return TokenPredicate name.
+     */
+    String name();
+
+    /** The type of the TokenPredicate. TokenEvaluationEngine will use this to determine which TokenEvaluator to use.
      *
-     * @return
+     * @return the type
      */
-    public Type getType(){
-        return type;
-    }
-
-    /** Utility method to use all TokenPredicates in existence.
-     * @return
-     */
-    public static Collection<TokenPredicate> getTokenPredicates() {
-        return Collections.unmodifiableCollection(Arrays.asList(values()));
-    }
-
-    /** Utility method to use all FastTokenPredicates in existence.
-     * @return
-     */
-    public static Set<TokenPredicate> getFastTokenPredicates() {
-        return Collections.unmodifiableSet(Static.FAST_TOKENS);
-    }
-
-    /** Utility method to use all MagicTokenPredicates in existence.
-     * @return
-     */
-    public static Set<TokenPredicate> getMagicTokenPredicates() {
-        return Collections.unmodifiableSet(Static.MAGIC_TOKENS);
-    }
-
-    /** Utility method to use all TriggerTokenPredicates in existence.
-     * @return
-     */
-    public static Set<TokenPredicate> getTriggerTokenPredicates() {
-        return Collections.unmodifiableSet(Static.TRIGGER_TOKENS);
-    }
-
+    Type getType();
+    
     /**
      * Evaluates to true if fastListName occurs in the query. This method uses a
      * TokenEvaluationEngine to get a TokenEvaluator.
@@ -472,59 +84,583 @@ public enum TokenPredicate implements Predicate {
      * @return true if, according to the TokenEvaluator provided by the
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
-    public boolean evaluate(final Object evalFactory) {
-        // pre-condition checks
-        if (! (evalFactory instanceof TokenEvaluationEngine)) {
-            throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
+    boolean evaluate(Object evalFactory);
+    
+    
+    
+    // Inner Classes -----------------------------------------------------
+
+    /** A formalised breakdown of metadata categories that search terms can match.
+     *
+     * The break down of these categories should roughly follow what is found at
+     *   http://en.wikipedia.org/wiki/Portal:Contents/Categorical_index
+     */
+    enum Categories implements TokenPredicate {
+
+        // Categorical TokenPredicates
+        // TODO make ExactFast tokens a separate Type referencing the original Fast token. SEARCH-4408.
+        // TODO determine type automatically. skins maybe choose an alternative type. SEARCH-3540.
+
+        /** */
+        ANIMAL (Type.FAST),
+        /** @deprecated FIXME!! What is blocket? we do not put specific names into this list */
+        BLOCKET (Type.FAST),
+        /** @todo rename to COMPANY_CATEGORY **/
+        CATEGORY (Type.FAST),
+        /** */
+        CELEBRITY (Type.FAST),
+        /** */
+        EXACT_CELEBRITY (Type.FAST),
+        /** */
+        COMPANYBRANCH (Type.FAST),
+        /** */
+        COMPANYBRANCHKEYWORD (Type.FAST),
+        /** */
+        CLASSIFIED_CATEGORY (Type.FAST),
+        /** */
+        COMPANY_CHAIN (Type.FAST),
+        /** @todo rename to just COMPANY */
+        COMPANYENRICHMENT (Type.FAST),
+        /** */
+        EXACT_COMPANYENRICHMENT (Type.FAST),
+        /** */
+        COMPANY_KEYWORD (Type.FAST),
+        /** */
+        COMPANY_KEYWORD_RESERVED (Type.FAST),
+        /** */
+        BIGCOMPANY (Type.FAST),
+        /** */
+        EXACT_BIGCOMPANY (Type.FAST),
+        /** */
+        DISEASE (Type.FAST),
+        /** */
+        ENGLISHWORDS (Type.FAST),
+        /** */
+        GEOLOCAL (Type.FAST),
+        /** */
+        GEOGLOBAL (Type.FAST),
+        /** */
+        EXACT_GEOLOCAL (Type.FAST),
+        /** */
+        EXACT_GEOGLOBAL (Type.FAST),
+        /** */
+        GEO_BOROUGH (Type.FAST),
+        /** */
+        GEO_COUNTY (Type.FAST),
+        /** */
+        GEO_STREET (Type.FAST),
+        /** */
+        GEO_MUNICIPALITY (Type.FAST),
+        /** */
+        GEO_AREA (Type.FAST),
+        /** */
+        GEO_ZIPCODE (Type.FAST),
+        /** */
+        GEO_POSTALPLACE (Type.FAST), /** TODO: RENAME! */
+        /** */
+        FIRSTNAME (Type.FAST),
+        /** */
+        FOOD (Type.FAST),
+        /** */
+        EXACT_FIRST (Type.FAST),
+        /** */
+        FULLNAME (Type.FAST),
+        /** */
+        EXACT_FULLNAME (Type.FAST),
+        /** */
+        LASTNAME (Type.FAST),
+        /** */
+        EXACT_LAST (Type.FAST),
+        /** */
+        MATERIAL (Type.FAST),
+        /** @deprecated remove. use MOVIE_TITLE TokenPredicates instead. */
+        MOVIE (Type.FAST),
+        /** @deprecated remove. use EXACT_MOVIE_TITLE TokenPredicates instead. */
+        EXACT_MOVIE (Type.FAST),
+        /** */
+        MOVIE_TITLE(Type.FAST),
+        /** */
+        EXACT_MOVIE_TITLE(Type.FAST),
+        /** */
+        MOVIE_ACTOR(Type.FAST),
+        /** */
+        EXACT_MOVIE_ACTOR(Type.FAST),
+        /** */
+        MOVIE_DIRECTOR(Type.FAST),
+        /** */
+        EXACT_MOVIE_DIRECTOR(Type.FAST),
+        /** */
+        NEWSCASE (Type.FAST),
+        /** */
+        NOPICTURE (Type.FAST),
+        /** */
+        PICTURE (Type.FAST),
+        /** */
+        EXACT_PICTURE (Type.FAST),
+        /** */
+        PRIOCOMPANYNAME (Type.FAST),
+        /** */
+        EXACT_PRIOCOMPANYNAME (Type.FAST),
+        /** */
+        PRODUCT_BICYCLE (Type.FAST),
+        /** */
+        PRODUCT_CAR (Type.FAST),
+        /** */
+        EXACT_PRODUCT_CAR (Type.FAST),
+        /** */
+        PRODUCT_CHILDREN (Type.FAST),
+        /** */
+        PRODUCT_CLOTHING (Type.FAST),
+        /** */
+        PRODUCT_CONSTRUCTION (Type.FAST),
+        /** */
+        PRODUCT_COSTUME (Type.FAST),
+        /** */
+        PRODUCT_ELECTRONIC (Type.FAST),
+        /** */
+        PRODUCT_FURNITURE (Type.FAST),
+        /** */
+        PRODUCT_GARDEN (Type.FAST),
+        /** */
+        PRODUCT_HOBBY (Type.FAST),
+        /** */
+        PRODUCT_HOUSEHOLD (Type.FAST),
+        /** */
+        PRODUCT_JEWELRY (Type.FAST),
+        /** */
+        PRODUCT_MOTOR (Type.FAST),
+        /** */
+        PRODUCT_MUSIC (Type.FAST),
+        /** */
+        PRODUCT_SHOE (Type.FAST),
+        /** */
+        PRODUCT_SPORT (Type.FAST),
+        /** */
+        PRODUCT_WATCH (Type.FAST),
+        /** */
+        PRODUCT_WEAPON (Type.FAST),
+        /** */
+        PRODUCT_TORGET (Type.FAST),
+        /** */
+        PROFESSION(Type.FAST),
+        /** */
+        EXACT_PROFESSION(Type.FAST),
+        /** */
+        OCEAN (Type.FAST),
+        /** */
+        EXACT_TOP3 (Type.FAST),
+        /** */
+        EXACT_PPCTOPLIST (Type.FAST),
+        /** */
+        STOCKMARKETTICKERS (Type.FAST),
+        /** */
+        STOCKMARKETFIRMS (Type.FAST),
+        /** */
+        EXACT_STOCKMARKETTICKERS (Type.FAST),
+        /** */
+        EXACT_STOCKMARKETFIRMS (Type.FAST),
+        /** */
+        STYLE (Type.FAST),
+        /** */
+        TNS (Type.FAST),
+        /** */
+        EXACT_TNS (Type.FAST),
+        /** */
+        TVPROGRAM (Type.FAST),
+        /** */
+        EXACT_TVPROGRAM (Type.FAST),
+        /** */
+        TVCHANNEL (Type.FAST),
+        /** */
+        TRADEMARK (Type.FAST),
+        /** */
+        WIKIPEDIA (Type.FAST),
+        /** */
+        EXACT_WIKI (Type.FAST),
+        /** */
+
+        ARTIST (Type.FAST),
+        EXACT_ARTIST (Type.FAST),
+        FICTION_CHARACTER (Type.FAST),
+        EXACT_FICTION_CHARACTER (Type.FAST),
+        MOTOR_SPORT (Type.FAST),
+        EXACT_MOTOR_SPORT (Type.FAST),
+        PUBLIC_SERVICE_BROADCASTING (Type.FAST),
+        EXACT_PUBLIC_SERVICE_BROADCASTING (Type.FAST),
+
+        IMAGES (Type.FAST),
+        /** */
+        EXACT_IMAGE (Type.FAST),
+        /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
+        PRISJAKT_CATEGORIES_AND_MANUFACTURERS (Type.FAST),
+        /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
+        PRISJAKT_CATEGORIES (Type.FAST),
+        /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
+        PRISJAKT_MANUFACTURERS (Type.FAST),
+        /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
+        PRISJAKT_PRODUCTS (Type.FAST),
+        /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
+        PRISJAKT_SHOPS (Type.FAST),
+
+
+        // RegExp TokenPredicates -- magic words
+        BOOK_MAGIC (Type.REGEX),
+        /** */
+        CATALOGUE_MAGIC (Type.REGEX),
+        /** */
+        EXACT_CATALOGUE_MAGIC (Type.REGEX),
+        /** */
+        CLASSIFIED_MAGIC (Type.REGEX),
+        /** */
+        EXACT_CLASSIFIED_MAGIC (Type.REGEX),
+        /** */
+        CULTURE_MAGIC (Type.REGEX),
+        /** */
+        MOVIE_MAGIC (Type.REGEX),
+        /** */
+        NEWS_MAGIC (Type.REGEX),
+        /** */
+        EXACT_NEWS_MAGIC (Type.REGEX),
+        /** */
+        OCEAN_MAGIC (Type.REGEX),
+        /** */
+        PICTURE_MAGIC (Type.REGEX),
+        /** */
+        EXACT_PICTURE_MAGIC (Type.REGEX),
+        /** */
+        VIDEO_MAGIC (Type.REGEX),
+        /** */
+        EXACT_VIDEO_MAGIC (Type.REGEX),
+        /** */
+        RECEIPE_MAGIC (Type.REGEX),
+        /** */
+        SKIINFO_MAGIC (Type.REGEX),
+        /** */
+        STOCK_MAGIC (Type.REGEX),
+        /** */
+        EXACT_STOCK_MAGIC (Type.REGEX),
+        /** */
+        TV_MAGIC (Type.REGEX),
+        /** */
+        EXACT_TV_MAGIC (Type.REGEX),
+        /** */
+        WEATHER_MAGIC (Type.REGEX),
+        /** */
+        EXACT_WEATHER_MAGIC (Type.REGEX),
+        /** */
+        WEBTV_MAGIC (Type.REGEX),
+        /** */
+        EXACT_WEBTV_MAGIC (Type.REGEX),
+        /** */
+        WHITE_MAGIC (Type.REGEX),
+        /** */
+        EXACT_WHITE_MAGIC (Type.REGEX),
+        /** */
+        WIKIPEDIA_MAGIC (Type.REGEX),
+        /** */
+        EXACT_WIKIPEDIA_MAGIC (Type.REGEX),
+        /** */
+        YELLOW_MAGIC (Type.REGEX),
+        /** */
+        EXACT_YELLOW_MAGIC (Type.REGEX),
+        /** */
+        MAP_MAGIC(Type.REGEX),
+        /** */
+        EXACT_MAP_MAGIC (Type.REGEX),
+        /** */
+        BLOG_MAGIC (Type.REGEX),
+        /** */
+        EXACT_BLOG_MAGIC (Type.REGEX),
+
+
+        // RegExp TokenPredicates -- trigger words/phrases
+        CATALOGUE_TRIGGER (Type.REGEX),
+        /** */
+        CLASSIFIED_TRIGGER (Type.FAST),
+        /** */
+        LOAN_TRIGGER (Type.REGEX),
+        /** */
+        NEWS_TRIGGER (Type.REGEX),
+        /** */
+        OCEAN_TRIGGER(Type.REGEX),
+        /** */
+        PICTURE_TRIGGER (Type.REGEX),
+        /** */
+        VIDEO_TRIGGER (Type.REGEX),
+        /** */
+        SKIINFO_TRIGGER (Type.REGEX),
+        /** */
+        SUDOKU_TRIGGER (Type.REGEX),
+        /** */
+        TV_TRIGGER (Type.REGEX),
+        /** */
+        WEATHER_TRIGGER (Type.REGEX),
+        /** */
+        /** */
+        WIKIPEDIA_TRIGGER (Type.REGEX),
+
+        // RegExp TokenPredicates -- prefixes
+        /** */
+        SITEPREFIX (Type.REGEX),
+
+        // RegExp TokenPredicates -- suffixes
+        /** */
+        COMPANYSUFFIX (Type.REGEX),
+
+        // RegExp TokenPredicates -- general expression
+        /** */
+        ORGNR (Type.REGEX),
+        /** */
+        PHONENUMBER (Type.REGEX),
+        /** */
+        ONLYSKIINFO (Type.REGEX),
+        /** */
+        EMPTYQUERY (Type.REGEX),
+
+        /** JepTokenPredicate. **/
+        MATHPREDICATE (Type.JEP);
+
+        // implementation to delegate to
+        private final TokenPredicateImpl impl;
+
+        /**
+         * Create a new TokenPredicate that will return true if it applies to the
+         * query.
+         *
+         * @param type     the fastListName type.
+         */
+        private Categories(final Type type) {
+
+            this.impl = new TokenPredicateImpl(name(), type);
+            // replace impl's entry with myself
+            TokenPredicateImpl.TOKENS.remove(impl);
+            TokenPredicateImpl.TOKENS_BY_TYPE.get(type).remove(impl);
+            TokenPredicateImpl.TOKENS.add(this);
+            TokenPredicateImpl.TOKENS_BY_TYPE.get(type).add(this);
         }
-        // process
-        final TokenEvaluationEngine engine = (TokenEvaluationEngine) evalFactory;
-        if(Thread.currentThread() != engine.getOwningThread()){
-            throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
+
+        public Type getType(){
+            return impl.getType();
         }
 
-        try{
+        public boolean evaluate(final Object evalFactory) {
 
-            // check that the evaluation hasn't already been done
-            // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
-            //  the evaluation is for the building of the known and possible predicate list
-            //    (during query parsing)(in which
-            //  case we could perform the check) or if we are scoring and need to know if the
-            //    possible predicate is really
-            //  applicable now (in the context of the whole query).
-            final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
-            if(null != knownPredicates && knownPredicates.contains(this)){
-                return true;
-            }
-
-            final TokenEvaluator evaluator = engine.getEvaluator(this);
-
-            if(null != engine.getState().getTerm()){
-
-                // Single term or clause evaluation
-                return evaluator.evaluateToken(this, engine.getState().getTerm(), engine.getQueryString());
-
-            }else if(null != engine.getState().getQuery()){
-
-                // Whole query evaluation
-                return engine.getState().getPossiblePredicates().contains(this)
-                        && evaluator.evaluateToken(this, null, engine.getQueryString());
-
-            }
-
-        }catch(VeryFastListQueryException ie){
-            // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
-            //  so we must sneak the VeryFastListQueryException through as a run-time exception.
-            throw new EvaluationException(ie);
+            return TokenPredicateImpl.evaluate(this, evalFactory);
         }
+        
+        
 
-        throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
 
-    public static final class EvaluationException extends RuntimeException{
+    /** The default implementation used. Should not be used directly.
+     * The Categories enumerations delegated to this class.
+     * The anonymous TokenPredicates are instances of this class.
+     */
+    static class TokenPredicateImpl implements TokenPredicate{
+
+        // Constants -----------------------------------------------------
+        
+        private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
+                = "Argument to evaluate must be an instance of a TokenEvaluationEngine";
+        private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS
+                = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
+        private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
+        
+        private static final Set<TokenPredicate> TOKENS 
+                = new CopyOnWriteArraySet<TokenPredicate>();
+        private static final Map<Type,Set<TokenPredicate>> TOKENS_BY_TYPE 
+                = new ConcurrentHashMap<Type,Set<TokenPredicate>>();
+       
+        /** @deprecated todo take out of sesat. **/
+        private static final Set<TokenPredicate> MAGIC_TOKENS = new CopyOnWriteArraySet<TokenPredicate>();
+        /** @deprecated todo take out of sesat. **/
+        private static final Set<TokenPredicate> TRIGGER_TOKENS = new CopyOnWriteArraySet<TokenPredicate>();
+        
+        // Attributes -----------------------------------------------------
+        
+        private final String name;
+        private final Type type;
+
+        // Constructors -----------------------------------------------------
+        
+        private TokenPredicateImpl(final String name, final Type type){
+            this.name = name;
+            this.type = type;
+
+
+            // TODO take out of sesat
+            if(Type.REGEX == type){
+                if(name.endsWith("_MAGIC")){
+                    MAGIC_TOKENS.add(this);
+
+                }else if(name.endsWith("_TRIGGER")){
+                    TRIGGER_TOKENS.add(this);
+                }
+            }//end-take out of sesat
+
+            TOKENS.add(this);
+            TOKENS_BY_TYPE.get(type).add(this);
+        }
+
+        // TokenPredicate implementation ------------------------------------
+        
+        public String name(){
+            return name;
+        }
+
+        public Type getType(){
+            return type;
+        }
+        
+        public boolean evaluate(final Object evalFactory) {
+
+            return TokenPredicateImpl.evaluate(this, evalFactory);
+        }
+        
+        // private -----------------------------------------------------   
+        
+        private static boolean evaluate(final TokenPredicate token, final Object evalFactory) {
+
+            // pre-condition checks
+            if (! (evalFactory instanceof TokenEvaluationEngine)) {
+                throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
+            }
+            // process
+            final TokenEvaluationEngine engine = (TokenEvaluationEngine) evalFactory;
+            if(Thread.currentThread() != engine.getOwningThread()){
+                throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
+            }
+
+            try{
+
+                // check that the evaluation hasn't already been done
+                // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
+                //  the evaluation is for the building of the known and possible predicate list
+                //    (during query parsing)(in which
+                //  case we could perform the check) or if we are scoring and need to know if the
+                //    possible predicate is really
+                //  applicable now (in the context of the whole query).
+                final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
+                if(null != knownPredicates && knownPredicates.contains(token)){
+                    return true;
+                }
+
+                final TokenEvaluator evaluator = engine.getEvaluator(token);
+
+                if(null != engine.getState().getTerm()){
+
+                    // Single term or clause evaluation
+                    return evaluator.evaluateToken(token, engine.getState().getTerm(), engine.getQueryString());
+
+                }else if(null != engine.getState().getQuery()){
+
+                    // Whole query evaluation
+                    return engine.getState().getPossiblePredicates().contains(token)
+                            && evaluator.evaluateToken(token, null, engine.getQueryString());
+
+                }
+
+            }catch(VeryFastListQueryException ie){
+                // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
+                //  so we must sneak the VeryFastListQueryException through as a run-time exception.
+                throw new EvaluationException(ie);
+            }
+
+            throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
+        }
+
+    }
+
+    /** Runtime exception thrown when evaluation fails.
+     */
+    static final class EvaluationException extends RuntimeException{
         public EvaluationException(final VeryFastListQueryException vflqe){
             super(vflqe);
         }
     }
+    
+
+    /** Utility class providing all useful static methods around TokenPredicates.
+     * @todo move out to TokenPredicateUtility. **/
+    static final class Static{
+
+        private static final Map<String,TokenPredicate> ANONYMOUS_TOKENS = new ConcurrentHashMap<String,TokenPredicate>();
+        
+        static{
+            // ensures all the enums have been loaded before any of the following static methods are called.
+            // offspin to this is that there can be no references back to Static from Categories or TokenPredicateImpl.
+            Categories.values();
+        }
+
+        /** Find a TokenPredicate that's already created.
+         *
+         * @param name the name of the TokenPredicate to find.
+         * @return the TokenPredicate.
+         */
+        public static TokenPredicate getTokenPredicate(final String name){
+
+            try{
+                return Categories.valueOf(name);
+            }catch(IllegalArgumentException iae){
+                return  getAnonymousTokenPredicate(name);
+            }
+        }
+
+        /** Find a anonymous TokenPredicate that's already created.
+         *
+         * @param name the name of the TokenPredicate to find.
+         * @return the anonymous TokenPredicate.
+         */
+        public static TokenPredicate getAnonymousTokenPredicate(final String name){
+
+            return ANONYMOUS_TOKENS.get(name);
+        }
+
+        /** Creates an anonymous TokenPredicate.
+         * Ensure the name doesn't clash with anonymous TokenPredicates from other skins.
+         * Existing anonymous TokenPredicate with the same name will be replaced.
+         *
+         * @param name the TokenPredicate name
+         * @param type the TokenPredicate type
+         * @return the newly created anonymous TokenPredicate
+         */
+        public static TokenPredicate createAnonymousTokenPredicate(final String name, final Type type){
+
+            ANONYMOUS_TOKENS.put(name, new TokenPredicateImpl(name, type));
+            return getAnonymousTokenPredicate(name);
+        }
+
+        /** Utility method to use all TokenPredicates in existence.
+         * @return set of all TokenPredicates. will not return instances that are delegates for Categories.
+         */
+        public static Set<TokenPredicate> getTokenPredicates() {
+
+            return Collections.unmodifiableSet(TokenPredicateImpl.TOKENS);
+        }
+
+        /** Utility method to use all TokenPredicates belonging to a given type.
+         * @param type the given type
+         * @return set of all TokenPredicates with given type.
+         */
+        public static Set<TokenPredicate> getTokenPredicates(final Type type) {
+            return Collections.unmodifiableSet(TokenPredicateImpl.TOKENS_BY_TYPE.get(type));
+        }
+
+        /** Utility method to use all MagicTokenPredicates in existence.
+         * @return set of all MagicTokenPredicates
+         * @deprecated to be moved out of sesat
+         */
+        public static Set<TokenPredicate> getMagicTokenPredicates() {
+            return Collections.unmodifiableSet(TokenPredicateImpl.MAGIC_TOKENS);
+        }
+
+        /** Utility method to use all TriggerTokenPredicates in existence.
+         * @return set of all TriggerTokenPredicates
+         * @deprecated to be moved out of sesat
+         */
+        public static Set<TokenPredicate> getTriggerTokenPredicates() {
+            return Collections.unmodifiableSet(TokenPredicateImpl.TRIGGER_TOKENS);
+        }
+    }    
 
 }

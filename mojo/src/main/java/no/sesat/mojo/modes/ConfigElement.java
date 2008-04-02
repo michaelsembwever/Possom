@@ -9,64 +9,81 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
 
+/**
+ * Represent a class/xml element.
+ *
+ */
 public class ConfigElement extends ConfigAbstract {
 
-	final protected List<ConfigAttribute> attributes = new Vector<ConfigAttribute>();
-	final private Set<String> attribNames = new TreeSet<String>();
-	final protected int id;
-	private static int idCounter = 0;
+    protected final List<ConfigAttribute> attributes = new Vector<ConfigAttribute>();
+    private final Set<String> attribNames = new TreeSet<String>();
+    protected final int id;
+    private static int idCounter = 0;
 
-	protected List<ConfigElement> children = new Vector<ConfigElement>();
+    protected List<ConfigElement> children = new Vector<ConfigElement>();
 
-	public ConfigElement(String name) {
-		id = ++idCounter;
-		this.name = name;
-	}
+    /**
+     * @param name Name of this element.
+     */
+    public ConfigElement(final String name) {
+        id = ++idCounter;
+        this.name = name;
+    }
 
-	public ConfigElement(ClassDoc klass) {
-		this(klass.name());
+    /**
+     * @param klass Class that this element should be based on.
+     */
+    public ConfigElement(final ClassDoc klass) {
+        this(klass.name());
 
-		doc = klass.commentText();
+        doc = klass.commentText();
 
-		// some fake attributes
-		attributes.add(new ConfigAttribute("id", "fix doc", true));
-		attributes.add(new ConfigAttribute("inherit"));
-		attributes.add(new ConfigAttribute("result-fields"));
-		attributes.add(new ConfigAttribute("field-filters"));
-		attributes.add(new ConfigAttribute("collections"));
-		build(klass);
-	}
+        // some fake attributes
+        attributes.add(new ConfigAttribute("inherit"));
 
-	public void applyNameFilter(NameFilter filter) {
-		name = filter.filter(name);
-	}
+        build(klass);
+    }
 
-	public void addChildren(List<ConfigElement> children) {
-		this.children.addAll(children);
-	}
+    /**
+     * @param filter filter used to modify the name
+     */
+    public void applyNameFilter(final NameFilter filter) {
+        name = filter.filter(name);
+    }
 
-	public void addChild(ConfigElement child) {
-		this.children.add(child);
-	}
+    /**
+     * @param childrenList children that we want to add.
+     */
+    public void addChildren(final List<ConfigElement> childrenList) {
+        children.addAll(childrenList);
+    }
 
-	private void build(ClassDoc klass) {
+    /**
+     * @param child child that we want to add.
+     */
+    public void addChild(final ConfigElement child) {
+        children.add(child);
+    }
 
-		if (klass != null) {
-			MethodDoc[] methods = klass.methods();
-			for (int i = 0; i < methods.length; i++) {
+    private void build(final ClassDoc klass) {
 
-				MethodDoc methodDoc = methods[i];
+        if (klass != null) {
+            final MethodDoc[] methods = klass.methods();
+            for (int i = 0; i < methods.length; i++) {
 
-				if (!attribNames.contains(methodDoc.name()) && (methodDoc.name().startsWith("set") || methodDoc.name().startsWith("add"))) {
-					Parameter parameters[] = methodDoc.parameters();
-					if (parameters.length == 1) {
-						attribNames.add(methodDoc.name());
-						attributes.add(new ConfigAttribute(methodDoc));
+                final MethodDoc methodDoc = methods[i];
 
-					}
-				}
-			}
-			build(klass.superclass());
-		}
-	}
+                if (!attribNames.contains(methodDoc.name())
+                        && (methodDoc.name().startsWith("set") || methodDoc.name().startsWith("add"))) {
+                    final Parameter[] parameters = methodDoc.parameters();
+                    if (parameters.length == 1) {
+                        attribNames.add(methodDoc.name());
+                        attributes.add(new ConfigAttribute(methodDoc));
+
+                    }
+                }
+            }
+            build(klass.superclass());
+        }
+    }
 }

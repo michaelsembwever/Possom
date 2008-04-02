@@ -31,7 +31,7 @@ import no.sesat.search.result.NavigationItem;
  * It essentially means that this helper class can only be used from jsp/velocity code.
  * 
  * @author Geir H. Pettersen(T-Rank)
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  *
  */

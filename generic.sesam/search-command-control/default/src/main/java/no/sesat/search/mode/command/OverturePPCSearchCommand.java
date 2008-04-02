@@ -75,7 +75,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         // could have prevented exact matching in the previous evaluation.
         final ReconstructedQuery rq = createQuery(getTransformedQuery());
 
-        top = rq.getEngine().evaluateQuery(TokenPredicate.EXACT_PPCTOPLIST, rq.getQuery());
+        top = rq.getEngine().evaluateQuery(TokenPredicate.Categories.EXACT_PPCTOPLIST, rq.getQuery());
 
         try {
             final Document doc = getXmlResult();

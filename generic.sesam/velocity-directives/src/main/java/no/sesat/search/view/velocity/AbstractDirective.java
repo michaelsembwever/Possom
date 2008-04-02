@@ -29,7 +29,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public abstract class AbstractDirective extends Directive {

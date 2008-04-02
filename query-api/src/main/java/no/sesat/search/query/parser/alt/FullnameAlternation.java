@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ public final class FullnameAlternation extends AbstractAlternation {
         
         final Set<Clause> fullnames = finder.findClauses(
                 clause, 
-                TokenPredicate.FULLNAME, 
+                TokenPredicate.Categories.FULLNAME, 
                 context.getTokenEvaluationEngine());
         
         Clause result = clause;
@@ -100,7 +100,7 @@ public final class FullnameAlternation extends AbstractAlternation {
                 
                 Clause surname = finder.findFirstClause(
                         rightLeaningFullname, 
-                        TokenPredicate.LASTNAME, 
+                        TokenPredicate.Categories.LASTNAME, 
                         context.getTokenEvaluationEngine());
 //                for(Clause lastname : lastnames){
 //                    if( null != surname ){

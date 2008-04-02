@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ public final class TokenMaskQueryTransformerConfig extends AbstractQueryTransfor
                 final Collection<TokenPredicate> cp = new ArrayList(DEFAULT_PREDICATES);
                 for (String tp : prefixes) {
                     try{
-                        cp.add(TokenPredicate.valueOf(tp));
+                        cp.add(TokenPredicate.Static.getTokenPredicate(tp));
                     }catch(IllegalArgumentException iae){
                         LOG.error(ERR_PREFIX_NOT_FOUND + tp, iae);
                     }

@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  * @version $Id$
  */
 public final class DataModelAccessException extends IllegalAccessException {

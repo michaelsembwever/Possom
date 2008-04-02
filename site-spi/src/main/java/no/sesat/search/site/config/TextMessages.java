@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 
@@ -41,24 +42,26 @@ public final class TextMessages {
 
     public interface Context extends SiteContext, PropertiesContext { };
 
+    // Constants -----------------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(TextMessages.class);
 
     private static final String MESSAGE_RESOURCE = "messages";
 
-    /**
-     */
     private static final Map<Site,TextMessages> INSTANCES = new HashMap<Site,TextMessages>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
-
-
-    private static final String DEBUG_LOADING_WITH_LOCALE = "Looking for "+MESSAGE_RESOURCE+"_";
+    private static final String DEBUG_LOADING_WITH_LOCALE = "Looking for " + MESSAGE_RESOURCE + "_";
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
+
+    // Static --------------------------------------------------------
 
     /** Find the correct instance handling this Site.
      *
      * @param cxt
-     * @return 
+     * @return
+     *
+     * @todo rename to instanceOf
      */
     public static TextMessages valueOf(final Context cxt) {
 
@@ -80,7 +83,9 @@ public final class TextMessages {
     /**
      * Utility wrapper to the instanceOf(Context).
      * @param site
-     * @return 
+     * @return
+     *
+     * @todo rename to instanceOf
      */
     public static TextMessages valueOf(final Site site) {
 
@@ -101,9 +106,12 @@ public final class TextMessages {
         return tm;
     }
 
+    // Attributes ----------------------------------------------------
 
     private final Context context;
     private final Properties keys = new Properties();
+
+    // Constructors --------------------------------------------------
 
     private TextMessages(final Context cxt) {
 
@@ -152,67 +160,138 @@ public final class TextMessages {
         }
     }
 
-    private void loadKeys(final Locale l) {
+    // Public --------------------------------------------------------
 
-        // import the variant-specific text messages [does not override existing values]
-        LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage() + "_" + l.getCountry() + "_" + l.getVariant());
-        performLoadKeys(l);
-
-        // import the country-specific text messages [does not override existing values]
-        LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage() + "_" + l.getCountry());
-        performLoadKeys(new Locale(l.getLanguage(), l.getCountry()));
-
-        // import the language-specifix text messages [does not override existing values]
-        LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage());
-        performLoadKeys(new Locale(l.getLanguage()));
-
-    }
-
-    private void performLoadKeys(final Locale locale) {
-
-        final PropertiesLoader loader
-                = context.newPropertiesLoader(
-                context,
-                MESSAGE_RESOURCE + "_" + locale.toString() + ".properties",
-                keys);
-        loader.abut();
-        //loader.getProperties();
-    }
-
-
-    /** TODO comment me. **/
+    /** Does this message exist.
+     *
+     * @param key the message key
+     * @return true if a message value exists
+     */
     public boolean hasMessage(final String key) {
         return keys.containsKey(key);
     }
 
-    /** TODO comment me. **/
+    /** Get the message.
+     *
+     * @param key the message key.
+     * @return Get the message.
+     */
     public String getMessage(final String key) {
         return getMessageImpl(key);
     }
 
-    /** TODO comment me. **/
+    /** Get the message.
+     *
+     * @param key the message key.
+     * @param arg0 first parameter value, eg {0}
+     * @return Get the message.
+     */
     public String getMessage(final String key, final Object arg0) {
         return getMessageImpl(key, arg0);
     }
 
-    /** TODO comment me. **/
+    /** Get the message.
+     *
+     * @param key key the message key.
+     * @param arg0 first parameter value, eg {0}
+     * @param arg1 second  parameter value, eg {{1}
+     * @return Get the message.
+     */
     public String getMessage(final String key, final Object arg0, final Object arg1) {
         return getMessageImpl(key, arg0, arg1);
     }
 
-    /** TODO comment me. **/
+    /** Get the message.
+     *
+     * @param key the message key.
+     * @param arg0 first param eter value, eg {0}
+     * @param arg1 second parameter value, eg {1}
+     * @param arg2 third  parameter value, eg {2}
+     * @return Get the message.
+     */
     public String getMessage(final String key, final Object arg0, final Object arg1, final Object arg2) {
         return getMessageImpl(key, arg0, arg1, arg2);
     }
 
-    /** TODO comment me. **/
-    public String getMessage(final String key, final Object arg0, final Object arg1, final Object arg2, final Object arg3) {
+    /** Get the message.
+     *
+     * @param key the message key.
+     * @param arg0 first parameter value, eg {0}
+     * @param arg1 second parameter value, eg {1}
+     * @param arg2 third parameter value, eg {2}
+     * @param arg3 fourth parameter value, eg {3}
+     * @return Get the message.
+     */
+    public String getMessage(
+            final String key,
+            final Object arg0,
+            final Object arg1,
+            final Object arg2,
+            final Object arg3) {
+
         return getMessageImpl(key, arg0, arg1, arg3);
     }
 
-    /** TODO comment me. **/
+    /** Get the message.
+     *
+     * @param key the message key.
+     * @param arguments variable array of parameters, eg {0}, {1}, {2}, ...
+     * @return Get the message.
+     */
     public String getMessage(final String key, final Object... arguments){
         return getMessageImpl(key, arguments);
+    }
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+
+    private void loadKeys(final Locale l) {
+
+        try {
+            // import the variant-specific text messages [does not override existing values]
+            LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage() + "_" + l.getCountry() + "_" + l.getVariant());
+            performLoadKeys(l);
+
+        }catch (ExecutionException ex) {
+            // permissable to not find variant-specific messages
+            LOG.info("Failed to find any variant-specific messages", ex);
+        }
+
+        try {
+            // import the country-specific text messages [does not override existing values]
+            LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage() + "_" + l.getCountry());
+            performLoadKeys(new Locale(l.getLanguage(), l.getCountry()));
+
+        }catch (ExecutionException ex) {
+            // permissable to not find country-specific messages
+            LOG.info("Failed to find any country-specific messages", ex);
+        }
+
+        try {
+            // import the language-specifix text messages [does not override existing values]
+            LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage());
+            performLoadKeys(new Locale(l.getLanguage()));
+
+        }catch (ExecutionException ex) {
+            // this is not permissable.
+            throw ex.getCause() instanceof ResourceLoadException
+                    ? (ResourceLoadException)ex.getCause()
+                    : new RuntimeException(ex);
+        }
+
+    }
+
+    private void performLoadKeys(final Locale locale) throws ExecutionException{
+
+        final PropertiesLoader loader = context.newPropertiesLoader(
+                context,
+                MESSAGE_RESOURCE + "_" + locale.toString() + ".properties",
+                keys);
+
+        loader.abut();
     }
 
     private String getMessageImpl(final String key, final Object... arguments){
@@ -220,7 +299,7 @@ public final class TextMessages {
         if(key == null || key.trim().length() == 0){
             return "";
         }else{
-            // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
+            // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than synchronization?
             final String pattern = keys.getProperty(key);
             if(pattern == null){
                 // make it visible that this key is not being localised!

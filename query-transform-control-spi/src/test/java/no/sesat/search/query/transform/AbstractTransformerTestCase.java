@@ -51,7 +51,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author mick
+ * @author <a href="mailto:mick@semb.wever.org">Mick</a>
  */
 abstract class AbstractTransformerTestCase extends SiteTestCase {
 
