@@ -203,6 +203,20 @@
                     <artifactId>jdepend-maven-plugin</artifactId>
                     <version>2.0-beta-1</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugins>
         <!--/pluginManagement--> <!-- See http://jira.codehaus.org/browse/MNG-3018 .Uncomment when fixed. -->
     </build>
@@ -344,6 +358,7 @@
          <id>Sesat</id>
          <name>Sesat Repository</name>
          <url>http://sesat.no/maven2</url>
+         <snapshots><enabled>true</enabled></snapshots>
         </repository>
         <repository>
             <id>Central</id>

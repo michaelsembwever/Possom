@@ -44,7 +44,8 @@ public final class Builder {
     public static void build(final String classpath, final String dir, final String idString) {
         outputDir = new File(dir).getAbsolutePath() + File.separator;
         id = idString;
-
+        RootDocImpl root = null;
+        
         // hack to suppress javadoc's warnings.
         final PrintStream out = System.out;
         final PrintStream err = System.err;
@@ -64,7 +65,7 @@ public final class Builder {
 
             final Options compOpts = Options.instance(context);
             compOpts.put("-classpath", classpath);
-            RootDocImpl root = null;
+            
             try {
                 root = comp.getRootDocImpl("", "", new ModifierFilter(PUBLIC | PROTECTED), javaNames.toList(), options
                         .toList(), false, subPackages.toList(), xcludePackages.toList(), false, false, false);
@@ -72,15 +73,15 @@ public final class Builder {
                 e.printStackTrace(err);
                 return;
             }
-            if (root != null) {
-                start(root);
-            }
         } catch (Throwable e) {
             // e.printStackTrace(out);
             out.print("Generating schema files failed due to error: " + e.getMessage());
         } finally {
             System.setOut(out);
             System.setErr(err);
+        }
+        if (root != null) {
+            start(root);
         }
     }
 

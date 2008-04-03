@@ -377,39 +377,6 @@ public final class SearchServlet extends HttpServlet {
 
     }
 
-    /* TODO Move into a RunningQueryHandler
-     *
-     *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn"
-     *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
-     * @return true if a response.sendRedirect(..) was performed.
-     */
-    private static boolean checkFinn(
-            final HttpServletRequest request,
-            final HttpServletResponse response, final DataModel datamodel) throws IOException{
-
-        if ("finn".equalsIgnoreCase(request.getParameter("finn"))) {
-
-            if (datamodel.getSearch("catalogue").getResults().getHitCount() > 0) {
-
-                if (datamodel.getSearch("catalogue").getResults().getHitCount() == 1) {
-                    final ResultItem sri = datamodel.getSearch("catalogue").getResults().getResults().get(0);
-                    final String recordid = sri.getField("contentid").toString();
-                    final String url = "/search/?c=yip&q=" + datamodel.getQuery().getQuery().getQueryString()
-                            + "&companyId=" + recordid
-                            + "&companyId_x=" + new MD5Generator("S3SAM rockz").generateMD5(recordid)
-                            + (null != datamodel.getParameters().getValue("showtab").getUtf8UrlEncoded()
-                            ? "&showtab=" + datamodel.getParameters().getValue("showtab").getUtf8UrlEncoded()
-                            : "");
-
-                    LOG.info("Finn.no redirect: " + url);
-                    response.sendRedirect(url);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private static SearchTab updateSearchTab(
             final HttpServletRequest request,
             final DataModelFactory dmFactory,
@@ -536,9 +503,6 @@ public final class SearchServlet extends HttpServlet {
                             + "</search-servlet>");
                     }
                 }
-
-                // FIXME move out to a RunHandler implementation.
-                checkFinn(request, response, datamodel);
 
             } catch (InterruptedException e) {
                 LOG.error("Task timed out");

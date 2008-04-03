@@ -141,6 +141,7 @@ Copyright (2006-2007) Schibsted Søk AS
         <picture-command id="default-picture-command"
                          query-server-host="picsearch.host"
                          query-server-port="picsearch.port"
+                         result-fields="thumb_url,page_url,thumb_width,thumb_height,height,width,filesize"
                          inherit="default-command"/>
 
         <picture-command id="default-picture-count-command" results-to-return="1" inherit="default-picture-command"/>
@@ -245,7 +246,6 @@ Copyright (2006-2007) Schibsted Søk AS
         <picture-command id="default-picSearchEnrichment"
                          always-run="false"
                          field-filters="PICTURE_TRIGGER AS +"
-                         result-fields="thumb_url,page_url,thumb_width,thumb_height,height,width,filesize"
                          results-to-return="3"
                          statistical-name="picsearch_picsearch"
                          inherit="default-picture-command">

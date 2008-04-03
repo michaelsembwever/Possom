@@ -129,7 +129,8 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <#WORD_SYMBOL_MIDDLE: (".")|<HYPON>|("_")|("+")>
     | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration. see SKIP comment!
             " ", "!",
-            "\u0023"-"\u0040",
+            "\u0023"-"\u0029",
+            "\u003b"-"\u0040",
             "\u005b"-"\u0060",
             "\u007b"-"\u00bf",
             "\u00d7",

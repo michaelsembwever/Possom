@@ -56,7 +56,8 @@ public interface QueryParser {
     char[][] SKIP_CHARACTER_RANGES = {
         {' ', ' '},
         {'!', '!'},
-        {'\u0023', '\u0040'},
+        {'\u0023', '\u0029'},
+        {'\u003b', '\u0040'},
         {'\u005b', '\u0060'},
         {'\u007b', '\u00bf'},
         {'\u00d7', '\u00d7'},
