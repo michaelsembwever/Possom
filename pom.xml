@@ -21,7 +21,7 @@
     <artifactId>sesat-kernel</artifactId>
     <packaging>pom</packaging>
     <name>Sesat Kernel</name>
-    <version>2.17-SNAPSHOT</version>
+    <version>2.18-SNAPSHOT</version>
     <description>
         This is the project for Sesat Kernel.
         Read http://sesat.no/development-guidelines.html for developing help.
@@ -104,9 +104,9 @@
        <url>http://sesat.no/hudson/</url>
      </ciManagement>
     <scm>
-        <connection>scm:svn:http://sesat.no/svn/sesat-kernel/branches/2.17</connection>
-        <url>http://sesat.no/svn/sesat-kernel/branches/2.17</url>
-        <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernel/branches/2.17</developerConnection>
+        <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
+        <url>http://sesat.no/svn/sesat-kernel/trunk</url>
+        <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</developerConnection>
     </scm>
 
     <modules>
