@@ -226,7 +226,7 @@
         <server.port>80</server.port>
         <log.level>INFO</log.level>
         <tag.on.deploy>true</tag.on.deploy>
-        <version.quote>"They must find it difficult... Those who have taken authority as the truth, rather than truth as the authority." - Gerald Massey</version.quote>
+        <version.quote>The acquisition of wealth is no longer the driving force in our lives. </version.quote>
     </properties>
 
     <profiles>
