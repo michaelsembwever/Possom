@@ -85,8 +85,8 @@ public class PicSearchCommand extends AbstractSearchCommand {
         try {
 
             final String query = URLEncoder.encode(getTransformedQuery(), "utf-8");
-            final String color = getParameter("color");
-            final String size = getParameter("size");
+            final String color = null != getParameter("color") ? getParameter("color") : "";
+            final String size = null != getParameter("size") ? getParameter("size") : "";
             final String urlBoost = tldb.toString();
 
             // The boost can eiter be from the URL or from the configuration.
