@@ -187,7 +187,11 @@ public final class SearchServlet extends HttpServlet {
 
                 updateContentType(site, response, request);
 
-                final SearchTab searchTab = updateSearchTab(request, dmFactory, genericCxt);
+                final String cParameter = null != parametersDO.getValue(SearchTab.PARAMETER_KEY)
+                        ? parametersDO.getValue(SearchTab.PARAMETER_KEY).getString()
+                        : null;
+                
+                final SearchTab searchTab = updateSearchTab(cParameter, request, dmFactory, genericCxt);
 
                 if (null!= searchTab) {
 
@@ -378,6 +382,7 @@ public final class SearchServlet extends HttpServlet {
     }
 
     private static SearchTab updateSearchTab(
+            final String cParameter,
             final HttpServletRequest request,
             final DataModelFactory dmFactory,
             final BaseContext genericCxt){
@@ -386,13 +391,12 @@ public final class SearchServlet extends HttpServlet {
         //  default comes from SiteConfiguration unless there exists a page parameter when it becomes 'i'.
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
-        final StringDataObject c = parametersDO.getValue(SearchTab.PARAMETER_KEY);
         final StringDataObject page = parametersDO.getValue("page");
         final String defaultSearchTabKey
                 = datamodel.getSite().getSiteConfiguration().getProperty(SiteConfiguration.DEFAULTTAB_KEY);
 
-        final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
-                ? c.getString()
+        final String searchTabKey = null != cParameter && 0 < cParameter.length()
+                ? cParameter
                 : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : defaultSearchTabKey;
 
         LOG.info("searchTabKey:" +searchTabKey);
@@ -430,8 +434,8 @@ public final class SearchServlet extends HttpServlet {
             LOG.error(ERR_MISSING_TAB + searchTabKey);
             // first going to fallback to defaultSearchTabKey in preference to the pending 404 response error.
             if(!defaultSearchTabKey.equals(searchTabKey)){
-                parametersDO.setValue(SearchTab.PARAMETER_KEY, new StringDataObjectSupport(defaultSearchTabKey));
-                result = updateSearchTab(request, dmFactory, genericCxt);
+                //parametersDO.setValue(SearchTab.PARAMETER_KEY, new StringDataObjectSupport(defaultSearchTabKey));
+                result = updateSearchTab(defaultSearchTabKey, request, dmFactory, genericCxt);
             }
         }
         return result;
