@@ -43,7 +43,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
     </dependencies>
 

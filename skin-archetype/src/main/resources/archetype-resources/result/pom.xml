@@ -22,8 +22,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>${package}</groupId>
-        <artifactId>${artifactId}</artifactId>
-        <version>${version}</version>
+        <artifactId>${pom.artifactId}</artifactId>
+        <version>${pom.version}</version>
     </parent>
     <artifactId>sesam.com-result</artifactId>
     <name>${project.artifactId}</name>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

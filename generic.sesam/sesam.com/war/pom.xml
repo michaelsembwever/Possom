@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>sesam.com</artifactId>
-    <name>${artifactId}</name>
+    <name>${pom.artifactId}</name>
     <packaging>war</packaging>
     <description>A Skin. Will probably break. Might even blow your house up.</description>
 
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-resourcefeed</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -63,52 +63,52 @@
         <!--dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-query-transform-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-query-transform-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result-handler-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-view-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-view-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-velocity-directives</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency-->
     </dependencies>
 </project>
