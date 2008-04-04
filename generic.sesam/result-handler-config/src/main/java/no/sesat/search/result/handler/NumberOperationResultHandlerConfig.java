@@ -22,6 +22,8 @@ package no.sesat.search.result.handler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Arrays;
+
 import no.sesat.search.result.handler.AbstractResultHandlerConfig.Controller;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import org.apache.log4j.Logger;
@@ -42,10 +44,10 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
 
     /**
      * 
-     * @param field 
+     * @param fieldArray Array of fields that should be added.
      */
-    public void addField(final String field) {
-        fields.add(field);
+    public void addFields(final String[] fieldArray) {
+        fields.addAll(Arrays.asList(fieldArray));
     }
 
     /**
@@ -186,13 +188,8 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     public AbstractResultHandlerConfig readResultHandler(final Element element) {
         
         super.readResultHandler(element);
-        
-        if (element.getAttribute("fields").length() > 0) {
-            final String[] fields = element.getAttribute("fields").split(",");
-            for (String field : fields) {
-                addField(field);
-            }
-        }
+
+        addFields(element.getAttribute("fields").split(","));
         setTarget(AbstractDocumentFactory.parseString(element.getAttribute("target"), ""));
         setOperation(AbstractDocumentFactory.parseString(element.getAttribute("operation"), ""));
         setMinDigits(AbstractDocumentFactory.parseInt(element.getAttribute("min-digits"), 1));
