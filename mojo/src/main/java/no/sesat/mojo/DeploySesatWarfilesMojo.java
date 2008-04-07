@@ -524,7 +524,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
         final TagScmResult result = scmManager.tag(
                 scmManager.makeScmRepository(project.getScm().getDeveloperConnection()),
                 new ScmFileSet(pomProject.getBasedir()), // TODO server-side copy
-                profile + "-deployments/" + date + "-" + pomProject.getArtifactId(),
+                profile + "-deployments/" + date + "-" + project.getArtifactId(),
                 "sesat " + profile + " deployment");
 
         if(!result.isSuccess()){

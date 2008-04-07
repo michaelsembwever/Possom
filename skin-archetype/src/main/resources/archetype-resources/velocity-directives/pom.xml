@@ -22,8 +22,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>${package}</groupId>
-        <artifactId>${artifactId}</artifactId>
-        <version>${version}</version>
+        <artifactId>${pom.artifactId}</artifactId>
+        <version>${pom.version}</version>
     </parent>
     <artifactId>sesam.com-velocity-directives</artifactId>
     <name>${project.artifactId}</name>
@@ -38,25 +38,25 @@
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-search-command-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>generic.sesam.no-search-command-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-search-command-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

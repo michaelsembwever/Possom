@@ -38,97 +38,97 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-view-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

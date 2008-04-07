@@ -65,8 +65,10 @@ public class GenerateDTD extends GenerateSchemaFile {
             }
             printlnU(">");
 
-            for (int i = 0; i < element.children.size(); i++) {
-                generate(element.children.get(i));
+            for (ConfigElement child : element.children) {
+                if (!written.contains(child.name)) {
+                    generate(child);
+                }
             }
         }
     }

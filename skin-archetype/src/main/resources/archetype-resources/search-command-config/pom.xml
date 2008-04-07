@@ -22,8 +22,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>${package}</groupId>
-        <artifactId>${artifactId}</artifactId>
-        <version>${version}</version>
+        <artifactId>${pom.artifactId}</artifactId>
+        <version>${pom.version}</version>
     </parent>
     <artifactId>sesam.com-search-command-config</artifactId>
     <name>${project.artifactId}</name>
@@ -38,37 +38,37 @@
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-handler-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-search-command-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-data-model-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-handler-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

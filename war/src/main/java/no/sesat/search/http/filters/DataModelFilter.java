@@ -260,24 +260,29 @@ public final class DataModelFilter implements Filter {
         // Note that we do not support String[] parameter values! this is different to pre SESAT days
         final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
 
-        for(@SuppressWarnings("unchecked")
-                Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
+        try{
+            for(@SuppressWarnings("unchecked")
+                    Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
 
-            final String key = e.nextElement();
-            values.put(key, factory.instantiate(
-                StringDataObject.class,
-                datamodel,
-                new DataObject.Property("string", getParameterSafely(request, key))));
-        }
-
-        // Adding all cookies into parameters.
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                values.put(cookie.getName(), factory.instantiate(
-                        StringDataObject.class,
-                datamodel,
-                        new DataObject.Property("string", cookie.getValue())));
+                final String key = e.nextElement();
+                values.put(key, factory.instantiate(
+                    StringDataObject.class,
+                    datamodel,
+                    new DataObject.Property("string", getParameterSafely(request, key))));
             }
+
+            // Adding all cookies into parameters.
+            if (null != request.getCookies()) {
+                for (Cookie cookie : request.getCookies()) {
+                    values.put(cookie.getName(), factory.instantiate(
+                            StringDataObject.class,
+                            datamodel,
+                            new DataObject.Property("string", cookie.getValue())));
+                }
+            }
+        }catch(Exception e){
+            // maybe the client disconnected.
+            LOG.warn("failed to read parameters/cookies: " + e.getMessage());
         }
 
         final ParametersDataObject parametersDO = factory.instantiate(

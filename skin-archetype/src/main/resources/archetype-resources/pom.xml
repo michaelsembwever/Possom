@@ -24,9 +24,9 @@
           <artifactId>pom.generic.sesam.no</artifactId>
           <version>2.17-SNAPSHOT</version>
       </parent>
-    <name>${artifactId} skin</name>
+    <name>${pom.artifactId} skin</name>
     <groupId>${groupId}</groupId>
-    <artifactId>${artifactId}</artifactId>
+    <artifactId>${pom.artifactId}</artifactId>
     <packaging>pom</packaging>
 
     <build>
@@ -131,14 +131,14 @@
                                             <groupId>sesat</groupId>
                                             <artifactId>sesat-war</artifactId>
                                             <type>war</type>
-                                            <version>${parent.version}</version>
+                                            <version>${pom.parent.version}</version>
                                             <destFileName>ROOT.war</destFileName>
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>sesat</groupId>
                                             <artifactId>generic.sesam.no</artifactId>
                                             <type>war</type>
-                                            <version>${parent.version}</version>
+                                            <version>${pom.parent.version}</version>
                                             <destFileName>${sesam.site.generic}.war</destFileName>
                                         </artifactItem>
                                     </artifactItems>
@@ -227,19 +227,19 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -255,59 +255,59 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-javabean-impl</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-core-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-core-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

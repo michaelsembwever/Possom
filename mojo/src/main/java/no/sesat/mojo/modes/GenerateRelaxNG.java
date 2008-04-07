@@ -36,16 +36,25 @@ public class GenerateRelaxNG extends GenerateSchemaFile {
             }
         }
 
+        // prevent blowing the stack. This is because we currently don't support
+        // recursive elements in this RelaxNG generator.
+        boolean empty = true;
+        for (ConfigElement child : element.children) {
+            if (!element.name.equals(child.name)) {
+                empty = false;
+            }
+        }
+
         println("element " + element.name + " {");
         indent();
-        if (element.attributes.isEmpty() && element.children.isEmpty()) {
+        if (element.attributes.isEmpty() && empty) {
             print(" empty ");
         } else {
             for (final Iterator<ConfigAttribute> iterator = element.attributes.iterator(); iterator.hasNext();) {
                 final ConfigAttribute attrib = iterator.next();
 
                 generate(attrib);
-                if (iterator.hasNext() || !element.children.isEmpty()) {
+                if (iterator.hasNext() || !empty) {
                     println(",");
                 } else {
                     println("");
@@ -53,13 +62,18 @@ public class GenerateRelaxNG extends GenerateSchemaFile {
             }
         }
 
-        if (!element.children.isEmpty()) {
+        if (!empty) {
             println("(");
-            for (int i = 0; i < element.children.size(); i++) {
-                if (i > 0) {
-                    println("|");
+            boolean one = false;
+            for (ConfigElement child : element.children) {
+                if (!element.name.equals(child.name)) {
+                    if(one) {
+                        println("|");
+                    } else {
+                        one = true;
+                    }
+                    generate(child);
                 }
-                generate(element.children.get(i));
             }
             println(")*");
         }

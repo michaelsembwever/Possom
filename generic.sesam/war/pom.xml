@@ -47,13 +47,13 @@
                 <dependency><!-- override making optional -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam.no-search-command-control</artifactId>
-                    <version>${version}</version>
+                    <version>${pom.version}</version>
                     <optional>true</optional>
                 </dependency>
                 <dependency><!-- add the include-fast variant -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam.no-search-command-control</artifactId>
-                    <version>${version}</version>
+                    <version>${pom.version}</version>
                     <classifier>include-fast</classifier>
                 </dependency>                
             </dependencies>
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-resourcefeed</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -157,52 +157,52 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-query-transform-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-query-transform-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result-handler-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-view-config</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-view-control</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-velocity-directives</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
     </dependencies>
 
@@ -211,7 +211,7 @@
             <plugin>
                 <groupId>sesat</groupId>
                 <artifactId>sesat-mojo</artifactId>
-                <version>${version}</version>
+                <version>${pom.version}</version>
                 <configuration>
                     <outputDir>
                         src/main/conf/

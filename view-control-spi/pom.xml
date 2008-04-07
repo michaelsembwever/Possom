@@ -37,32 +37,32 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
         </dependency>
         <!-- Testin -->
         <dependency>
@@ -74,14 +74,14 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${version}</version>
+            <version>${pom.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

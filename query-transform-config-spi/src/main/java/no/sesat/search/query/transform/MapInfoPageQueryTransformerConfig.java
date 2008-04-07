@@ -35,17 +35,49 @@ public class MapInfoPageQueryTransformerConfig extends AbstractQueryTransformerC
     public final String getParameterName() {
         return parameterName;
     }
+
+    /**
+     *
+     * @param name Name of parameter.
+     */
+    public void setParameterName(final String name) {
+        parameterName = name;
+    }
     
     public final String getPrefix() {
         return prefix;
+    }
+
+    /**
+     *
+     * @param prefixString Prefix string
+     */
+    public void setPrefix(final String prefixString) {
+        prefix = prefixString;
     }
     
     public final String getFilterPrefix() {
         return filterPrefix;
     }
+
+    /**
+     *
+     * @param filterPrefixString set filter prefix string.
+     */
+    public void setFilterPrefix(final String filterPrefixString) {
+        filterPrefix = filterPrefixString;
+    }
     
     public final String getFilterParameterName() {
         return filterParameterName;
+    }
+
+    /**
+     *
+     * @param name Filter parameter name
+     */
+    public void setFilterParameterName(final String name) {
+        filterParameterName = name;
     }
     
     @Override
