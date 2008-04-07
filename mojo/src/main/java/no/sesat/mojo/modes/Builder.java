@@ -170,6 +170,9 @@ public final class Builder {
         navigator.attributes.add(new ConfigAttribute("sort", null, false));
         navigator.attributes.add(new ConfigAttribute("boundary-match"));
 
+        // allow recursive nesting of navigator.
+        navigator.addChild(navigator);
+
         // only for fast commands
         navigators.addChild(navigator);
 

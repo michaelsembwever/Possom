@@ -72,7 +72,9 @@ public class GenerateXSD extends GenerateSchemaFile {
 
         }
         for (ConfigElement child : element.children) {
-            generate(child);
+            if (!written.contains(child.name)) {
+                generate(child);
+            }
         }
     }
 }
