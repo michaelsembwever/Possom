@@ -313,21 +313,6 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         addMedium(clause);
     }
 
-    /**
-     * Adds quotes around the URL and replacing the '?'. Failing so will produce syntax error in filter.
-     *
-     * @param clause The url clause.
-     */
-    protected void visitImpl(final UrlClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-            + ", isroot=" + (getQuery().getRootClause() == clause)
-            + ", rootClause=" + getQuery().getRootClause());
-
-        // Modifies the query so url searches works.
-        appendToQueryRepresentation('"' + getTransformedTerm(clause).replace("?", " ") + '"');
-    }
-
     @Override
     public NewsEspCommandConfig getSearchConfiguration() {
         return (NewsEspCommandConfig) super.getSearchConfiguration();

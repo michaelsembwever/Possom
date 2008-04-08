@@ -40,6 +40,7 @@ import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.OrClause;
+import no.sesat.search.query.UrlClause;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.BasicResultList;
@@ -85,7 +86,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
     private static final String ERR_CALL_SET_VIEW = "setView() must be called prior to calling this method";
-
 
     private enum ReservedWord {
         AND("and"),
@@ -419,6 +419,16 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         appendToQueryRepresentation("(");
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(")");
+    }
+
+    /**
+     * Adds quotes around the URL and replacing the '?'. Failing so will produce syntax error in filter.
+     *
+     * @param clause The url clause.
+     */
+    protected void visitImpl(final UrlClause clause) {
+
+        appendToQueryRepresentation('\"' + getTransformedTerm(clause).replace("?", " ") + '\"');
     }
 
     /**
