@@ -99,7 +99,7 @@ public final class TokenMaskQueryTransformerConfig extends AbstractQueryTransfor
 
         super.readQueryTransformer(qt);
         addPredicates(qt.getAttribute("predicates").split(","));
-        if(qt.getAttribute("match").length() > 0){
+        if(qt.getAttribute("position").length() > 0){
             setPosition(Position.valueOf(qt.getAttribute("position").toUpperCase()));
         }
         if(qt.getAttribute("mask").length() >0){
