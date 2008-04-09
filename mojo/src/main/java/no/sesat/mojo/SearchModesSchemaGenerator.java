@@ -144,7 +144,7 @@ public class SearchModesSchemaGenerator extends AbstractMojo {
 
                 File outFolder = new File("target/source/");
                 outFolder.mkdirs();
-                if (!classpath.isEmpty()) {
+                if (!classpath.equals("")) {
                     classpath += File.pathSeparator;
                 }
                 classpath += outFolder.getAbsolutePath();
