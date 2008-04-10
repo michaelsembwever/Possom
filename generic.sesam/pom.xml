@@ -379,7 +379,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.gamma.test.sesam.no</sesam.site>   
+                <sesam.site>generic.sesam.no</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
