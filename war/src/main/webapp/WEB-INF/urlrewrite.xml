@@ -30,6 +30,7 @@
     <rule><from>^/index.jsp$</from><to>/</to></rule>
     <rule><from>^/$</from><to>/search/?</to></rule>
     <rule><from>^/robots.txt$</from><to>/robots.jsp</to></rule>
+    <rule><from>^/favicon.ico$</from><to type="permanent-redirect">/images/favicon.ico</to></rule>
     <rule><from>^/psearch/(.*)$</from><to>/search/$1</to></rule>
     
     <!-- makes it easy to upload google verification html files -->
