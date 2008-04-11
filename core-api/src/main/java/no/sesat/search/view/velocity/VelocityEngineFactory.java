@@ -69,7 +69,7 @@ import org.apache.velocity.tools.generic.NumberTool;
  * <b>Developer Aid</b><br/>
  * Ola-marius extended the engine so to run in debug mode that outlines (& titles) each rendered template.
  * See 
- * <a href="https://dev.sesat.no/confluence/display/TECHDEV/Debugging+Velocity+Templates">
+ * <a href="http://sesat.no/debugging-velocity-templates.html">
  *  Debugging Velocity Templates
  * </a><br/>
  *
