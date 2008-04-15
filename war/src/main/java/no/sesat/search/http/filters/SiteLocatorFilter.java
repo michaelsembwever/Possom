@@ -35,6 +35,8 @@ import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.enterprise.deploy.model.J2eeApplicationObject;
+import javax.enterprise.deploy.model.J2eeApplicationObject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -53,6 +55,7 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.site.config.ResourceLoadException;
 import no.sesat.search.view.FindResource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -105,8 +108,14 @@ public final class SiteLocatorFilter implements Filter {
             final Properties props = new Properties();
             final PropertiesLoader loader
                     = UrlResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
-            loader.abut();
-            return props.getProperty(Site.PARENT_SITE_KEY);
+            try{
+                loader.abut();
+                return props.getProperty(Site.PARENT_SITE_KEY);
+                
+            }catch(ResourceLoadException rle){
+                LOG.fatal("BROKEN SITE HIERARCHY." + rle.getMessage());
+                throw new VirtualMachineError(rle.getMessage()){};
+            }
         }
     };
 

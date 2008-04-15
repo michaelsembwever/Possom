@@ -186,7 +186,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
             final String clsName = siteConf.getProperty(DATA_MODEL_FACTORY_IMPL);
             LOG.info("constructing for " + cxt.getSite() + " instance of " + clsName);
-            
+                    
             @SuppressWarnings("unchecked")
             final Class<DataModelFactory> cls = (Class<DataModelFactory>) Class.forName(clsName);
 

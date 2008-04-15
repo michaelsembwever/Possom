@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /** A Site object idenetifies an unique SiteSearch implementation.
@@ -274,6 +275,9 @@ public final class Site implements Serializable {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);    
         }
         
+        final Level oLevel = LOG.getLevel();
+        LOG.setLevel(Level.ALL);
+        
         final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, System.getProperty(DEFAULT_SITE_KEY));
         LOG.info("defaultSiteName: " + defaultSiteName);
         
@@ -285,6 +289,7 @@ public final class Site implements Serializable {
                 = props.getProperty(DEFAULT_SERVER_PORT_KEY, System.getProperty(DEFAULT_SERVER_PORT_KEY));
         LOG.info("defaultSitePort: " + defaultSitePort);
         
+        LOG.setLevel(oLevel);
         
         SERVER_PORT = Integer.parseInt(defaultSitePort);
 

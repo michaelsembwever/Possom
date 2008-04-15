@@ -90,6 +90,11 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
             cxt.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(cxt.getSite(), this);
+            
+        }catch(ResourceLoadException rle){
+            LOG.fatal("BROKEN SITE HIERARCHY." + rle.getMessage());
+            throw new VirtualMachineError(rle.getMessage()){};
+            
         } finally {
             INSTANCES_LOCK.writeLock().unlock();
         }
