@@ -313,12 +313,16 @@ public final class SiteLocatorFilter implements Filter {
         //      2) "UseCanonicalName Off" to assign ServerName from client's request.
         final String vhost = getServerName(servletRequest);
 
+        // Tweak the port if SERVER_PORT has been explicitly set. (We may have gone through Apache or Cisco LB).
+        final String correctedVhost = Site.SERVER_PORT > 0 && vhost.indexOf(':') > 0
+                ? vhost.substring(0, vhost.indexOf(':') + 1) + Site.SERVER_PORT
+                : vhost;
 
-        LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
+        LOG.trace(DEBUG_REQUESTED_VHOST + correctedVhost);
 
         // Construct the site object off the browser's locale, even if it won't finally be used.
         final Locale locale = servletRequest.getLocale();
-        final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
+        final Site result = Site.valueOf(SITE_CONTEXT, correctedVhost, locale);
         final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
             public PropertiesLoader newPropertiesLoader(
                     final SiteContext siteCxt,
@@ -353,16 +357,16 @@ public final class SiteLocatorFilter implements Filter {
 
             case 3:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1] + '_' + prefLocale[2]);
-                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
+                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
 
             case 2:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1]);
-                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1]));
+                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1]));
 
             case 1:
             default:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]);
-                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
+                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0]));
 
         }
     }
