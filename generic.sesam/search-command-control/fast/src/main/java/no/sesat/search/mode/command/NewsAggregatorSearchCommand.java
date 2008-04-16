@@ -33,6 +33,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
@@ -64,18 +67,24 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         super(cxt);
     }
 
+ 
+    @Override
     public ResultList<? extends ResultItem> execute() {
         final NewsAggregatorCommandConfig config = getSearchConfiguration();
         final StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
         final String xmlUrl = getXmlUrlString(datamodel, config);
+                
         LOG.debug("Loading xml file at: " + xmlUrl);
+        ResultList<? extends ResultItem> searchResult;
         if (clusterId == null) {
-            return getPageResult(config, xmlUrl);
+        	searchResult = getPageResult(config, xmlUrl);
         } else {
-            return getClusterResult(config, clusterId, xmlUrl);
+        	searchResult = getClusterResult(config, clusterId, xmlUrl);
         }
+        LOG.debug("Done (+Tried loading xml file at: " + xmlUrl + ")");
+        return searchResult;
     }
-
+    
     private String getXmlUrlString(final DataModel dataModel, final NewsAggregatorCommandConfig config) {
         String geographic = "main";
         String category = "main";
@@ -209,11 +218,67 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         private static final String ATTRIBUTE_CLUSTER_COUNT = "clusters";
         private static final String ELEMENT_ENTRY = "entry";
 
-        private Document getDocument(String urlString) throws IOException, SAXException {
+        private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();
+        private static final int REFRESH_PERIOD = 60; // one minute
+        private static final int CACHE_CAPACITY = 64;
+
+        private static final Logger LOG = Logger.getLogger(NewsAggregatorXmlParser.class);
+
+        // Static --------------------------------------------------------
+
+        static{
+            CACHE.setCacheCapacity(CACHE_CAPACITY);
+        }
+
+        /**
+         * Loads an XML document from a URL i.e. file:// or http://
+         *
+         * @param xmlUrl    the url to the xml
+         * @return the parsed XML as an org.w3c.dom.Document object
+         * @throws org.xml.sax.SAXException if the underlying sax parser throws an exception
+         * @throws java.io.IOException      if the file could not be read for some reason
+         */
+        private Document getDocumentFromUrl(String urlString) throws IOException, SAXException {
+        	
             final URL url = new URL(urlString);
             final HTTPClient httpClient = HTTPClient.instance(url);
             return httpClient.getXmlDocument(url.getPath());
         }
+        
+        /**
+         * Loads an XML document from a URL i.e. file:// or http:// or cache based on a cache timeout
+         * Gets from URL and stores the result in the cache
+         * if a NeedsRefreshException is thrown by the cache
+         * Adapted from TvWaitSearchCommand
+         *
+         * @param xmlUrl    the url to the xml
+         * @return the parsed XML as an org.w3c.dom.Document object
+         * @throws org.xml.sax.SAXException if the underlying sax parser throws an exception
+         * @throws java.io.IOException      if the file could not be read for some reason
+         */
+        private final Document getDocumentFromCache(final String urlString) throws IOException, SAXException {
+
+            Document doc;
+            try {
+                doc = (Document) CACHE.getFromCache(urlString, REFRESH_PERIOD);
+                LOG.debug("Got doc from cache for " + urlString);
+            } catch (NeedsRefreshException e) {
+
+                boolean updatedCache = false;
+                try{
+                    doc = getDocumentFromUrl(urlString);
+                    CACHE.putInCache(urlString, doc);
+                    LOG.debug("Got doc from url and added to cache for " + urlString);
+                    updatedCache = true;
+                }finally{
+                    if(!updatedCache){
+                        // prevents a deadlock in CACHE!
+                        CACHE.cancelUpdate(urlString);
+                    }
+                }
+            }
+            return doc;
+        } 
 
         /**
          * Parses a specific identified cluster
@@ -237,7 +302,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
             LOG.debug("Parsing cluster: " + clusterId);
             // following will either throw a ClassCastException or NPE
             final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
-            final Document doc = getDocument(xmlUrl);
+            final Document doc = getDocumentFromCache(xmlUrl);
             final Element root = doc.getDocumentElement();
             List<Element> clusters = getDirectChildren(root, ELEMENT_CLUSTER);
             for (Element cluster : clusters) {
@@ -265,9 +330,10 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                 final NewsAggregatorCommandConfig config,
                 final int offset,
                 final String xmlUrl) throws IOException, SAXException {
+            
             // following will throw a ClassCastException or NPE
             final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
-            final Document doc = getDocument(xmlUrl);
+            final Document doc = getDocumentFromCache(xmlUrl);
             final Element root = doc.getDocumentElement();
 
             handleClusters(config, offset, getDirectChildren(root, ELEMENT_CLUSTER), searchResult);
@@ -325,7 +391,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                 final List<Element> clusters,
                 final ResultList<ResultItem> searchResult) {
 
-            int maxOffset = offset + config.getResultsToReturn();
+            final int maxOffset = offset + config.getResultsToReturn();
             for (int i = offset; i < clusters.size() && i < maxOffset; i++) {
                 Element cluster = clusters.get(i);
                 handleCluster(config, cluster, searchResult);
@@ -431,6 +497,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                 final NewsAggregatorCommandConfig config,
                 final ResultList<ResultItem> srcResult,
                 final ResultList<ResultItem> targetResult) {
+            
             addResult(config, srcResult, targetResult, null, false);
         }
 

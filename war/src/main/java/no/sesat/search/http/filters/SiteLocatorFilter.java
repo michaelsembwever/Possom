@@ -35,6 +35,8 @@ import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.enterprise.deploy.model.J2eeApplicationObject;
+import javax.enterprise.deploy.model.J2eeApplicationObject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -53,6 +55,7 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.site.config.ResourceLoadException;
 import no.sesat.search.view.FindResource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -105,8 +108,14 @@ public final class SiteLocatorFilter implements Filter {
             final Properties props = new Properties();
             final PropertiesLoader loader
                     = UrlResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
-            loader.abut();
-            return props.getProperty(Site.PARENT_SITE_KEY);
+            try{
+                loader.abut();
+                return props.getProperty(Site.PARENT_SITE_KEY);
+                
+            }catch(ResourceLoadException rle){
+                LOG.fatal("BROKEN SITE HIERARCHY." + rle.getMessage());
+                throw new VirtualMachineError(rle.getMessage()){};
+            }
         }
     };
 
@@ -304,12 +313,16 @@ public final class SiteLocatorFilter implements Filter {
         //      2) "UseCanonicalName Off" to assign ServerName from client's request.
         final String vhost = getServerName(servletRequest);
 
+        // Tweak the port if SERVER_PORT has been explicitly set. (We may have gone through Apache or Cisco LB).
+        final String correctedVhost = Site.SERVER_PORT > 0 && vhost.indexOf(':') > 0
+                ? vhost.substring(0, vhost.indexOf(':') + 1) + Site.SERVER_PORT
+                : vhost;
 
-        LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
+        LOG.trace(DEBUG_REQUESTED_VHOST + correctedVhost);
 
         // Construct the site object off the browser's locale, even if it won't finally be used.
         final Locale locale = servletRequest.getLocale();
-        final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
+        final Site result = Site.valueOf(SITE_CONTEXT, correctedVhost, locale);
         final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
             public PropertiesLoader newPropertiesLoader(
                     final SiteContext siteCxt,
@@ -344,16 +357,16 @@ public final class SiteLocatorFilter implements Filter {
 
             case 3:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1] + '_' + prefLocale[2]);
-                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
+                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
 
             case 2:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1]);
-                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1]));
+                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1]));
 
             case 1:
             default:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]);
-                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
+                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0]));
 
         }
     }

@@ -11,6 +11,13 @@
     <packaging>pom</packaging>
     <description>Generic Search Commands</description>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>oscache</artifactId>
+        </dependency>
+    </dependencies>
     
     <modules>
         <module>default</module>

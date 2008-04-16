@@ -198,7 +198,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.alpha.test.sesam.no</sesam.site>                
+                <sesam.site>generic.alpha.test.sesam</sesam.site>                
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -242,7 +242,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.nuclei.test.sesam.no</sesam.site>   
+                <sesam.site>generic.nuclei.test.sesam</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -286,7 +286,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.beta.test.sesam.no</sesam.site>   
+                <sesam.site>generic.beta.test.sesam</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -335,7 +335,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.electron.test.sesam.no</sesam.site>   
+                <sesam.site>generic.electron.test.sesam</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -379,7 +379,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.gamma.test.sesam.no</sesam.site>   
+                <sesam.site>generic.sesam</sesam.site>   
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
@@ -425,7 +425,7 @@
             <build><pluginManagement /></build>
             <properties>
 
-                <sesam.site>generic.sesam.no</sesam.site> 
+                <sesam.site>generic.sesam</sesam.site> 
 
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>

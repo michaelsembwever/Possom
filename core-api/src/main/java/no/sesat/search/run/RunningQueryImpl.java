@@ -100,6 +100,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final String PARAM_COMMANDS = "commands";
     // TODO generic parameter key to be put into ParameterDataObject
     private static final String PARAM_WAITFOR = "waitFor";
+    // TODO generic parameter key to be put into ParameterDataObject
+    private static final String PARAM_OUTPUT = "output";
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.sesat.search.analyzer.Analysis");
@@ -384,8 +386,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return Collections.unmodifiableMap(hits);
     }
 
-    // Private -------------------------------------------------------
-
     /** Intentionally overridable. Would be nice if run-transform-spi could have influence on the result here.
      *
      * @return collection of SearchConfigurations applicable to this running query.
@@ -424,6 +424,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         
         return performTransformers(applicableSearchConfigurations);
     }
+
+    // Private -------------------------------------------------------
 
     private boolean useEnrichment(
             final EnrichmentHint eHint,
@@ -619,10 +621,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
     }
 
-    // Inner classes -------------------------------------------------
     private boolean isRss() {
 
-        final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_LAYOUT);
+        final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_OUTPUT);
         return null != outputParam && "rss".equals(outputParam.getString());
     }
 

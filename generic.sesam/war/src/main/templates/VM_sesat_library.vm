@@ -1,9 +1,14 @@
 #macro(searchTabInclude $includeName)
+    ## This is a copy of SearchTabIncludeTag.java. TODO would be nice to merge them both into one.
     #if($includeName && $layout)
         #set ($includeValue = "$!layout.getInclude($includeName)")
         #if($includeValue && $includeValue.trim().length() > 0)
             <!-- $includeName -->
-            #parse("$datamodel.site.site.getTemplateDir()/fragments/layout/${includeValue}.vm")
+            #if( $includeValue.startsWith("/") )
+                #parse("$datamodel.site.site.getTemplateDir()${includeValue}.vm")
+            #else
+                #parse("$datamodel.site.site.getTemplateDir()/fragments/layout/${includeValue}.vm")
+            #end
         #else
             <!-- $includeName not found -->
         #end

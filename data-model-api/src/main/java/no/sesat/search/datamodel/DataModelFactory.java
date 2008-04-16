@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -186,7 +186,13 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
             final String clsName = siteConf.getProperty(DATA_MODEL_FACTORY_IMPL);
             LOG.info("constructing for " + cxt.getSite() + " instance of " + clsName);
-            
+
+            if(null == clsName){
+                throw new SiteKeyedFactoryInstantiationException(
+                        "Couldn't find " + DATA_MODEL_FACTORY_IMPL + " in " + siteConf.getProperties().toString(), 
+                        new NullPointerException());
+            }
+                
             @SuppressWarnings("unchecked")
             final Class<DataModelFactory> cls = (Class<DataModelFactory>) Class.forName(clsName);
 

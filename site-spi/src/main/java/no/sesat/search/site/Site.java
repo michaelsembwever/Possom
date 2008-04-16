@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,10 +31,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-/** A Site object idenetifies an unique SiteSearch implementation.
- * This bean holds nothing more than the name of the virtual host used to access this SiteSearch.
+/** A Site object identifies a Skin + Locale pairing.
+ *  
+ * This bean holds nothing more than the name of the virtual host (siteName) and locale used to access this Skin.
+ * 
+ * It is used as a key to obtain the correct factory instances in the application.
+ * There is usually only one Skin per siteName and it is left up to the skin to handle different locales.
+ * .
  * <b>Immutable</b>.
  *
  * Does a little bit of niggling wiggling to load the DEFAULT site. See static constructor.
@@ -44,12 +50,21 @@ import org.apache.log4j.Logger;
  */
 public final class Site implements Serializable {
 
-    /** Not to be confused with the SiteContext.
+    /** During construction of any site we must know who the parent site is going to be. 
+     * It will likely be also constructed since leaf sites are those first requested.
+     * 
+     * The base level sites, locale variants of the DEFAULT site, are expected to have a null parent.
+     * These DEFAULT sites can just pass in a null context instead of constructing a context that returns a null parent.
+     * 
+     * Not to be confused with the SiteContext.
      * This is a Context required for constructing a Site.
      * While a SiteContext is a context required to use a Site.
      **/
     public interface Context extends BaseContext{
-        /** Get the name of the parent site. **/
+        /** Get the name of the parent site.
+         * @param siteContext that can provide the current site the code is within.
+         * @return the name of the parent site.
+         */
         String getParentSiteName(SiteContext siteContext);
     }
 
@@ -84,7 +99,7 @@ public final class Site implements Serializable {
      */
     private final String cxtName;
     /**
-     * Holds value of property _locale.
+     * Holds value of property locale.
      */
     private Locale locale;
     /**
@@ -105,16 +120,16 @@ public final class Site implements Serializable {
         uniqueName = null;
         parent = null;
     }
-    
+
     /** Creates a new instance of Site.
      * A null Context will result in a parentSiteName == siteName
      */
     private Site(final Context cxt, final String theSiteName, final Locale theLocale) {
-        
-        
+
+
         try{
             INSTANCES_LOCK.writeLock().lock();
-            
+
             LOG.info("Site(cxt, " + theSiteName + ", " + theLocale + ')');
             assert null != theSiteName;
             assert null != theLocale;
@@ -122,9 +137,7 @@ public final class Site implements Serializable {
             // siteName must finish with a '\'
             siteName = ensureTrailingSlash(theSiteName);
 
-            cxtName = siteName.indexOf(':') >= 0
-                ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
-                : siteName;
+            cxtName = ensureTrailingSlash(siteName.replaceAll(":.*$", "")); // don't include the port in the cxtName.
             locale = theLocale;
             uniqueName = getUniqueName(siteName, locale);
 
@@ -136,18 +149,44 @@ public final class Site implements Serializable {
                 }
             };
 
+            final String parentSiteName;
+            if(null != cxt){
+                parentSiteName = null != cxt.getParentSiteName(siteContext)
+                        ? ensureTrailingSlash(cxt.getParentSiteName(siteContext))
+                        : null;
+            }else{
+                parentSiteName = siteName;
+            }
 
-            final String parentSiteName = null != cxt ? cxt.getParentSiteName(siteContext) : siteName;
+            final String tsParentNameNoPort = null != parentSiteName
+                    ? ensureTrailingSlash(parentSiteName.replaceAll(":.*$", ""))
+                    : null;
 
-            parent = null == parentSiteName || ensureTrailingSlash(parentSiteName).equals(siteName)
-                ? constructingDefault ? null : DEFAULT
-                : Site.valueOf(cxt, parentSiteName, theLocale);
+            LOG.debug(siteName + " parent is " + parentSiteName);
+
+            if(constructingDefault){
+                parent = null;
+
+            }else{
+                LOG.debug("Default-check-> " + DEFAULT.getName() + " ?= " + parentSiteName);
+
+                final boolean invalidParent = null == parentSiteName
+                        // also avoid any incest
+                        || siteName.equals(tsParentNameNoPort)
+                        // and detect ahead the link to the grandfather of all "generic.sesam"
+                        || DEFAULT.getName().equals(parentSiteName);
+
+                parent = invalidParent
+                    ? DEFAULT
+                    : Site.valueOf(cxt, parentSiteName, theLocale);
+            }
 
             assert null != parent || constructingDefault : "Parent must exist for all Sites except the DEFAULT";
-            
+
             // register in global pool.
+            LOG.debug("INSTANCES.put(" + uniqueName + ", this)");
             INSTANCES.put(uniqueName, this);
-        
+
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
         }
@@ -155,8 +194,8 @@ public final class Site implements Serializable {
 
 
     /** the parent to this site.
-     * returns null if we are the DEFAULT site.
-     **/
+     * @return site null if we are the DEFAULT site.
+     */
     public Site getParent(){
         return parent;
     }
@@ -200,25 +239,19 @@ public final class Site implements Serializable {
         return locale;
     }
 
-    /** {@inheritDoc}
-     */
     @Override
     public String toString(){
         return uniqueName;
     }
 
-    /** {@inheritDoc}
-     */
     @Override
     public boolean equals(final Object obj) {
-        
+
         return obj instanceof Site
                 ? uniqueName.equals(((Site)obj).uniqueName)
                 : super.equals(obj);
     }
 
-    /** {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return uniqueName.hashCode();
@@ -227,31 +260,32 @@ public final class Site implements Serializable {
     /** Get the instance for the given siteName.
      * The port number will be changed if the server has explicitly assigned one port number to use.
      * A "www." prefix will be automatically ignored.
+     * 
+     * TODO refactor to instanceOf(..). it is an instance returned not a primitive.
+     * 
      * @param cxt the cxt to use during creation. null will prevent constructing a new site.
      * @param siteName the virtual host name.
+     * @param locale the locale desired
      * @return the site bean.
      */
     public static Site valueOf(final Context cxt, final String siteName, final Locale locale) {
 
         Site site = null;
-        
-        // Tweak the port is SERVER_PORT has been explicitly set.
-        final String correctedPortSiteName = SERVER_PORT > 0 && siteName.indexOf(':') > 0
-                ? siteName.substring(0, siteName.indexOf(':') + 1) + SERVER_PORT
-                : siteName;
 
         // Strip www. from siteName
-        final String realSiteName = ensureTrailingSlash(correctedPortSiteName.replaceAll("www.", ""));
+        final String realSiteName = ensureTrailingSlash(siteName.replaceAll("www.", ""));
 
         // Look for existing instances
+        final String uniqueName = getUniqueName(realSiteName,locale);
         try{
             INSTANCES_LOCK.readLock().lock();
-            site = INSTANCES.get(getUniqueName(realSiteName,locale));
-            
+            LOG.debug("INSTANCES.get(" + uniqueName + ")");
+            site = INSTANCES.get(uniqueName);
+
         }finally{
             INSTANCES_LOCK.readLock().unlock();
         }
-        
+
         // construct a new instance
         if (null == site && null != cxt) {
             site = new Site(cxt, realSiteName, locale);
@@ -263,28 +297,32 @@ public final class Site implements Serializable {
 
         final Properties props = new Properties();
         final InputStream is = Site.class.getResourceAsStream('/' + CORE_CONF_FILE);
-        
+
         try {
             if(null != is){
                 props.load(is);
                 is.close();
             }
-            
+
         }  catch (IOException ex) {
-            LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);    
+            LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }
+
+        final Level oLevel = LOG.getLevel();
+        LOG.setLevel(Level.ALL);
         
         final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, System.getProperty(DEFAULT_SITE_KEY));
         LOG.info("defaultSiteName: " + defaultSiteName);
-        
-        final String defaultSiteLocaleName 
+
+        final String defaultSiteLocaleName
                 = props.getProperty(DEFAULT_SITE_LOCALE_KEY, System.getProperty(DEFAULT_SITE_LOCALE_KEY));
         LOG.info("defaultSiteLocaleName: " + defaultSiteLocaleName);
-        
-        final String defaultSitePort 
+
+        final String defaultSitePort
                 = props.getProperty(DEFAULT_SERVER_PORT_KEY, System.getProperty(DEFAULT_SERVER_PORT_KEY));
         LOG.info("defaultSitePort: " + defaultSitePort);
         
+        LOG.setLevel(oLevel);
         
         SERVER_PORT = Integer.parseInt(defaultSitePort);
 
@@ -307,14 +345,20 @@ public final class Site implements Serializable {
     /** the server's actual port. **/
     public static final int SERVER_PORT;
 
-    /** TODO comment me. **/
+    /** Get a uniqueName given a pair of siteName and locale.
+     * Used internally and before construction of any new Site.
+     *
+     * @param siteName
+     * @param locale
+     * @return
+     */
     public static String getUniqueName(final String siteName, final Locale locale) {
-        
+
         return siteName + '[' + locale.getDisplayName() + ']';
     }
 
     private static String ensureTrailingSlash(final String theSiteName) {
-        
+
         return theSiteName.endsWith("/")
             ? theSiteName
             : theSiteName + '/';

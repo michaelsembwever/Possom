@@ -109,7 +109,7 @@ public final class HTTPClient {
      *
      * @param host the physical host to use.
      * @param port the port to use.
-     * @param hostHeader virtual host to use.
+     * @param physicalHost virtual host to use.
      *
      * @return a client.
      */

@@ -251,7 +251,7 @@
             <id>alpha</id>
             <activation />
             <properties>
-                <sesam.site.generic>generic.alpha.test.sesam.no</sesam.site.generic>
+                <sesam.site.generic>generic.alpha.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/alpha.test.sesam.no</serverDeployLocation>
             </properties>
@@ -269,7 +269,7 @@
             <id>nuclei</id>
             <activation />
             <properties>
-                <sesam.site.generic>generic.nuclei.test.sesam.no</sesam.site.generic>
+                <sesam.site.generic>generic.nuclei.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/nuclei.test.sesam.no</serverDeployLocation>
             </properties>
@@ -287,7 +287,7 @@
             <id>beta</id>
             <activation />
             <properties>
-                <sesam.site.generic>generic.beta.test.sesam.no</sesam.site.generic>
+                <sesam.site.generic>generic.beta.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/beta.test.sesam.no</serverDeployLocation>
             </properties>
@@ -305,7 +305,7 @@
             <id>electron</id>
             <activation />
             <properties>
-                <sesam.site.generic>generic.electron.test.sesam.no</sesam.site.generic>
+                <sesam.site.generic>generic.electron.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/electron.test.sesam.no</serverDeployLocation>
             </properties>
@@ -323,8 +323,9 @@
             <id>gamma</id>
             <activation />
             <properties>
-                <sesam.site.generic>generic.gamma.test.sesam.no</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
+                <!-- IMPORTANT: production cannot handle writing to sesam.log at a lower threshold -->
+                <log.level>WARN</log.level>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/gamma.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
