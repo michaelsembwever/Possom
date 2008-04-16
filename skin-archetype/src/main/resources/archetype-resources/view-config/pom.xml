@@ -15,60 +15,60 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses />.
- - $Id: project.xml 2296 2006-02-14 17:33:59Z magnuse $
+ - ${dollar}Id: project.xml 2296 2006-02-14 17:33:59Z magnuse ${dollar}
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${package}</groupId>
-        <artifactId>${pom.artifactId}</artifactId>
-        <version>${pom.version}</version>
+        <groupId>${dollar}{package}</groupId>
+        <artifactId>${dollar}{pom.artifactId}</artifactId>
+        <version>${dollar}{pom.version}</version>
     </parent>
     <artifactId>sesam.com-view-config</artifactId>
-    <name>${project.artifactId}</name>
+    <name>${dollar}{project.artifactId}</name>
     <packaging>jar</packaging>
     <description>Generic View configurations</description>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${dollar}{project.artifactId}</finalName>
     </build>
 
     <dependencies>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-result-handler-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <groupId>${dollar}{package}</groupId>
+            <artifactId>${dollar}{package}-result-handler-config-spi</artifactId>
+            <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
+            <groupId>${dollar}{package}</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-result-spi</artifactId>
-            <version>${pom.version}</version>
+            <groupId>${dollar}{package}</groupId>
+            <artifactId>${dollar}{package}-result-spi</artifactId>
+            <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-search-command-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <groupId>${dollar}{package}</groupId>
+            <artifactId>${dollar}{package}-search-command-config-spi</artifactId>
+            <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-data-model-api</artifactId>
-            <version>${pom.version}</version>
+            <groupId>${dollar}{package}</groupId>
+            <artifactId>${dollar}{package}-data-model-api</artifactId>
+            <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-view-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <groupId>${dollar}{package}</groupId>
+            <artifactId>${dollar}{package}-view-config-spi</artifactId>
+            <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
