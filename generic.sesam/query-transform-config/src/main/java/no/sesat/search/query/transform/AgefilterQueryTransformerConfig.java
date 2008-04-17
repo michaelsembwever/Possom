@@ -69,9 +69,8 @@ public final class AgefilterQueryTransformerConfig extends AbstractQueryTransfor
 
     @Override
     public AgefilterQueryTransformerConfig readQueryTransformer(final Element qt) {
-
         super.readQueryTransformer(qt);
-        setAgeField(qt.getAttribute("field"));
+        setAgeField(qt.getAttribute("age-field"));
         String optionalAttribute = qt.getAttribute("age-symbol");
         if (optionalAttribute != null && optionalAttribute.length() > 0) {
             setAgeSymbol(optionalAttribute);
