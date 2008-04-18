@@ -22,7 +22,9 @@
         Purpose of the document follows.
 -->
 
-<modes template-prefix="default-">
+<modes template-prefix="default-"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="modes.xsd">
 
     <mode id="default-mode" analysis="false" inherit="default-magic">
             <!-- mode inheritence is a restricted one child to one parent relationship
