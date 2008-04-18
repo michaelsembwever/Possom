@@ -261,6 +261,10 @@
                                     <includes>
                                         <include>**/modes.xml</include>
                                     </includes>
+                                    <excludes>
+                                        <exclude>**/target/**</exclude>
+                                    </excludes>
+                                    <validating>true</validating>
                                 </validationSet>
                             </validationSets>
                         </configuration>
