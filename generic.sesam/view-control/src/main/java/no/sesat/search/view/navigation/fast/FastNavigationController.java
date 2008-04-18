@@ -58,7 +58,7 @@ public class FastNavigationController implements NavigationController {
         final NavigationItem item = new BasicNavigationItem();
 
         if (search == null) {
-            LOG.error("Search for " + commandName + "not found.");
+            LOG.error("Search for '" + commandName + "' not found.");
             return item;
         }
 
