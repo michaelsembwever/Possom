@@ -280,20 +280,23 @@ public final class UserFilter implements Filter {
 
         LOG.debug("Url: " + url);
         LOG.debug("JndiName: " + jndi);
+        
+        if( null != url && null != jndi ){
 
-        final Properties properties = new Properties();
-        properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
-        properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-        properties.put("java.naming.provider.url", url);
+            final Properties properties = new Properties();
+            properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
+            properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+            properties.put("java.naming.provider.url", url);
 
-        try {
-            return (BasicUserService) new InitialContext(properties).lookup(jndi);
+            try {
+                return (BasicUserService) new InitialContext(properties).lookup(jndi);
 
-        } catch (final NamingException ne) {
-            // acceptable for sesat not to have to have a user service backend
-            LOG.debug(ne.getMessage(), ne);
-            return null;
+            } catch (final NamingException ne) {
+                // acceptable for sesat not to have to have a user service backend
+                LOG.debug(ne.getMessage(), ne);
+            }
         }
+        return null;
     }
 
 }
