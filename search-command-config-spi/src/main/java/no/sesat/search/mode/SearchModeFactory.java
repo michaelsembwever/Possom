@@ -553,7 +553,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
-            LOG.debug("findClass " + className);
+            LOG.debug("findClass (SearchConfiguration) " + className);
 
             final String classNameFQ = "no.sesat.search.mode.config."+ className+ "Config";
             final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
@@ -578,7 +578,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
-            LOG.debug("findClass " + className);
+            LOG.debug("findClass (QueryTransformerConfig) " + className);
 
             final String classNameFQ = "no.sesat.search.query.transform."
                     + className
@@ -606,7 +606,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
-            LOG.debug("findClass " + className);
+            LOG.debug("findClass (ResultHandlerConfig) " + className);
 
             final String classNameFQ = "no.sesat.search.result.handler."
                     + className

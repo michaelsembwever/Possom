@@ -54,6 +54,7 @@ public abstract class AbstractConfigFactory<C> {
         try {
             return null != findClass(xmlName, context);
         }catch (ClassNotFoundException e) {
+            LOG.debug("Class not found: " + xmlName);
             return false;
         }
     }
