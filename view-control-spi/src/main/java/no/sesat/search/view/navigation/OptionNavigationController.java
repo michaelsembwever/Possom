@@ -127,7 +127,6 @@ public class OptionNavigationController
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final StringDataObject optionSelectedValue = dataModel.getParameters().getValue(config.getParent().getField());
 
-
         boolean selectionDone = false;
 
         for (final OptionsNavigationConfig.Option option : optionsToAdd) {
@@ -146,9 +145,18 @@ public class OptionNavigationController
             }
             if (value != null) {
 
+                final Map<String,String> urlParameters;
+
+                if (option.getTab() != null) {
+                    urlParameters = new HashMap<String, String>(1);
+                    urlParameters.put(SearchTab.PARAMETER_KEY, option.getTab());
+                } else {
+                    urlParameters = Collections.<String, String> emptyMap();
+                }
+
                 final NavigationItem navigator = new BasicNavigationItem(
                         option.getDisplayName(),
-                        context.getUrlGenerator().getURL(value, config.getParent()),
+                        context.getUrlGenerator().getURL(value, config.getParent(), urlParameters),
                         -1);
 
                 parentResult.addResult(navigator);
