@@ -226,11 +226,13 @@ public final class NavigationConfig implements Serializable {
         @Override
         public String toString() {
             return "\nNavigation{" +
-                    "commandName='" + commandName + '\'' +
+                    "id='" + id + '\'' +
+                    ",commandName='" + commandName + '\'' +
                     ", tab='" + tab + '\'' +
                     ", out=" + out +
-                    ", navList=" + navList +
-                    ", resetNavSet=" + resetNavSet +
+                    ", excludeQuery=" + excludeQuery +
+                    ", prefix='" + prefix + '\'' +
+                    ", urlGenerator='" + urlGenerator + '\'' +
                     '}';
         }
 
@@ -373,7 +375,6 @@ public final class NavigationConfig implements Serializable {
         }
 
         public void setTab(final String tab) {
-
             this.tab = tab;
             // The tab property takes preference over any url parameters. intialse it here and use against urlGenerator.
             staticParameters.put(SearchTab.PARAMETER_KEY, tab);
@@ -417,12 +418,19 @@ public final class NavigationConfig implements Serializable {
 
         @Override
         public String toString() {
-
             return "Nav{"
                     + "id='" + id + '\''
                     + ", commandName='" + commandName + '\''
                     + ", field='" + field + '\''
+                    + ", tab='" + tab + '\''
+                    + ", backText='" + backText + '\''
+                    + ", out=" + out
+                    + ", maxsize=" + maxsize
+                    + ", autoNavigation=" + autoNavigation
                     + ", staticParameters=" + staticParameters
+                    + ", childNavs=" + (childNavs != null ? childNavs : "null")
+                    + ", parent='" + (parent != null ? parent.getId() : "null") + '\''
+                    + ", navigation='" + (navigation != null ? navigation.getId() : "null") + '\''
                     + '}';
         }
 
