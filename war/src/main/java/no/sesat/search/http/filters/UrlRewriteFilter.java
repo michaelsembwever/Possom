@@ -34,6 +34,9 @@ import org.tuckey.web.filters.urlrewrite.UrlRewriterContainer;
 
 /** Override of tuckey's UrlRewriteFilter that supplies an inputstream to the skins's urlrewrite.xml
  *   instead of the default /WEB-INF/urlrewrite.xml
+ * 
+ * Make sure that any urlrewrite.xml has the attributes in the root element:
+ * &lt;urlrewrite decode-using="null" use-query-string="true"&gt;
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
@@ -52,7 +55,6 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
     
     // Public --------------------------------------------------------
     
-    /** {@inherit} **/
     @Override
     public UrlRewriterContainer getUrlRewriterContainer(final ServletRequest request){
         

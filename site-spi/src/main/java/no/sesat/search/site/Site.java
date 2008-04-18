@@ -164,7 +164,9 @@ public final class Site implements Serializable {
 
             LOG.debug(siteName + " parent is " + parentSiteName);
 
-            if(constructingDefault){
+            if(constructingDefault || DEFAULT.getName().equals(cxtName)){
+                // dont let the original DEFAULT have a parent
+                // OR let a port-explicit generic.sesam have a parent.
                 parent = null;
 
             }else{

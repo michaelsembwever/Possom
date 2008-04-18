@@ -38,6 +38,7 @@ import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -260,6 +261,10 @@ public abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void run() {
+        
+        // Inheriting from Site & UniqueId from parent thread is meaningless in a thread pool.
+        MDC.put(Site.NAME_KEY, context.getSite());
+        MDC.remove("UNIQUE_ID");
         
         switch(resourceType.getPolymorphism()){
             case UP_HEIRARCHY:

@@ -23,7 +23,7 @@
     Description:
         Purpose of the document follows.
 -->
-<urlrewrite decode-using="null">
+<urlrewrite decode-using="null" use-query-string="true">
     <!-- Global rewrites applicable to every skin (sitesearch and country!) -->
 
     <!-- tomcat puts in the name of the welcome page -->
