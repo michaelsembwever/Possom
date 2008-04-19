@@ -111,7 +111,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
      protected final String getProjectName(final String siteName){
 
-        // XXX Very hacky and awful! desparately needs attention.
+        // XXX Very hacky and awful! desparately needs attention. One idea is to always use "generic.sesam" as skin name
         String projectName = siteName
                 .replaceAll("(localhost|(alpha|nuclei|beta|electron|gamma).test.sesam)", "sesam")
                 .replaceAll("generic.(sesam.no)", "generic.sesam");
@@ -154,12 +154,21 @@ public class FileResourceLoader extends AbstractResourceLoader {
             String basedir = System.getProperty("basedir") + File.separatorChar;
             LOG.debug("project " + project);
             while(true){
-                final String basedirNormalised = new File(basedir).toURI().normalize().toString()
-                        .replaceFirst("file:", "").replace('/', File.separatorChar);
+                String basedirNormalised = new File(basedir).toURI().normalize().toString()
+                        .replaceFirst("file:", "")
+                        .replace('/', File.separatorChar);
+                
+                if(!basedirNormalised.endsWith(File.separator)){
+                    basedirNormalised =  basedirNormalised + File.separatorChar;
+                }
                 
                 LOG.debug("basedirNormalised " + basedirNormalised);
                 
-                assert ! (File.separatorChar + "war").equals(basedirNormalised) : "At root of filesystem!";
+                if((File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)){
+                    throw new IllegalStateException("At root of filesystem!" +
+                            "+ Current requirement of tests is that sesat-kernel is checked out, and named such," +
+                            " in any parent folder from here. I've searched all the way to the root of the filesystem");
+                }
                 
                 if(basedirNormalised.endsWith(project) 
                         || basedirNormalised.endsWith(project + "war" + File.separatorChar)){
