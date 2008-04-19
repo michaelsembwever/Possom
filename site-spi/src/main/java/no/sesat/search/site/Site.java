@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
 import org.apache.log4j.Level;
+import no.sesat.search.site.config.ResourceLoadException;
 import org.apache.log4j.Logger;
 
 /** A Site object identifies a Skin + Locale pairing.
@@ -123,6 +124,7 @@ public final class Site implements Serializable {
 
     /** Creates a new instance of Site.
      * A null Context will result in a parentSiteName == siteName
+     * @throws IllegalArgumentException when there exists no skin matching the theSiteName argument.
      */
     private Site(final Context cxt, final String theSiteName, final Locale theLocale) {
 
@@ -151,9 +153,10 @@ public final class Site implements Serializable {
 
             final String parentSiteName;
             if(null != cxt){
-                parentSiteName = null != cxt.getParentSiteName(siteContext)
-                        ? ensureTrailingSlash(cxt.getParentSiteName(siteContext))
-                        : null;
+                // cxt.getParentSiteName(siteContext) is an expensive call due to resource load every call.
+                final String psn = cxt.getParentSiteName(siteContext);
+                parentSiteName = null != psn ? ensureTrailingSlash(psn) : null;
+                
             }else{
                 parentSiteName = siteName;
             }
@@ -268,7 +271,8 @@ public final class Site implements Serializable {
      * @param cxt the cxt to use during creation. null will prevent constructing a new site.
      * @param siteName the virtual host name.
      * @param locale the locale desired
-     * @return the site bean.
+     * @throws IllegalArgumentException when there exists no skin matching the siteName argument.
+     * @return the site instance. never null.
      */
     public static Site valueOf(final Context cxt, final String siteName, final Locale locale) {
 
@@ -281,7 +285,7 @@ public final class Site implements Serializable {
         final String uniqueName = getUniqueName(realSiteName,locale);
         try{
             INSTANCES_LOCK.readLock().lock();
-            LOG.debug("INSTANCES.get(" + uniqueName + ")");
+            LOG.trace("INSTANCES.get(" + uniqueName + ")");
             site = INSTANCES.get(uniqueName);
 
         }finally{
