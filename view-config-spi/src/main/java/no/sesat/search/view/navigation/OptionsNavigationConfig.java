@@ -192,5 +192,21 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
         public void setCommandName(String commandName) {
             this.commandName = commandName;
         }
+
+        @Override
+        public String toString() {
+            return "\nOption{" +
+                    "value='" + value + '\'' +
+                    ",displayName='" + displayName + '\'' +
+                    ", valueRef='" + valueRef + '\'' +
+                    ", defaultSelect=" + defaultSelect +
+                    ", defaultSelectValueRef='" + defaultSelectValueRef + '\'' +
+                    ", tab='" + tab + '\'' +
+                    ", useHitCount=" + useHitCount +
+                    ", commandName='" + commandName + '\'' +
+                    '}';
+        }
+
     }
+    
 }

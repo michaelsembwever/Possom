@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -61,9 +61,6 @@ public final class SpiClassLoader extends ResourceClassLoader {
         parentSite = site.getParent() != null ? parentSiteClassLoader() : this.getClass().getClassLoader();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return CLASS_LOADER_FOR + site.toString() + ", " + spi + "=>" + spi.getParent() +')';
@@ -111,7 +108,6 @@ public final class SpiClassLoader extends ResourceClassLoader {
         return jarName;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Class<?> findClass(final String className) throws ClassNotFoundException {
         

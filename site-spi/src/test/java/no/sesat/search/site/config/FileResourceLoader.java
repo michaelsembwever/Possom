@@ -133,6 +133,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return projectName.replace('/', File.separatorChar);
     }
 
+    // Not a doubt in my mind someone could write this a shit load better. i'll buy a beer to them.
     @Override
     protected final URL getResource(final Site site) {
 
@@ -153,17 +154,23 @@ public class FileResourceLoader extends AbstractResourceLoader {
             String basedir = System.getProperty("basedir") + File.separatorChar;
             LOG.debug("project " + project);
             while(true){
-                final String basedirNormalised = new File(basedir).toURI().normalize().toString();
+                final String basedirNormalised = new File(basedir).toURI().normalize().toString()
+                        .replaceFirst("file:", "").replace('/', File.separatorChar);
+                
                 LOG.debug("basedirNormalised " + basedirNormalised);
-                assert !"/war".equals(basedirNormalised) : "At root of filesystem!";
-                if(basedirNormalised.endsWith(project) || basedirNormalised.endsWith(project + "war/")){
+                
+                assert ! (File.separatorChar + "war").equals(basedirNormalised) : "At root of filesystem!";
+                
+                if(basedirNormalised.endsWith(project) 
+                        || basedirNormalised.endsWith(project + "war" + File.separatorChar)){
+                    
                     LOG.debug("looking in " + basedir + suffix);
                     final File f = new File(basedir + suffix + getResource());
                     if(f.exists()){
                         return f.toURI().normalize().toURL();
                     }
                 }
-                if("generic.sesam/".equals(project)){
+                if(("generic.sesam" + File.separatorChar).equals(project)){
                     ++genericSesamLoop;
                     basedir = System.getProperty("basedir") + File.separatorChar;
                     for(int i = 0; i < genericSesamLoop; ++i){

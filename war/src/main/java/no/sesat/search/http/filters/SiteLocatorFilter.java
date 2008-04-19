@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -69,7 +69,6 @@ import org.apache.log4j.MDC;
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-
 public final class SiteLocatorFilter implements Filter {
 
     // Constants -----------------------------------------------------
@@ -91,7 +90,9 @@ public final class SiteLocatorFilter implements Filter {
     private static final String UNKNOWN = "unknown";
 
     
-    private static final String CONFIGURATION_RESOURCE= "/conf/" + Site.CONFIGURATION_FILE;
+    // Any request coming into Sesat with /conf/ is immediately returned as a 404. 
+    // It should have been directed to a skin.
+    private static final String CONFIGURATION_RESOURCE= "/conf/";
 
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
@@ -99,7 +100,9 @@ public final class SiteLocatorFilter implements Filter {
                 PUBLISH_DIR, "/css/", "/images/", "/javascript/"
     }));
 
-    /** The context that we'll need to use every invocation of doFilter(..)  **/
+    /** The context that we'll need to use every invocation of doFilter(..).
+     * @throws IllegalArgumentException when there exists no skin matching the siteContext.getSite() argument.
+     **/
     public static final Site.Context SITE_CONTEXT = new Site.Context(){
         public String getParentSiteName(final SiteContext siteContext) {
             // we have to do this manually instead of using SiteConfiguration,
@@ -108,14 +111,13 @@ public final class SiteLocatorFilter implements Filter {
             final Properties props = new Properties();
             final PropertiesLoader loader
                     = UrlResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
-            try{
-                loader.abut();
-                return props.getProperty(Site.PARENT_SITE_KEY);
-                
-            }catch(ResourceLoadException rle){
-                LOG.fatal("BROKEN SITE HIERARCHY." + rle.getMessage());
-                throw new VirtualMachineError(rle.getMessage()){};
+
+            loader.abut();
+            final String parentName = props.getProperty(Site.PARENT_SITE_KEY);
+            if(null == parentName && 0 == props.size()){
+                throw new IllegalArgumentException("Invalid site " + siteContext.getSite());
             }
+            return parentName;
         }
     };
 
@@ -167,9 +169,9 @@ public final class SiteLocatorFilter implements Filter {
             if(request instanceof HttpServletRequest) {
                 final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
                 final HttpServletResponse  httpServletResponse = (HttpServletResponse) response;
-                if (httpServletRequest.getRequestURI().endsWith(CONFIGURATION_RESOURCE)){
+                if (httpServletRequest.getRequestURI().contains(CONFIGURATION_RESOURCE)){
                     /* We are looping, looking for a site search which does not exsist */
-                    LOG.debug("We are looping, looking for a site search which does not exist");
+                    LOG.info("We are looping, looking for a site search which does not exist");
                     httpServletResponse.reset();
                     httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return;
@@ -304,7 +306,7 @@ public final class SiteLocatorFilter implements Filter {
     /** The method to obtain the correct Site from the request.
      * It only returns a site with a locale supported by that site.
      ** @param servletRequest 
-     * @return 
+     * @return the site instance. or null if no such skin has been deployed.
      */
     public static Site getSite(final ServletRequest servletRequest) {
         // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
@@ -322,52 +324,59 @@ public final class SiteLocatorFilter implements Filter {
 
         // Construct the site object off the browser's locale, even if it won't finally be used.
         final Locale locale = servletRequest.getLocale();
-        final Site result = Site.valueOf(SITE_CONTEXT, correctedVhost, locale);
-        final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
-            public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt,
-                    final String resource,
-                    final Properties properties) {
 
-                return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+        final Site result;
+        try{
+            result = Site.valueOf(SITE_CONTEXT, correctedVhost, locale);
+            
+            final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
+                public PropertiesLoader newPropertiesLoader(
+                        final SiteContext siteCxt,
+                        final String resource,
+                        final Properties properties) {
+
+                    return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+                }
+                public Site getSite() {
+                    return result;
+                }
+            };
+            final SiteConfiguration siteConf = SiteConfiguration.instanceOf(siteConfCxt);
+            servletRequest.setAttribute(SiteConfiguration.NAME_KEY, siteConf);
+
+            if(LOG.isTraceEnabled()){ // MessageFormat.format(..) is expensive
+                LOG.trace(MessageFormat.format(
+                        LOCALE_DETAILS, locale.getLanguage(), locale.getCountry(), locale.getVariant()));
             }
-            public Site getSite() {
+
+            // Check if the browser's locale is supported by this skin. Use it if so.
+            if( siteConf.isSiteLocaleSupported(locale) ){
                 return result;
             }
-        };
-        final SiteConfiguration siteConf = SiteConfiguration.instanceOf(siteConfCxt);
-        servletRequest.setAttribute(SiteConfiguration.NAME_KEY, siteConf);
 
-        if(LOG.isTraceEnabled()){ // MessageFormat.format(..) is expensive
-            LOG.trace(MessageFormat.format(
-                    LOCALE_DETAILS, locale.getLanguage(), locale.getCountry(), locale.getVariant()));
-        }
-        
-        // Check if the browser's locale is supported by this skin. Use it if so.
-        if( siteConf.isSiteLocaleSupported(locale) ){
-            return result;
-        }
-        
-        // Use the skin's default locale. For some reason that fails use JVM's default.
-        final String[] prefLocale = null != siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT)
-                ? siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_")
-                : new String[]{Locale.getDefault().toString()};
+            // Use the skin's default locale. For some reason that fails use JVM's default.
+            final String[] prefLocale = null != siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT)
+                    ? siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_")
+                    : new String[]{Locale.getDefault().toString()};
 
-        switch(prefLocale.length){
+            switch(prefLocale.length){
 
-            case 3:
-                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1] + '_' + prefLocale[2]);
-                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
+                case 3:
+                    LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1] + '_' + prefLocale[2]);
+                    return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
 
-            case 2:
-                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1]);
-                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1]));
+                case 2:
+                    LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1]);
+                    return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0], prefLocale[1]));
 
-            case 1:
-            default:
-                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]);
-                return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0]));
+                case 1:
+                default:
+                    LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]);
+                    return Site.valueOf(SITE_CONTEXT, correctedVhost, new Locale(prefLocale[0]));
 
+            }
+        }catch(IllegalArgumentException iae){
+            return null;
         }
     }
 
@@ -430,22 +439,28 @@ public final class SiteLocatorFilter implements Filter {
         LOG.trace("doBeforeProcessing()");
 
         final Site site = getSite(request);
-
-        final DataModel dataModel = getDataModel(request);
-
-        if (null != dataModel && !dataModel.getSite().getSite().equals(site)) {
-            LOG.warn(WARN_FAULTY_BROWSER + dataModel.getBrowser().getUserAgent().getXmlEscaped());
-            // DataModelFilter will correct it
-        }
-
-        request.setAttribute(Site.NAME_KEY, site);
-        request.setAttribute("startTime", FindResource.START_TIME);
-        MDC.put(Site.NAME_KEY, site.getName());
-        MDC.put("UNIQUE_ID", getRequestId(request));
         
-        /* Setting default encoding */
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
+        if(null != site){
+
+            final DataModel dataModel = getDataModel(request);
+
+            if (null != dataModel && !dataModel.getSite().getSite().equals(site)) {
+                LOG.warn(WARN_FAULTY_BROWSER + dataModel.getBrowser().getUserAgent().getXmlEscaped());
+                // DataModelFilter will correct it
+            }
+
+            request.setAttribute(Site.NAME_KEY, site);
+            request.setAttribute("startTime", FindResource.START_TIME);
+            MDC.put(Site.NAME_KEY, site.getName());
+            MDC.put("UNIQUE_ID", getRequestId(request));
+
+            /* Setting default encoding */
+            request.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding("UTF-8");
+        
+        }else{
+            throw new ServletException("SiteLocatorFilter with no Site :-(");
+        }
     }
 
     private void doAfterProcessing(final ServletRequest request, final ServletResponse response)

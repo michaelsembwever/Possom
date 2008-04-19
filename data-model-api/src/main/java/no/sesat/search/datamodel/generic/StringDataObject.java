@@ -26,32 +26,38 @@ import java.io.Serializable;
 import static no.sesat.search.datamodel.access.ControlLevel.VIEW_CONSTRUCTION;
 import no.sesat.search.datamodel.access.AccessDisallow;
 
-/**
+/** DataObject wrapping a String providing getters for url encoded and xml escaped variants.
+ * 
+ * String should not be used directly during the rendering stage.
+ * Hence getString has the annontation <code>@AccessDisallow({VIEW_CONSTRUCTION})</code>.
+ * 
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
 @DataObject
 public interface StringDataObject extends Serializable{
-    /**
-     * 
+    /** The plain value of the string.
+     * Disallowed during rendering for security reasons.
      * @return 
      */
     @AccessDisallow({VIEW_CONSTRUCTION})
     String getString();
-    /**
+    /** The UTF8 url encoded variant of the string.
+     * Encoding must meet those requirements stated in java.net.URLEncoder
      * 
-     * @return 
+     * @return UTF8 url encoded variant of the string.
      */
     String getUtf8UrlEncoded();
-    /**
+    /** The ISO-88591 url encoded variant of the string.
+     * Encoding must meet those requirements stated in java.net.URLEncoder
      * 
-     * @return 
+     * @return ISO-88591 url encoded variant of the string.
      */
     String getIso88591UrlEncoded();
-    /**
+    /** The xml escaped variant of the string.
      * 
-     * @return 
+     * @return xmlescaped variant of the string.
      */
     String getXmlEscaped();
 }
