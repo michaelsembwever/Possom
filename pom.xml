@@ -263,6 +263,7 @@
                                     </includes>
                                     <excludes>
                                         <exclude>**/target/**</exclude>
+                                        <exclude>skin-archetype/**</exclude>
                                     </excludes>
                                     <validating>true</validating>
                                 </validationSet>
