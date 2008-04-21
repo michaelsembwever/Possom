@@ -33,13 +33,17 @@
 <!-- Css -->
 <c:forEach var="ww" items="${tab.css}">
     <c:set var="ww_link"><search:findResource url="/css/tab/${ww.id}.css"/></c:set>
-    <link rel="stylesheet" type="text/css" href="${ww_link}" media="screen"/>
+    <c:if test="${not empty ww_link}">
+        <link rel="stylesheet" type="text/css" href="${ww_link}" media="screen"/>
+    </c:if>
 </c:forEach>
 <c:forEach var="w" items="${tab.ancestry}">
     <c:set var="w_link"><search:findResource url="/css/tab/${w.id}.css"/></c:set>
-    <link rel="stylesheet" type="text/css" href="${w_link}" media="screen"/>
+    <c:if test="${not empty w_link}">
+        <link rel="stylesheet" type="text/css" href="${w_link}" media="screen"/>
+    </c:if>
 </c:forEach>
-<c:set var="w_link"><search:findResource url="/css/print-style.css"/></c:set>
+<c:set var="w_link"><search:findResource url="/css/print.css"/></c:set>
 <link rel="stylesheet" type="text/css" href="${w_link}" media="print"/>
 
 <!-- Page Icons -->
@@ -55,7 +59,9 @@
 
 <c:forEach var="js" items="${tab.javascript}">
     <c:set var="js_link"><search:findResource url="/javascript/${js}.js"/></c:set>
-    <script type='text/javascript' src="${js_link}"></script>
+    <c:if test="${not empty js_link}">
+        <script type='text/javascript' src="${js_link}"></script>
+    </c:if>
 </c:forEach>
 
 </jsp:root>

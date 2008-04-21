@@ -23,7 +23,11 @@
         Purpose of the document follows.
 -->
 <views>
+    <!-- Override default to show its css -->
+    <tab id="default" display-css="true" inherit="default"/>
+    <!-- Our base sesam.com view -->
     <tab id="default-sesam-com" inherit="default"/>
+    <!-- The one vertical we have. -->
     <tab id="international" inherit="default-sesam-com"
             key="g" 
             mode="international" 
