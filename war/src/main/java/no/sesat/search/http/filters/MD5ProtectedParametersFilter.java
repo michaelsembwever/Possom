@@ -35,72 +35,73 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.log4j.Logger;
 
-/**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+/** Generalised way to protect parameter values through md5 signings.
+ * A skin must define the properties (in configuration.properties):
+ * md5.secret and md5.protectedParameters
+ * Any secret can be chosen. Any parameter matches those listed in md5.protectedParameters (separated by commas)
+ * are expected to have a paired parameter (called &lt;parameterName&gt;_x) that represents the signing of the
+ * original parameter value. If this second parameter does not exist or it's not an accurate signing of the original
+ * parameter then the request immediately returns with a 404 response error.
+ *
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ * @version <tt>$Id$</tt>
  */
 public final class MD5ProtectedParametersFilter implements Filter {
 
     private static final Logger LOG = Logger.getLogger(MD5ProtectedParametersFilter.class);
 
-    /** {@inheritDoc} **/
     public void init(final FilterConfig filterConfig) throws ServletException {
     }
 
-    /** {@inheritDoc} **/
     public void doFilter(
             final ServletRequest servletRequest,
             final ServletResponse servletResponse,
             final FilterChain filterChain) throws IOException, ServletException {
 
         final Enumeration e = servletRequest.getParameterNames();
-            
+
         if(servletRequest instanceof HttpServletRequest) {
-        	HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        	
-        	DataModel datamodel = (DataModel)httpServletRequest.getSession().getAttribute(DataModel.KEY);
-        	SiteConfiguration siteConfig = datamodel.getSite().getSiteConfiguration();
-        	
-        	MD5Generator digestGenerator = new MD5Generator(siteConfig.getProperty("md5.secret"));
-        	        	
-        	Map<String, Boolean> protectedParameters = new HashMap<String, Boolean>();
-        	final String[] p = siteConfig.getProperty("md5.protectedParameters").split(",");
-            for (final String parameter : p) {
-                LOG.info("Adding " + parameter + " as protected parameter");
-                protectedParameters.put(parameter, Boolean.TRUE);
+            final HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+
+            final DataModel datamodel = (DataModel)httpServletRequest.getSession().getAttribute(DataModel.KEY);
+            final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
+
+            if(null != siteConf.getProperty("md5.secret") && null != siteConf.getProperty("md5.protectedParameters")){
+
+                final MD5Generator generator = new MD5Generator(siteConf.getProperty("md5.secret"));
+
+                final Map<String, Boolean> protectedParameters = new HashMap<String, Boolean>();
+                final String[] p = siteConf.getProperty("md5.protectedParameters").split(",");
+                for (final String parameter : p) {
+                    LOG.info("Adding " + parameter + " as protected parameter");
+                    protectedParameters.put(parameter, Boolean.TRUE);
+                }
+
+                while (e.hasMoreElements()) {
+                    final String paramName = (String) e.nextElement();
+
+                    LOG.trace("Checking to see if " + paramName + " is protected");
+
+                    if (protectedParameters.containsKey(paramName)) {
+
+                        LOG.trace(paramName + " is protected");
+
+                        final String md5Param = servletRequest.getParameter(paramName + "_x");
+
+                        if (md5Param == null || !generator.validate(servletRequest.getParameter(paramName), md5Param)){
+                            final HttpServletResponse response = (HttpServletResponse) servletResponse;
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                            return;
+                        }
+                    }
+                }
+
+                servletRequest.setAttribute("hashGenerator", generator);
             }
-        
-	        while (e.hasMoreElements()) {
-	            final String parameterName = (String) e.nextElement();
-	
-	            if (LOG.isTraceEnabled()) {
-	                LOG.trace("Checking to see if " + parameterName + " is protected");
-	            }
-	
-	            if (protectedParameters.containsKey(parameterName)) {
-	
-	                if (LOG.isTraceEnabled()) {
-	                    LOG.trace(parameterName + " is protected");
-	                }
-	
-	                final String md5Parameter = servletRequest.getParameter(parameterName + "_x");
-	
-	                if (md5Parameter == null
-	                        || !digestGenerator.validate(servletRequest.getParameter(parameterName), md5Parameter))
-	                {
-	                    final HttpServletResponse response = (HttpServletResponse) servletResponse;
-	                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	                    return;
-	                }
-	            }
-	        }
-	
-	        servletRequest.setAttribute("hashGenerator", digestGenerator);
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    /** {@inheritDoc} **/
     public void destroy() {
     }
 
