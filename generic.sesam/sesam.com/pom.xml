@@ -162,7 +162,7 @@
             <properties>
                 <sesam.site>alpha.test.sesam.com</sesam.site>
                 <!-- The parent Site -->
-                <sesam.site.parent>generic.alpha.test.sesam.no</sesam.site.parent>
+                <sesam.site.parent>generic.alpha.test.sesam:8084</sesam.site.parent>
             </properties>
         </profile>
         <profile>
@@ -173,7 +173,7 @@
             <properties>
                 <sesam.site>nuclei.test.sesam.com</sesam.site>
                 <!-- The parent Site -->
-                <sesam.site.parent>generic.nuclei.test.sesam.no</sesam.site.parent>
+                <sesam.site.parent>generic.nuclei.test.sesam:8082</sesam.site.parent>
             </properties>
         </profile>
         <profile>
@@ -184,7 +184,7 @@
             <properties>
                 <sesam.site>beta.test.sesam.com</sesam.site>
                 <!-- The parent Site -->
-                <sesam.site.parent>generic.beta.test.sesam.no</sesam.site.parent>
+                <sesam.site.parent>generic.beta.test.sesam:8085</sesam.site.parent>
             </properties>
         </profile>
         <profile>
@@ -195,7 +195,7 @@
             <properties>
                 <sesam.site>electron.test.sesam.com</sesam.site>
                 <!-- The parent Site -->
-                <sesam.site.parent>generic.electron.test.sesam.no</sesam.site.parent>
+                <sesam.site.parent>generic.electron.test.sesam:8083</sesam.site.parent>
             </properties>
         </profile>
         <profile>
@@ -206,7 +206,7 @@
             <properties>
                 <sesam.site>gamma.test.sesam.com</sesam.site>
                 <!-- The parent Site -->
-                <sesam.site.parent>generic.gamma.test.sesam.no</sesam.site.parent>
+                <sesam.site.parent>generic.sesam:8086</sesam.site.parent>
             </properties>
         </profile>
 
@@ -219,7 +219,7 @@
             <properties>
                 <sesam.site>sesam.com</sesam.site>
                 <!-- The parent Site -->
-                <sesam.site.parent>generic.sesam.no</sesam.site.parent>
+                <sesam.site.parent>generic.sesam:8080</sesam.site.parent>
             </properties>
         </profile>
     </profiles>
