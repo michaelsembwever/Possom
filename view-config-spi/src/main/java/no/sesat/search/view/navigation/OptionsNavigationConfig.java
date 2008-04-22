@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Collection;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import no.sesat.search.view.config.SearchTab;
 
 /**
  *
@@ -117,6 +120,8 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
         private String tab;
         private boolean useHitCount;
         private String commandName;
+        // just like NavigationConfig.Navigation.Nav we'll handle tab via staticParameters
+        private Map<String,String> staticParameters = new HashMap<String,String>();
 
         public Option(final Element e) {
             fillBeanProperty(this, null, "value", ParseType.String, e, null);
@@ -149,7 +154,7 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
             return valueRef;
         }
 
-        public void setValueRef(String valueRef) {
+        public void setValueRef(final String valueRef) {
             this.valueRef = valueRef;
         }
 
@@ -157,7 +162,7 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
             return defaultSelect;
         }
 
-        public void setDefaultSelect(boolean defaultSelect) {
+        public void setDefaultSelect(final boolean defaultSelect) {
             this.defaultSelect = defaultSelect;
         }
 
@@ -165,7 +170,7 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
             return defaultSelectValueRef;
         }
 
-        public void setDefaultSelectValueRef(String defaultSelectValueRef) {
+        public void setDefaultSelectValueRef(final String defaultSelectValueRef) {
             this.defaultSelectValueRef = defaultSelectValueRef;
         }
 
@@ -173,15 +178,17 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
             return tab;
         }
 
-        public void setTab(String tab) {
+        public void setTab(final String tab) {
             this.tab = tab;
+            // The tab property takes preference over any url parameters. intialse it here and use against urlGenerator.
+            staticParameters.put(SearchTab.PARAMETER_KEY, tab);
         }
 
         public boolean isUseHitCount() {
             return useHitCount;
         }
 
-        public void setUseHitCount(boolean useHitCount) {
+        public void setUseHitCount(final boolean useHitCount) {
             this.useHitCount = useHitCount;
         }
 
@@ -189,10 +196,14 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
             return commandName;
         }
 
-        public void setCommandName(String commandName) {
+        public void setCommandName(final String commandName) {
             this.commandName = commandName;
         }
 
+        public Map<String, String> getStaticParameters() {
+            return Collections.unmodifiableMap(staticParameters);
+        }
+        
         @Override
         public String toString() {
             return "\nOption{" +
