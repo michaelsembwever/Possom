@@ -335,8 +335,6 @@
             <id>production</id>
             <activation />
             <properties>
-                <sesam.site.default>generic.sesam.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
