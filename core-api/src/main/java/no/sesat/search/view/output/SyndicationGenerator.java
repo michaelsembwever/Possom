@@ -63,6 +63,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
+import javax.resource.NotSupportedException;
+import no.sesat.search.result.BasicResultList;
 
 /**
  * Used by the rssDecorator.jsp to print out the results in rss format.
@@ -125,17 +127,21 @@ public final class SyndicationGenerator {
      * Creates a new instance.
      *
      * @param context The context this class needs to do its work.
+     * @throws SyndicationNotSupportedException 
      */
-    public SyndicationGenerator(final Context context) {
+    public SyndicationGenerator(final Context context) throws SyndicationNotSupportedException{
+        
+        if(null == context.getTab().getRssResultName()){ throw new SyndicationNotSupportedException(); }
 
         this.context = context;
 
-        this.result = context.getDataModel().getSearch(context.getTab().getRssResultName()).getResults();
+        this.result = null != context.getDataModel().getSearch(context.getTab().getRssResultName())
+                ? context.getDataModel().getSearch(context.getTab().getRssResultName()).getResults()
+                : new BasicResultList<ResultItem>();
+        
         this.site = context.getSite();
 
         this.text = TextMessages.valueOf(getTextMessagesContext());
-        //this.channels = Channels.instanceOf(getChannelContext());
-
         this.uri = context.getURL();
 
         final String type = getParameter("feedType");
@@ -387,4 +393,8 @@ public final class SyndicationGenerator {
 //    }
     
     // Inner classes -------------------------------------------------
+    
+    public static final class SyndicationNotSupportedException extends Exception{
+        
+    }
 }
