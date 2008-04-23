@@ -63,6 +63,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
+import javax.resource.NotSupportedException;
+import no.sesat.search.result.BasicResultList;
 
 /**
  * Used by the rssDecorator.jsp to print out the results in rss format.
@@ -125,17 +127,21 @@ public final class SyndicationGenerator {
      * Creates a new instance.
      *
      * @param context The context this class needs to do its work.
+     * @throws SyndicationNotSupportedException 
      */
-    public SyndicationGenerator(final Context context) {
+    public SyndicationGenerator(final Context context) throws SyndicationNotSupportedException{
+        
+        if(null == context.getTab().getRssResultName()){ throw new SyndicationNotSupportedException(); }
 
         this.context = context;
 
-        this.result = context.getDataModel().getSearch(context.getTab().getRssResultName()).getResults();
+        this.result = null != context.getDataModel().getSearch(context.getTab().getRssResultName())
+                ? context.getDataModel().getSearch(context.getTab().getRssResultName()).getResults()
+                : new BasicResultList<ResultItem>();
+        
         this.site = context.getSite();
 
         this.text = TextMessages.valueOf(getTextMessagesContext());
-        //this.channels = Channels.instanceOf(getChannelContext());
-
         this.uri = context.getURL();
 
         final String type = getParameter("feedType");
@@ -324,31 +330,6 @@ public final class SyndicationGenerator {
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             cxt.put("uri", origUri);
 
-            //cxt.put("channels", channels);
-
-            // @todo. Specific to sesam.no. Move somewhere else. result-spi? templates? The command?
-            if ("c".equals(context.getTab().getKey())) {
-
-                final String contentSource = getParameter("contentsource");
-                final String newsCountry = getParameter("newsCountry");
-
-                if (contentSource != null && contentSource.startsWith("Interna")) {
-                    cxt.put("newstype", "- Internasjonale nyheter");
-                } else if (contentSource != null && contentSource.equals("Mediearkivet")) {
-                    cxt.put("newstype", "- Papiraviser");
-                } else if (newsCountry != null && newsCountry.equals("Sverige")) {
-                    cxt.put("newstype", "- Svenske nyheter");
-                } else if (newsCountry != null && newsCountry.equals("Island")) {
-                    cxt.put("newstype", "- Islandske nyheter");
-                } else if (newsCountry != null && newsCountry.equals("Finland")) {
-                    cxt.put("newstype", "- Finske nyheter");
-                } else if (newsCountry != null && newsCountry.equals("Danmark")) {
-                    cxt.put("newstype", "- Danske nyheter");
-                } else {
-                    cxt.put("newstype", "- Norske nyheter");
-                }
-            }
-
             final Template tpl = VelocityEngineFactory.getTemplate(engine, site, templateUri);
 
             final StringWriter writer = new StringWriter();
@@ -412,4 +393,8 @@ public final class SyndicationGenerator {
 //    }
     
     // Inner classes -------------------------------------------------
+    
+    public static final class SyndicationNotSupportedException extends Exception{
+        
+    }
 }

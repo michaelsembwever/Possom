@@ -145,18 +145,9 @@ public class OptionNavigationController
             }
             if (value != null) {
 
-                final Map<String,String> urlParameters;
-
-                if (option.getTab() != null) {
-                    urlParameters = new HashMap<String, String>(1);
-                    urlParameters.put(SearchTab.PARAMETER_KEY, option.getTab());
-                } else {
-                    urlParameters = Collections.<String, String> emptyMap();
-                }
-
                 final NavigationItem navigator = new BasicNavigationItem(
                         option.getDisplayName(),
-                        context.getUrlGenerator().getURL(value, config.getParent(), urlParameters),
+                        context.getUrlGenerator().getURL(value, config.getParent(), option.getStaticParameters()),
                         -1);
 
                 parentResult.addResult(navigator);

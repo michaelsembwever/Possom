@@ -282,15 +282,18 @@ public final class SearchServlet extends HttpServlet {
 
         for (String s : ipaddress) { allowed |= ipAddr.startsWith(s); }
 
-        if(!allowed){ LOG.warn("ipaddress " + ipAddr + "trying to performFactoryReload(..)"); }
+        if (null != reload && reload.length() > 0){
+            
+            if (allowed){
+                try{
+                    final ReloadArg arg = ReloadArg.valueOf(reload.toUpperCase());
+                    FactoryReloads.performReloads(genericCxt, arg);
 
-        if (allowed && null != reload && reload.length() > 0){
-            try{
-                final ReloadArg arg = ReloadArg.valueOf(reload.toUpperCase());
-                FactoryReloads.performReloads(genericCxt, arg);
-
-            }catch(IllegalArgumentException ex){
-                LOG.info("Invalid reload parameter -->" + reload);
+                }catch(IllegalArgumentException ex){
+                    LOG.info("Invalid reload parameter -->" + reload);
+                }
+            }else{
+                LOG.warn("ipaddress " + ipAddr + " not allowed to performFactoryReload(..)");
             }
         }
     }

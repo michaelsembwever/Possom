@@ -527,7 +527,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         return string
                 .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces.
-                .replaceAll(SKIP_REGEX, "")
+                .replaceAll(SKIP_REGEX, " ")
                 .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.
                 .replaceAll(OPERATOR_REGEX, " ");
     }
