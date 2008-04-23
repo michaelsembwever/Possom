@@ -610,9 +610,13 @@ public interface TokenPredicate extends Predicate, Serializable{
          *
          * @param name the name of the TokenPredicate to find.
          * @return the anonymous TokenPredicate.
+         * @throws IllegalArgumentException when no such anonymous token by the name exists.
          */
-        public static TokenPredicate getAnonymousTokenPredicate(final String name){
+        public static TokenPredicate getAnonymousTokenPredicate(final String name) throws IllegalArgumentException{
 
+            if(!ANONYMOUS_TOKENS.containsKey(name)){
+                throw new IllegalArgumentException("No anonymous token found with name " + name);
+            }
             return ANONYMOUS_TOKENS.get(name);
         }
 

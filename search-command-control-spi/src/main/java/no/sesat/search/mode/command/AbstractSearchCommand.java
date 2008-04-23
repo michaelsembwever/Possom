@@ -818,8 +818,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         // if the field is the token then mask the field and include the term.
                         // XXX why are we checking the known and possible predicates?
                         boolean result = clause.getKnownPredicates().contains(tp);
-                        result |= clause.getPossiblePredicates().contains(tp);
-                        result &= engine.evaluateTerm(tp, clause.getField());
+                        
+                        result |= clause.getPossiblePredicates().contains(tp) 
+                                && engine.evaluateTerm(tp, clause.getField());
+                        
                         if (result) {
                             field = fieldFilter;
                             break;
