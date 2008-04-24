@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (2006-2007) Schibsted Søk AS
  * This file is part of SESAT.
  *
@@ -37,7 +37,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Logs different statistics with ajax
+ * Provides the user-statistics logging in Sesat.
+ * Links are logged with <b>ceremonial</b> boomerangs that come back (ie with a redirect response).
+ * Javascript functionality (or user behavour) is logged with <b>hunting</b> boomerangs that do not come back.
+ * 
+ * A cermonial example is:
  *
  * @author <a href="mailto:thomas.kjerstad@sesam.no">Thomas Kjaerstad</a>
  * @author <a href="mailto:mick@wever.org">Mck</a>
@@ -75,37 +79,44 @@ public final class BoomerangServlet extends HttpServlet {
             }
 
             // pick out the entrails
-            final String grub = url.substring(
-                    url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1,
-                    url.indexOf("/", url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1));
-            LOG.debug(grub);
+            final int boomerangStart = url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1;
 
-            // the url to return to
-            final String destination = url.substring(
-                    url.indexOf("/", url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1) + 1);
+            try{
+                final String grub = url.substring(boomerangStart, url.indexOf("/", boomerangStart));
+                LOG.debug(grub);
 
-            // grub it up
-            final Map<String,String> entrails = new HashMap<String,String>();
-            if(0 < grub.length()){
-                final StringTokenizer tokeniser = new StringTokenizer(grub, ";");
-                while(tokeniser.hasMoreTokens()){
-                    final String[] entry = tokeniser.nextToken().split("=");
-                    entrails.put(entry[0], 1 < entry.length ? entry[1] : entry[0]);
+                // the url to return to
+                final String destination = url.substring(
+                        url.indexOf("/", url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1) + 1);
+
+                // grub it up
+                final Map<String,String> entrails = new HashMap<String,String>();
+                if(0 < grub.length()){
+                    final StringTokenizer tokeniser = new StringTokenizer(grub, ";");
+                    while(tokeniser.hasMoreTokens()){
+                        final String[] entry = tokeniser.nextToken().split("=");
+                        entrails.put(entry[0], 1 < entry.length ? entry[1] : entry[0]);
+                    }
                 }
-            }
-            entrails.put("boomerang", destination);
-            kangerooGrub(entrails);
+                entrails.put("boomerang", destination);
+                kangerooGrub(entrails);
 
-            LOG.debug("Ceremonial boomerang to " + destination.toString());
-            if(req.getHeader("User-agent").matches("(Googlebot|Slurp|Yahoo\\! Slurp)")){
-                // crawlers like permanent redirects. and we're not interested in their clicks so ok to cache.
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                res.setHeader("Location", destination.toString());
-                res.setHeader("Connection", "close");
-                
-            }else{
-                // default behaviour for users.
-                res.sendRedirect(destination.toString());
+                LOG.debug("Ceremonial boomerang to " + destination.toString());
+                if(req.getHeader("User-agent").matches("(Googlebot|Slurp|Yahoo\\! Slurp)")){
+                    // crawlers like permanent redirects. and we're not interested in their clicks so ok to cache.
+                    res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                    res.setHeader("Location", destination.toString());
+                    res.setHeader("Connection", "close");
+
+                }else{
+                    // default behaviour for users.
+                    res.sendRedirect(destination.toString());
+                }
+
+            }catch(StringIndexOutOfBoundsException sioobe){
+                // SEARCH-4668
+                LOG.error("Boomerang url not to standard --> " + url);
+                LOG.debug(sioobe.getMessage(), sioobe);
             }
 
         }else{
@@ -129,8 +140,8 @@ public final class BoomerangServlet extends HttpServlet {
         for(String key : paramKeys){
             try {
 
-                final String value = params.get(key) instanceof StringDataObject 
-                        ? ((StringDataObject) params.get(key)).getXmlEscaped() 
+                final String value = params.get(key) instanceof StringDataObject
+                        ? ((StringDataObject) params.get(key)).getXmlEscaped()
                         : StringEscapeUtils.escapeXml((String) params.get(key));
 
                 // it's critical for the logparser that we write valid xml
