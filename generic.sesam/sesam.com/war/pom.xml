@@ -35,47 +35,39 @@
                     <plugin>
                         <groupId>sesat</groupId>
                         <artifactId>sesat-mojo</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-self</id>
-                                <phase>install</phase>
-                                <goals><goal>deploy</goal></goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>sesat</groupId>
-                        <artifactId>sesat-mojo</artifactId>
-                        <version>${pom.version}</version>
-                        <configuration>
-                            <outputDir>
-                                src/main/conf/
-                            </outputDir>
-                            <classpaths>
-                                <classpath>../query-transform-config/src/main/java/</classpath>
-                                <classpath>../search-command-config/src/main/java/</classpath>
-                                <classpath>../result-handler-config/src/main/java/</classpath>
-                                
-                                <classpath>../../../query-transform-config-spi/src/main/java/</classpath>
-                                <classpath>../../../search-command-config-spi/src/main/java/</classpath>
-                                <classpath>../../../result-handler-config-spi/src/main/java/</classpath>
-
-                                <classpath>../../query-transform-config/src/main/java/</classpath>
-                                <classpath>../../search-command-config/src/main/java/</classpath>
-                                <classpath>../../result-handler-config/src/main/java/</classpath>
-
-                                <classpath>../query-transform-config/src/main/java/</classpath>
-                                <classpath>../search-command-config/src/main/java/</classpath>
-                                <classpath>../result-handler-config/src/main/java/</classpath>
-                            </classpaths>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>searchModesSchemaGenerator</goal>
-                                </goals>
-                            </execution>
+                        <executions><execution>
+                            <id>copy-self</id>
+                            <phase>install</phase>
+                            <goals><goal>deploy</goal></goals>
+                        </execution>
+                        <execution>
+                            <configuration>
+                                <outputDir>
+                                    src/main/conf/
+                                </outputDir>
+                                <classpaths>
+                                    <classpath>../query-transform-config/src/main/java/</classpath>
+                                    <classpath>../search-command-config/src/main/java/</classpath>
+                                    <classpath>../result-handler-config/src/main/java/</classpath>
+                                    
+                                    <classpath>../../../query-transform-config-spi/src/main/java/</classpath>
+                                    <classpath>../../../search-command-config-spi/src/main/java/</classpath>
+                                    <classpath>../../../result-handler-config-spi/src/main/java/</classpath>
+                                    
+                                    <classpath>../../query-transform-config/src/main/java/</classpath>
+                                    <classpath>../../search-command-config/src/main/java/</classpath>
+                                    <classpath>../../result-handler-config/src/main/java/</classpath>
+                                    
+                                    <classpath>../query-transform-config/src/main/java/</classpath>
+                                    <classpath>../search-command-config/src/main/java/</classpath>
+                                    <classpath>../result-handler-config/src/main/java/</classpath>
+                                </classpaths>
+                            </configuration>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>searchModesSchemaGenerator</goal>
+                            </goals>
+                        </execution>
                         </executions>
                     </plugin>
                     <plugin>
