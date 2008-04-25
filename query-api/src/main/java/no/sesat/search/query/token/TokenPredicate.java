@@ -596,8 +596,9 @@ public interface TokenPredicate extends Predicate, Serializable{
          *
          * @param name the name of the TokenPredicate to find.
          * @return the TokenPredicate.
+         * @throws IllegalArgumentException when no such anonymous token by the name exists.
          */
-        public static TokenPredicate getTokenPredicate(final String name){
+        public static TokenPredicate getTokenPredicate(final String name) throws IllegalArgumentException{
 
             try{
                 return Categories.valueOf(name);

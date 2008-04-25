@@ -135,9 +135,16 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                         final String tokenName = evaluator.getAttribute("token");
                         LOG.info(" ->evaluator@token: " + tokenName);
 
-                        final TokenPredicate token = null != TokenPredicate.Static.getTokenPredicate(tokenName)
-                                ? TokenPredicate.Static.getTokenPredicate(tokenName)
-                                : TokenPredicate.Static.createAnonymousTokenPredicate(tokenName, TokenPredicate.Type.REGEX);
+                        TokenPredicate token;
+                        try{
+                            token = TokenPredicate.Static.getTokenPredicate(tokenName);
+                            
+                        }catch(IllegalArgumentException iae){
+                            LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
+                            token = TokenPredicate.Static.createAnonymousTokenPredicate(
+                                    tokenName, 
+                                    TokenPredicate.Type.REGEX);
+                        }
 
                         final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
                         LOG.info(" ->evaluator@query-dependant: " + queryDep);
