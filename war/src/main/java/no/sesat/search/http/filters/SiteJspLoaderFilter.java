@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -85,14 +85,12 @@ public final class SiteJspLoaderFilter implements Filter {
     private FilterConfig config;
     private String root;
 
-    /** {@inheritDoc} **/
     public void init(final FilterConfig filterConfig) throws ServletException {
 
         config = filterConfig;
         root = config.getServletContext().getRealPath("/");
     }
 
-    /** {@inheritDoc} **/
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
@@ -110,7 +108,6 @@ public final class SiteJspLoaderFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    /** {@inheritDoc} **/
     public void destroy() {
     }
 
@@ -204,23 +201,32 @@ public final class SiteJspLoaderFilter implements Filter {
                 final FileChannel channel = fileAccess.getChannel();
 
                 try{
-                    channel.lock();
+                    // channel.lock() only synchronises file access between programs, but not between threads inside 
+                    //  the current JVM. The latter results in the OverlappingFileLockException.
+                    //  At least this is my current understanding of java.nio.channels
+                    //   It may be that no synchronisation or locking is required at all. A beer to whom answers :-)
+                    // So we must provide synchronisation between our own threads,
+                    //  synchronisation against the file's path (using the JVM's String.intern() functionality)
+                    //  should work. (I can't imagine this string be used for any other synchronisation purposes).
+                    synchronized(file.toString().intern()){
+                        channel.lock();
 
-                    if(fileExisted){
+                        if(fileExisted){
 
-                        final byte[] bytes = new byte[(int)channel.size()];
-                        final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-                        int reads; do{ reads = channel.read(byteBuffer); }while(0 < reads);
+                            final byte[] bytes = new byte[(int)channel.size()];
+                            final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+                            int reads; do{ reads = channel.read(byteBuffer); }while(0 < reads);
 
-                        needsUpdating = !Arrays.equals(golden, bytes);
-                    }
+                            needsUpdating = !Arrays.equals(golden, bytes);
+                        }
 
-                    if(needsUpdating){
-                        // download file from skin
-                        channel.write(ByteBuffer.wrap(golden), 0);
-                        channel.force(true);
-                        file.deleteOnExit();
+                        if(needsUpdating){
+                            // download file from skin
+                            channel.write(ByteBuffer.wrap(golden), 0);
+                            channel.force(true);
+                            file.deleteOnExit();
 
+                        }
                     }
                 }finally{
                     channel.close();
