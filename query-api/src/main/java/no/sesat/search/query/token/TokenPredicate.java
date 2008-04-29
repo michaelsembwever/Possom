@@ -44,7 +44,7 @@ public interface TokenPredicate extends Predicate, Serializable{
      * @todo will need to become a class that can be extended. SEARCH-3540. a mapping to the Evaluation implementation.
      */
     public static final class Type implements Serializable{
-        
+
         public static final Type FAST = new Type("FAST", VeryFastTokenEvaluator.class);
         public static final Type REGEX = new Type("REGEX", RegExpTokenEvaluator.class);
         public static final Type JEP = new Type("JEP", JepTokenEvaluator.class);
@@ -61,7 +61,7 @@ public interface TokenPredicate extends Predicate, Serializable{
     }
 
     /** The name of the TokenPredicate. Must be uppercase. Must be unique across all skins.
-     * 
+     *
      * @return TokenPredicate name.
      */
     String name();
@@ -71,7 +71,7 @@ public interface TokenPredicate extends Predicate, Serializable{
      * @return the type
      */
     Type getType();
-    
+
     /**
      * Evaluates to true if fastListName occurs in the query. This method uses a
      * TokenEvaluationEngine to get a TokenEvaluator.
@@ -85,9 +85,9 @@ public interface TokenPredicate extends Predicate, Serializable{
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
     boolean evaluate(Object evalFactory);
-    
-    
-    
+
+
+
     // Inner Classes -----------------------------------------------------
 
     /** A formalised breakdown of metadata categories that search terms can match.
@@ -447,8 +447,8 @@ public interface TokenPredicate extends Predicate, Serializable{
 
             return TokenPredicateImpl.evaluate(this, evalFactory);
         }
-        
-        
+
+
 
     }
 
@@ -459,30 +459,30 @@ public interface TokenPredicate extends Predicate, Serializable{
     static class TokenPredicateImpl implements TokenPredicate{
 
         // Constants -----------------------------------------------------
-        
+
         private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
                 = "Argument to evaluate must be an instance of a TokenEvaluationEngine";
         private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS
                 = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
         private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
-        
-        private static final Set<TokenPredicate> TOKENS 
+
+        private static final Set<TokenPredicate> TOKENS
                 = new CopyOnWriteArraySet<TokenPredicate>();
-        private static final Map<Type,Set<TokenPredicate>> TOKENS_BY_TYPE 
+        private static final Map<Type,Set<TokenPredicate>> TOKENS_BY_TYPE
                 = new ConcurrentHashMap<Type,Set<TokenPredicate>>();
-       
+
         /** @deprecated todo take out of sesat. **/
         private static final Set<TokenPredicate> MAGIC_TOKENS = new CopyOnWriteArraySet<TokenPredicate>();
         /** @deprecated todo take out of sesat. **/
         private static final Set<TokenPredicate> TRIGGER_TOKENS = new CopyOnWriteArraySet<TokenPredicate>();
-        
+
         // Attributes -----------------------------------------------------
-        
+
         private final String name;
         private final Type type;
 
         // Constructors -----------------------------------------------------
-        
+
         private TokenPredicateImpl(final String name, final Type type){
             this.name = name;
             this.type = type;
@@ -502,8 +502,16 @@ public interface TokenPredicate extends Predicate, Serializable{
             TOKENS_BY_TYPE.get(type).add(this);
         }
 
+
+        // public -----------------------------------------------------
+
+        @Override
+        public String toString() {
+            return name();
+        }
+
         // TokenPredicate implementation ------------------------------------
-        
+
         public String name(){
             return name;
         }
@@ -511,14 +519,14 @@ public interface TokenPredicate extends Predicate, Serializable{
         public Type getType(){
             return type;
         }
-        
+
         public boolean evaluate(final Object evalFactory) {
 
             return TokenPredicateImpl.evaluate(this, evalFactory);
         }
-        
-        // private -----------------------------------------------------   
-        
+
+        // private -----------------------------------------------------
+
         private static boolean evaluate(final TokenPredicate token, final Object evalFactory) {
 
             // pre-condition checks
@@ -578,14 +586,14 @@ public interface TokenPredicate extends Predicate, Serializable{
             super(vflqe);
         }
     }
-    
+
 
     /** Utility class providing all useful static methods around TokenPredicates.
      * @todo move out to TokenPredicateUtility. **/
     static final class Static{
 
         private static final Map<String,TokenPredicate> ANONYMOUS_TOKENS = new ConcurrentHashMap<String,TokenPredicate>();
-        
+
         static{
             // ensures all the enums have been loaded before any of the following static methods are called.
             // offspin to this is that there can be no references back to Static from Categories or TokenPredicateImpl.
@@ -666,6 +674,6 @@ public interface TokenPredicate extends Predicate, Serializable{
         public static Set<TokenPredicate> getTriggerTokenPredicates() {
             return Collections.unmodifiableSet(TokenPredicateImpl.TRIGGER_TOKENS);
         }
-    }    
+    }
 
 }

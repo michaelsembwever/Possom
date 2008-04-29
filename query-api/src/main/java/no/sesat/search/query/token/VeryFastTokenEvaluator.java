@@ -533,10 +533,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         // Also remove any operator characters. (SEARCH-3883 & SEARCH-3967)
 
         return string
-                .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces.
+                .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces. multiple spaces always normalised.
                 .replaceAll(SKIP_REGEX, " ")
                 .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.
-                .replaceAll(OPERATOR_REGEX, " ");
+                .replaceAll(OPERATOR_REGEX, " ")
+                .replaceAll(" +", " "); // normalise
     }
 
     // Inner classes -------------------------------------------------
