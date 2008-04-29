@@ -105,7 +105,7 @@
      </ciManagement>
     <scm>
         <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
-        <url>http://sesat.no/svn/sesat-kernel/trunk</url>
+        <url>http://sesat.no/source/xref/Sesat.Kernel..trunk/</url>
         <developerConnection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</developerConnection>
     </scm>
 
@@ -394,9 +394,9 @@
         <pluginRepository>
             <releases><enabled>false</enabled></releases>
             <snapshots />
-            <id>Maven Snapshots</id>
-            <url>http://snapshots.maven.codehaus.org/maven2/</url>
-        </pluginRepository>
+       		<id>Codehaus Snapshots</id>
+       		<url>http://snapshots.repository.codehaus.org/</url>
+       	</pluginRepository>
     </pluginRepositories>
     <dependencyManagement>
         <dependencies>
@@ -636,6 +636,10 @@
                 <configuration>
                     <aggregate>true</aggregate>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dashboard-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </reporting>
