@@ -392,7 +392,6 @@
          <url>http://sesat.no/maven2</url>
         </pluginRepository>
         <pluginRepository>
-            <releases><enabled>false</enabled></releases>
             <snapshots />
        		<id>Codehaus Snapshots</id>
        		<url>http://snapshots.repository.codehaus.org/</url>
