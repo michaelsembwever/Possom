@@ -21,7 +21,7 @@ package no.sesat.search.query.token;
 
 /**
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public interface TokenEvaluator {
@@ -32,10 +32,17 @@ public interface TokenEvaluator {
      * This usually means to check if the token occurs in query, but there are
      * other possibilities such as tokens that always evaluates to true.
      *
+     * @param token 
      * @param term     the token to look for.
+     * @param query 
      * @return true if token occurs in query
      */
     boolean evaluateToken(TokenPredicate token, String term, String query);
 
+    /**
+     * 
+     * @param predicate
+     * @return
+     */
     boolean isQueryDependant(TokenPredicate predicate);
 }

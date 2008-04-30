@@ -43,7 +43,7 @@ import no.sesat.search.result.ResultList;
  *
  * A search command that uses the picsearch API.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public class PicSearchCommand extends AbstractSearchCommand {

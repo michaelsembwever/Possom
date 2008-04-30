@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 /**
  * A test class for {@link AnalysisRule}.
  *
- * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Revision$
  */
 public final class AnalysisRuleTest  {

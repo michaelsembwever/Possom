@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 /**
  * A simple SearchCommandExecutor that executes the tasks sequentially
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 final class SequentialSearchCommandExecutor extends AbstractSearchCommandExecutor {

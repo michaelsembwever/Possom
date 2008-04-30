@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>${dollar}{package}</groupId>
-            <artifactId>generic.sesam.no-result-handler-config</artifactId>
+            <artifactId>generic.sesam-result-handler-config</artifactId>
             <version>${dollar}{pom.version}</version>
             <scope>provided</scope>
         </dependency>

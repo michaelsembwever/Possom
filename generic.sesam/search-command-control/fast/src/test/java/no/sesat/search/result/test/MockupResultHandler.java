@@ -23,7 +23,7 @@ import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.result.ResultItem;
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public class MockupResultHandler implements ResultHandler {

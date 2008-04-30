@@ -26,9 +26,11 @@ import java.util.Set;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
 
-/**
+/** Default implementation of TokenEvaluationEngine.State.
+ * 
  *
  * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ * @version $Id$
  */
 public class EvaluationState implements TokenEvaluationEngine.State{
     
@@ -39,6 +41,9 @@ public class EvaluationState implements TokenEvaluationEngine.State{
     
     /**
      * Creates a new instance of EvaluationState
+     * @param term
+     * @param known
+     * @param possible 
      */
     public EvaluationState(
             final String term,

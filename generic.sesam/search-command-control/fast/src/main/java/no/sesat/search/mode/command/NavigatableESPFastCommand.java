@@ -51,7 +51,7 @@ import no.sesat.search.datamodel.generic.StringDataObject;
  * This class provies an advanced fast search command with navigation
  * capabilities.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 public class NavigatableESPFastCommand extends ESPFastSearchCommand {

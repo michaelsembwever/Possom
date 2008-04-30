@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * A UrlGenerator for the news aggregator. Generates URL on the format /search/nyheter/person/Al+Gore.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 public final class NewsCaseUrlGenerator extends BasicUrlGenerator {

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public final class Modifier implements Comparable<Modifier>, Serializable {

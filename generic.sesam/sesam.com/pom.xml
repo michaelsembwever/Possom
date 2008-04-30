@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
       <parent>
           <groupId>sesat</groupId>
-          <artifactId>pom.generic.sesam.no</artifactId>
+          <artifactId>pom.generic.sesam</artifactId>
           <version>2.18-SNAPSHOT</version>
       </parent>
-    <name>Sesam.com skin</name>
     <artifactId>pom.sesam.com</artifactId>
+    <name>${pom.artifactId}</name>
     <packaging>pom</packaging>
 
     <modules>
@@ -132,7 +132,7 @@
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>sesat</groupId>
-                                            <artifactId>generic.sesam.no</artifactId>
+                                            <artifactId>generic.sesam</artifactId>
                                             <type>war</type>
                                             <version>${pom.parent.version}</version>
                                             <destFileName>${sesam.site.generic}.war</destFileName>

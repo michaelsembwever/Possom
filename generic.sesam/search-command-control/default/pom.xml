@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>sesat</groupId>
-        <artifactId>pom.generic.sesam.no-search-command-control</artifactId>
+        <artifactId>pom.generic.sesam-search-command-control</artifactId>
         <version>2.18-SNAPSHOT</version>
     </parent>
     <name>${project.artifactId}</name>
-    <artifactId>generic.sesam.no-search-command-control-default</artifactId>
+    <artifactId>generic.sesam-search-command-control-default</artifactId>
     <packaging>jar</packaging>
     <description>Generic Search Commands</description>
 
@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-result</artifactId>
+            <artifactId>generic.sesam-result</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -56,7 +56,7 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-result-handler-config</artifactId>
+            <artifactId>generic.sesam-result-handler-config</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -68,7 +68,7 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-config</artifactId>
+            <artifactId>generic.sesam-search-command-config</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>

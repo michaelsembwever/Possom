@@ -8,12 +8,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>sesat</groupId>
-        <artifactId>pom.generic.sesam.no</artifactId>
+        <artifactId>pom.generic.sesam</artifactId>
         <version>2.18-SNAPSHOT</version>
     </parent>
 
     <name>${project.artifactId}</name>
-    <artifactId>generic.sesam.no</artifactId>
+    <artifactId>generic.sesam</artifactId>
     <packaging>war</packaging>
     <description>Generic Search-config Skin.</description>
     
@@ -118,13 +118,13 @@
             <dependencies>
                 <dependency><!-- override making optional -->
                     <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-search-command-control</artifactId>
+                    <artifactId>generic.sesam-search-command-control</artifactId>
                     <version>${pom.version}</version>
                     <optional>true</optional>
                 </dependency>
                 <dependency><!-- add the include-fast variant -->
                     <groupId>sesat</groupId>
-                    <artifactId>generic.sesam.no-search-command-control</artifactId>
+                    <artifactId>generic.sesam-search-command-control</artifactId>
                     <version>${pom.version}</version>
                     <classifier>include-fast</classifier>
                 </dependency>                
@@ -228,52 +228,52 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-query-transform-config</artifactId>
+            <artifactId>generic.sesam-query-transform-config</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-query-transform-control</artifactId>
+            <artifactId>generic.sesam-query-transform-control</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-result</artifactId>
+            <artifactId>generic.sesam-result</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-result-handler-config</artifactId>
+            <artifactId>generic.sesam-result-handler-config</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-result-handler-control</artifactId>
+            <artifactId>generic.sesam-result-handler-control</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-config</artifactId>
+            <artifactId>generic.sesam-search-command-config</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-control</artifactId>
+            <artifactId>generic.sesam-search-command-control</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-view-config</artifactId>
+            <artifactId>generic.sesam-view-config</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-view-control</artifactId>
+            <artifactId>generic.sesam-view-control</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-velocity-directives</artifactId>
+            <artifactId>generic.sesam-velocity-directives</artifactId>
             <version>${pom.version}</version>
         </dependency>
     </dependencies>

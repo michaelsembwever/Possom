@@ -34,7 +34,7 @@ import org.apache.commons.collections.Predicate;
  *
  * @todo improve design. inner classes providing functionality inside an interface is frowned upon.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
@@ -43,8 +43,9 @@ public interface TokenPredicate extends Predicate, Serializable{
     /** The types of TokenPredicates that exist.
      * @todo will need to become a class that can be extended. SEARCH-3540. a mapping to the Evaluation implementation.
      */
-    public static final class Type implements Serializable{
+    static final class Type implements Serializable{
 
+        public static final Type BOOLEAN = new Type("BOOLEAN", null);
         public static final Type FAST = new Type("FAST", VeryFastTokenEvaluator.class);
         public static final Type REGEX = new Type("REGEX", RegExpTokenEvaluator.class);
         public static final Type JEP = new Type("JEP", JepTokenEvaluator.class);
@@ -85,9 +86,14 @@ public interface TokenPredicate extends Predicate, Serializable{
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
     boolean evaluate(Object evalFactory);
-
-
-
+    
+    /** A token predicate that requires an exact match against the whole query.
+     * A exact peer instance must return itself.
+     * 
+     * @return
+     */
+    TokenPredicate exactPeer();
+    
     // Inner Classes -----------------------------------------------------
 
     /** A formalised breakdown of metadata categories that search terms can match.
@@ -448,6 +454,11 @@ public interface TokenPredicate extends Predicate, Serializable{
             return TokenPredicateImpl.evaluate(this, evalFactory);
         }
 
+        public TokenPredicate exactPeer() {
+            
+            return impl.exactPeer();
+        }
+        
 
 
     }
@@ -462,9 +473,6 @@ public interface TokenPredicate extends Predicate, Serializable{
 
         private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
                 = "Argument to evaluate must be an instance of a TokenEvaluationEngine";
-        private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS
-                = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
-        private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
 
         private static final Set<TokenPredicate> TOKENS
                 = new CopyOnWriteArraySet<TokenPredicate>();
@@ -480,10 +488,12 @@ public interface TokenPredicate extends Predicate, Serializable{
 
         private final String name;
         private final Type type;
+        private final ExactTokenPredicateImpl exactPeer;
 
         // Constructors -----------------------------------------------------
 
         private TokenPredicateImpl(final String name, final Type type){
+            
             this.name = name;
             this.type = type;
 
@@ -500,6 +510,8 @@ public interface TokenPredicate extends Predicate, Serializable{
 
             TOKENS.add(this);
             TOKENS_BY_TYPE.get(type).add(this);
+            
+            exactPeer = new ExactTokenPredicateImpl(this);
         }
 
 
@@ -524,61 +536,75 @@ public interface TokenPredicate extends Predicate, Serializable{
 
             return TokenPredicateImpl.evaluate(this, evalFactory);
         }
+        
+        public TokenPredicate exactPeer() {
+            return exactPeer;
+        }
 
-        // private -----------------------------------------------------
-
+        // private -----------------------------------------------------   
+        
         private static boolean evaluate(final TokenPredicate token, final Object evalFactory) {
 
             // pre-condition checks
             if (! (evalFactory instanceof TokenEvaluationEngine)) {
                 throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
             }
-            // process
-            final TokenEvaluationEngine engine = (TokenEvaluationEngine) evalFactory;
-            if(Thread.currentThread() != engine.getOwningThread()){
-                throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
-            }
-
-            try{
-
-                // check that the evaluation hasn't already been done
-                // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
-                //  the evaluation is for the building of the known and possible predicate list
-                //    (during query parsing)(in which
-                //  case we could perform the check) or if we are scoring and need to know if the
-                //    possible predicate is really
-                //  applicable now (in the context of the whole query).
-                final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
-                if(null != knownPredicates && knownPredicates.contains(token)){
-                    return true;
-                }
-
-                final TokenEvaluator evaluator = engine.getEvaluator(token);
-
-                if(null != engine.getState().getTerm()){
-
-                    // Single term or clause evaluation
-                    return evaluator.evaluateToken(token, engine.getState().getTerm(), engine.getQueryString());
-
-                }else if(null != engine.getState().getQuery()){
-
-                    // Whole query evaluation
-                    return engine.getState().getPossiblePredicates().contains(token)
-                            && evaluator.evaluateToken(token, null, engine.getQueryString());
-
-                }
-
-            }catch(VeryFastListQueryException ie){
-                // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
-                //  so we must sneak the VeryFastListQueryException through as a run-time exception.
-                throw new EvaluationException(ie);
-            }
-
-            throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
+            
+            return ((TokenEvaluationEngine)evalFactory).evaluate(token);
         }
 
     }
+    
+    /**
+     * An token predicate peer that only evaluates to true against its original token predicate on exact query matches.
+     */
+    static class ExactTokenPredicateImpl implements TokenPredicate{
+        
+        // Constants -----------------------------------------------------
+        
+        private static final String EXACT_PREFIX = "EXACT_";
+        
+        // Attributes -----------------------------------------------------
+        
+        private final TokenPredicate delegate;
 
+        // Constructors -----------------------------------------------------
+        
+        private ExactTokenPredicateImpl(final TokenPredicate token){
+            delegate = token;
+        }
+        
+        // TokenPredicate implementation ------------------------------------
+        
+        public String name() {
+            return EXACT_PREFIX + delegate.name();
+        }
+
+        public Type getType() {
+            return delegate.getType();
+        }
+
+        public boolean evaluate(Object evalFactory) {
+            
+            final TokenEvaluationEngine engine = (TokenEvaluationEngine)evalFactory;
+            final TokenEvaluationEngine.State originalState = engine.getState();
+            try{
+
+                engine.setState(originalState.getQuery().getEvaluationState());
+                return engine.evaluate(this);
+            
+            }finally{
+                engine.setState(originalState);
+            }
+        }
+
+        public TokenPredicate exactPeer() {
+            return this;
+        }
+        
+        // private -----------------------------------------------------
+    }
+    
     /** Runtime exception thrown when evaluation fails.
      */
     static final class EvaluationException extends RuntimeException{

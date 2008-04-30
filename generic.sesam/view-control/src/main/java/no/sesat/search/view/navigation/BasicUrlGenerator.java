@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * for extension in a way that makes it easy to create a subclass that generates some of the url components as path
  * components (e.g. /search/param1Value/?param2=param2value).
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  * @since 2.16
  */

@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * A transformer to prefix the terms in a query.
  *
  * @version $Id$
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  *
  */
 @Controller("TermPrefixQueryTransformer")

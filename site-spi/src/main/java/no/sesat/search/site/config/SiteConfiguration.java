@@ -33,7 +33,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * SiteConfiguration properties.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 public final class SiteConfiguration implements SiteKeyedFactory,Serializable {

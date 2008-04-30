@@ -11,7 +11,7 @@ import java.util.Iterator;
  * no.sesat.commons.sitemaps.PageProvider and be located in META-INF/Services (which translates to
  * src/main/resources/META-INF/services if you're using the default Maven projcet layout)    
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  */
 public abstract class PageProvider implements Iterable<Page> {
 

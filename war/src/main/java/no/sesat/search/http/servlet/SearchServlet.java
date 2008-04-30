@@ -59,7 +59,7 @@ import org.apache.log4j.Logger;
 /** The Central Controller to incoming queries.
  * Controls the SearchMode -> RunningQuery creation and handling.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author <a href="mailto:mick@wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */

@@ -29,7 +29,7 @@ import no.sesat.search.query.transform.AbstractQueryTransformerConfig.Controller
 /** XXX This will get largely rewritten when alternation rotation comes into play.
  * https://jira.sesam.no/jira/browse/SEARCH-863
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id: SynonymQueryTransformerConfig.java 4655 2007-03-27 08:15:08Z ssmiweve $
  */
 @Controller("SynonymQueryTransformer")

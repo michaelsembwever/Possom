@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 /** Paging navigation controller.
  *
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 public final class ResultPagingNavigationController

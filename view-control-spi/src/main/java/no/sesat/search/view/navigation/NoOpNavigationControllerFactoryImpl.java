@@ -24,7 +24,7 @@ import no.sesat.search.result.NavigationItem;
 /**
  * Default navigation controller. Does nothing.
  *  
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  */
 public class NoOpNavigationControllerFactoryImpl implements NavigationControllerFactory, NavigationController {
     public NavigationController get(final NavigationConfig.Nav nav) {

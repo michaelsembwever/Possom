@@ -8,7 +8,7 @@
   </parent>
   <artifactId>sesat-skin-archetype</artifactId>
   <packaging>maven-archetype</packaging>
-  <name>${dollar}{pom.artifactId}</name>
+  <name>${pom.artifactId}</name>
   <build>
     <extensions>
       <extension>

@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
  * A common base class for search configurations.
  * TODO rename to BaseSearchConfiguration since it is directly used by default commands in modes.xml
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public class CommandConfig implements SearchConfiguration {

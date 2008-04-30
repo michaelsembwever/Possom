@@ -24,7 +24,7 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
 import org.w3c.dom.Element;
 
 /**
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 @ControllerFactory("no.sesat.search.view.navigation.ResultPagingNavigationController")

@@ -26,7 +26,7 @@
           <version>2.18-SNAPSHOT</version>
       </parent>
     <name>${project.artifactId}</name>
-    <artifactId>pom.generic.sesam.no</artifactId>
+    <artifactId>pom.generic.sesam</artifactId>
     <packaging>pom</packaging>
     <description>Generic Search-config Skin's Inheritable-Pom.</description>
 

@@ -29,7 +29,7 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
  * Configuration for "static" search commands. That is, commands that do not
  * need to do a search but produces static HTML.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 @Controller("StaticSearchCommand")

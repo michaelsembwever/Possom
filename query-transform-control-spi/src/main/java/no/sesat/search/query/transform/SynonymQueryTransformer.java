@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 public final class SynonymQueryTransformer extends AbstractQueryTransformer {

@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 /**
  * 
  * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  */
 @ControllerFactory("no.sesat.search.view.navigation.fast.FastNavigationControllerFactory")
 public class FastNavigationConfig extends NavigationConfig.Nav {

@@ -69,7 +69,7 @@ import no.sesat.search.result.BasicResultList;
 /**
  * Used by the rssDecorator.jsp to print out the results in rss format.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  */
 public final class SyndicationGenerator {
 

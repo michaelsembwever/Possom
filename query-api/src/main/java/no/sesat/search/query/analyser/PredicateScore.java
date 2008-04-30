@@ -22,7 +22,7 @@ import org.apache.commons.collections.Predicate;
 /**
  * PredicateScore provides a way to associate a {@link Predicate} with a score.
  *
- * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Revision$
  */
 public class PredicateScore {

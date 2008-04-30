@@ -37,23 +37,62 @@ import no.sesat.search.site.SiteContext;
  * {@link TokenEvaluator} that can handle a particular token {@link TokenPredicate}.
  *
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author <a href="mailto:mick@wever.org">Mck</a>
  * @version <tt>$Revision$</tt>
  */
 public interface TokenEvaluationEngine {
 
-    public interface Context extends BaseContext, QueryStringContext, ResourceContext, SiteContext{
+    interface Context extends BaseContext, QueryStringContext, ResourceContext, SiteContext{
     }
 
-    public interface State extends Serializable {
-        /** the current clause's term, or null if in query-evaluation mode. **/
+    /**
+     * Evaluator that will return false under all circumstances.
+     */
+    static final TokenEvaluator ALWAYS_FALSE_EVALUATOR = new TokenEvaluator() {
+        public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
+            return false;
+        }
+
+        public boolean isQueryDependant(final TokenPredicate predicate) {
+            return false;
+        }
+    };
+
+    /**
+     * Evaluator that will return true under all circumstances.
+     */
+    static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator() {
+        public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
+            return true;
+        }
+
+        public boolean isQueryDependant(final TokenPredicate predicate) {
+            return false;
+        }
+    };
+
+    /**
+     * Holder for evaluation state during the engine's evaluation.
+     * Evaluation on any term, clause, or query requires state of the current term and query, 
+     *  and of the already matched known and possible predicates.
+     */
+    interface State extends Serializable {
+        /** the current clause's term, or null if in query-evaluation mode. *
+         * @return 
+         */
         String getTerm();
-        /** the current query, or null if in term-evaluation mode. **/
+        /** the current query, or null if in term-evaluation mode. *
+         * @return 
+         */
         Query getQuery();
-        /** known matching predicates. by making this available performance is improved. **/
+        /** known matching predicates. by making this available performance is improved. *
+         * @return 
+         */
         Set<TokenPredicate> getKnownPredicates();
-        /** possible matching predicates. by making this available performance is improved. **/
+        /** possible matching predicates. by making this available performance is improved. *
+         * @return 
+         */
         Set<TokenPredicate> getPossiblePredicates();
     }
 
@@ -77,6 +116,13 @@ public interface TokenEvaluationEngine {
       * @return
       */
     Site getSite();
+    
+    /** The real evaluation method all other evaluate...(..) methods will delegate to.
+     * 
+     * @param token
+     * @return
+     */
+    boolean evaluate(TokenPredicate token);
 
     /** Utility method to perform one-off evaluations on terms from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
@@ -105,19 +151,17 @@ public interface TokenEvaluationEngine {
      */
     boolean evaluateQuery(TokenPredicate predicate, Query query);
 
-    Thread getOwningThread();
-
     /**
      * Getter for property state.
      * @return Value of property state.
      */
-    public State getState();
+    State getState();
 
     /**
      * Setter for property state.
      * @param state New value of property state.
      */
-    public void setState(State state);
+    void setState(State state);
 
 
 }

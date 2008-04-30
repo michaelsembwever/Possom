@@ -24,7 +24,7 @@ import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 @Controller("OverturePPCSearchCommand")

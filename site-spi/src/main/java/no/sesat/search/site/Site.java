@@ -345,7 +345,7 @@ public final class Site implements Serializable {
         constructingDefault = false;
     }
 
-    /** the default SiteSearch. For example: "generic.sesam.no" or "generic.localhost:8080".
+    /** the default SiteSearch. For example: "generic.sesam" or "generic.localhost:8080".
      */
     public static final Site DEFAULT;
 

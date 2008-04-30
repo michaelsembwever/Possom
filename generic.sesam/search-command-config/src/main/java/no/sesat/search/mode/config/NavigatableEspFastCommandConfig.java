@@ -27,7 +27,7 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
 
 /**
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 @Controller("NavigatableESPFastCommand")

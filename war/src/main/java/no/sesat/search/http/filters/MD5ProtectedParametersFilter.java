@@ -35,6 +35,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.apache.log4j.Logger;
 
+
 /** Generalised way to protect parameter values through md5 signings.
  * A skin must define the properties (in configuration.properties):
  * md5.secret and md5.protectedParameters

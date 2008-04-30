@@ -63,7 +63,7 @@ import sun.net.www.protocol.jar.URLJarFileCallBack;
  * Provides support for URL Jars loaded with request properties as Sun's JVM does not.
  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mck</a>
  * @version <tt>$Id$</tt>
  */

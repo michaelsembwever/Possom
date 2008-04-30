@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
       <parent>
           <groupId>sesat</groupId>
-          <artifactId>pom.generic.sesam.no</artifactId>
+          <artifactId>pom.generic.sesam</artifactId>
           <version>${version}</version>
       </parent>
     <name>${artifactId} skin</name>
@@ -138,7 +138,7 @@
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>sesat</groupId>
-                                            <artifactId>generic.sesam.no</artifactId>
+                                            <artifactId>generic.sesam</artifactId>
                                             <type>war</type>
                                             <version>${dollar}{pom.parent.version}</version>
                                             <destFileName>${dollar}{sesam.site.generic}.war</destFileName>

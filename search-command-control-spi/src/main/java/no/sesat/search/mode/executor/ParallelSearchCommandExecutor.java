@@ -35,7 +35,7 @@ import no.sesat.search.result.ResultList;
 /**
  * A {@link no.sesat.search.executor.SearchCommandExecutor} executing a list of callables in parallel.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {

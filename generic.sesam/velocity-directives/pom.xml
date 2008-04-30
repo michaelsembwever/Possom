@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>sesat</groupId>
-        <artifactId>pom.generic.sesam.no</artifactId>
+        <artifactId>pom.generic.sesam</artifactId>
         <version>2.18-SNAPSHOT</version>
     </parent>
     <name>${project.artifactId}</name>
-    <artifactId>generic.sesam.no-velocity-directives</artifactId>
+    <artifactId>generic.sesam-velocity-directives</artifactId>
     <packaging>jar</packaging>
     <description>Generic Velocity Directives</description>
 
@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-config</artifactId>
+            <artifactId>generic.sesam-search-command-config</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-search-command-control</artifactId>
+            <artifactId>generic.sesam-search-command-control</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>

@@ -92,7 +92,7 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  *                   https://jira.sesam.no/jira/browse/SEARCH-2149                                            <br/><br/>
  * 
  * 
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>.
  * @version <tt>$Id$</tt>
  */
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
@@ -1024,8 +1024,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /** If the command has been cancelled will throw the appropriate SearchCommandException.
      * Calling this method only makes sense once the call() method has been, 
      *   otherwise it is guaranteed to throw the exception.
+     * @throws SearchCommandException when cancellation has occurred.
      **/
-    private void checkForCancellation(){
+    private void checkForCancellation() throws SearchCommandException{
         if( isCancelled() ){ throw new SearchCommandException("cancelled", new InterruptedException()); }
     }
     

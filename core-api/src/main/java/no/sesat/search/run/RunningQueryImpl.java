@@ -83,7 +83,7 @@ import org.apache.log4j.Logger;
  * Central controlling class around the individual search commands executed in any query search.
  *
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {

@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 
 /** Minimum behavior defined for any SearchConfiguration implementation.
  * 
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public interface SearchConfiguration extends Serializable {

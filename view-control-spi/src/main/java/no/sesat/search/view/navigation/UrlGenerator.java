@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * You should probably not implement this interface directly but extend the AbstractUrlGenerator instead.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id: AbstractUrlGenerator.java 6066 2008-01-30 11:27:42Z ssmiweve $
  */
 public interface UrlGenerator {

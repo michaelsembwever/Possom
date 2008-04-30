@@ -49,7 +49,7 @@ import static org.testng.AssertJUnit.*;
 
 /**
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  */
 public final class SynonymQueryTransformerTest extends AbstractTransformerTestCase {
 

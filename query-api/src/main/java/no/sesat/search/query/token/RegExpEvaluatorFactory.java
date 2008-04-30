@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 /** Responsible for loading and serving all the Regular Expression Token Evaluators.
  * These regular expression patterns come from the configuration file SearchConstants.REGEXP_EVALUATOR_XMLFILE.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version <tt>$Id$</tt>
  */

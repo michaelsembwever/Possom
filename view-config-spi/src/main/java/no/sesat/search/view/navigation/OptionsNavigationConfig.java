@@ -41,7 +41,7 @@ import no.sesat.search.view.config.SearchTab;
 /**
  *
  * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  */
 @ControllerFactory("no.sesat.search.view.navigation.OptionNavigationController")
 public final class OptionsNavigationConfig extends NavigationConfig.Nav {

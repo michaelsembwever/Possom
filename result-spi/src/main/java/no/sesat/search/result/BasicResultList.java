@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * All fields (of all types) handled by superclass BasicSearchResultItem.
  *
  * @param T the type of ResultItem the ResultList contains.
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public class BasicResultList<T extends ResultItem> extends BasicResultItem implements ResultList<T> {

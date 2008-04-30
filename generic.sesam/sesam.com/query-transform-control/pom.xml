@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
-            <artifactId>generic.sesam.no-query-transform-config</artifactId>
+            <artifactId>generic.sesam-query-transform-config</artifactId>
             <version>${pom.version}</version>
             <scope>provided</scope>
         </dependency>

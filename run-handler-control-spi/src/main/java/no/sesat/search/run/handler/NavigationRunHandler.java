@@ -53,7 +53,7 @@ import no.sesat.search.view.navigation.UrlGenerator;
  * there for navigation.
  *
  * @author Geir H. Pettersen(T-Rank)
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id: NavigationRunHandler.java 5846 2007-10-28 13:15:35Z ssmaeklu $
  */
 public final class NavigationRunHandler implements RunHandler{

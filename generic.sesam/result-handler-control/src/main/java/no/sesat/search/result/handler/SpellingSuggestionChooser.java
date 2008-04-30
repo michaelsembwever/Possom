@@ -45,7 +45,7 @@ import no.sesat.search.result.WeightedSuggestion;
  *
  * A new query is then created using the chosen suggestions.
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
 public final class SpellingSuggestionChooser implements ResultHandler {

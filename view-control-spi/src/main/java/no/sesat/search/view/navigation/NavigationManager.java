@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Class responsible for assembling the current navigation state.
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author Geir H. Pettersen(T-Rank)
  * @version $Id$
  */

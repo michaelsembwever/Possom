@@ -37,7 +37,7 @@ import java.util.*;
  * This information is needed for the sitemap index file</li>
  * </ul>
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 public final class SitemapGenerator {

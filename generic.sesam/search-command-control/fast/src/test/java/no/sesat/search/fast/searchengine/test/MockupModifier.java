@@ -20,7 +20,7 @@ import no.fast.ds.search.IModifier;
 import no.fast.ds.search.INavigator;
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version <tt>$Revision: 5819 $</tt>
  */
 public class MockupModifier implements IModifier {

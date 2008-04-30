@@ -27,7 +27,7 @@ the request onto one of the kernel's
 
     Skins come in three categories, generic, country, and sitesearch. They are heirarchical with country and sitesearch
 skins generally leaves on the heirarchy, and the generics used for organisation benefits. 
-    The root of all skins is {{{pom.generic.sesam.no/}generic.sesam}}.
+    The root of all skins is {{{pom.generic.sesam/}generic.sesam}}.
     
     A skin holds all server-side configurations for any given url-domain's business model 
 (search modes and commands, query transformations, and result handling), and the view (templating layout definition and 

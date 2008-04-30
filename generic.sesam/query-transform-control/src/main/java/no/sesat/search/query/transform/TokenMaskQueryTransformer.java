@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  * <b>Note</b> Using <code>position="prefix" predicates="*_MAGIC"</code> is kinda pointless but is often done anyway.
  * <b>Note</b> position="prefix" only currently works with single terms. XXX
  *
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mick Wever</a>
  * @version <tt>$Id$</tt>
  */

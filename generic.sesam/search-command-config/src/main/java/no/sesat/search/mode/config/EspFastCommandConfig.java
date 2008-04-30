@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
 
 /**
  *
- * @author maek
+ * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Id$
  */
 @Controller("ESPFastSearchCommand")

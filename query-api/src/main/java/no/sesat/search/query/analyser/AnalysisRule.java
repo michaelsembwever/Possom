@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * The AnalysisRule provides scoring of a query based on a set of
  * {@link Predicate} instances.
  *
- * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Revision$
  */
 public final class AnalysisRule {

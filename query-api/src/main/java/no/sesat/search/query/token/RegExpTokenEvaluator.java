@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * decide if a token occurs in a query.
  * <b>Immutable</b>
  *
- * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="magnus.eklund@gmail.com">Magnus Eklund</a>
  * @version $Revision$
  */
 public final class RegExpTokenEvaluator implements TokenEvaluator {
@@ -77,7 +77,6 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
         return false;
     }
 
-    /** TODO comment me. **/
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return queryDependant;
     }
