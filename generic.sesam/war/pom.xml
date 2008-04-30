@@ -90,7 +90,29 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration><classifier>include-fast</classifier></configuration>
-                    </plugin>                
+                    </plugin>
+                    <plugin>
+                        <groupId>sesat</groupId>
+                        <artifactId>sesat-mojo</artifactId>
+
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <classifier>include-fast</classifier>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                        
+                        <executions>
+                            <execution>
+                                <id>copy-self</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
             <dependencies>

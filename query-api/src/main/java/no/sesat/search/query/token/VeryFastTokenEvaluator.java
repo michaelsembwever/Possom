@@ -320,9 +320,16 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                         final String tokenName = list.getAttribute("token");
                         LOG.info(" ->list@token: " + tokenName);
 
-                        final TokenPredicate token = null != TokenPredicate.Static.getTokenPredicate(tokenName)
-                                ? TokenPredicate.Static.getTokenPredicate(tokenName)
-                                : TokenPredicate.Static.createAnonymousTokenPredicate(tokenName, TokenPredicate.Type.FAST);
+                        TokenPredicate token;
+                        try{
+                            token = TokenPredicate.Static.getTokenPredicate(tokenName);
+                            
+                        }catch(IllegalArgumentException iae){
+                            LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
+                            token = TokenPredicate.Static.createAnonymousTokenPredicate(
+                                    tokenName, 
+                                    TokenPredicate.Type.FAST);
+                        }
 
                         final String[] listNameArr = list.getAttribute("list-name").split(",");
                         LOG.info(" ->lists: " + list.getAttribute("list-name"));
@@ -526,10 +533,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         // Also remove any operator characters. (SEARCH-3883 & SEARCH-3967)
 
         return string
-                .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces.
+                .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces. multiple spaces always normalised.
                 .replaceAll(SKIP_REGEX, " ")
                 .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.
-                .replaceAll(OPERATOR_REGEX, " ");
+                .replaceAll(OPERATOR_REGEX, " ")
+                .replaceAll(" +", " "); // normalise
     }
 
     // Inner classes -------------------------------------------------
