@@ -44,11 +44,24 @@
                     <plugin>
                         <groupId>sesat</groupId>
                         <artifactId>sesat-mojo</artifactId>
-                        <executions><execution>
-                            <id>copy-self</id>
-                            <phase>install</phase>
-                            <goals><goal>deploy</goal></goals>
-                        </execution></executions>
+
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <classifier>include-fast</classifier>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                        
+                        <executions>
+                            <execution>
+                                <id>copy-self</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
