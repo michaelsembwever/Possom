@@ -21,9 +21,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${dollar}{package}</groupId>
-        <artifactId>${dollar}{pom.artifactId}</artifactId>
-        <version>${dollar}{pom.version}</version>
+        <groupId>sesat</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
     </parent>
     <artifactId>sesam.com-query-transform-control</artifactId>
     <name>${dollar}{project.artifactId}</name>
@@ -36,27 +36,27 @@
 
     <dependencies>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-query-api</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-query-transform-config-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-transform-config-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>generic.sesam.no-query-transform-config</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-query-transform-control-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-transform-control-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

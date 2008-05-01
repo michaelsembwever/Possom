@@ -97,7 +97,7 @@
               <dependency>
                 <groupId>sesat</groupId>
                 <artifactId>generic.sesam-search-command-control-fast</artifactId>
-                <version>${pom.version}</version>
+                <version>${sesat.version}</version>
                 <scope>provided</scope>
                 <optional>true</optional>
               </dependency>
@@ -111,7 +111,7 @@
       <dependency>
         <groupId>sesat</groupId>
         <artifactId>generic.sesam-search-command-control-default</artifactId>
-        <version>${pom.version}</version>
+        <version>${sesat.version}</version>
         <scope>provided</scope>
       </dependency>
     </dependencies>

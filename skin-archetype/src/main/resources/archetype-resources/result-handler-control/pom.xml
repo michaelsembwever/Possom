@@ -21,9 +21,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${dollar}{package}</groupId>
-        <artifactId>${dollar}{pom.artifactId}</artifactId>
-        <version>${dollar}{pom.version}</version>
+        <groupId>sesat</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
     </parent>
     <artifactId>sesam.com-result-handler-control</artifactId>
     <name>${dollar}{project.artifactId}</name>
@@ -36,51 +36,51 @@
 
     <dependencies>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-query-api</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-result-handler-config-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-handler-config-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>generic.sesam.no-result-handler-config</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-result-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>generic.sesam-result</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>generic.sesam.no-result</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-search-command-config-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-search-command-config-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-data-model-api</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-result-handler-control-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-handler-control-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -97,9 +97,9 @@
 
         <!-- tests -->
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-core-api</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-core-api</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

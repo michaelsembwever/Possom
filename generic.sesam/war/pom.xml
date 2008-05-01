@@ -119,13 +119,13 @@
                 <dependency><!-- override making optional -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam-search-command-control</artifactId>
-                    <version>${pom.version}</version>
+                    <version>${sesat.version}</version>
                     <optional>true</optional>
                 </dependency>
                 <dependency><!-- add the include-fast variant -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam-search-command-control</artifactId>
-                    <version>${pom.version}</version>
+                    <version>${sesat.version}</version>
                     <classifier>include-fast</classifier>
                 </dependency>                
             </dependencies>
@@ -220,7 +220,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-resourcefeed</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -229,52 +229,84 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-control</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-control</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-velocity-directives</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>sesat</groupId>
+                <artifactId>sesat-mojo</artifactId>
+                <version>${sesat.version}</version>
+                <configuration>
+                    <outputDir>
+                        src/main/conf/
+                    </outputDir>
+                    <classpaths>
+                        <classpath>../query-transform-config/src/main/java/</classpath>
+                        <classpath>../search-command-config/src/main/java/</classpath>
+                        <classpath>../result-handler-config/src/main/java/</classpath>
+                   
+                        <classpath>../../query-transform-config-spi/src/main/java/</classpath>
+                        <classpath>../../search-command-config-spi/src/main/java/</classpath>
+                        <classpath>../../result-handler-config-spi/src/main/java/</classpath>
+                    </classpaths>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>searchModesSchemaGenerator</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

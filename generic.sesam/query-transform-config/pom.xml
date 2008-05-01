@@ -19,13 +19,13 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

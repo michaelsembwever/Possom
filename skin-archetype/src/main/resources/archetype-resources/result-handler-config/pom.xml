@@ -21,9 +21,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${dollar}{package}</groupId>
-        <artifactId>${dollar}{pom.artifactId}</artifactId>
-        <version>${dollar}{pom.version}</version>
+        <groupId>sesat</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
     </parent>
     <artifactId>sesam.com-result-handler-config</artifactId>
     <name>${dollar}{project.artifactId}</name>
@@ -36,9 +36,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>${dollar}{package}</groupId>
-            <artifactId>${dollar}{package}-result-handler-config-spi</artifactId>
-            <version>${dollar}{pom.version}</version>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-handler-config-spi</artifactId>
+            <version>${dollar}{sesat.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

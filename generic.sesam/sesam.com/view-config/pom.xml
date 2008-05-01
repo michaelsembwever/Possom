@@ -38,37 +38,37 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

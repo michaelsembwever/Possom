@@ -44,12 +44,12 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -58,17 +58,17 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-handler-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
         </dependency>
         <!-- Testin -->
         <dependency>
@@ -80,21 +80,21 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-javabean-impl</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
