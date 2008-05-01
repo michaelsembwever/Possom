@@ -104,7 +104,6 @@ public interface TokenPredicate extends Predicate, Serializable{
     enum Categories implements TokenPredicate {
 
         // Categorical TokenPredicates
-        // TODO make ExactFast tokens a separate Type referencing the original Fast token. SEARCH-4408.
         // TODO determine type automatically. skins maybe choose an alternative type. SEARCH-3540.
 
         /** */
@@ -116,8 +115,6 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         CELEBRITY (Type.FAST),
         /** */
-        EXACT_CELEBRITY (Type.FAST),
-        /** */
         COMPANYBRANCH (Type.FAST),
         /** */
         COMPANYBRANCHKEYWORD (Type.FAST),
@@ -128,15 +125,11 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** @todo rename to just COMPANY */
         COMPANYENRICHMENT (Type.FAST),
         /** */
-        EXACT_COMPANYENRICHMENT (Type.FAST),
-        /** */
         COMPANY_KEYWORD (Type.FAST),
         /** */
         COMPANY_KEYWORD_RESERVED (Type.FAST),
         /** */
         BIGCOMPANY (Type.FAST),
-        /** */
-        EXACT_BIGCOMPANY (Type.FAST),
         /** */
         DISEASE (Type.FAST),
         /** */
@@ -145,10 +138,6 @@ public interface TokenPredicate extends Predicate, Serializable{
         GEOLOCAL (Type.FAST),
         /** */
         GEOGLOBAL (Type.FAST),
-        /** */
-        EXACT_GEOLOCAL (Type.FAST),
-        /** */
-        EXACT_GEOGLOBAL (Type.FAST),
         /** */
         GEO_BOROUGH (Type.FAST),
         /** */
@@ -168,33 +157,19 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         FOOD (Type.FAST),
         /** */
-        EXACT_FIRST (Type.FAST),
-        /** */
         FULLNAME (Type.FAST),
         /** */
-        EXACT_FULLNAME (Type.FAST),
-        /** */
         LASTNAME (Type.FAST),
-        /** */
-        EXACT_LAST (Type.FAST),
         /** */
         MATERIAL (Type.FAST),
         /** @deprecated remove. use MOVIE_TITLE TokenPredicates instead. */
         MOVIE (Type.FAST),
-        /** @deprecated remove. use EXACT_MOVIE_TITLE TokenPredicates instead. */
-        EXACT_MOVIE (Type.FAST),
         /** */
         MOVIE_TITLE(Type.FAST),
         /** */
-        EXACT_MOVIE_TITLE(Type.FAST),
-        /** */
         MOVIE_ACTOR(Type.FAST),
         /** */
-        EXACT_MOVIE_ACTOR(Type.FAST),
-        /** */
         MOVIE_DIRECTOR(Type.FAST),
-        /** */
-        EXACT_MOVIE_DIRECTOR(Type.FAST),
         /** */
         NEWSCASE (Type.FAST),
         /** */
@@ -202,17 +177,11 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         PICTURE (Type.FAST),
         /** */
-        EXACT_PICTURE (Type.FAST),
-        /** */
         PRIOCOMPANYNAME (Type.FAST),
-        /** */
-        EXACT_PRIOCOMPANYNAME (Type.FAST),
         /** */
         PRODUCT_BICYCLE (Type.FAST),
         /** */
         PRODUCT_CAR (Type.FAST),
-        /** */
-        EXACT_PRODUCT_CAR (Type.FAST),
         /** */
         PRODUCT_CHILDREN (Type.FAST),
         /** */
@@ -250,31 +219,17 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         PROFESSION(Type.FAST),
         /** */
-        EXACT_PROFESSION(Type.FAST),
-        /** */
         OCEAN (Type.FAST),
-        /** */
-        EXACT_TOP3 (Type.FAST),
-        /** */
-        EXACT_PPCTOPLIST (Type.FAST),
         /** */
         STOCKMARKETTICKERS (Type.FAST),
         /** */
         STOCKMARKETFIRMS (Type.FAST),
         /** */
-        EXACT_STOCKMARKETTICKERS (Type.FAST),
-        /** */
-        EXACT_STOCKMARKETFIRMS (Type.FAST),
-        /** */
         STYLE (Type.FAST),
         /** */
         TNS (Type.FAST),
         /** */
-        EXACT_TNS (Type.FAST),
-        /** */
         TVPROGRAM (Type.FAST),
-        /** */
-        EXACT_TVPROGRAM (Type.FAST),
         /** */
         TVCHANNEL (Type.FAST),
         /** */
@@ -282,21 +237,13 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         WIKIPEDIA (Type.FAST),
         /** */
-        EXACT_WIKI (Type.FAST),
-        /** */
 
         ARTIST (Type.FAST),
-        EXACT_ARTIST (Type.FAST),
         FICTION_CHARACTER (Type.FAST),
-        EXACT_FICTION_CHARACTER (Type.FAST),
         MOTOR_SPORT (Type.FAST),
-        EXACT_MOTOR_SPORT (Type.FAST),
         PUBLIC_SERVICE_BROADCASTING (Type.FAST),
-        EXACT_PUBLIC_SERVICE_BROADCASTING (Type.FAST),
 
         IMAGES (Type.FAST),
-        /** */
-        EXACT_IMAGE (Type.FAST),
         /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
         PRISJAKT_CATEGORIES_AND_MANUFACTURERS (Type.FAST),
         /** @deprecated FIXME!! What is prisjakt? we do not put specific names into this list */
@@ -314,11 +261,7 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         CATALOGUE_MAGIC (Type.REGEX),
         /** */
-        EXACT_CATALOGUE_MAGIC (Type.REGEX),
-        /** */
         CLASSIFIED_MAGIC (Type.REGEX),
-        /** */
-        EXACT_CLASSIFIED_MAGIC (Type.REGEX),
         /** */
         CULTURE_MAGIC (Type.REGEX),
         /** */
@@ -326,17 +269,11 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         NEWS_MAGIC (Type.REGEX),
         /** */
-        EXACT_NEWS_MAGIC (Type.REGEX),
-        /** */
         OCEAN_MAGIC (Type.REGEX),
         /** */
         PICTURE_MAGIC (Type.REGEX),
         /** */
-        EXACT_PICTURE_MAGIC (Type.REGEX),
-        /** */
         VIDEO_MAGIC (Type.REGEX),
-        /** */
-        EXACT_VIDEO_MAGIC (Type.REGEX),
         /** */
         RECEIPE_MAGIC (Type.REGEX),
         /** */
@@ -344,40 +281,21 @@ public interface TokenPredicate extends Predicate, Serializable{
         /** */
         STOCK_MAGIC (Type.REGEX),
         /** */
-        EXACT_STOCK_MAGIC (Type.REGEX),
-        /** */
         TV_MAGIC (Type.REGEX),
-        /** */
-        EXACT_TV_MAGIC (Type.REGEX),
         /** */
         WEATHER_MAGIC (Type.REGEX),
         /** */
-        EXACT_WEATHER_MAGIC (Type.REGEX),
-        /** */
         WEBTV_MAGIC (Type.REGEX),
-        /** */
-        EXACT_WEBTV_MAGIC (Type.REGEX),
         /** */
         WHITE_MAGIC (Type.REGEX),
         /** */
-        EXACT_WHITE_MAGIC (Type.REGEX),
-        /** */
         WIKIPEDIA_MAGIC (Type.REGEX),
-        /** */
-        EXACT_WIKIPEDIA_MAGIC (Type.REGEX),
         /** */
         YELLOW_MAGIC (Type.REGEX),
         /** */
-        EXACT_YELLOW_MAGIC (Type.REGEX),
-        /** */
         MAP_MAGIC(Type.REGEX),
         /** */
-        EXACT_MAP_MAGIC (Type.REGEX),
-        /** */
         BLOG_MAGIC (Type.REGEX),
-        /** */
-        EXACT_BLOG_MAGIC (Type.REGEX),
-
 
         // RegExp TokenPredicates -- trigger words/phrases
         CATALOGUE_TRIGGER (Type.REGEX),

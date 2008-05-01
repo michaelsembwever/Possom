@@ -81,13 +81,13 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         final Query query = parseQuery(tef);
 
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
-                TokenPredicate.Categories.EXACT_STOCKMARKETTICKERS.name(), tefCxt, tef);
+                TokenPredicate.Categories.STOCKMARKETTICKERS.exactPeer().name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
         final String result = builder.getQueryString();
 
         LOG.debug("testOneWordExact builder gave " + result);
-        if( query.getFirstLeafClause().getPossiblePredicates().contains(TokenPredicate.Categories.EXACT_STOCKMARKETTICKERS)){
+        if( query.getFirstLeafClause().getPossiblePredicates().contains(TokenPredicate.Categories.STOCKMARKETTICKERS.exactPeer())){
             assertEquals("(sch schibsted)", result);
         }else{
             assertEquals("sch", result);
@@ -160,7 +160,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
-                TokenPredicate.Categories.EXACT_STOCKMARKETTICKERS.name(), tefCxt, tef);
+                TokenPredicate.Categories.STOCKMARKETTICKERS.exactPeer().name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
