@@ -178,7 +178,7 @@
                 <plugin>
                     <groupId>sesat</groupId>
                     <artifactId>sesat-mojo</artifactId>
-                    <version>${pom.version}</version>
+                    <version>${sesat.version}</version>
                     <configuration>
                         <artifactItems>
                             <artifactItem>
@@ -213,6 +213,10 @@
         <log.level>INFO</log.level>
         <tag.on.deploy>true</tag.on.deploy>
         <version.quote>"Are we human because we gaze at the stars or do we gaze at the stars because we are human?" Pointless really. Do the stars gaze back?</version.quote>
+        <!-- We must hardcode the version to sesat artifacts so child skins can themselves be a different version. -->
+        <!-- We cannot use ${pom.version} as it is interpretted as the current's pom's version not this pom's version.-->
+	<!-- maven-release-plugin will not update this version: it must be manually updated after any version bump. -->
+	<sesat.version>2.17-SNAPSHOT</sesat.version>
     </properties>
 
     <profiles>

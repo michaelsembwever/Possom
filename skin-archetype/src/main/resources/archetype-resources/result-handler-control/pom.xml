@@ -23,7 +23,7 @@
     <parent>
         <groupId>${package}</groupId>
         <artifactId>${pom.artifactId}</artifactId>
-        <version>${pom.version}</version>
+        <version>${sesat.version}</version>
     </parent>
     <artifactId>sesam.com-result-handler-control</artifactId>
     <name>${project.artifactId}</name>
@@ -38,49 +38,49 @@
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-query-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-handler-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>generic.sesam.no-result</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-search-command-config-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-data-model-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-result-handler-control-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>${package}</groupId>
             <artifactId>${package}-core-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

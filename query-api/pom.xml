@@ -53,13 +53,13 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <!--scope>provided</scope-->
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${pom.version}</version>
+            <version>${sesat.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
