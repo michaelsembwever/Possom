@@ -21,9 +21,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${package}</groupId>
-        <artifactId>${pom.artifactId}</artifactId>
-        <version>${sesat.version}</version>
+        <groupId>sesat</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
     </parent>
     <artifactId>sesam.com-result</artifactId>
     <name>${project.artifactId}</name>
@@ -36,8 +36,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-result-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>

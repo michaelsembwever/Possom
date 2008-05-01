@@ -21,9 +21,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${package}</groupId>
-        <artifactId>${pom.artifactId}</artifactId>
-        <version>${sesat.version}</version>
+        <groupId>sesat</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
     </parent>
     <artifactId>sesam.com-search-command-control</artifactId>
     <name>${project.artifactId}</name>
@@ -40,74 +40,74 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-httpclient-api</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-httpclient-api</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-query-api</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-api</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-result-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
+            <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-result-handler-config-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-handler-config-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
+            <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-result-handler-config</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-search-command-config-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-search-command-config-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
+            <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-config</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-data-model-api</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-data-model-api</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-query-transform-control-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-query-transform-control-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-result-handler-control-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-result-handler-control-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-search-command-control-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-search-command-control-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -124,8 +124,8 @@
         </dependency>
         <!-- testin -->
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-view-control-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-view-control-spi</artifactId>
             <version>${sesat.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

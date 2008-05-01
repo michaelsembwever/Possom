@@ -20,15 +20,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${groupId}</groupId>
+        <groupId>sesat</groupId>
         <artifactId>${rootArtifactId}</artifactId>
-        <version>${sesat.version}</version>
+        <version>${version}</version>
     </parent>
 
-    <artifactId>${pom.artifactId}</artifactId>
-    <name>${pom.artifactId}</name>
+    <artifactId>${artifactId}</artifactId>
+    <name>${artifactId} name</name>
     <packaging>war</packaging>
-    <description>A Skin. Will probably break. Might even blow your house up.</description>
 
     <build>
      <plugins>
@@ -51,6 +50,7 @@
             <build><plugins><plugin>
                 <groupId>sesat</groupId>
                 <artifactId>sesat-mojo</artifactId>
+                <version>${sesat.version}</version>
                 <executions><execution>
                     <id>copy-self</id>
                     <phase>install</phase>

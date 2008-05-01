@@ -21,9 +21,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>${package}</groupId>
-        <artifactId>${pom.artifactId}</artifactId>
-        <version>${sesat.version}</version>
+        <groupId>sesat</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
     </parent>
     <artifactId>sesam.com-velocity-directives</artifactId>
     <name>${project.artifactId}</name>
@@ -36,25 +36,25 @@
 
     <dependencies>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-search-command-config-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-search-command-config-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
+            <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-config</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
-            <artifactId>${package}-search-command-control-spi</artifactId>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-search-command-control-spi</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>${package}</groupId>
+            <groupId>sesat</groupId>
             <artifactId>generic.sesam.no-search-command-control</artifactId>
             <version>${sesat.version}</version>
             <scope>provided</scope>
