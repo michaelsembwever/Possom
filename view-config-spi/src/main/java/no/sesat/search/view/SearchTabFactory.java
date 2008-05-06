@@ -496,7 +496,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                             if (nav != null) {
                                 navigation.addReset(nav);
                             } else {
-                                LOG.error("Error in config, <reset id=\"" + resetNavId + "\" />, in mode " + modeId + " not found");
+                                LOG.error("Error in config, <reset id=\"" + resetNavId + "\" />, in tab " + modeId + " not found");
                             }
                         }
                     }
