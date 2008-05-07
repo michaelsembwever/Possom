@@ -22,6 +22,10 @@ import no.sesat.search.datamodel.DataModel;
 
 import java.util.Map;
 import java.util.Set;
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.log4j.Logger;
 
 /**
  * The basics of a UrlGenerator.
@@ -34,6 +38,8 @@ import java.util.Set;
  * @version $Id$
  */
 public abstract class AbstractUrlGenerator implements UrlGenerator {
+
+    private static final Logger LOG = Logger.getLogger(AbstractUrlGenerator.class);
 
     private final DataModel dataModel;
     private final NavigationState state;
@@ -136,4 +142,12 @@ public abstract class AbstractUrlGenerator implements UrlGenerator {
         return dataModel;
     }
 
+    protected static String enc(final String str) {
+        try {
+            return str != null ? URLEncoder.encode(str, "UTF-8") : null;
+        } catch (UnsupportedEncodingException e) {
+            LOG.fatal("UTF-8 encoding not available");
+        }
+        return str;
+    }
 }

@@ -20,8 +20,6 @@ package no.sesat.search.view.navigation;
 import no.sesat.search.datamodel.DataModel;
 import org.apache.log4j.Logger;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -226,14 +224,5 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
         } finally {
             urlBuilder.setLength(prefixLength);
         }
-    }
-
-    private String enc(final String str) {
-        try {
-            return str != null ? URLEncoder.encode(str, "UTF-8") : null;
-        } catch (UnsupportedEncodingException e) {
-            LOG.fatal("UTF-8 encoding not available");
-        }
-        return str;
     }
 }

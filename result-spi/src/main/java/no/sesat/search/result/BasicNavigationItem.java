@@ -22,6 +22,9 @@
 
 package no.sesat.search.result;
 
+import java.util.List;
+import java.util.Vector;
+
 /**
  *
  * @author <a href="mailto:mick@semb.wever.org">Mick</a>
@@ -73,6 +76,23 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
             }
         }
         return null;
+    }
+
+    /**
+     * Return a list of NavigationItem's that makes up the selected
+     * path of this NavigationItem. This path will go from this element
+     * all the way to the last selected child.
+     *
+     * @return List of selected elements.
+     */
+    public List<NavigationItem> getSelectedBranch() {
+        Vector<NavigationItem> res = new Vector<NavigationItem>();
+        NavigationItem current = this;
+        while(current.isChildSelected()) {
+            current=current.getSelectedChild();
+            res.add(current);
+        }
+        return res;
     }
 
     private NavigationItem getChildSelectedImpl() {
