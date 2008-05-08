@@ -64,12 +64,12 @@ public class TreeNavigationController implements NavigationController {
         i.setSelected(true);
         item.addResult(i);
 
-        getNavigationItemsHelper(context, i, nav.getChildNavs());
+        getNavigationItemsHelper(context, i, nav.getChildNavs(), 1);
 
         return item;
     }
 
-    private void getNavigationItemsHelper(final Context context, NavigationItem item, List<NavigationConfig.Nav> children) {
+    private void getNavigationItemsHelper(final Context context, NavigationItem item, List<NavigationConfig.Nav> children, int depth) {
 
         if (children.isEmpty()) {
             return;
@@ -80,10 +80,10 @@ public class TreeNavigationController implements NavigationController {
             if(child instanceof TreeNavigationConfig) {
                 final String url = context.getUrlGenerator().getURL(((TreeNavigationConfig)child).getValue(), child);
                 final BasicNavigationItem i = new BasicNavigationItem(((TreeNavigationConfig)child).getName(), url, -1);
-
+                i.setDepth(depth);
                 final StringDataObject selectedValue = context.getDataModel().getParameters().getValue(child.getField());
 
-                if (selectedValue != null && selectedValue.getString().equals(i.getTitle())) {
+                if (selectedValue != null && selectedValue.getString().equals(((TreeNavigationConfig)child).getValue())) {
                     i.setSelected(true);
                 }
 
@@ -93,7 +93,7 @@ public class TreeNavigationController implements NavigationController {
                 if (i.isSelected()) {
                     StringDataObject selectedSubItem = context.getDataModel().getParameters().getValue(child.getField());
                     if (selectedSubItem != null && ((TreeNavigationConfig)child).getValue().equals(selectedSubItem.getString())) {
-                        getNavigationItemsHelper(context, i, child.getChildNavs());
+                        getNavigationItemsHelper(context, i, child.getChildNavs(), depth +1);
                     }
                 }
             }

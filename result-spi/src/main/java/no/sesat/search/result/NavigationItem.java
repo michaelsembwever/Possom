@@ -35,4 +35,12 @@ public interface NavigationItem extends ResultList<NavigationItem>{
     boolean isChildSelected();
     NavigationItem getSelectedChild();
     NavigationItem getChildByTitle(String title);
+
+    /**
+     * The depth of this element. (Used when elements are organized in tree like struktures)
+     * (This might not be the global depth of the navigation item)
+     *
+     * @return Depth of this element.
+     */
+    int getDepth();
 }

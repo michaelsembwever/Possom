@@ -33,6 +33,7 @@ import java.util.Vector;
 public class BasicNavigationItem extends BasicResultList<NavigationItem> implements NavigationItem{
 
     private boolean selected = false;
+    private int depth = 0;
     
     public BasicNavigationItem(){}
 
@@ -93,6 +94,39 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
             res.add(current);
         }
         return res;
+    }
+
+    /**
+     * Create a list off all children collected recursivly (Depth first). 
+     *
+     * @return
+     */
+    public List<NavigationItem> getChildrenRecursive() {
+        Vector<NavigationItem> res = new Vector<NavigationItem>();
+        getChildrenRecursiveHelper(res, this);
+        return res;
+    }
+
+    private void getChildrenRecursiveHelper(List<NavigationItem> res, NavigationItem nav) {
+        for(NavigationItem child : nav.getResults()) {
+            res.add(child);
+            getChildrenRecursiveHelper(res, child);
+        }
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    /**
+     *  The depth of this element. (Used when elements are organized in tree like struktures
+     *
+     * @param d Depth of element.
+     *
+     * @return this
+     */
+    public void setDepth(int d) {
+        depth = d;
     }
 
     private NavigationItem getChildSelectedImpl() {

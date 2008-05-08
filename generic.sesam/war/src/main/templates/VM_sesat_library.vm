@@ -96,3 +96,46 @@
         #end
   #end
 #end
+
+#macro(treeNavigation $nav $title)
+    #set ($top = $datamodel.navigation.getNavigation($nav))
+     <div class="cellHead">$title</div>
+    #set($aImg = '<img src="/images/backArrow.gif" alt="" />')
+    #foreach($branch in $top.getChildrenRecursive())
+        #if(!$branch.isChildSelected() && $branch.isSelected() )
+            <div class="cellHoldActive">
+                <div class="cellLeft"><span class="subText${branch.depth}">$branch.title</div>
+            </div>
+        #else
+            <div class="cellHold">
+                <div class="cellLeft"><span class="subText${branch.depth}">#newsSimpleNavigationLink($branch '')</div>
+            </div>
+        #end
+        #set($top = $branch)
+    #end
+#end
+
+#macro(treeNavigationOnlySelectedBranch $nav $title)
+    #set ($top = $datamodel.navigation.getNavigation($nav))
+    <div class="cellHead">$title</div>
+    #set($aImg = '<img src="/images/backArrow.gif" alt="" />')
+    #foreach($branch in $top.getSelectedBranch())
+        #if($branch.isChildSelected())
+            <div class="cellHold">
+                <div class="cellLeft">$aImg #newsSimpleNavigationLink($branch '')</div>
+            </div>
+        #else
+            <div class="cellHoldActive">
+                <div class="cellLeft">$branch.getTitle()</div>
+            </div>
+        #end
+        #set($top = $branch)
+    #end
+
+    #foreach($leaf in $top.results)
+        <div class="cellHold">
+            <div class="cellLeft">#newsSimpleNavigationLink($leaf '')</div>
+        </div>
+        <div class="liner"></div>
+    #end
+#end
