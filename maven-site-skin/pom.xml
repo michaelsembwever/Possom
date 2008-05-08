@@ -7,5 +7,6 @@
    <version>2.18-SNAPSHOT</version>
   </parent>
   <artifactId>sesat-kernel-maven-site-skin</artifactId>
+  <name>Sesat maven-site skin</name>
   <packaging>jar</packaging>
 </project>
