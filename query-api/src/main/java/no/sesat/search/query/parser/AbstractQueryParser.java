@@ -203,7 +203,8 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
 
-    /**
+    /** Ensure that for every leftChar there is a matching rightChar.
+     * Otherwise remove all occurences of both leftChar and rightChar.
      * 
      * @param query 
      * @param leftChar 
@@ -225,11 +226,11 @@ public abstract class AbstractQueryParser implements QueryParser {
         return query;
     }
 
-    /**
+    /** Ensure that there are a even number of c characters in the phrase, otherwise remove all occurences of c.
      * 
      * @param query 
-     * @param c 
-     * @return 
+     * @param c the character to ensure has an even occurence count.
+     * @return unchanged or changes string.
      */
     protected final String even(String query, final char c){
         int count = 0;
