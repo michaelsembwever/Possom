@@ -128,6 +128,14 @@ final class DataModelFactoryImpl extends DataModelFactory{
         
         return datamodel;
     }
+    
+    public ControlLevel currentControlLevel(final DataModel datamodel){
+        
+        final BeanDataModelInvocationHandler handler 
+                = (BeanDataModelInvocationHandler) Proxy.getInvocationHandler(datamodel);
+        
+        return ((BeanDataModelInvocationHandler.DataModelBeanContextSupport)handler.context).getControlLevel();
+    }
 
     // Package protected ---------------------------------------------
 

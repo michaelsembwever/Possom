@@ -160,12 +160,23 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      * control process stack.
      * 
      * <b>This method is only to be used by SESAT classes, not skin implementations!</b>
+     * Future version must impose this restriction.
      * 
      ** @param datamodel 
      * @param controlLevel 
      * @return
      */
     public abstract DataModel assignControlLevel(final DataModel datamodel, final ControlLevel controlLevel);
+    
+    /** What is the current ControlLevel for the given datamodel.
+     * 
+     * <b>This method is only to be used by SESAT classes, not skin implementations!</b>
+     * Future version must impose this restriction.
+     * 
+     * @param datamodel related datamodel we are looking for its control level
+     * @return the current control level
+     */
+    public abstract ControlLevel currentControlLevel(final DataModel datamodel);
 
     // Package protected ---------------------------------------------
 

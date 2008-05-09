@@ -72,7 +72,7 @@ final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler
     
     // Inner classes -------------------------------------------------
     
-    protected static final class DataModelBeanContextSupport extends BeanContextSupport{
+    static final class DataModelBeanContextSupport extends BeanContextSupport{
         
         final Object dataModelLock = new Boolean(true); // needs to be serialisable
 

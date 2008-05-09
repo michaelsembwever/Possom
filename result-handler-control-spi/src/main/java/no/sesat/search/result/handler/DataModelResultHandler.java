@@ -28,6 +28,8 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
+import no.sesat.search.datamodel.access.ControlLevel;
+import static no.sesat.search.datamodel.access.ControlLevel.SEARCH_COMMAND_EXECUTION;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
@@ -108,7 +110,19 @@ public final class DataModelResultHandler implements ResultHandler{
                 new DataObject.Property("query", queryDO),
                 new DataObject.Property("results", cxt.getSearchResult()));
 
+        ControlLevel originalControlLevel = null;
+        if(config.isAsynchronous()){
+            // in asynchronous mode we have absolutely no constraint as to what part of the lifecycle we are in.
+            originalControlLevel = factory.currentControlLevel(datamodel);
+            factory.assignControlLevel(datamodel, SEARCH_COMMAND_EXECUTION);
+        }
+        
         datamodel.setSearch(config.getName(), searchDO);
+        
+        if(null != originalControlLevel && SEARCH_COMMAND_EXECUTION == factory.currentControlLevel(datamodel)){
+            // restore the control level, given that nobody else has touched it.
+            factory.assignControlLevel(datamodel, originalControlLevel);
+        }
 
         // also ping everybody that might be waiting on these results: "dinner's served!"
         synchronized (datamodel.getSearches()) {
