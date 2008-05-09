@@ -113,9 +113,9 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
             String personalizationGroup = cfg.getPersonalizationGroup();
 
-            if (getParameter(ORIGINATION_PARAMETER).equals("telenor")
-              && !cfg.getTelenorPersonalizationGroup().equals(""))
-            {
+            if ("telenor".equals(getParameter(ORIGINATION_PARAMETER))
+              && !cfg.getTelenorPersonalizationGroup().equals("")){
+                
                 personalizationGroup = cfg.getTelenorPersonalizationGroup();
             }
 
