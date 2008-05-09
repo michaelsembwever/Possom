@@ -612,7 +612,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         final List<RunHandlerConfig> rhcList 
                 = new ArrayList<RunHandlerConfig>(context.getSearchMode().getRunHandlers());
         
-        /* Adding NavigationRunHandler to all search modes */
+        /* Adding NavigationRunHandler to all search modes. TODO move into modes.xml */
         rhcList.add(new NavigationRunHandlerConfig());
 
         for (final RunHandlerConfig rhc : rhcList) {
