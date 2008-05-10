@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  * See http://www.javaworld.com/javaworld/javatips/jw-javatip98.html
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractReflectionVisitor implements Visitor {
 
@@ -77,7 +77,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
 
         } catch (IllegalArgumentException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
-            
+
         } catch (InvocationTargetException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
             // IllegalArgumentException often mean an underlying exception.
@@ -87,10 +87,10 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             for (Throwable t = ex; t != null; t = t.getCause()) {
                 LOG.error(t.getMessage(), t);
             }
-            
+
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
-            
+
         }  finally  {
             method.setAccessible(false);
         }
@@ -173,7 +173,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 // [RECURSION] Look for super interfaces
                 method = getMethodFromInterface(interfaces[i]);
             }  else  {
-                // This is the most useful log statement in this file, 
+                // This is the most useful log statement in this file,
                 //  but gets called too many times per request to be promoted to debug.
                 LOG.trace("Found method accepting <" + interfaces[i].getSimpleName()
                         + "> in " + method.getDeclaringClass().getSimpleName());

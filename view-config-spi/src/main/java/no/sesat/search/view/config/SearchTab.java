@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
 /**
  * Immutable POJO holding the view configuration for a given tab.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class SearchTab implements Serializable{

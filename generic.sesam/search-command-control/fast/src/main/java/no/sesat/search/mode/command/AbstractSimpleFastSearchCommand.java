@@ -81,7 +81,7 @@ import no.sesat.search.result.WeightedSuggestion;
 /**
  * Handles the basic implementation of the Simple FAST search.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
  public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchCommand {
@@ -169,7 +169,7 @@ import no.sesat.search.result.WeightedSuggestion;
                     filterStrings.add("+" + navigator.getField() + ':'  + value);
             }
         }
-        
+
         return filterStrings;
     }
 
@@ -415,7 +415,7 @@ import no.sesat.search.result.WeightedSuggestion;
      * TODO comment me
      */
     protected void setAdditionalParameters(final ISearchParameters params) {
-        
+
         for(Map.Entry<String,String> entry : getSearchConfiguration().getSearchParameters().entrySet()){
             params.setParameter(new SearchParameter(entry.getKey(), entry.getValue()));
         }
@@ -802,7 +802,7 @@ import no.sesat.search.result.WeightedSuggestion;
                         break;
                     case YEAR_MONTH_DAY_DESCENDING:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH_DAY_DESCENDING);
-                        break;                        
+                        break;
                     case YEAR:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR);
                         break;
@@ -830,7 +830,7 @@ import no.sesat.search.result.WeightedSuggestion;
     protected Comparator getModifierComparator(final Navigator nav) {
         return null;
     }
-    
+
     private WeightedSuggestion createProperNameSuggestion(String custom) {
 
         int suggestionIndex = custom.indexOf("->");

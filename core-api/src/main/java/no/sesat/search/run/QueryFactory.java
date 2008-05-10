@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Use QueryFactory to create a new RunningQuery instance. The RunningQuery
  * should contain all information on how to search in fast.
  *
- * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola@schibstedsok.no</a>
+ *
  * @version $Id$
  */
 public abstract class QueryFactory {

@@ -32,7 +32,7 @@ import no.sesat.search.site.Site;
  *
  * <b>Objects of this class are immutable</b>
  *
- * @author <a hrefIntegerClauseImpl@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class IntegerClauseImpl extends AbstractLeafClause implements IntegerClause {

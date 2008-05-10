@@ -21,7 +21,7 @@ package no.sesat.search.run.handler;
 
 /**
  * $Id$
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  */
 public class TestRunHandler implements RunHandler {
 

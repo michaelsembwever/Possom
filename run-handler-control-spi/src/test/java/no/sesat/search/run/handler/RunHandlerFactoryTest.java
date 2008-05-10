@@ -39,7 +39,7 @@ import no.sesat.search.site.Site.Context;
 
 /**
  * $Id$
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  */
 public class RunHandlerFactoryTest {
     @Test
@@ -48,23 +48,23 @@ public class RunHandlerFactoryTest {
             public Site getSite() {
                 return Site.DEFAULT;
             }
-            
+
             public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
                     final String resource,
                     final Properties properties) {
                 return TestResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
         });
-        
+
         final DataModel datamodel = factory.instantiate();
-        
+
         final Site site = getTestingSite();
-        
+
         final SiteConfiguration.Context cxt = new SiteConfiguration.Context() {
             public Site getSite() {
                 return site;
             }
-            
+
             public PropertiesLoader newPropertiesLoader(
                     final SiteContext siteContext,
                     final String resource,
@@ -72,9 +72,9 @@ public class RunHandlerFactoryTest {
                 return TestResourceLoader.newPropertiesLoader(siteContext, resource, properties);
             }
         };
-        
+
         final SiteConfiguration siteConfig = SiteConfiguration.instanceOf(cxt);
-        
+
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
                 datamodel,
@@ -112,16 +112,16 @@ public class RunHandlerFactoryTest {
     }
 
     protected Site getTestingSite(){
-        
+
         final String basedir = "localhost";
         return Site.valueOf(
                 getSiteConstructingContext(),
                 basedir,
                 Locale.getDefault());
-    }    
+    }
 
     protected Site.Context getSiteConstructingContext(){
-        
+
         return new Context(){
             public String getParentSiteName(final SiteContext siteContext){
                 // we have to do this manually instead of using SiteConfiguration,
@@ -138,26 +138,26 @@ public class RunHandlerFactoryTest {
 }
 
 class TestResourceLoader extends FileResourceLoader {
-    
+
     private static final Logger LOG = Logger.getLogger(TestResourceLoader.class);
-    
+
     protected TestResourceLoader(final SiteContext cxt) {
         super(cxt);
     }
-    
+
     public static PropertiesLoader newPropertiesLoader(
             final SiteContext siteCxt,
             final String resource,
             final Properties properties) {
-    
+
         properties.putAll(props);
         final PropertiesLoader pl = new TestResourceLoader(siteCxt);
         return pl;
     }
-    
+
     @Override
     public void init(final String resource, final Properties properties) {}
-    
+
     private static final Properties props = new Properties();
     static {
         props.setProperty(Site.DEFAULT_SITE_LOCALE_KEY, "no");
@@ -166,12 +166,12 @@ class TestResourceLoader extends FileResourceLoader {
         props.setProperty(Site.DEFAULT_SITE_KEY, "localhost");
         props.setProperty(Site.PARENT_SITE_KEY, "");
     }
-    
+
     @Override
     public Properties getProperties() {
         return props;
     }
-    
+
     @Override
     public void abut() {}
 }

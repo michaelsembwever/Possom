@@ -46,7 +46,7 @@ import java.io.IOException;
  * <li>org.w3c.dom.Node to apply expression to (default is value of "document" from cxt)</li>
  * </ul>
  *
- * @author magnuse
+ *
  */
 public final class XPathDirective extends AbstractDirective {
 

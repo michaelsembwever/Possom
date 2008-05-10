@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
@@ -78,24 +78,24 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
     // Protected -----------------------------------------------------
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     protected abstract String createRequestURL();
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     protected int getResultsToReturn(){
         return context.getSearchConfiguration().getResultsToReturn();
     }
 
     /**
-     * 
-     * @return 
-     * @throws java.io.IOException 
-     * @throws org.xml.sax.SAXException 
+     *
+     * @return
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     protected final Document getXmlResult() throws IOException, SAXException {
         final String url = createRequestURL();
@@ -113,7 +113,7 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
         DUMP.info("Using " + url);
         return client.getBufferedReader(url, encoding);
     }
-    
+
 
     // Private -------------------------------------------------------
 

@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author SSTHKJER
+ *
  * @version $Id$
  */
 public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
@@ -83,7 +83,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
      * @return the search result
      */
     public ResultList<? extends ResultItem> execute() {
-        
+
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.

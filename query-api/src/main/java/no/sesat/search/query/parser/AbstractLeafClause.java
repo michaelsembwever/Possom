@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * Basic implementation of the LeafClause interface.
  * Implements ontop of AbstractClause.
  * <b>Objects of this class are immutable</b>
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractLeafClause extends AbstractClause implements LeafClause {

@@ -41,7 +41,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * <code>
  * #upperCase("abcdefgh')
  * </code>
- * @author SSTHKJER
+ *
  */
 public final class UpperCaseDirective extends Directive {
 
@@ -71,7 +71,7 @@ public final class UpperCaseDirective extends Directive {
         }
 
         final String input = node.jjtGetChild(0).value(context).toString();
-        
+
         writer.write(input.toUpperCase());
 
         final Token lastToken = node.getLastToken();

@@ -66,7 +66,7 @@ import org.apache.log4j.MDC;
  * Will redirect to correct (search-front-config) url for resources (css,images, javascript). <br/>
  * Also responsible for logging each request and response like an apache access logfile.
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class SiteLocatorFilter implements Filter {
@@ -86,11 +86,11 @@ public final class SiteLocatorFilter implements Filter {
     private static final String WARN_FAULTY_BROWSER = "Site in datamodel does not match requested site. User agent is ";
 
     private static final String PUBLISH_DIR = "/img/";
-    
+
     private static final String UNKNOWN = "unknown";
 
-    
-    // Any request coming into Sesat with /conf/ is immediately returned as a 404. 
+
+    // Any request coming into Sesat with /conf/ is immediately returned as a 404.
     // It should have been directed to a skin.
     private static final String CONFIGURATION_RESOURCE= "/conf/";
 
@@ -191,44 +191,44 @@ public final class SiteLocatorFilter implements Filter {
                 final String rscDir = resource != null && resource.indexOf('/',1) >= 0
                         ? resource.substring(0, resource.indexOf('/',1)+1)
                         : null;
-                
+
                 if(isAccessAllowed(req)){
 
                     if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
                         // This URL does not belong to search-portal
                         final String url = FindResource.find(site, resource);
-                        
+
                         if (url != null) {
                             // Cache the client-resource redirects on a short (session-equivilant) period
-                            res.setHeader("Cache-Control", "Public"); 
+                            res.setHeader("Cache-Control", "Public");
                             res.setDateHeader("Expires", System.currentTimeMillis() + 1000*60*10); // ten minutes
                             // send the redirect to where the resource really resides
                             res.sendRedirect(url);
                             LOG.trace(resource + DEBUG_REDIRECTING_TO + url);
-                            
-                            
+
+
                         }else if (resource.startsWith(PUBLISH_DIR)){
                             // XXX Why do we avoid sending 404 for publish resources?
-                            
+
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
 
                             if(resource.endsWith(".css")){
                                 LOG.info(ERR_NOT_FOUND + resource);
                             }else{
                                 LOG.error(ERR_NOT_FOUND + resource);
-                            }                            
+                            }
                         }
 
                     } else  {
                         doChainFilter(chain, request, response);
                     }
-                    
+
                 }else{
                     // Forbidden client
                     res.sendError(HttpServletResponse.SC_FORBIDDEN);
                 }
-                
+
             }  else  {
                 doChainFilter(chain, request, response);
             }
@@ -243,7 +243,7 @@ public final class SiteLocatorFilter implements Filter {
                 LOG.error(t.getMessage(), t);
             }
             throw new ServletException(e);
-            
+
         }finally{
             logAccessResponse(request, response, stopWatch);
         }
@@ -252,7 +252,7 @@ public final class SiteLocatorFilter implements Filter {
 
     /**
      * Return the filter configuration object for this filter.
-     * @return 
+     * @return
      */
     public FilterConfig getFilterConfig() {
         return (filterConfig);
@@ -305,7 +305,7 @@ public final class SiteLocatorFilter implements Filter {
 
     /** The method to obtain the correct Site from the request.
      * It only returns a site with a locale supported by that site.
-     ** @param servletRequest 
+     ** @param servletRequest
      * @return the site instance. or null if no such skin has been deployed.
      */
     public static Site getSite(final ServletRequest servletRequest) {
@@ -328,7 +328,7 @@ public final class SiteLocatorFilter implements Filter {
         final Site result;
         try{
             result = Site.valueOf(SITE_CONTEXT, correctedVhost, locale);
-            
+
             final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
                 public PropertiesLoader newPropertiesLoader(
                         final SiteContext siteCxt,
@@ -385,26 +385,26 @@ public final class SiteLocatorFilter implements Filter {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     private static void doChainFilter(
             final FilterChain chain,
             final ServletRequest request,
             final ServletResponse response) throws IOException, ServletException{
-        
-        Lock lock = request instanceof HttpServletRequest 
+
+        Lock lock = request instanceof HttpServletRequest
                 ? (Lock) ((HttpServletRequest)request).getSession().getAttribute("userLock")
                 : new ReentrantLock();
-        
+
         if(null == lock){
             lock = new ReentrantLock();
             ((HttpServletRequest)request).getSession().setAttribute("userLock", lock);
         }
-        
+
         // datamodel is NOT request-safe. all the user's requests must execute in sequence!
         //  ten seconds is enough to wait.
         boolean done = false;
         try{
-            if( lock.tryLock(10, TimeUnit.SECONDS) ){  
+            if( lock.tryLock(10, TimeUnit.SECONDS) ){
                 try{
                     // request will be processed by search-portal
                     LOG.info("Incoming! Duck!");
@@ -417,7 +417,7 @@ public final class SiteLocatorFilter implements Filter {
         }catch(InterruptedException ie){
             LOG.warn("The duck got trucked", ie);
         }
-        
+
         if(!done && response instanceof HttpServletResponse){
             // failed to get lock in time
             LOG.warn(" -- response 409");
@@ -439,7 +439,7 @@ public final class SiteLocatorFilter implements Filter {
         LOG.trace("doBeforeProcessing()");
 
         final Site site = getSite(request);
-        
+
         if(null != site){
 
             final DataModel dataModel = getDataModel(request);
@@ -457,7 +457,7 @@ public final class SiteLocatorFilter implements Filter {
             /* Setting default encoding */
             request.setCharacterEncoding("UTF-8");
             response.setCharacterEncoding("UTF-8");
-        
+
         }else{
             throw new ServletException("SiteLocatorFilter with no Site :-(");
         }
@@ -488,7 +488,7 @@ public final class SiteLocatorFilter implements Filter {
     }
 
     private static void logAccessRequest(final ServletRequest request){
-       
+
         final StringBuilder url = new StringBuilder();
         final String referer;
         final String method;
@@ -496,9 +496,9 @@ public final class SiteLocatorFilter implements Filter {
         final String userAgent;
         final String sesamId;
         final String sesamUser;
-        
-        if(request instanceof HttpServletRequest){  
-            
+
+        if(request instanceof HttpServletRequest){
+
             final HttpServletRequest req = (HttpServletRequest)request;
             url.append(req.getRequestURI() + (null != req.getQueryString() ? '?' + req.getQueryString() : ""));
             referer = req.getHeader("Referer");
@@ -507,12 +507,12 @@ public final class SiteLocatorFilter implements Filter {
             sesamId = getCookieValue(req, "SesamID");
             sesamUser = getCookieValue(req, "SesamUser");
 
-            
+
         }else{
-            
+
             for(@SuppressWarnings("unchecked")
                     Enumeration<String> en = request.getParameterNames(); en.hasMoreElements(); ){
-                
+
                 final String param = en.nextElement();
                 url.append(param + '=' + request.getParameter(param));
                 if(en.hasMoreElements()){
@@ -521,7 +521,7 @@ public final class SiteLocatorFilter implements Filter {
             }
             referer = method = userAgent = sesamId = sesamUser = UNKNOWN;
         }
-        
+
         ACCESS_LOG.info("<request>"
                 + "<url method=\"" + method + "\">" + StringEscapeUtils.escapeXml(url.toString()) + "</url>"
                 + (null != referer ? "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>" : "")
@@ -529,40 +529,40 @@ public final class SiteLocatorFilter implements Filter {
                 + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
                 + "</request>");
     }
-    
+
     private static void logAccessResponse(
-            final ServletRequest request, 
+            final ServletRequest request,
             final ServletResponse response,
             final StopWatch stopWatch){
-       
+
         final String code;
-        
-        if(request instanceof HttpServletRequest){  
-            
+
+        if(request instanceof HttpServletRequest){
+
             final HttpServletRequest req = (HttpServletRequest)request;
-            
+
         }else{
-            
+
         }
-        
-        if(response instanceof AccessLogResponse){  
-            
+
+        if(response instanceof AccessLogResponse){
+
             final AccessLogResponse res = (AccessLogResponse)response;
             code = String.valueOf(res.getStatus());
-            
+
         }else{
-            
+
             code = UNKNOWN;
         }
-        
+
         stopWatch.stop();
-        
+
         ACCESS_LOG.info("<response code=\"" + code + "\" time=\"" + stopWatch + "\"/>");
     }
-    
+
     // probably apache commons could simplify this // duplicated in SearchServlet
     private static String getCookieValue(final HttpServletRequest request, final String cookieName){
-    
+
         String value = "";
         // Look in attributes (it could have already been updated this request)
         if( null != request ){
@@ -580,9 +580,9 @@ public final class SiteLocatorFilter implements Filter {
 
         return value;
     }
-    
+
     private static String getServerName(final ServletRequest servletRequest){
-        
+
         // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
         // httpd.conf needs:
         //      1) "JkEnvVar SERVER_NAME" inside the virtual host directive.
@@ -592,14 +592,14 @@ public final class SiteLocatorFilter implements Filter {
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
     }
-    
+
     private static boolean isAccessAllowed(final HttpServletRequest request){
-        
+
         final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
         final String allowedList = siteConf.getProperty(SiteConfiguration.ALLOW_LIST);
         final String disallowedList = siteConf.getProperty(SiteConfiguration.DISALLOW_LIST);
         final String ipaddress = request.getRemoteAddr();
-        
+
         boolean allowed = false;
         boolean disallowed = false;
         if(null != allowedList && 0 < allowedList.length()){
@@ -614,17 +614,17 @@ public final class SiteLocatorFilter implements Filter {
                 disallowed |= ipaddress.startsWith(disallow);
             }
         }
-        return allowed && !disallowed;  
+        return allowed && !disallowed;
     }
-    
+
     private static class AccessLogResponse extends HttpServletResponseWrapper{
-        
+
         private int status = HttpServletResponse.SC_OK;
-        
+
         public AccessLogResponse(final HttpServletResponse response){
             super(response);
         }
-        
+
         @Override
         public void setStatus(final int status){
             super.setStatus(status);
@@ -650,10 +650,10 @@ public final class SiteLocatorFilter implements Filter {
             super.sendRedirect(arg0);
             this.status = HttpServletResponse.SC_FOUND;
         }
-        
+
         public int getStatus(){
             return status;
         }
-              
+
     }
 }

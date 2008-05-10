@@ -30,7 +30,7 @@ import no.schibstedsok.commons.ioc.BaseContext;
  * This gives the freedom for configuration files to change format at will.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface ResourceContext extends BaseContext, DocumentContext, PropertiesContext, BytecodeContext {
 }

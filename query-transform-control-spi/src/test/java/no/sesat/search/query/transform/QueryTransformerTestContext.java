@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  */
 public final class QueryTransformerTestContext extends SiteTestCase implements QueryTransformer.Context {
 

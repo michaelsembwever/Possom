@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
  *
  * A relative path is relative to templates/pages/
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 
@@ -99,7 +99,7 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
 
         try{
             if(null != include){
-            
+
             include = include.startsWith("/") ? include : PAGES_DIRECTORY + include;
 
                 final Map<String,Object> map = new HashMap<String,Object>();
@@ -119,9 +119,9 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
                 }
 
             }
-            if(null == include 
+            if(null == include
                     || Boolean.TRUE == cxt.getAttribute("Missing_" + include.replaceAll("/","") + "_Template")){
-                
+
                 LOG.error(MISSING);
                 cxt.getOut().println(MISSING);
                 cxt.setAttribute(MISSING, Boolean.TRUE);

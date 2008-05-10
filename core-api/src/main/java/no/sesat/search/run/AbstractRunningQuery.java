@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractRunningQuery implements RunningQuery {
 

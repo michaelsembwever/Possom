@@ -87,12 +87,12 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  * <li>basic implementation (visitor pattern) for constructing a user presentable version of the transformed query.</li>
  * </ul>
  *                                                                                                          <br/><br/>
- * 
- * <b>TODO</b> There is work planned to separate and encapsulate alot of this functionality into individual classes. 
+ *
+ * <b>TODO</b> There is work planned to separate and encapsulate alot of this functionality into individual classes.
  *                   https://jira.sesam.no/jira/browse/SEARCH-2149                                            <br/><br/>
- * 
- * 
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>.
+ *
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
@@ -258,7 +258,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
                 if(ute.getCause() instanceof DataModelAccessException && isCancelled()){
 
-                    // This is partially expected because the datamodel's 
+                    // This is partially expected because the datamodel's
                     //  controlLevel would have moved on through the process stack.
                     LOG.trace("Cancelled command threw underlying exception", ute.getCause());
                     return new BasicResultList<ResultItem>();
@@ -266,7 +266,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 }
                 throw ute;
             }
-            
+
         } catch (RuntimeException rte) {
             LOG.error(ERROR_RUNTIME, rte);
             return new BasicResultList<ResultItem>();
@@ -297,7 +297,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
         return !completed;
     }
-    
+
     /** Has the command been cancelled.
      * Calling this method only makes sense once the call() method has been.
      **/
@@ -428,10 +428,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     // Protected -----------------------------------------------------
 
     /** Get the results from another search command waiting if neccessary.
-     * @param id 
-     * @param datamodel 
+     * @param id
+     * @param datamodel
      * @return
-     * @throws java.lang.InterruptedException 
+     * @throws java.lang.InterruptedException
      */
     protected final ResultList<? extends ResultItem> getSearchResult(
             final String id,
@@ -562,7 +562,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // The DataModel result handler is a hardcoded feature of the architecture
         DATAMODEL_HANDLER.handleResult(resultHandlerContext, datamodel);
-        
+
     }
 
     /**
@@ -572,25 +572,25 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @param i the current offset.
      * @return i plus the offset of the current page.
-     * 
+     *
      * @deprecated instead use getOffset() + i
      */
     protected int getCurrentOffset(final int i) {
 
         return i + getOffset();
     }
-    
+
     /**
      * Returns the offset applicable to this command.
      * Zero if the command has no "offset" navigator configured,
      *  the value of the offset parameter otherwise.
      *
      * @return i plus the offset of the current page.
-     */    
+     */
     protected int getOffset(){
-        
+
         int offset = 0;
-        
+
         if(isPaginated()){
             final StringDataObject offsetString = context.getDataModel().getParameters().getValue(OFFSET_KEY);
             if( null != offsetString ){
@@ -599,21 +599,21 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
         return offset;
     }
-    
+
     public boolean isPaginated(){
-        
+
         final boolean navMapExists = null != context.getDataModel().getNavigation()
                 && null != context.getDataModel().getNavigation().getConfiguration();
-        
+
         final Nav offsetNav = navMapExists
                 ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(OFFSET_KEY)
                 : null;
-        
+
         return null != offsetNav && getSearchConfiguration().getName().equals(offsetNav.getCommandName());
     }
 
     /**
-     * Returns parameter value. 
+     * Returns parameter value.
      *  Changed since 2.16.1 so that only request parameters are searched.
      *
      * @param paramName the name of the parameter to look for.
@@ -818,10 +818,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         // if the field is the token then mask the field and include the term.
                         // XXX why are we checking the known and possible predicates?
                         boolean result = clause.getKnownPredicates().contains(tp);
-                        
-                        result |= clause.getPossiblePredicates().contains(tp) 
+
+                        result |= clause.getPossiblePredicates().contains(tp)
                                 && engine.evaluateTerm(tp, clause.getField());
-                        
+
                         if (result) {
                             field = fieldFilter;
                             break;
@@ -1022,14 +1022,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /** If the command has been cancelled will throw the appropriate SearchCommandException.
-     * Calling this method only makes sense once the call() method has been, 
+     * Calling this method only makes sense once the call() method has been,
      *   otherwise it is guaranteed to throw the exception.
      * @throws SearchCommandException when cancellation has occurred.
      **/
     private void checkForCancellation() throws SearchCommandException{
         if( isCancelled() ){ throw new SearchCommandException("cancelled", new InterruptedException()); }
     }
-    
+
     // Inner classes -------------------------------------------------
 
 

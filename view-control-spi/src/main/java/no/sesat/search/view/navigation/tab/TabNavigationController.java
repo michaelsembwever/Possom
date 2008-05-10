@@ -38,7 +38,7 @@ public final class TabNavigationController implements NavigationController {
     private final TabNavigationConfig nav;
 
     public TabNavigationController(final TabNavigationConfig nav) {
-        
+
         commandNames = nav.getCommandNames();
         this.nav = nav;
 
@@ -49,30 +49,30 @@ public final class TabNavigationController implements NavigationController {
 
         final DataModel dataModel = context.getDataModel();
         final NavigationItem item = new BasicNavigationItem();
-        
+
         // hitcount
         item.setHitCount(-1);
-        
+
         for(String commandName : commandNames){
-            
+
             final SearchDataObject searchDO = dataModel.getSearch(commandName);
             if(null != searchDO){
-                
+
                 final int hitCount = searchDO.getResults().getHitCount();
-                
+
                 // do not accumulate "-1" hitcounts
                 item.setHitCount( -1 == item.getHitCount() && -1 == hitCount
                         ? -1
                         : Math.max(0, item.getHitCount()) + Math.max(0, hitCount));
             }
         }
-        
+
         // selected
         final StringDataObject selectedValue = dataModel.getParameters().getValue(nav.getField());
         if (null != selectedValue && nav.getValues().contains(selectedValue.getString())) {
             item.setSelected(true);
         }
-        
+
         return item;
     }
 }

@@ -32,35 +32,35 @@ import no.sesat.search.datamodel.generic.StringDataObject;
 /** Holds information regarding the user's browser.
  * Typically HTTP Request Headers.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataNode
 public interface BrowserDataObject extends Serializable {
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     StringDataObject getUserAgent();
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     StringDataObject getRemoteAddr();
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     StringDataObject getForwardedFor();
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     Locale getLocale();
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     List<Locale> getSupportedLocales();
 

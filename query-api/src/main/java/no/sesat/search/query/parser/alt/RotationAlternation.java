@@ -113,7 +113,7 @@ import org.apache.log4j.Logger;
  *          But it does already use the ParentFinder visitor utility to check if a given clause is inside a given
  *          tokenPredicate.
  * </li>
- * <li> {@link no.sesat.search.query.finder.WhoWhereSplitter WhoWhereSplitter} is a utility vistor that 
+ * <li> {@link no.sesat.search.query.finder.WhoWhereSplitter WhoWhereSplitter} is a utility vistor that
  *              splits the query into 'where' and 'who' components.<br/>
  *          It relies heavily upon tokenPredicates linked to fast-lists from the query matching servers.<br/>
  *          Since the where component is often defined by either a fullname or companyname predicate which is generally
@@ -131,7 +131,7 @@ import org.apache.log4j.Logger;
  *
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  *
  */
 public final class RotationAlternation extends AbstractAlternation{
@@ -174,7 +174,7 @@ public final class RotationAlternation extends AbstractAlternation{
 
     /**
      * Creates a new instance of RotationAlternation.
-     * @param cxt 
+     * @param cxt
      */
     public RotationAlternation(final Context cxt) {
         super(cxt);
@@ -186,13 +186,13 @@ public final class RotationAlternation extends AbstractAlternation{
      * These XorClauses hold all possible rotations for the corresponding forest.
      * Each XorClause always puts the left-leaning rotation as the left child,
      *  and the right-leaning rotation (or the next XorClause) as the right child.
-     ** @param originalRoot 
+     ** @param originalRoot
      */
     public Clause alternate(final Clause originalRoot) {
 
         // don't rotate any query tree consisting of more than ten clauses. this will disable analysis!
         if(new Counter().getTermCount(originalRoot) < 10){
-        
+
             // find forests (subtrees) of AndClauses and OrClauses.
             // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
             //  although queries rarely start with such clauses.
@@ -242,7 +242,7 @@ public final class RotationAlternation extends AbstractAlternation{
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-    
+
     /** {@inherit} **/
     @Override
     protected <T extends OperationClause> T createOperatorClause(
@@ -251,9 +251,9 @@ public final class RotationAlternation extends AbstractAlternation{
             final T replacementFor) {
 
         LOG.debug("createOperatorClause(" + left + ", " + right + ", " + replacementFor + ")");
-        
+
         final T clause = super.createOperatorClause(left, right, replacementFor);
-        
+
         // update our mappings between rotations
         if(replacementFor instanceof DoubleOperatorClause && clause instanceof DoubleOperatorClause){
             final DoubleOperatorClause rf = (DoubleOperatorClause)replacementFor;
@@ -263,7 +263,7 @@ public final class RotationAlternation extends AbstractAlternation{
             beforeRotationFromNew.put(c, beforeRotationFromOriginal.get(rf));
         }
         return clause;
-    }    
+    }
 
     /** {@inherit} **/
     @Override

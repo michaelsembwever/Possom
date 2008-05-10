@@ -28,7 +28,7 @@ package no.sesat.search.mode.command;
 /**
  *
  * A search command for the web search.
- * @author magnuse
+ *
  * @version $Id$
  */
 public class SensisSearchCommand extends FastSearchCommand {

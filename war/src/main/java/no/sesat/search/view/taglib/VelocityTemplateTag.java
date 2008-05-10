@@ -30,22 +30,22 @@ import no.sesat.search.view.config.SearchTab.Layout;
 import org.apache.log4j.Logger;
 
 
-/** Imports (and merges) a velocity template from a site-config into the jsp. 
+/** Imports (and merges) a velocity template from a site-config into the jsp.
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 
 public final class VelocityTemplateTag extends AbstractVelocityTemplateTag {
 
-    
+
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(VelocityTemplateTag.class);
-    
-    
+
+
     // Attributes ----------------------------------------------------
-    
+
     /**
      * Initialization of template property.
      */
@@ -55,22 +55,22 @@ public final class VelocityTemplateTag extends AbstractVelocityTemplateTag {
      * Initialization of command property.
      */
     private String command;
-    
+
 
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     // Public --------------------------------------------------------
 
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
-     * @throws javax.servlet.jsp.JspException 
+     * @throws javax.servlet.jsp.JspException
      */
     @Override
     public void doTag() throws JspException {
-        
+
         final Layout layout = findLayout((DataModel)((PageContext)getJspContext()).findAttribute(DataModel.KEY));
         final Map<String,Object> map = new HashMap<String,Object>();
         map.put("layout", layout);
@@ -81,7 +81,7 @@ public final class VelocityTemplateTag extends AbstractVelocityTemplateTag {
 
     /**
      * Setter for the template attribute.
-     * @param value 
+     * @param value
      */
     public void setTemplate(final String value) {
         this.template = value;
@@ -89,18 +89,18 @@ public final class VelocityTemplateTag extends AbstractVelocityTemplateTag {
 
     /**
      * Setter for the command attribute.
-     * @param value 
+     * @param value
      */
     public void setCommand(final String value) {
         this.command = value;
     }
-    
-    
+
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }

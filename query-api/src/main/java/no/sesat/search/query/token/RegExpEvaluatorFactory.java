@@ -41,8 +41,8 @@ import org.w3c.dom.NodeList;
 /** Responsible for loading and serving all the Regular Expression Token Evaluators.
  * These regular expression patterns come from the configuration file SearchConstants.REGEXP_EVALUATOR_XMLFILE.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
@@ -138,11 +138,11 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                         TokenPredicate token;
                         try{
                             token = TokenPredicate.Static.getTokenPredicate(tokenName);
-                            
+
                         }catch(IllegalArgumentException iae){
                             LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
                             token = TokenPredicate.Static.createAnonymousTokenPredicate(
-                                    tokenName, 
+                                    tokenName,
                                     TokenPredicate.Type.REGEX);
                         }
 

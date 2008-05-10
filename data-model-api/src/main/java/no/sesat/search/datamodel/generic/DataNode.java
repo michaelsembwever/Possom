@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  *
  * This is an annotation rather than a "marker interface".
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Documented

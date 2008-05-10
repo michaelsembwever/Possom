@@ -27,7 +27,7 @@ import no.sesat.search.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SearchTask extends FutureTask<ResultList<? extends ResultItem>> {

@@ -32,12 +32,12 @@ import org.apache.log4j.Logger;
 /** Simple command that searches in the specified properties map's keys.
  * If any key appears within the query (as complete words) the key and value are placed into the result item.
  * The command is useful for quick and dirty enrichments that match a small list of words.
- * 
+ *
  * The following is a tutorial for a simple enrichment using this command
  * https://dev.schibstedsok.no/confluence/display/SESAT/Developing+a+quick+and+simple+Enrichment+tutorial
- * 
+ *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class PropertiesCommand extends AbstractSearchCommand {
 
@@ -56,8 +56,8 @@ public final class PropertiesCommand extends AbstractSearchCommand {
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of PropertiesCommand 
-     * @param cxt 
+    /** Creates a new instance of PropertiesCommand
+     * @param cxt
      */
     public PropertiesCommand(final Context cxt) {
 
@@ -70,10 +70,10 @@ public final class PropertiesCommand extends AbstractSearchCommand {
 
         final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         result.setHitCount(0);
-        
+
         final PropertiesCommandConfig config = (PropertiesCommandConfig)getSearchConfiguration();
         final String query = datamodel.getQuery().getString().toLowerCase();
-        
+
         for(Map.Entry<String,String> entry : config.getProperties().entrySet()){
             if(query.matches(".*(^| )" + entry.getKey().toLowerCase() + "($| ).*")){
                 ResultItem item = new BasicResultItem();

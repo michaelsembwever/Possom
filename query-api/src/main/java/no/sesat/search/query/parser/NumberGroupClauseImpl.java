@@ -33,7 +33,7 @@ import no.sesat.search.site.Site;
  *
  * <b>Objects of this class are immutable</b>
  *
- * @author <a hrefOrganisationNumberClauseImpl>Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class NumberGroupClauseImpl extends AbstractLeafClause implements NumberGroupClause {

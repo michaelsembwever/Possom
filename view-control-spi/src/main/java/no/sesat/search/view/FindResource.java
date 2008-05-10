@@ -15,9 +15,9 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * FindResource.java
- * 
+ *
  * Created on 16/09/2007, 09:37:35
- * 
+ *
  */
 
 package no.sesat.search.view;
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 /** https://jira.sesam.no/jira/browse/SEARCH-3452
  * Move 302 resource redirects to internal resource directives
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public final class FindResource {
@@ -44,13 +44,13 @@ public final class FindResource {
 
     private static final String HTTP = "http://";
     private static final String PUBLISH_DIR = "/img/";
-    
+
     public static final long START_TIME = System.currentTimeMillis();
-    
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
+
     public static String find(final Site site, final String resource) throws IOException{
 
         // This URL does not belong to search-portal
@@ -81,17 +81,17 @@ public final class FindResource {
     }
 
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     private static String recursivelyFindResource(final String resource, final Site site) throws IOException {
 
         // Problem with this approach is that skins can be updated without the server restarting (& updating START_TIME)
@@ -107,10 +107,10 @@ public final class FindResource {
         if (UrlResourceLoader.doesUrlExist(u)) {
             // return a relative url to ensure it can survice through an out-of-cluster server.
             return '/' + site.getConfigContext() + '/' + datedResource;
-            
+
         } else if (site.getParent() != null) {
             return recursivelyFindResource(resource, site.getParent());
-            
+
         } else {
             return null;
         }

@@ -38,7 +38,7 @@ import no.sesat.search.site.config.TextMessages;
 /**
  * Calculate Age.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class AgeCalculatorResultHandler implements ResultHandler {

@@ -31,7 +31,7 @@ import no.sesat.search.query.token.TokenPredicate;
 
 /**
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 public class NewsSearchCommand extends FastSearchCommand {

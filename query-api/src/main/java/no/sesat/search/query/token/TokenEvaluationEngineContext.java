@@ -27,7 +27,7 @@ import no.schibstedsok.commons.ioc.BaseContext;
 /**
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface TokenEvaluationEngineContext extends BaseContext{
 
@@ -37,5 +37,5 @@ public interface TokenEvaluationEngineContext extends BaseContext{
      *
      * @return the TokenEvaluationEngine this Parser will use.
      */
-    TokenEvaluationEngine getTokenEvaluationEngine();    
+    TokenEvaluationEngine getTokenEvaluationEngine();
 }

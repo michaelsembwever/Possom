@@ -38,13 +38,13 @@ import org.apache.log4j.Logger;
  * This class is not synchronised (Except for the evaluateTerm method).
  * Manual synhronisation must be taken when calling operate or setter methods from inside SearchCommand classes.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     // Constants -----------------------------------------------------
-        
+
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private static final Logger LOG = Logger.getLogger(TokenEvaluationEngineImpl.class);
@@ -58,7 +58,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
 
     // Attributes -----------------------------------------------------
-        
+
     private final Context context;
     private final Future fastEvaluatorCreator;
     private TokenEvaluator fastEvaluator;
@@ -67,7 +67,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private volatile Thread owningThread = Thread.currentThread();
 
     // Constructors -----------------------------------------------------
-    
+
     /**
      * Create a new TokenEvaluationEngine.
      *
@@ -127,7 +127,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
         return evaluateInAnyThread(predicate, query.getEvaluationState());
     }
-    
+
     public boolean evaluate(final TokenPredicate token){
 
         // process
@@ -170,7 +170,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
             throw new EvaluationException(ie);
         }
 
-        throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);        
+        throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
 
 
@@ -181,8 +181,8 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     public void setState(final State state) {
         this.state = state;
     }
-    
-    // private -----------------------------------------------------  
+
+    // private -----------------------------------------------------
 
     private boolean evaluateInAnyThread(final TokenPredicate predicate, final State state) {
 
@@ -200,12 +200,12 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
             owningThread = origThread;
         }
     }
-    
+
     private synchronized Thread getOwningThread() {
         return owningThread;
     }
-    
-    // inner classes -----------------------------------------------------    
+
+    // inner classes -----------------------------------------------------
 
     private final class FastEvaluatorCreator implements Runnable{
         public void run() {

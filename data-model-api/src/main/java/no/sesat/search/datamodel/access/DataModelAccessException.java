@@ -16,9 +16,9 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * DataModelAccessException.java
- * 
+ *
  * Created on 24/09/2007, 11:15:39
- * 
+ *
  */
 
 package no.sesat.search.datamodel.access;
@@ -27,11 +27,11 @@ import java.lang.reflect.Method;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public final class DataModelAccessException extends IllegalAccessException {
-    
+
     private static final String ERR_DENIED = "Failure to honour the Access control annotations on ";
 
     /**

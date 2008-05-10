@@ -49,17 +49,17 @@ import static org.testng.AssertJUnit.*;
 
 /**
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  */
 public final class SynonymQueryTransformerTest extends AbstractTransformerTestCase {
 
     private static final Logger LOG = Logger.getLogger(SynonymQueryTransformerTest.class);
-    
+
     private final SynonymQueryTransformerConfig config = new SynonymQueryTransformerConfig();
 
     /**
-     * 
-     * @param testName 
+     *
+     * @param testName
      */
     public SynonymQueryTransformerTest(final String testName) {
         super(testName);
@@ -68,8 +68,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     }
 
     /**
-     * 
-     * @throws no.sesat.search.query.parser.ParseException 
+     *
+     * @throws no.sesat.search.query.parser.ParseException
      */
     @Test
     public void testOneWordExact() throws ParseException {
@@ -95,8 +95,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     }
 
     /**
-     * 
-     * @throws no.sesat.search.query.parser.ParseException 
+     *
+     * @throws no.sesat.search.query.parser.ParseException
      */
     @Test
     public void testOneWord() throws ParseException {
@@ -121,8 +121,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     }
 
     /**
-     * 
-     * @throws no.sesat.search.query.parser.ParseException 
+     *
+     * @throws no.sesat.search.query.parser.ParseException
      */
     @Test
     public void testTwoWords() throws ParseException {
@@ -147,8 +147,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     }
 
     /**
-     * 
-     * @throws no.sesat.search.query.parser.ParseException 
+     *
+     * @throws no.sesat.search.query.parser.ParseException
      */
     @Test
     public void testTwoWordsExact() throws ParseException {
@@ -205,7 +205,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
 
     /**
-     * 
+     *
      */
     public static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;
@@ -213,9 +213,9 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         private final StringBuilder sb = new StringBuilder();
 
         /**
-         * 
-         * @param q 
-         * @param m 
+         *
+         * @param q
+         * @param m
          */
         public QueryBuilder(final Query q, final Map m) {
             query = q;
@@ -223,8 +223,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
 
         /**
-         * 
-         * @return 
+         *
+         * @return
          */
         public synchronized String getQueryString() {
             sb.setLength(0);

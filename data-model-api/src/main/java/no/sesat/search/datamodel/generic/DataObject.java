@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  *
  * This is an annotation rather than a "marker interface".
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Documented
@@ -48,12 +48,12 @@ public @interface DataObject {
     public final class Property implements Serializable {
         private final String name;
         private final Object value;
-        
+
         private Property() {
             name = null;
             value = null;
         }
-        
+
         public Property(final String name, final Object value){
             this.name = name;
             this.value = value;

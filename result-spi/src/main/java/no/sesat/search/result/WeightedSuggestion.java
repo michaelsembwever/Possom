@@ -15,23 +15,23 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * WeightedSuggestion.java
- * 
+ *
  * Created on 10/05/2007, 13:31:14
- * 
+ *
  */
 
 package no.sesat.search.result;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public interface WeightedSuggestion extends Suggestion, Comparable<WeightedSuggestion>{
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     int getWeight();
 }

@@ -48,12 +48,12 @@ import org.apache.velocity.app.VelocityEngine;
  * The second argument specifies the a string to use in beginning wrapping around each enrichment.
  * a third argument is expected for end wrapping.
  *  If no argument is specified no div is written around each enrichment.)      <br/><br/>
- * 
+ *
  * The enrichments that are rendered are those named as the results field for EnrichmentHint.NAME_KEY within the
- * "templates/enrichments/${placement}/" directory. If this is not found then the same named template 
+ * "templates/enrichments/${placement}/" directory. If this is not found then the same named template
  * within the "templates/enrichments/" directory is used.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractEnrichmentDirective extends AbstractDirective {
@@ -101,11 +101,11 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
         final String placement = getArgument(cxt, node, 0);
 
         if(null != getDataModel(cxt).getPage() && null != getDataModel(cxt).getPage().getCurrentTab()){
-            
+
             final SearchTab tab = getDataModel(cxt).getPage().getCurrentTab();
 
             final Site site = getDataModel(cxt).getSite().getSite();
-            
+
             final VelocityEngine engine = VelocityEngineFactory
                     .valueOf(getDataModel(cxt).getSite().getSite())
                     .getEngine();
@@ -116,14 +116,14 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
             final Set<ResultList> enrichments = enrichmentsExisting
                     ? (Set<ResultList>)cxt.get("enrichments")
                     : new TreeSet<ResultList>(new Comparator<ResultList>(){
-                
+
                 public int compare(ResultList o1, ResultList o2) {
                     // highest scores first, ie descending order.
                     final int result = (int)((Float)o2.getObjectField(SCORE_KEY) - (Float)o1.getObjectField(SCORE_KEY));
                     // never return zero. in a treeset it means overriding the other enrichment.
-                    return 0 != result 
-                            ? result 
-                            : String.CASE_INSENSITIVE_ORDER.compare(o1.getField(NAME_KEY), o2.getField(NAME_KEY)); 
+                    return 0 != result
+                            ? result
+                            : String.CASE_INSENSITIVE_ORDER.compare(o1.getField(NAME_KEY), o2.getField(NAME_KEY));
                 }
             });
 
@@ -160,19 +160,19 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
                     }
 
                     cxt.put("commandName", e.getField(NAME_KEY));
-                    
+
                     Template template = null;
                     try{
                         template = VelocityEngineFactory
                                 .getTemplate(engine, site, "/enrichments/" + placement + '/' + e.getField(NAME_KEY));
-                        
+
                     }catch(ResourceNotFoundException rnfe){
                         LOG.debug(rnfe.getMessage(), rnfe); // not important
-                        
+
                         template = VelocityEngineFactory
                                 .getTemplate(engine, site, "/enrichments/" + e.getField(NAME_KEY));
                     }
-                    
+
                     template.merge(cxt, writer);
 
                     if(3 == node.jjtGetNumChildren()){

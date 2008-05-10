@@ -33,7 +33,7 @@ import no.sesat.search.view.navigation.ResultPagingNavigationConfig;
  * <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. All transforms to the resulting
  * query should be done after this.
  *
- * @author geir
+ *
  * @version $Id$
  */
 public final class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
@@ -58,7 +58,7 @@ public final class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
         final String myNews = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
 
         // FIXME use instead the following
-        //final String myNews 
+        //final String myNews
         //        = (String) getContext().getDataModel().getParameters().getValue(config.getQueryParameter()).getString();
 
         LOG.debug("Transforming query according to query = " + myNews);
@@ -83,10 +83,10 @@ public final class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
     protected int getOffset() {
 
         int offset = 0;
-        
-        final StringDataObject offsetString 
+
+        final StringDataObject offsetString
                 = getContext().getDataModel().getParameters().getValue(ResultPagingNavigationConfig.OFFSET_KEY);
-        
+
         if( null != offsetString ){
             offset = Integer.parseInt(offsetString.getUtf8UrlEncoded());
         }

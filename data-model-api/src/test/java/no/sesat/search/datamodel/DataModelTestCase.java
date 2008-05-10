@@ -39,7 +39,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class DataModelTestCase extends SiteTestCase{
 
@@ -48,7 +48,7 @@ public abstract class DataModelTestCase extends SiteTestCase{
     private static final Logger LOG = Logger.getLogger(DataModelTestCase.class);
 
     // Attributes ----------------------------------------------------
-    
+
     private DataModelFactory factory = null;
     private Site site = null;
     private SiteConfiguration.Context siteConfCxt = null;
@@ -56,25 +56,25 @@ public abstract class DataModelTestCase extends SiteTestCase{
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
-    
+
     protected DataModelTestCase(){}
-    
+
     // Public --------------------------------------------------------
 
     // Z implementation ----------------------------------------------
 
-    // no.sesat.search.TestCase overrides ----------------------------  
+    // no.sesat.search.TestCase overrides ----------------------------
 
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-   
+
     protected synchronized void setSiteConfigurationContext(final SiteConfiguration.Context siteConfCxt) {
         this.siteConfCxt = siteConfCxt;
     }
 
     protected synchronized DataModelFactory getDataModelFactory() throws SiteKeyedFactoryInstantiationException{
-        
+
         if(null == factory){
             try{
                 site = getTestingSite();
@@ -100,21 +100,21 @@ public abstract class DataModelTestCase extends SiteTestCase{
         }
         return factory;
     }
-    
+
     protected DataModel getDataModel() throws SiteKeyedFactoryInstantiationException{
 
         getDataModelFactory();
-       
+
         final DataModel datamodel = factory.instantiate();
 
         final SiteConfiguration siteConfig = SiteConfiguration.instanceOf(siteConfCxt);
-        
+
         final SiteDataObject siteDO = factory.instantiate(
                 SiteDataObject.class,
                 datamodel,
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConfig));
-        
+
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
                 datamodel,
@@ -122,16 +122,16 @@ public abstract class DataModelTestCase extends SiteTestCase{
 
         datamodel.setSite(siteDO);
         datamodel.setJunkYard(junkYardDO);
-        
+
         return datamodel;
     }
 
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 
 
 
-    
-    
+
+
 }

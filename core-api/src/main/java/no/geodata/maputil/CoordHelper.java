@@ -30,10 +30,10 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author hanst
+ *
  */
 public final class CoordHelper {
-    
+
     private static final Logger LOG = Logger.getLogger(CoordHelper.class);
 
     public final static long zoom_1 = 2000;
@@ -231,7 +231,7 @@ public final class CoordHelper {
      *
      */
     private Vector extractMapPoints(final List<ResultItem> companies) {
-        
+
         Vector mps = new Vector();
         boolean hasCoords;
         for (int i = 0; i < companies.size(); i++) {

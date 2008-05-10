@@ -48,7 +48,7 @@ import no.sesat.search.view.SearchTabFactory;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractSearchCommandTest extends DataModelTestCase {

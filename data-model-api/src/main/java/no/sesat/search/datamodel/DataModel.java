@@ -53,7 +53,7 @@ import no.sesat.search.datamodel.user.UserDataObject;
  *   https://dev.sesat.no/confluence/display/TECHDEV/Search+Portal+DataModel+%28Sesam-3.0%29
  *
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataNode

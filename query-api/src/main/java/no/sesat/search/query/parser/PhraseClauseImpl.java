@@ -30,7 +30,7 @@ import no.sesat.search.site.Site;
 /**
  *
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class PhraseClauseImpl extends AbstractLeafClause implements PhraseClause {

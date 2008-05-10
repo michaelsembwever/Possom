@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * This class is a representation of a single entry in a google sitemaps file.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  */
 public final class Page {
 

@@ -27,37 +27,37 @@ import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
 
 /** Default implementation of TokenEvaluationEngine.State.
- * 
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
+ *
  * @version $Id$
  */
 public class EvaluationState implements TokenEvaluationEngine.State{
-    
-    private final String term; 
+
+    private final String term;
     private final Query query;
     private final Set<TokenPredicate> known;
-    private Set<TokenPredicate> possible;    
-    
+    private Set<TokenPredicate> possible;
+
     /**
      * Creates a new instance of EvaluationState
      * @param term
      * @param known
-     * @param possible 
+     * @param possible
      */
     public EvaluationState(
             final String term,
             final Set<TokenPredicate> known,
             final Set<TokenPredicate> possible) {
-        
+
         this.term = term;
         this.query = null;
         this.known = known;
         this.possible = possible;
     }
-    
+
     public EvaluationState(final Clause clause){
-        
+
         this.term = clause.getTerm();
         this.query = null;
         this.known = clause.getKnownPredicates();
@@ -79,5 +79,5 @@ public class EvaluationState implements TokenEvaluationEngine.State{
     public Set<TokenPredicate> getPossiblePredicates() {
         return possible;
     }
-    
+
 }

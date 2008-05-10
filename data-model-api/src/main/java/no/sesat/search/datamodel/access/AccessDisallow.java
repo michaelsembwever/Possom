@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Documented

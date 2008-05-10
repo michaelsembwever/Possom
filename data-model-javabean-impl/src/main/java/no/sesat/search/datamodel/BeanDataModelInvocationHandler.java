@@ -30,60 +30,60 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler<DataModel>{
-    
+
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(BeanDataModelInvocationHandler.class);
-    
-    
+
+
     // Attributes ----------------------------------------------------
-        
+
     // Static --------------------------------------------------------
-    
-    
+
+
     // Constructors --------------------------------------------------
-    
-    /** Creates a new instance of BeanDataModelInvocationHandler 
-     * @param allProperties 
-     * @throws java.beans.IntrospectionException 
+
+    /** Creates a new instance of BeanDataModelInvocationHandler
+     * @param allProperties
+     * @throws java.beans.IntrospectionException
      */
     protected BeanDataModelInvocationHandler(final PropertyInitialisor properties) throws IntrospectionException {
-        
+
         super(DataModel.class, null, new DataModelBeanContextSupport(), properties);
     }
-    
+
     // Public --------------------------------------------------------
-    
-    
+
+
     // Package protected ---------------------------------------------
-    
+
     void setControlLevel(final ControlLevel controlLevel){
-        
+
         ((DataModelBeanContextSupport)context).setControlLevel(controlLevel);
     }
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
+
     static final class DataModelBeanContextSupport extends BeanContextSupport{
-        
+
         final Object dataModelLock = new Boolean(true); // needs to be serialisable
 
-        private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;        
-        
+        private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;
+
         ControlLevel getControlLevel(){
             return controlLevel;
         }
-        
+
         void setControlLevel(final ControlLevel controlLevel){
-        
+
             this.controlLevel = controlLevel;
             LOG.trace("Incrementing ControlLevel to " + controlLevel);
         }

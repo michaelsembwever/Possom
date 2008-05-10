@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 /** My favourite dish of ChopSuey.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class StringChopper {
 

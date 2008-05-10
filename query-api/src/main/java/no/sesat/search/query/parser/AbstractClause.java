@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
  * <b>Objects of this class are immutable</b>
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractClause implements Clause {
 

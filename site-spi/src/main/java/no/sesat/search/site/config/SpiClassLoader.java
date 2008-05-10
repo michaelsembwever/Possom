@@ -21,7 +21,7 @@ import no.sesat.search.site.Site;
 import org.apache.log4j.Logger;
 
 /**
- * @author magnuse
+ *
  * @version $Id$
  */
 public final class SpiClassLoader extends ResourceClassLoader {
@@ -31,7 +31,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
 
     private static final String CLASS_LOADER_FOR = "Class loader for (";
     private static final Logger LOG = Logger.getLogger(SpiClassLoader.class);
-            
+
     private final String jarName;
 
     private final ClassLoader parentSite;
@@ -76,7 +76,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
      */
     @Override
     public Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException{
-        
+
         // First, check if the class has already been loaded
         Class c = findLoadedClass(name);
 
@@ -84,7 +84,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
             LOG.debug("Searching for class " + name + " in " + jarName);
             try {
                 c = findClass(name);
-                
+
             } catch (ClassNotFoundException e) {
                 try {
                     c = parentSite.loadClass(name);
@@ -110,15 +110,15 @@ public final class SpiClassLoader extends ResourceClassLoader {
 
     @Override
     protected Class<?> findClass(final String className) throws ClassNotFoundException {
-        
+
         final Class clazz = super.findClass(className);
         LOG.info("Class " + className + " loaded by " + toString());
-        
+
         return clazz;
     }
 
     private ClassLoader parentSpiClassLoader() {
-        
+
         final SiteClassLoaderFactory.Context factoryContext = new SiteClassLoaderFactory.Context() {
             public BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String name, final String jar) {
                 return context.newBytecodeLoader(siteCxt, name, jar);
@@ -137,7 +137,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
     }
 
     private ClassLoader parentSiteClassLoader() {
-        
+
         final SiteClassLoaderFactory.Context parentContext = new SiteClassLoaderFactory.Context() {
 
             public BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String name, final String jar) {
@@ -161,7 +161,7 @@ public final class SpiClassLoader extends ResourceClassLoader {
      * the resource servlet (commons-resourcefeed) will be found.
      */
     private class SidekickClassLoader extends ResourceClassLoader {
-        
+
         public SidekickClassLoader() {
             super(context, SpiClassLoader.this.getClass().getClassLoader());
         }

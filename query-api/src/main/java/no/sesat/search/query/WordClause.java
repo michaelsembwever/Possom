@@ -25,14 +25,14 @@ package no.sesat.search.query;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface WordClause extends LeafClause {
     /**
      * Get the field.
-     * 
+     *
      * @return the field.
      */
     String getField();
-    
+
 }

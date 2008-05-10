@@ -27,7 +27,7 @@ import no.sesat.commons.ref.ReferenceMap;
  *
  * <b>Immutable</b>
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version $Id$
  **/
 final class TokenMatch{

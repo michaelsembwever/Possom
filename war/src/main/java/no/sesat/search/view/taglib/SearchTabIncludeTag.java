@@ -34,77 +34,77 @@ import no.sesat.search.view.config.SearchTab.Layout;
 import org.apache.log4j.Logger;
 
 
-/** Imports a template into the jsp according to the SearchTab's includes. 
+/** Imports a template into the jsp according to the SearchTab's includes.
  *
  * The template may be either a velocity template or a JavaServer page.
  * If the extension is not specified it defaults to ".vm".
  *
  * A relative path is relative to templates/fragments/layout/
- * 
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
+ *
  * @version $Id$
  */
 
 public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
 
-    
+
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(SearchTabIncludeTag.class);
-    
+
     private static final String LAYOUT_DIRECTORY = "/fragments/layout/";
-    
-    
+
+
     // Attributes ----------------------------------------------------
-    
+
     /**
      * Initialization of template property.
      */
     private String include;
-    
+
 
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     // Public --------------------------------------------------------
 
     /**
      * Setter for the template attribute.
-     * @param include 
+     * @param include
      */
     public void setInclude(final String include) {
         this.include = include;
     }
-    
+
     /** Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
      * @throws javax.servlet.jsp.JspException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
     @Override
     public void doTag() throws JspException, IOException {
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         final Layout layout = findLayout((DataModel) cxt.findAttribute(DataModel.KEY));
-        
+
         if(null != layout.getInclude(include) && layout.getInclude(include).length() > 0 ){
-            
+
             try{
                 cxt.getOut().println("<!-- " + include + " -->");
             }catch(IOException ioe){
                 LOG.warn("Failed to write include comment", ioe);
             }
-            
+
             String template = layout.getInclude(include);
-            template = include.startsWith("/") 
+            template = include.startsWith("/")
                     ? template
                     : LAYOUT_DIRECTORY + template;
 
             final Map<String,Object> map = new HashMap<String,Object>();
-            map.put("layout", layout);                  
-            map.put("commandName", layout.getOrigin());  
+            map.put("layout", layout);
+            map.put("commandName", layout.getOrigin());
 
             if(template.endsWith(".jsp")){
 
@@ -131,6 +131,6 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }

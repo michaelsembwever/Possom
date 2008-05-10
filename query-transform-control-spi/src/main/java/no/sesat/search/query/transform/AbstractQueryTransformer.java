@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 /**
  * AbstractQueryTransformer is part of no.sesat.search.query
  *
- * @author <a href="ola@schibstedsok.no">ola at schibstedsok</a>
+ *
 
  * @vesrion $Id: AbstractQueryTransformer.java 3359 2006-08-03 08:13:22Z mickw $
  */

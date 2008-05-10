@@ -38,7 +38,7 @@ import java.io.IOException;
  * </code>
  *
  *
- * @author thomas
+ *
  */
 public class WikiDirective extends Directive {
 
@@ -75,9 +75,9 @@ public class WikiDirective extends Directive {
      * @return the encoded string.
      */
     public boolean render(
-            final InternalContextAdapter context, 
-            final Writer writer, final 
-            Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException 
+            final InternalContextAdapter context,
+            final Writer writer, final
+            Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException
     {
         if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
@@ -87,14 +87,14 @@ public class WikiDirective extends Directive {
         final String s = node.jjtGetChild(0).value(context).toString();
         final String wap;
         if(s.contains("no.wikipedia.org/wiki"))
-        {	
+        {
         	wap = s.replace("no.wikipedia.org/wiki", "no.wapedia.org");
         }
         else
         {
         	wap = s.replace("sv.wikipedia.org/wiki", "sv.wapedia.org");
         }
-        
+
         String cut = wap.substring(0, wap.lastIndexOf("/")+1);
         String wikiword = URLEncoder.encode(s.substring(s.lastIndexOf("/")+1), "UTF-8");
         writer.write(cut+wikiword);

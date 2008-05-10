@@ -23,22 +23,22 @@ package no.sesat.search.site.config;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  */
 public final class ResourceLoadException extends RuntimeException{ // TODO this is not a RuntimeException!
-    
+
     /** Creates a new instance of ResourceLoadException */
     private ResourceLoadException() {
     }
-    
+
     /** Creates a new instance of ResourceLoadException */
     public ResourceLoadException(final String msg) {
         super(msg);
     }
-    
+
     /** Creates a new instance of ResourceLoadException */
     public ResourceLoadException(final String msg, final Throwable th) {
         super(msg, th);
     }
-    
+
 }

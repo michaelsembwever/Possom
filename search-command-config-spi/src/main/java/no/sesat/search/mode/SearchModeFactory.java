@@ -52,7 +52,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.sesat.search.run.handler.RunHandlerConfig;
 
 /**
- * @author <a href="mailto:mick@wever.org>mick</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SearchModeFactory extends AbstractDocumentFactory implements SiteKeyedFactory {
@@ -275,7 +275,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         continue;
                     }
                     final Element childElement = (Element) childNode;
-                    
+
                     if(SEARCH_CONFIGURATION_FACTORY.supported(childElement.getTagName(), context)){
 
                         // commands
@@ -384,7 +384,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         RunHandlerConfigFactory() {}
 
         @Override
-        protected Class<RunHandlerConfig> findClass(final String xmlName, final Context context) 
+        protected Class<RunHandlerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
@@ -406,7 +406,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         RunTransformerConfigFactory() {}
 
         @Override
-        protected Class<RunTransformerConfig> findClass(final String xmlName, final Context context) 
+        protected Class<RunTransformerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);

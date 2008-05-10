@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @see org.apache.velocity.runtime.resource.ResourceCacheImpl
  *
- * @author Magnus Eklund
+ *
  */
 public final class QuickResourceCacheImpl implements ResourceCache {
 

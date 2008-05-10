@@ -33,17 +33,17 @@ import java.util.*;
  * <ul>
  * <li>The skin from which to load page providers (e.g. <tt>http://sesam.no</tt>)</li>
  * <li>The directory to which you want the sitemap files to be written (e.g. <tt>/www/data/sitemaps/</tt>)</li>
- * <li>The URL at which this directory can be accessed using HTTP (e.g. <tt>http://sesam.no/sitemaps/</tt>). 
+ * <li>The URL at which this directory can be accessed using HTTP (e.g. <tt>http://sesam.no/sitemaps/</tt>).
  * This information is needed for the sitemap index file</li>
  * </ul>
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public final class SitemapGenerator {
 
     private static final String NS = "http://www.sitemaps.org/schemas/sitemap/0.9";
-                                                                   
+
     private static final SimpleDateFormat ISO_8601_DATE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
     private static final Logger LOG = Logger.getLogger(SitemapGenerator.class);
 
@@ -102,7 +102,7 @@ public final class SitemapGenerator {
      * @throws IOException If the files can't be written.
      */
     public SitemapGenerator(final URI site, final File dest, final URI url) throws IOException {
-        
+
         this(new ArrayList<PageProvider>(), dest, url);
 
         for (PageProvider provider : ServiceLoader.load(PageProvider.class, getClassLoader(site))) {
@@ -330,7 +330,7 @@ public final class SitemapGenerator {
      * @todo This should really be using the site-spi, but SEARCH-3732 needs to be resolved first.
      */
     private ClassLoader getClassLoader(final URI site) throws MalformedURLException {
-        
+
         final URL url = site.resolve("/" + site.getHost() + "/lib/sitemap.jar").toURL();
         LOG.info("skin's sitemap.jar at " + url);
         return new URLClassLoader((new URL[] {url}));

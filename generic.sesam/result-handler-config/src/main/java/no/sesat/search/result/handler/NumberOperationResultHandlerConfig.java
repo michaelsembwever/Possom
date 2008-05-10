@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
 
 /** Perform a JEP operation.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Controller("NumberOperationHandler")
@@ -43,7 +43,7 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     private final Collection<String> fields = new ArrayList<String>();
 
     /**
-     * 
+     *
      * @param fieldArray Array of fields that should be added.
      */
     public void addFields(final String[] fieldArray) {
@@ -51,11 +51,11 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Collection<String> getFields(){
-        
+
         return Collections.unmodifiableCollection(fields);
     }
     /**
@@ -70,10 +70,10 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     public void setOperation(String operation) {
         this.operation = operation;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getOperation(){
         return operation;
@@ -91,10 +91,10 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     public void setTarget(String target) {
         this.target = target;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getTarget(){
         return target;
@@ -112,10 +112,10 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     public void setMinFractionDigits(int minFractionDigits) {
         this.minFractionDigits = minFractionDigits;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getMinFractionDigits(){
         return minFractionDigits;
@@ -133,10 +133,10 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     public void setMaxFractionDigits(int maxFractionDigits) {
         this.maxFractionDigits = maxFractionDigits;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getMaxFractionDigits(){
         return maxFractionDigits;
@@ -156,8 +156,8 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getMinDigits(){
         return minDigits;
@@ -174,10 +174,10 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     public void setMaxDigits(int maxDigits) {
         this.maxDigits = maxDigits;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getMaxDigits(){
         return maxDigits;
@@ -186,7 +186,7 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
     /** {@inherit} **/
     @Override
     public AbstractResultHandlerConfig readResultHandler(final Element element) {
-        
+
         super.readResultHandler(element);
 
         addFields(element.getAttribute("fields").split(","));
@@ -199,6 +199,6 @@ public final class NumberOperationResultHandlerConfig extends AbstractResultHand
 
         return this;
     }
-    
-    
+
+
 }

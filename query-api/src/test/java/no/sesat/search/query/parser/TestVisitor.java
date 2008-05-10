@@ -44,7 +44,7 @@ import static org.testng.AssertJUnit.*;
 /** Test the QueryParser and it's generated visitor pattern.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  **/
 public final class TestVisitor extends SiteTestCase {
 
@@ -54,7 +54,7 @@ public final class TestVisitor extends SiteTestCase {
     /** TODO comment me. **/
     public TestVisitor(final String testName) {
         super(testName);
-    }	
+    }
 
     /** test a visitor on a  basic clause heirarchy.
      **/
@@ -72,15 +72,15 @@ public final class TestVisitor extends SiteTestCase {
                         return FileResourcesSiteConfigurationTest.valueOf(getTestingSite()).getProperties();
                     }
                     public PropertiesLoader newPropertiesLoader(
-                            final SiteContext siteCxt, 
-                            final String resource, 
+                            final SiteContext siteCxt,
+                            final String resource,
                             final Properties properties) {
 
                         return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                     }
                     public DocumentLoader newDocumentLoader(
-                            final SiteContext siteCxt, 
-                            final String resource, 
+                            final SiteContext siteCxt,
+                            final String resource,
                             final DocumentBuilder builder) {
 
                         return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);

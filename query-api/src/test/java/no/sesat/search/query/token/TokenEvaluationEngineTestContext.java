@@ -34,7 +34,7 @@ import no.sesat.search.site.SiteContext;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  */
 public final class TokenEvaluationEngineTestContext extends SiteTestCase implements TokenEvaluationEngineImpl.Context{
 
@@ -58,15 +58,15 @@ public final class TokenEvaluationEngineTestContext extends SiteTestCase impleme
     }
 
     public PropertiesLoader newPropertiesLoader(
-            final SiteContext siteCxt, 
-            final String resource, 
+            final SiteContext siteCxt,
+            final String resource,
             final Properties properties) {
 
         return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
     }
     public DocumentLoader newDocumentLoader(
-            final SiteContext siteCxt, 
-            final String resource, 
+            final SiteContext siteCxt,
+            final String resource,
             final DocumentBuilder builder) {
 
         return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);

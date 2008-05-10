@@ -34,17 +34,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * Load templates and adds debuginformation if VELOCITY_DEBUG is set to true.
- * 
+ *
  * @see URLResourceLoader
- * 
- * 
- * @author Ola M Sagli <a mailto="ola@sesam.no">ola@sesam.no</a>
- * 
+ *
+ *
+ *
+ *
  */
 public class URLVelocityTemplateLoader extends URLResourceLoader {
-    
+
     private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
 
 	private static final String DIV_TAG = "div";
@@ -53,15 +53,15 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	private static final String STYLE_HEADING="text-decoration:underline;font-size:10px";
 	private static final String ONMOUSEOVER = "this.style.border='1px solid #C0C0C0';this.style.margin='4px'";
 	private static final String ONMOUSEOUT = "this.style.border='none'";
-	
+
 	/**
 	 * getResourceStream() loads resource from url. Then add border around the
 	 * template so its easy to see wich templates are loaded.
-	 * @throws org.apache.velocity.exception.ResourceNotFoundException 
+	 * @throws org.apache.velocity.exception.ResourceNotFoundException
      */
 	@Override
 	public InputStream getResourceStream(final String url) throws ResourceNotFoundException {
-        
+
         // Enable/disable velocity debug
 		final boolean velocityDebug = Boolean.getBoolean("VELOCITY_DEBUG");
         // Activate debug (Show borders/debuginfo)
@@ -72,23 +72,23 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		final boolean styleSilent ="silent".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
         // Indicates if we found file local.(Can be edited)
 		boolean foundLocal = false;
-			
+
 		if(velocityDebug) {
-		
-            final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");		
+
+            final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");
 
             // Get the file equivalece of the URL by removing the host as well as the web application context path.
             final String filePath = url.replaceAll("http://(.*?)/[^/]+/", "/").replace("localhost/", "");
             final File file = getFile(templatesDir, filePath);
 
             foundLocal = file.exists();
-            
+
             final InputStream stream = file.exists() ? getStream(file) : super.getResourceStream(url);
 
             if(velocityDebugOn && -1 == url.indexOf("rss")){
                 StringBuilder  content = this.readTemplateFrom(stream);
 
-                // Create html 
+                // Create html
                 final StringBuilder template= new  StringBuilder();
                 template.append("\n");
                 template.append(content);
@@ -116,7 +116,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
                     div.setAttribute("style", STYLE_BORDER);
                 }
 
-                div.setAttribute("title", file.getName() + (foundLocal ? "(Editable)" : "(Not editable)"));		
+                div.setAttribute("title", file.getName() + (foundLocal ? "(Editable)" : "(Not editable)"));
                 div.appendChild(doc.createCDATASection(template.toString()));
                 doc.appendChild(div);
 
@@ -127,9 +127,9 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
                         .replace("]]>", "");
 
                 return new ByteArrayInputStream(result.getBytes());
-                
+
             }else{
-                // If debug is not currently activated OR If rss, means the output is xml. 
+                // If debug is not currently activated OR If rss, means the output is xml.
                 return stream;
             }
         }
@@ -162,7 +162,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	 * Create file object
 	 */
 	private File getFile(final String templatesDir, final String filePath) {
-        
+
         File result = null;
 
 		if(null == templatesDir) {
@@ -178,7 +178,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
                 }
             }
         }
-        
+
 		return null == result ? new File(filePath) : result;
 	}
 
@@ -188,7 +188,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	private InputStream getStream(final File file) {
 
 		if (file.exists()) {
-            
+
 			try {
 				FileInputStream fileStream = new FileInputStream(file);
                 return fileStream;
@@ -196,41 +196,41 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             } catch (FileNotFoundException ignore) {
 				throw new IllegalStateException("File exist but filenotfoundexception thrown: " + ignore);
 			}
-            
+
 		} else {
 			throw new IllegalArgumentException("File does not exist");
 		}
 	}
-    
+
     // -- Write the document to the writer
     private void internalWriteDocument(final Document d, final Writer w) {
-        
+
         final DOMSource source = new DOMSource(d);
         final StreamResult result = new StreamResult(w);
 
         final TransformerFactory factory = TransformerFactory.newInstance();
-        
+
         try {
             final Transformer transformer = factory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.transform(source, result);
-            
+
         } catch (TransformerConfigurationException e) {
             throw new RuntimeException("Xml Parser: " + e);
-            
+
         } catch (TransformerException ignore) {
             LOG.debug("Ingoring the following ", ignore);
         }
     }
-    
+
     // -- Create a DOM document
     private Document createDocument() {
-        
+
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 
         try {
             return docFactory.newDocumentBuilder().newDocument();
-            
+
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }

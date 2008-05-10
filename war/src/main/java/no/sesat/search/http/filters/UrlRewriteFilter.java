@@ -34,35 +34,35 @@ import org.tuckey.web.filters.urlrewrite.UrlRewriterContainer;
 
 /** Override of tuckey's UrlRewriteFilter that supplies an inputstream to the skins's urlrewrite.xml
  *   instead of the default /WEB-INF/urlrewrite.xml
- * 
+ *
  * Make sure that any urlrewrite.xml has the attributes in the root element:
  * &lt;urlrewrite decode-using="null" use-query-string="true"&gt;
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewriteFilter{
-    
+
     // Constants -----------------------------------------------------
-    
-    
+
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
-    
+
+
     // Constructors --------------------------------------------------
-    
+
     // Public --------------------------------------------------------
-    
+
     @Override
     public UrlRewriterContainer getUrlRewriterContainer(final ServletRequest request){
-        
+
         UrlRewriterContainer result = null;
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
             final Site site = (Site) httpRequest.getAttribute(Site.NAME_KEY);
-            
+
             final UrlRewriterContainerFactory factory = UrlRewriterContainerFactory.instanceOf(
                     new UrlRewriterContainerFactory.Context(){
                         public DocumentLoader newDocumentLoader(SiteContext siteCxt,
@@ -75,9 +75,9 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
                             return site;
                         }
             });
-        
+
             result = factory.getUrlRewriterContainer();
-            
+
             if(!result.isLoaded()){
                 result.init(getFilterConfig());
                 result.loadConf();
@@ -87,11 +87,11 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
     }
 
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
+
 }

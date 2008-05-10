@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * <br/>
  *   Ensures that only an exact match within the titles field is returned.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version <tt>$Revision: 3359 $</tt>
  */
 public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
@@ -49,15 +49,15 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
      * @param config
      */
     public ExactMatchQueryTransformer(final QueryTransformerConfig config){
-                
+
         this.config = (ExactMatchQueryTransformerConfig) config;
-        
+
         final String filter = null != this.config.getField()
                     ? this.config.getField() + ':'
                     : "";
-        
+
         exact = new StringBuilder(filter + "^\"");
-                
+
     }
 
 
@@ -68,20 +68,20 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
     public void visitImpl(final LeafClause clause) {
 
         if(!writtenStart){
-            
+
             first = clause;
             exact.append(getTransformedTerms().get(clause).replaceAll("^\"", ""));
-            
+
             writtenStart = true;
             // also, if we got here without giving visitingLast a value then this is the only LeafClause in the query
             visitingLast = null == visitingLast;
-            
+
         }else{
             exact.append(' ' + getTransformedTerms().get(clause));
             // everything gets blanked by default
             getTransformedTerms().put(clause, "");
         }
-        
+
         if(visitingLast){
             visitLast();
         }
@@ -104,7 +104,7 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
             //  if it is yet to be assigned an value (ie this is the topmost DoubleOperatorClause) then assign true.
             visitingLast = true;
         }
-        
+
         clause.getSecondClause().accept(this);
     }
 
@@ -113,16 +113,16 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
      * @param clause The clause to prefix.
      */
     public void visitImpl(final OperationClause clause) {
-        
+
         visitLast();
-        
+
         // not visiting will mean they remain unblanked. shouldn't be an issue as they'll appear after the $
     }
-    
+
     private Map<Clause,String> getTransformedTerms() {
         return getContext().getTransformedTerms();
     }
-    
+
     private void visitLast(){
 
         if(exact.charAt(exact.length()-1) == '\"'){
@@ -130,6 +130,6 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
         }
         exact.append("\"$");
         // first clause gets the whole phrased string
-        getTransformedTerms().put(first, exact.toString());        
+        getTransformedTerms().put(first, exact.toString());
     }
 }

@@ -41,7 +41,7 @@ import static org.testng.AssertJUnit.*;
 
 /** Tests for SearchTabFactory. Using default search-config's configuration files.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class SearchTabFactoryTest extends SiteTestCase {
@@ -113,20 +113,20 @@ public final class SearchTabFactoryTest extends SiteTestCase {
 
         final String key = "d";
         final Site.Context siteConstructorContext = getSiteConstructingContext();
-        
+
         System.gc();
         final long initialTotal = Runtime.getRuntime().totalMemory();
         final long initialFree = Runtime.getRuntime().freeMemory();
         LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
-        
+
         for(Locale l : Locale.getAvailableLocales()){
-            
-            
+
+
             final Site site = Site.valueOf(siteConstructorContext, getTestingSite().getName(), l);
             final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
                 public PropertiesLoader newPropertiesLoader(
-                        final SiteContext siteCxt, 
-                        final String resource, 
+                        final SiteContext siteCxt,
+                        final String resource,
                         final Properties properties) {
 
                     return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
@@ -136,7 +136,7 @@ public final class SearchTabFactoryTest extends SiteTestCase {
                 }
             };//</editor-fold>
             final SiteConfiguration siteConf = SiteConfiguration.instanceOf(siteConfCxt);
-            
+
             if( siteConf.isSiteLocaleSupported(l) ){
                 final SearchTabFactory instance = getViewFactory(siteConstructorContext, l);
 
@@ -156,17 +156,17 @@ public final class SearchTabFactoryTest extends SiteTestCase {
 
         final SearchTabFactory.Context cxt = new SearchTabFactory.Context(){
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite()  {

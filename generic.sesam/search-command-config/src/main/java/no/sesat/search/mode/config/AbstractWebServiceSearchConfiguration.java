@@ -19,7 +19,7 @@ package no.sesat.search.mode.config;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id $</tt>
  */
 public abstract class AbstractWebServiceSearchConfiguration extends CommandConfig {

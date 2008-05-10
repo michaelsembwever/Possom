@@ -34,7 +34,7 @@ import java.io.IOException;
 
 /** Search command to cluster results from a NewsEspSearchCommand.
  *
- * @author Geir H. Pettersen (T-Rank)
+ *
  * @version $Id$
  */
 public class NewsClusteringESPFastCommand extends NewsEspSearchCommand {

@@ -32,7 +32,7 @@ import no.sesat.search.site.Site;
  * May contain both character and digits but cannot contain only digits
  * (a IntegerClause will be used instead then).
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class WordClauseImpl extends AbstractLeafClause implements WordClause {

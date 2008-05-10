@@ -36,7 +36,7 @@ import no.sesat.search.site.Site;
  * For example: "term1 OR term2".
  * <b>Objects of this class are immutable</b>
  *
- * @author <a hrefOrClauseImpl:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id: OrClauseImpl.java 2399 2006-03-01 21:01:02Z mickw $
  */
 public class DefaultOperatorClauseImpl extends AbstractOperationClause implements DefaultOperatorClause {

@@ -23,7 +23,7 @@ import no.sesat.search.fast.searchengine.test.MockupFastSearchEngine;
 import java.net.MalformedURLException;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision: 5819 $</tt>
  */
 public class MockupFastSearchEngineFactory implements IFastSearchEngineFactory {

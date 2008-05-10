@@ -41,10 +41,10 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  * A velocity directive to take out the topdomain for picsearch
  *
- * @author SSTHKJER
+ *
  */
 public final class TopDomainDirective extends Directive {
-    
+
     private static final Logger LOG = Logger.getLogger(TopDomainDirective.class);
 
     private static final String NAME = "topDomain";
@@ -75,9 +75,9 @@ public final class TopDomainDirective extends Directive {
         final String input = node.jjtGetChild(0).value(context).toString();
         String string = "";
 
-        if (input.indexOf("http://") > -1) 
+        if (input.indexOf("http://") > -1)
             string = input.substring(7);
-        else if (input.indexOf("https://") > -1) { 
+        else if (input.indexOf("https://") > -1) {
             string = input.substring(8);
         } else {
             string = input;
@@ -97,5 +97,5 @@ public final class TopDomainDirective extends Directive {
 
         return true;
     }
-    
+
 }

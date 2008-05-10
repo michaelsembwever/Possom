@@ -28,14 +28,14 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
 
 /**
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 @Controller("NewsSearchCommand")
 public class NewsCommandConfig extends FastCommandConfig {
 
     /**
-     * 
+     *
      */
     public NewsCommandConfig(){
     }

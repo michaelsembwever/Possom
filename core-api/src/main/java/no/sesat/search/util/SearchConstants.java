@@ -23,7 +23,7 @@ package no.sesat.search.util;
  * Various constants in use in application.
  *
  * @deprecated constants should be defined in the class that is primarily responsible for it.
- * @author <a href="lars.johansson@conduct.no">Lars Johansson</a>
+ *
  * @version $Id$
  */
 public final class SearchConstants {

@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractYahooSearchCommand extends AbstractXmlSearchCommand {
@@ -73,8 +73,8 @@ public abstract class AbstractYahooSearchCommand extends AbstractXmlSearchComman
     // Protected -----------------------------------------------------
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     protected String getPartnerId(){
         return partnerId;

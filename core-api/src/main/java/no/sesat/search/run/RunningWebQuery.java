@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @version <tt>$Id$</tt>
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  */
 public final class RunningWebQuery extends RunningQueryImpl {
 
@@ -75,18 +75,18 @@ public final class RunningWebQuery extends RunningQueryImpl {
         super(cxt, query);
 
         this.request = request;
-        this.response = response;        
+        this.response = response;
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
         }
 
         // XXX The rest is redundant code!! stop using junkyard!
-        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();        
-        
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
+
         // Add all request parameters
         /* SEE "Add all request attributes" below */
-        
+
         for (String key : datamodel.getParameters().getValues().keySet()) {
 
             final String value = datamodel.getParameters().getValue(key).getString();
@@ -183,7 +183,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
                     LOG.trace("Added " + entry.getKey() + ", value: " + request.getAttribute(entry.getKey()));
                 }
             }
-            
+
             // ...and...
             request.setAttribute("hits",getHits());
         }

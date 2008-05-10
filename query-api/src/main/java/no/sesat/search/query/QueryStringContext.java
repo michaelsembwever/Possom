@@ -24,9 +24,9 @@ package no.sesat.search.query;
 import no.schibstedsok.commons.ioc.BaseContext;
 
 /** Used when the query string is a requirement of the Context and neither the Query object or datamodel are available.
- * 
+ *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface QueryStringContext extends BaseContext{
     /** Get the original query string.

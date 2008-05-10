@@ -36,7 +36,7 @@ import no.sesat.search.run.handler.RunHandlerConfig;
 import no.sesat.search.run.transform.RunTransformerConfig;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SearchMode implements Serializable {
@@ -250,7 +250,7 @@ public final class SearchMode implements Serializable {
      public List<RunTransformerConfig> getRunTransformers() {
          return runTransformers;
      }
-     
+
     // Inner classes -------------------------------------------------
 
 }

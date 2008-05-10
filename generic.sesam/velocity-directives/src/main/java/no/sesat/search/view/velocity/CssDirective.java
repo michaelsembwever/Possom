@@ -32,13 +32,13 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  *
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class CssDirective extends AbstractDirective {
 
     private static final Logger LOG = Logger.getLogger(CssDirective.class);
-    
+
     private static final String NAME = "css";
 
    /**
@@ -51,7 +51,7 @@ public final class CssDirective extends AbstractDirective {
     public String getName() {
         return NAME;
     }
-    
+
    /**
      * {@inheritDoc}
      */
@@ -67,9 +67,9 @@ public final class CssDirective extends AbstractDirective {
 
             final String css = "/css/" + getArgument(context, node, 0);
             final String attributes = getArgument(context, node, 1);
-            
+
             final String url = FindResource.find(getDataModel(context).getSite().getSite(), css);
-            
+
             // eg <link media="screen" href="/css/front.css" rel="stylesheet" type="text/css" />
             if (url != null) {
                 writer.write("<link  rel=\"stylesheet\" type=\"text/css\" href=\"" + url + "\" " + attributes + "/>");

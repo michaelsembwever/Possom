@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * <b>It is therefore critical to use non-capturing groups for |?+* operations in the expressions.</b>
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  *
  */
 public final class RegexpQueryTransformer extends AbstractQueryTransformer {

@@ -40,11 +40,11 @@ import org.apache.log4j.Logger;
  * Provides the user-statistics logging in Sesat.
  * Links are logged with <b>ceremonial</b> boomerangs that come back (ie with a redirect response).
  * Javascript functionality (or user behavour) is logged with <b>hunting</b> boomerangs that do not come back.
- * 
+ *
  * A cermonial example is:
  *
- * @author <a href="mailto:thomas.kjerstad@sesam.no">Thomas Kjaerstad</a>
- * @author <a href="mailto:mick@wever.org">Mck</a>
+ *
+ *
  * @version <tt>$Id: 3361 $</tt>
  *
  */

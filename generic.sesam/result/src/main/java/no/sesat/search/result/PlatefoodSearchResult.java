@@ -28,7 +28,7 @@ import no.sesat.search.result.*;
 /**
  *
  * @param T
- * @author SSTHKJER
+ *
  * @version $Id$
  */
 public final class PlatefoodSearchResult<T extends ResultItem> extends BasicResultList<T> {

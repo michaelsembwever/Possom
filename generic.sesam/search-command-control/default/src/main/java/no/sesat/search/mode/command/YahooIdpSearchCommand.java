@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
 /**
  * Search against Yahoo! Index Data Protocol 2.0.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version $Id$
  */
 public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {

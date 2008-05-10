@@ -20,8 +20,8 @@ package no.sesat.search.result;
 import java.io.Serializable;
 
 /** Configuration within a CommandConfig used for manipulating the command's navigation results.
- * 
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
+ *
  * @version <tt>$Revision: 3361 $</tt>
  */
 public final class Navigator implements Serializable {
@@ -165,7 +165,7 @@ public final class Navigator implements Serializable {
     public void setId(final String id) {
         this.id = id;
     }
-    
+
     public boolean isBoundaryMatch() {
         return boundaryMatch;
     }

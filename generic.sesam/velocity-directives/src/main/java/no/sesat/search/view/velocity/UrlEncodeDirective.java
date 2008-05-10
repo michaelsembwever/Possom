@@ -37,7 +37,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  *
- * A velocity directive to do url encoding. 
+ * A velocity directive to do url encoding.
  *  <b>Encodes ampersands</b> so the directive cannot be used to encode multiple parameters in one go.
  *
  * <code>
@@ -47,7 +47,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  *
  * The default charset is utf-8.
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 public final class UrlEncodeDirective extends Directive {
@@ -75,22 +75,22 @@ public final class UrlEncodeDirective extends Directive {
      * {@inheritDoc}
      */
     public boolean render(
-            final InternalContextAdapter context, 
-            final Writer writer, 
-            final Node node) 
+            final InternalContextAdapter context,
+            final Writer writer,
+            final Node node)
                 throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        
-        
-        
+
+
+
         if (node.jjtGetNumChildren() < 1) {
             rsvc.error("#" + getName() + " - missing argument");
-            
+
         }else{
 
             String charset = DEFAULT_CHARSET;
 
             final String input = null != node.jjtGetChild(0).value(context)
-                    ? node.jjtGetChild(0).value(context).toString() 
+                    ? node.jjtGetChild(0).value(context).toString()
                     : "";
 
             if(0 < input.length()){
@@ -114,5 +114,5 @@ public final class UrlEncodeDirective extends Directive {
         }
         return false;
     }
-    
+
 }

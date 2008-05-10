@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 
 /** SearchMode tests.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SearchModeTest extends DataModelTestCase {
@@ -116,7 +116,7 @@ public final class SearchModeTest extends DataModelTestCase {
         //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
         DataModelFactory
                 .instanceOf(ContextWrapper.wrap(
-                DataModelFactory.Context.class, 
+                DataModelFactory.Context.class,
                 rqCxt,
                 new SiteContext(){
                     public Site getSite(){
@@ -124,7 +124,7 @@ public final class SearchModeTest extends DataModelTestCase {
                     }
                 }))
                 .assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
-        
+
         final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no");
 
         query.run();
@@ -199,7 +199,7 @@ public final class SearchModeTest extends DataModelTestCase {
         //  Increment it onwards to RUNNING_QUERY_CONSTRUCTION.
         DataModelFactory
                 .instanceOf(ContextWrapper.wrap(
-                DataModelFactory.Context.class, 
+                DataModelFactory.Context.class,
                 rqCxt,
                 new SiteContext(){
                     public Site getSite(){
@@ -207,7 +207,7 @@ public final class SearchModeTest extends DataModelTestCase {
                     }
                 }))
                 .assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
-        
+
         final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query);
 
         runningQuery.run();

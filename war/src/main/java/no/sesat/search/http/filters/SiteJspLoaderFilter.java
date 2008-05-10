@@ -47,12 +47,12 @@ import org.apache.log4j.Logger;
  * Implementation issue: <a href="https://jira.sesam.no/jira/browse/SEARCH-4290">Design and code with JSPs in skins</a>
  *
  * <br/><br/>
- * 
- * <b>Inclusion of jsps</b> may occurr with &lt;jsp:include page="..."/> 
+ *
+ * <b>Inclusion of jsps</b> may occurr with &lt;jsp:include page="..."/>
  *      or some other requestDispatcher.include(..) approach.
  *      &lt;%@ include file=".."/%> will not work.
- * 
- * 
+ *
+ *
  * <br/><br/>
  *
  * <b>To enable JSP files</b> in a particular skin to be downloaded into sesat the following configuration is required:
@@ -74,7 +74,7 @@ import org.apache.log4j.Logger;
  * Such files are written using a  FileChannel obtained like
  * <pre>new RandomFileAccess(new File(root + "requested-jsp-name"),"rw").getChannel()</pre>
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version $Id$
  */
 public final class SiteJspLoaderFilter implements Filter {
@@ -201,7 +201,7 @@ public final class SiteJspLoaderFilter implements Filter {
                 final FileChannel channel = fileAccess.getChannel();
 
                 try{
-                    // channel.lock() only synchronises file access between programs, but not between threads inside 
+                    // channel.lock() only synchronises file access between programs, but not between threads inside
                     //  the current JVM. The latter results in the OverlappingFileLockException.
                     //  At least this is my current understanding of java.nio.channels
                     //   It may be that no synchronisation or locking is required at all. A beer to whom answers :-)

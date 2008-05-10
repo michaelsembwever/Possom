@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 /**
  * $Id$
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  */
 public final class NullRunHandler implements RunHandler {
 

@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * for extension in a way that makes it easy to create a subclass that generates some of the url components as path
  * components (e.g. /search/param1Value/?param2=param2value).
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  * @since 2.16
  */
@@ -57,7 +57,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
             final NavigationState state) {
 
         super(dataModel, navigation, state);
-                            
+
         final String prefix = getPrefix() == null ? "" : getPrefix();
 
         this.urlBuilder = new StringBuilder(prefix).append(prefix.endsWith("/") || prefix.length() == 0 ? "" : '/');
@@ -74,9 +74,9 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
      * @return the URL for the state.
      */
     public final synchronized String getURL(
-            final String unencodedValue, 
+            final String unencodedValue,
             final NavigationConfig.Nav nav) {
-        
+
         return doGetURL(unencodedValue, nav, Collections.<String, String>emptyMap());
     }
 
@@ -91,10 +91,10 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
      * @return the URL for the state.
      */
     public String getURL(
-            final String unencodedValue, 
-            final NavigationConfig.Nav nav, 
+            final String unencodedValue,
+            final NavigationConfig.Nav nav,
             final Map<String, String> extraComponents) {
-        
+
         return doGetURL(unencodedValue, nav, extraComponents);
     }
 
@@ -109,7 +109,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
      * @return List of path components.
      */
     protected List<String> getPathComponents(final NavigationConfig.Nav nav) {
-        
+
         return Collections.<String>emptyList();
     }
 
@@ -126,7 +126,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
             final NavigationConfig.Nav nav,
             final Set<String> extraUrlComponents,
             final String value) {
-        
+
         final Set<String> parameterComponents = getUrlComponentNames(nav, extraUrlComponents, value);
 
         // Remove components already handled as path components.
@@ -156,7 +156,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
      * @param encodedValue the encodedValue of the component.
      */
     protected void appendParameterComponent(final String component, final String encodedValue) {
-        
+
         if (null != encodedValue && encodedValue.length() > 0) {
             urlBuilder.append(component);
             urlBuilder.append("=");
@@ -166,7 +166,7 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
     }
 
     /**
-     * 
+     *
      * @param parameter the parameter's name/key.
      * @param unencodedValue
      * @param nav
@@ -179,8 +179,8 @@ public class BasicUrlGenerator extends AbstractUrlGenerator {
             final NavigationConfig.Nav nav,
             final Map<String, String> extraParameters) {
 
-        return parameter.equals(nav.getField()) 
-                ? enc(unencodedValue) 
+        return parameter.equals(nav.getField())
+                ? enc(unencodedValue)
                 : getUrlComponentValue(nav, parameter, extraParameters);
     }
 

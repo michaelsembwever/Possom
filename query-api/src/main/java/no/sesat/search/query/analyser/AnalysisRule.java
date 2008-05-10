@@ -34,11 +34,11 @@ import org.apache.log4j.Logger;
  * The AnalysisRule provides scoring of a query based on a set of
  * {@link Predicate} instances.
  *
- * @author <a href="magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Revision$
  */
 public final class AnalysisRule {
-    
+
     public interface Context extends TokenEvaluationEngineContext{
         String getRuleName();
         Appendable getReportBuffer();
@@ -84,10 +84,10 @@ public final class AnalysisRule {
     public int evaluate(final Query query, final Context context) {
 
         final boolean additivity = true; // TODO implement inside NOT ANDNOT clauses to deduct from score.
-        
+
         final StringBuilder internalReport = new StringBuilder();
 
-        final Scorer scorer = new Scorer(ContextWrapper.wrap(Scorer.Context.class, 
+        final Scorer scorer = new Scorer(ContextWrapper.wrap(Scorer.Context.class,
                 new BaseContext() {
                     public String getNameForAnonymousPredicate(final Predicate predicate) {
                         return predicateNames.get(predicate);
@@ -104,10 +104,10 @@ public final class AnalysisRule {
 
             for (PredicateScore predicateScore : predicates.keySet()) {
                 try{
-                    
-                    assert null != predicateScore.getPredicate() 
+
+                    assert null != predicateScore.getPredicate()
                             : "Disappearing predicate from score " + predicateScore;
-                    
+
                     if (predicateScore.getPredicate().evaluate(context.getTokenEvaluationEngine())) {
 
                         if (additivity) {
@@ -122,15 +122,15 @@ public final class AnalysisRule {
                     scorer.error(predicateScore);
                 }
             }
-            
+
             context.getReportBuffer().append(
                     "  <analysis name=\"" + context.getRuleName() + "\" score=\"" + scorer.getScore() + "\">\n"
                     +     internalReport.toString()
                     + "  </analysis>\n");
-            
+
         }catch(IOException ioe){
             LOG.warn("Failed to append report results", ioe);
-            
+
         }finally{
             context.getTokenEvaluationEngine().setState(null);
         }

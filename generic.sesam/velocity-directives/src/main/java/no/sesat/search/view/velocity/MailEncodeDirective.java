@@ -30,7 +30,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * A velocity directive to encode mail addresses to prevent crawling.
  * Uses Javascript to decode the coded string.
  *
- * @author <a href="mailto:endre@sesam.no">Endre Midtgård Meckelborg</a>
+ *
  * @version <tt>$Revision: $</tt>
  */
 public final class MailEncodeDirective extends Directive {

@@ -24,7 +24,7 @@ import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
 /** Configuration for a NewsEspSearchCommand
- * @author geir
+ *
  * @version $Id$
  */
 @Controller("NewsEspSearchCommand")

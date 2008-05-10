@@ -21,11 +21,11 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision$</tt>
  */
 public final class Modifier implements Comparable<Modifier>, Serializable {
-    
+
     private int count = 0;
 
     private final String name;
@@ -34,7 +34,7 @@ public final class Modifier implements Comparable<Modifier>, Serializable {
     private static final Comparator<Modifier> HINT_PRIO_COMPARATOR = new Comparator<Modifier>() {
 
         public int compare(final Modifier m1, final Modifier m2) {
-            
+
             return 0; //FIXME restore
 //            if (m1.getNavigationHint() == null || m2.getNavigationHint() == null) {
 //                return 0;
@@ -42,11 +42,11 @@ public final class Modifier implements Comparable<Modifier>, Serializable {
 //
 //            int p1 = m1.getNavigationHint().getPriority();
 //            int p2 = m2.getNavigationHint().getPriority();
-//             
+//
 //             if (p1 == p2) {
 //                 return 0;
 //             }
-//             
+//
 //             return p1 > p2 ? 1 : -1;
         }
     };
@@ -62,15 +62,15 @@ public final class Modifier implements Comparable<Modifier>, Serializable {
         this.navigator = navigator;
     }
 
-    
+
     public void addCount(final int count) {
         this.count += count;
     }
 
     public void subtractCount(final int count) {
         this.count -= count;
-    }    
-    
+    }
+
     public Navigator getNavigator() {
         return navigator;
     }

@@ -35,10 +35,10 @@ import no.sesat.search.result.ResultList;
  * Handles presenting the hit count number.
  * Locale dependant number formatting for positive numbers, and
  * Useful presentation for negative (error) numbers.
- * 
+ *
  * The argument must be a ResultList instance.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public final class HitCountDirective extends AbstractDirective {
@@ -84,7 +84,7 @@ public final class HitCountDirective extends AbstractDirective {
         }
 
         final ResultList results = (ResultList) getObjectArgument(cxt, node, 0);
-        
+
         writer.append(HitCount.present(results.getHitCount(), getDataModel(cxt).getSite().getSite().getLocale()));
 
         return true;

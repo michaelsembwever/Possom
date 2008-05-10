@@ -30,14 +30,14 @@ import org.w3c.dom.Element;
 
 /** Utility class for deserialising from an xml document.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractDocumentFactory {
 
 
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(AbstractDocumentFactory.class);
     private static final String ERR_FILL_PROPERTY = "Could not set javabean property";
     private static final String DEBUG_UNABLE_TO_INHERIT_VALUE_1 = "Could not inherit value ";
@@ -66,36 +66,36 @@ public abstract class AbstractDocumentFactory {
 
 
     /**
-     * 
+     *
      */
     public enum ParseType{
         /** **/
         Boolean,
         /**
-         * 
+         *
          */
         Int,
         /**
-         * 
+         *
          */
         Float,
         /**
-         * 
+         *
          */
         String,
         /**
-         * 
+         *
          */
         Property
     };
 
     /** TODO implement Type.Property. *
-     * @param beanObj 
-     * @param beanParent 
-     * @param property 
-     * @param type 
-     * @param element 
-     * @param def 
+     * @param beanObj
+     * @param beanParent
+     * @param property
+     * @param type
+     * @param element
+     * @param def
      */
     public static final void fillBeanProperty(
             final Object beanObj,
@@ -169,8 +169,8 @@ public abstract class AbstractDocumentFactory {
     }
 
     /** The reverse transformation to beanToXmlName(string). *
-     * @param xmlName 
-     * @return 
+     * @param xmlName
+     * @return
      */
     public static String xmlToBeanName(final String xmlName){
 
@@ -186,36 +186,36 @@ public abstract class AbstractDocumentFactory {
     }
 
     /** try to use fillBeanProperty instead. *
-     * @param s 
-     * @param def 
-     * @return 
+     * @param s
+     * @param def
+     * @return
      */
     public static final boolean parseBoolean(final String s, final boolean def){
         return s.trim().length() == 0 ? def : Boolean.parseBoolean(s);
     }
 
     /** try to use fillBeanProperty instead. *
-     * @param s 
-     * @param def 
-     * @return 
+     * @param s
+     * @param def
+     * @return
      */
     public static final float parseFloat(final String s, final float def){
         return s.trim().length() == 0 ? def : Float.parseFloat(s);
     }
 
     /** try to use fillBeanProperty instead. *
-     * @param s 
-     * @param def 
-     * @return 
+     * @param s
+     * @param def
+     * @return
      */
     public static final int parseInt(final String s, final int def){
         return s.trim().length() == 0 ? def : Integer.parseInt(s);
     }
 
     /** try to use fillBeanProperty instead. *
-     * @param s 
-     * @param def 
-     * @return 
+     * @param s
+     * @param def
+     * @return
      */
     public static final String parseString(final String s, final String def){
         return s.trim().length() == 0 ? def : s;

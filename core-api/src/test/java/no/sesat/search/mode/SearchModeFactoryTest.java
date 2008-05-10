@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class SearchModeFactoryTest extends SiteTestCase {
 

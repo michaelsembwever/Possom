@@ -24,13 +24,13 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
 import org.w3c.dom.Element;
 
 /**
- * 
- * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
+ *
+ *
  */
 @ControllerFactory("no.sesat.search.view.navigation.fast.FastNavigationControllerFactory")
 public class FastNavigationConfig extends NavigationConfig.Nav {
-    
+
     private String commandName;
     private boolean excludeOtherMatches;
 
@@ -41,7 +41,7 @@ public class FastNavigationConfig extends NavigationConfig.Nav {
 
         super(parent, navigation, navElement);
 
-        /* TODO: temporarily inherit from navigation to provide backward compatibility. remove command-name from navigation */ 
+        /* TODO: temporarily inherit from navigation to provide backward compatibility. remove command-name from navigation */
         fillBeanProperty(this,navigation, "commandName", ParseType.String, navElement, null);
         fillBeanProperty(this, navigation, "excludeOtherMatches", ParseType.Boolean, navElement, "false");
     }

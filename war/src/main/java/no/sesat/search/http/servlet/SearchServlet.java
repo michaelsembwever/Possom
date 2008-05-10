@@ -59,8 +59,8 @@ import org.apache.log4j.Logger;
 /** The Central Controller to incoming queries.
  * Controls the SearchMode -> RunningQuery creation and handling.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
- * @author <a href="mailto:mick@wever.org">Mck</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SearchServlet extends HttpServlet {
@@ -190,7 +190,7 @@ public final class SearchServlet extends HttpServlet {
                 final String cParameter = null != parametersDO.getValue(SearchTab.PARAMETER_KEY)
                         ? parametersDO.getValue(SearchTab.PARAMETER_KEY).getString()
                         : null;
-                
+
                 final SearchTab searchTab = updateSearchTab(cParameter, request, dmFactory, genericCxt);
 
                 if (null!= searchTab) {
@@ -283,7 +283,7 @@ public final class SearchServlet extends HttpServlet {
         for (String s : ipaddress) { allowed |= ipAddr.startsWith(s); }
 
         if (null != reload && reload.length() > 0){
-            
+
             if (allowed){
                 try{
                     final ReloadArg arg = ReloadArg.valueOf(reload.toUpperCase());

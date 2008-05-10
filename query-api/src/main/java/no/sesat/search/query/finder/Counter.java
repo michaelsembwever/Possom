@@ -27,8 +27,8 @@ import no.sesat.search.query.parser.*;
 
 
 /** Simple visitor used to count the number of leaves under a given clause.
- * 
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
+ *
  * @version $Id$
  */
 public final class Counter extends AbstractReflectionVisitor implements Serializable {
@@ -36,12 +36,12 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
     private Integer termCount = null;
 
     /**
-     * 
-     * @param root 
-     * @return 
+     *
+     * @param root
+     * @return
      */
     public synchronized int getTermCount(final Clause root) {
-        
+
         if( termCount == null ){
             termCount = 0;
             visit(root);
@@ -51,24 +51,24 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
 
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final XorClause clause) {
         clause.getFirstClause().accept(this);
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final DoubleOperatorClause clause) {
         clause.getFirstClause().accept(this);
@@ -76,8 +76,8 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
         ++termCount;

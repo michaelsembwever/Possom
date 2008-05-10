@@ -41,7 +41,7 @@ import no.sesat.search.result.ResultList;
  * to be available in fast. This command is used to get the latest news article
  * from a number of selected sources. A separate search is done for each source.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public class BlendingNewsSearchCommand extends NewsSearchCommand {

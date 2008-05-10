@@ -29,7 +29,7 @@ import java.io.Serializable;
  * See complimentary Visitor interface.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface Visitable extends Serializable {
 

@@ -29,18 +29,18 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 
 /**
- * 
+ *
  * @version $Id$
  */
 @ControllerFactory("no.sesat.search.view.navigation.tab.TabNavigationControllerFactory")
 public final class TabNavigationConfig extends NavigationConfig.Nav {
-        
+
     private final List<String> commandNames;
     private final List<String> values;
     private final String image;
     private final String template;
     private final String urlSuffix;
-    
+
     @SuppressWarnings("unchecked")
     public TabNavigationConfig(
             final NavigationConfig.Nav parent,
@@ -50,15 +50,15 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
         super(parent, navigation, navElement);
 
         final String commandNames = AbstractDocumentFactory.parseString(navElement.getAttribute("command-names").replaceAll("\\s", ""), null);
-        this.commandNames =  null != commandNames 
+        this.commandNames =  null != commandNames
                 ? Collections.unmodifiableList(Arrays.asList(commandNames.split(",")))
                 : Collections.EMPTY_LIST;
-                      
+
         final String values = AbstractDocumentFactory.parseString(navElement.getAttribute("values").replaceAll("\\s", ""), null);
-        this.values = null != values 
+        this.values = null != values
                 ? Collections.unmodifiableList(Arrays.asList(values.split(",")))
                 : null;
-        
+
         image = AbstractDocumentFactory.parseString(navElement.getAttribute("image"), null);
         template = AbstractDocumentFactory.parseString(navElement.getAttribute("template"), null);
         urlSuffix = AbstractDocumentFactory.parseString(navElement.getAttribute("url-suffix"), null);
@@ -72,16 +72,16 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
     public String getField() {
         return "c";
     }
-    
+
     public List<String> getValues(){
-        // XXX expensive to create new array and list each call 
+        // XXX expensive to create new array and list each call
         return null != values ? values : Collections.unmodifiableList(Arrays.asList(new String[]{getTab()}));
     }
-        
+
     public String getImage(){
         return image;
     }
-    
+
     public String getTemplate(){
         return template;
     }
@@ -89,10 +89,10 @@ public final class TabNavigationConfig extends NavigationConfig.Nav {
     public String getUrlSuffix(){
         return urlSuffix;
     }
-    
+
     @Override
     public String toString() {
         return "Tab{ id=\"" + getId() + "\" tab=\"" + getTab() + "\"}";
     }
-    
+
 }

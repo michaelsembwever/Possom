@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 
 /**
  * <b> Immutable </b>
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class BasicWeightedSuggestion extends BasicSuggestion implements WeightedSuggestion {

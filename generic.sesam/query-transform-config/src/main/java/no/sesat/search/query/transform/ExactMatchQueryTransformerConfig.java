@@ -27,25 +27,25 @@ import no.sesat.search.query.transform.AbstractQueryTransformerConfig.Controller
  * <br/>
  *   Ensures that only an exact match is returned.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version <tt>$Revision: 3359 $</tt>
  */
 @Controller("ExactMatchQueryTransformer")
 public final class ExactMatchQueryTransformerConfig extends AbstractQueryTransformerConfig {
 
     private String field;
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getField(){
         return field;
     }
-    
+
     /**
-     * 
-     * @param field 
+     *
+     * @param field
      */
     public void setField(final String field){
         this.field = field;

@@ -33,7 +33,7 @@ import no.sesat.search.mode.SearchMode.SearchCommandExecutorConfig.Controller;
 
 /** Obtain a working ResultHandler from a given ResultHandlerConfig.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SearchCommandExecutorFactory {
@@ -66,7 +66,7 @@ public final class SearchCommandExecutorFactory {
     public static SearchCommandExecutor getController(final SearchMode.SearchCommandExecutorConfig config){
 
         try{
-            
+
             final String name = "no.sesat.search.mode.executor."
                     + SearchMode.SearchCommandExecutorConfig.class.getDeclaredField(config.name())
                     .getAnnotation(Controller.class).value();
@@ -74,30 +74,30 @@ public final class SearchCommandExecutorFactory {
             @SuppressWarnings("unchecked")
             final Class<? extends SearchCommandExecutor> cls
                     = (Class<? extends SearchCommandExecutor>)config.getClass().getClassLoader().loadClass(name);
-            
+
             SearchCommandExecutor result = null;
-            
+
             try{
                 INSTANCES_LOCK.readLock().lock();
-                result = INSTANCES.get(cls);   
-                
+                result = INSTANCES.get(cls);
+
             } finally {
                 INSTANCES_LOCK.readLock().unlock();
             }
             try{
                 INSTANCES_LOCK.writeLock().lock();
-            
+
                 if(null == result){
                     final Constructor<? extends SearchCommandExecutor> constructor = cls.getConstructor();
 
                     result = constructor.newInstance();
-                    
+
                     INSTANCES.put(cls, result);
                 }
             }finally{
                 INSTANCES_LOCK.writeLock().unlock();
             }
-            
+
             return result;
 
         } catch (ClassNotFoundException ex) {

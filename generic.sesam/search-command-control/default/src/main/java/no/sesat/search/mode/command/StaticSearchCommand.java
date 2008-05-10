@@ -32,7 +32,7 @@ import no.sesat.search.result.ResultList;
  * A search command that can be used to generate static HTML search results. No
  * search is done.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public class StaticSearchCommand extends AbstractSearchCommand {

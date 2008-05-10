@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author hanst
+ *
  * @version
  *
  */
@@ -52,11 +52,11 @@ public final class MapServlet extends HttpServlet {
     private static final long serialVersionUID = -5879777378093939926L;
 
     private static final String DEFAULT_IMAGE = "http://www.sesam.no/images/pix.gif";
-    
-    /** 
+
+    /**
      * Timeout for SOAP call to authentication and mapimage service.
      * The authentication token has a lifetime of 10 minutes. So if Geodata
-     * goes down getUrl() will get called with a 20 sec timeout. 
+     * goes down getUrl() will get called with a 20 sec timeout.
      * After the initial 10 minutest the authenticate() method will be executed with a much shorter timeout. If
      * authenticate() throws an exception getUrl() is not executed.
      * This should prevent the thread count from going through the roof and at the same time give the mapimage service
@@ -64,7 +64,7 @@ public final class MapServlet extends HttpServlet {
      */
     private static final int AUTHENTICATION_TIMEOUT = 2000;
     private static final int MAPIMAGE_TIMEOUT = 20000;
-    
+
     //globale konstanter. Hvor bør disse settes?? xml fil.
     /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 /**
  * AbstractQueryTransformerConfig
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
 
  * @vesrion $Id$
  */

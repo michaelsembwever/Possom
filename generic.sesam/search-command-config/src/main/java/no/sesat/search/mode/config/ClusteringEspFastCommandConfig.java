@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  *
  * @todo rename to NewsClusteringEspFastCommandConfig as it is News specific
  *
- * @author geir
+ *
  * @version $Id$
  */
 @Controller("NewsClusteringESPFastCommand")

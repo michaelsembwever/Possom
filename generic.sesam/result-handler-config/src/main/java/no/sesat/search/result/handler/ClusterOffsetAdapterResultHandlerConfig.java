@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 /**
- * @author Geir H. Pettersn (T-Rank)
+ *
  * @version $Id$
  */
 @Controller("ClusterOffsetAdapter")

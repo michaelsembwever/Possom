@@ -26,7 +26,7 @@ import no.sesat.search.query.token.TokenPredicate;
  * State describing information will be stored in the wrapping Query class.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface Clause extends Visitable {
     /**

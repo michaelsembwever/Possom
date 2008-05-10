@@ -28,7 +28,7 @@ import no.sesat.search.datamodel.generic.DataNode;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataNode

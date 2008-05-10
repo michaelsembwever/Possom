@@ -27,7 +27,7 @@ package no.sesat.search.mode.command;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractWebServiceSearchCommand extends AbstractSearchCommand{

@@ -46,7 +46,7 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     private static final String UNCLUSTERED_DELAY_IN_MINUTES = "unclustered-delay-in-minutes";
     private static final String TIME_ZONE = "time-zone";
     private static final String AGGREGATOR_ID = "aggregator-id";
-    
+
     private static final String DEFAULT_CONVERT_ELEMENT = "default-convert";
     private String timeZone = "UTC";
     private String queryType;
@@ -62,9 +62,9 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     private boolean unclusteredDelayFilter = false;
     private int unclusteredDelayInMinutes = 10;
     private Map<String, String[]> typeConversions;
-    
-    
-    
+
+
+
    /**
      * @return
      */
@@ -99,11 +99,11 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     public String getDefaultType() {
         return defaultType;
     }
-    
+
     public void setDefaultType(String string) {
     	defaultType = string;
     }
-    
+
     public int getAggregatorId() {
     	return aggregatorId;
 	}
@@ -111,7 +111,7 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     public boolean isUnclusteredDelay() {
         return unclusteredDelayFilter;
     }
-    
+
     public void setUnclusteredDelay(boolean filtered) {
     	unclusteredDelayFilter = filtered;
     }
@@ -119,7 +119,7 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     public int getUnclusteredDelayInMinutes() {
         return unclusteredDelayInMinutes;
     }
-    
+
     public void setUnclusteredDelayInMinutes(int minutes){
     	unclusteredDelayInMinutes = minutes;
     }
@@ -134,12 +134,12 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
 
     @Override
     public NewsCaseQueryTransformerConfig readQueryTransformer(final Element element) {
-    	
+
     	aggregatorIdStr = element.getAttribute(AGGREGATOR_ID);
     	if (aggregatorIdStr != null && aggregatorIdStr.length() > 0) {
     		aggregatorId = Integer.parseInt(aggregatorIdStr);
         }
-    	
+
     	queryType = element.getAttribute(QUERY_TYPE);
         if (element.getAttribute(QUERY_PARAMETER) != null && element.getAttribute(QUERY_PARAMETER).length() > 0) {
             queryParameter = element.getAttribute(QUERY_PARAMETER);
@@ -177,7 +177,7 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return this;
     }
 
-	
-	
+
+
 
 }

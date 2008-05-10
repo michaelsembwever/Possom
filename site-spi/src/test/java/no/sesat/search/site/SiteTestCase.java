@@ -37,7 +37,7 @@ import no.sesat.search.site.config.PropertiesLoader;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class SiteTestCase {
 
@@ -50,7 +50,7 @@ public abstract class SiteTestCase {
     // Static --------------------------------------------------------
 
     static{
-    
+
 //        removingAppendersWarning();
 //
 //        // This will be dangerous if this class is loaded in non-test operation
@@ -62,7 +62,7 @@ public abstract class SiteTestCase {
     }
 
     // Constructors --------------------------------------------------
-    
+
     protected SiteTestCase(){}
 
     /** Creates a new instance of TestCase */
@@ -78,20 +78,20 @@ public abstract class SiteTestCase {
     @BeforeClass
     protected void setUp() throws Exception {
         MDC.put("test", getClass().getSimpleName());
-        
+
     }
 
     @AfterClass
     protected void tearDown() throws Exception {
         MDC.remove("test");
-    }    
+    }
 
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-    
+
     protected Site.Context getSiteConstructingContext(){
-        
+
         return new Context(){
             public String getParentSiteName(final SiteContext siteContext){
                 // we have to do this manually instead of using SiteConfiguration,
@@ -105,48 +105,48 @@ public abstract class SiteTestCase {
             }
         };
     }
-    
+
     protected final Site getTestingSite(){
-        
+
         final String basedir = System.getProperty("basedir").replaceAll(Matcher.quoteReplacement(File.separatorChar + "war"), "");
         final Site result = Site.valueOf(
                 getSiteConstructingContext(),
                 basedir.substring(basedir.lastIndexOf(File.separatorChar)+1).replaceAll(Matcher.quoteReplacement(File.separator), ""),
                 Locale.getDefault());
-        
+
         if(LOG.isDebugEnabled()){
             final StringBuilder sb = new StringBuilder("Writing out site ancestory\n");
             for(Site s = result;; s = s.getParent()){
                 sb.append(s.toString());
-                if(null != s.getParent()){ 
-                    sb.append(" --> "); 
+                if(null != s.getParent()){
+                    sb.append(" --> ");
                 }else{
                     break;
                 }
             }
             LOG.debug(sb);
         }
-        
+
         return result;
-    }    
+    }
 
     // Private -------------------------------------------------------
-    
+
     private static void removingAppendersWarning(){
-        
+
         LOG.warn("==================================");
         LOG.warn("REMOVING ALL APPENDERS FOR TESTING");
         LOG.warn("==================================");
-        
+
         System.out.println("\n==================================");
         System.out.println("REMOVING ALL APPENDERS FOR TESTING");
         System.out.println("==================================");
     }
-    
+
     // Inner classes -------------------------------------------------
 
 
 
-    
-    
+
+
 }

@@ -42,11 +42,11 @@ import org.w3c.dom.Element;
 
 /**
  * Servlet for switcing velocitydebug on/off
- * @author ola <a mailto="ola@sesam.no"> ola@sesam.no </a>
+ *
  *
  */
 public class VelocityDebugServlet extends HttpServlet{
-	
+
 	private static final Logger LOG = Logger.getLogger(VelocityDebugServlet.class);
 	/* Key that must be set as system property when starting tomcat */
 	private static final String VELOCITY_DEBUG = "VELOCITY_DEBUG";
@@ -62,13 +62,13 @@ public class VelocityDebugServlet extends HttpServlet{
  	private static final String ON_OFF = "Velocityborder is ";
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
-		Document doc = createDocument();		
+		Document doc = createDocument();
 		Element html = doc.createElement(HTML);
 		Element body = doc.createElement(BODY);
 		String templateDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");
-		
+
 		if(!isLocalhost(request) || !"true".equals(System.getProperty(VELOCITY_DEBUG))) {
 			LOG.warn("velocitydebug when running localhost and VELOCITY_DEBUG set to true: ipAddr=" + request.getRemoteAddr());
 			LOG.warn("your ip is " + request.getRemoteAddr() + " isLocalhost ? " + isLocalhost(request));
@@ -78,18 +78,18 @@ public class VelocityDebugServlet extends HttpServlet{
 			internalWriteDocument(doc, response.getWriter());
 			return;
 		}
-		
+
 		// TODO Auto-generated method stub
 		String velocityDebug = System.getProperty(VELOCITY_DEBUG_ON);
 		String debugStatus = "false";
-		
-		
+
+
 		if("true".equals(velocityDebug)) {
 			debugStatus = "false";
 		}else{
 			debugStatus = "true";
 		}
-		System.setProperty(VELOCITY_DEBUG_ON, debugStatus);				
+		System.setProperty(VELOCITY_DEBUG_ON, debugStatus);
 
 		if(templateDir != null) {
 			String paths[] = templateDir.split(",");
@@ -102,10 +102,10 @@ public class VelocityDebugServlet extends HttpServlet{
 		//if(request.getQueryString() != null) {
 		//	response.sendRedirect("/search/?" + request.getQueryString());
 		//}
-		
+
 		body.appendChild(doc.createTextNode(ON_OFF + " " + debugStatus));
 		body.appendChild(doc.createElement("BR"));
-		
+
 		html.appendChild(body);
 		doc.appendChild(html);
 		internalWriteDocument(doc, response.getWriter());
@@ -121,7 +121,7 @@ public class VelocityDebugServlet extends HttpServlet{
 		}
         return ipAddr.startsWith("127.") || ipAddr.startsWith("10.") || ipAddr.startsWith("0:0:0:0:0:0:0:1%0");
 	}
-	
+
     // -- Write the document to the writer
     private void internalWriteDocument(Document d, Writer w) {
         DOMSource source = new DOMSource(d);
@@ -139,7 +139,7 @@ public class VelocityDebugServlet extends HttpServlet{
         } catch (TransformerException ignore) {
         }
     }
-    
+
     // -- Create a DOM document
     private Document createDocument() {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory

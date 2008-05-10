@@ -29,7 +29,7 @@ import no.sesat.search.result.ResultList;
 /**
  * An object that executes a list of {@link java.util.concurrent.Callable} tasks.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision$</tt>
  */
 public interface SearchCommandExecutor {
@@ -49,7 +49,7 @@ public interface SearchCommandExecutor {
      */
     Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
             Collection<SearchCommand> callables) throws InterruptedException;
-    
+
     Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitForAll(
             final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
             final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException;

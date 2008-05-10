@@ -27,7 +27,7 @@ import java.util.Properties;
 
 /** ResourceLoader to deal with properties resources.
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface PropertiesLoader extends ResourceLoader {
     /** initialise this resource loader with the resource name/path and the resource it will go into.

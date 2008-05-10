@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
 
 /**
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 @Controller("ESPFastSearchCommand")
@@ -229,7 +229,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
     public String getQtPipeline() {
         return qtPipeline;
     }
-    
+
     /**
      *
      * @param lemmatize
@@ -244,7 +244,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
      */
     public boolean isLemmatize() {
         return lemmatize;
-    }    
+    }
 
     @Override
     public FastCommandConfig readSearchConfiguration(

@@ -29,7 +29,7 @@ import org.nfunk.jep.JEP;
 
 /** Perform a JEP operation.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class NumberOperationHandler implements ResultHandler {

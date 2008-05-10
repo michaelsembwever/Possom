@@ -16,7 +16,7 @@ import java.security.Permission;
 /* A factory for cached JAR file. This class is used to both retrieve
  * and cache Jar files.
  *
- * @author Benjamin Renaud
+ *
  * @since JDK1.2
  */
 class JarFileFactory implements URLJarFile.URLJarFileCloseController {
@@ -55,7 +55,7 @@ class JarFileFactory implements URLJarFile.URLJarFileCloseController {
                         fileCache.put(url, local_result);
                         urlCache.put(local_result, url);
                         result = local_result;
-                        
+
                     }else {
                         if (local_result != null) {
                             local_result.close();

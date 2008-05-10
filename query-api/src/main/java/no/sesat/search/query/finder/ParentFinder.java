@@ -33,8 +33,8 @@ import org.apache.log4j.Logger;
 
 /** Visitor used to find a clause's parents.
  * Clauses' do not keep references to their parents as they are immutable and can thus be reused within different trees.
- * 
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
+ *
  * @version $Id$
  */
 public final class ParentFinder extends AbstractReflectionVisitor implements Serializable {
@@ -43,23 +43,23 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
     private boolean singleMode = false;
     private List<OperationClause> parents = new ArrayList<OperationClause>();
     private Clause child;
-    private final Map<Clause, Map<Clause, List<OperationClause>>> cache 
+    private final Map<Clause, Map<Clause, List<OperationClause>>> cache
             = new HashMap<Clause, Map<Clause, List<OperationClause>>>();
 
-    
+
     private static final Logger LOG = Logger.getLogger(ParentFinder.class);
-    private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY 
+    private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
             = "visit(object) can't be called directly on this visitor!";
     private static final String ERR_CHILD_NOT_IN_HEIRARCHY = "The child is not part of this clause family!";
-    
+
     private final List<Clause> visitStack = new ArrayList<Clause>();
 
 
     /**
-     * 
-     * @param parents 
-     * @param token 
-     * @return 
+     *
+     * @param parents
+     * @param token
+     * @return
      */
     public static boolean insideOf(final List<OperationClause> parents, final TokenPredicate token){
 
@@ -68,13 +68,13 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
             inside |= oc.getKnownPredicates().contains(token);
         }
         return inside;
-    }    
-    
+    }
+
     /** Returns all parents, grandparents, great-grandparents, etc.
-     * 
-     * @param root 
-     * @param clause 
-     * @return 
+     *
+     * @param root
+     * @param clause
+     * @return
      */
     public synchronized List<OperationClause> getAncestors(final Clause root, final Clause clause){
 
@@ -85,13 +85,13 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
             parents.add(oc);
         }
         return parents;
-    }    
+    }
 
     /** Returns all direct parents.
-     * 
-     * @param root 
-     * @param child 
-     * @return 
+     *
+     * @param root
+     * @param child
+     * @return
      */
     public synchronized List<OperationClause> getParents(final Clause root, final Clause child) {
         findParentsImpl(root, child);
@@ -99,10 +99,10 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
     }
 
     /** Finds the first found direct parent.
-     * 
-     * @param root 
-     * @param child 
-     * @return 
+     *
+     * @param root
+     * @param child
+     * @return
      */
     public synchronized OperationClause getParent(final Clause root, final Clause child) {
 
@@ -134,7 +134,7 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
         }
         innerCache.put(child, new ArrayList<OperationClause>(parents));
     }
-    
+
     private synchronized <T extends DoubleOperatorClause> void findParentsImpl(final Clause root, final Clause child) {
 
         this.child = child;
@@ -153,20 +153,20 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
         }
         searching = false;
         this.child = null;
-    }    
+    }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final OperationClause clause) {
-        
+
         if (!singleMode || parents.size() == 0) {
-            
+
             if (clause.getFirstClause() == child){
                 parents.add(clause);
             }
-            
+
             addVisit(clause.getFirstClause());
             clause.getFirstClause().accept(this);
             removeVisit(clause.getFirstClause());
@@ -174,17 +174,17 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final DoubleOperatorClause clause) {
-        
+
         if (!singleMode || parents.size() == 0) {
-            
+
             if (clause.getFirstClause() == child || clause.getSecondClause() == child) {
                 parents.add(clause);
             }
-            
+
             addVisit(clause.getFirstClause());
             clause.getFirstClause().accept(this);
             removeVisit(clause.getFirstClause());
@@ -195,37 +195,37 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
         // leaves can't be parents :-)
     }
 
-    
+
     private void addVisit(final Clause clause){
-        
+
         if(visitStack.contains(clause)){
             // !serious error! we've gotten into a recursive loop! See SEARCH-2235
             final String msg = "!serious error! we've gotten into a recursive loop! See SEARCH-2235\n";
             final StringBuilder builder = new StringBuilder(msg);
-            
+
             builder.append("Were looking for child " + child + '\n');
-            
+
             for(Clause c: visitStack){
                 builder.append(c.toString() + '\n');
             }
             builder.append(clause.toString() + '\n');
-            
+
             LOG.error(builder.toString());
             throw new IllegalStateException(msg);
         }
-        
+
         visitStack.add(clause);
     }
-    
+
     private void removeVisit(final Clause clause){
-        
+
         visitStack.remove(clause);
     }
 }

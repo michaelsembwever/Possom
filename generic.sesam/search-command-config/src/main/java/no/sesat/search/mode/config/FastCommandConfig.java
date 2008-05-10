@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Controller("FastSearchCommand")
@@ -189,7 +189,7 @@ public class FastCommandConfig extends CommandConfig {
             searchParameters.put(paramSplit[0].trim(), paramSplit[1].trim());
         }
     }
-    
+
     /**
      *
      * @return

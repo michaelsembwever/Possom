@@ -31,8 +31,8 @@ import java.lang.reflect.InvocationTargetException;
 
 
 /**
- * 
- * @author magnuse
+ *
+ *
  * @version $Id$
  */
 public final class NavigationControllerSpiFactory {
@@ -70,8 +70,8 @@ public final class NavigationControllerSpiFactory {
             final SiteClassLoaderFactory loaderFactory = SiteClassLoaderFactory.instanceOf(classContext);
 
             @SuppressWarnings("unchecked")
-            final Class<? extends NavigationControllerFactory<T>> factory 
-                    = (Class<? extends NavigationControllerFactory<T>>) 
+            final Class<? extends NavigationControllerFactory<T>> factory
+                    = (Class<? extends NavigationControllerFactory<T>>)
                     loaderFactory.getClassLoader().loadClass(controllerName);
 
             final Constructor<? extends NavigationControllerFactory<T>> constructor

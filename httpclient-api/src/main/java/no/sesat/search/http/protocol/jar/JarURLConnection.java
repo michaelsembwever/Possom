@@ -22,7 +22,7 @@ import java.security.Permission;
 import sun.net.www.protocol.jar.Handler;
 
 /**
- * @author Benjamin Renaud
+ *
  * @since 1.2
  */
 public class JarURLConnection extends java.net.JarURLConnection {
@@ -54,7 +54,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
     /* the content type for this connection */
     private String contentType;
-    
+
 
     public JarURLConnection(URL url, Handler handler) throws MalformedURLException, IOException {
         super(url);

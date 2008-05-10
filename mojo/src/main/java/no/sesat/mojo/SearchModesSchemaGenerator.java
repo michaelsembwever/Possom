@@ -29,7 +29,7 @@ public class SearchModesSchemaGenerator extends AbstractMojo {
 
     /**
      * The Maven project.
-     * 
+     *
      * @parameter expression="${project}"
      * @required
      * @readonly
@@ -39,28 +39,28 @@ public class SearchModesSchemaGenerator extends AbstractMojo {
 
     /**
      * Classpath
-     * 
+     *
      * @parameter
      */
     private List<String> classpaths;
 
     /**
      * sourceArtifacts
-     * 
+     *
      * @parameter
      */
     private List<String> sourceArtifacts;
 
     /**
      * Output directory
-     * 
+     *
      * @parameter
      */
     private String outputDir;
 
     /**
      * Used to look up Artifacts in the remote serverDeployLocation.
-     * 
+     *
      * @parameter expression="${component.org.apache.maven.artifact.factory.ArtifactFactory}"
      * @required
      * @readonly
@@ -69,7 +69,7 @@ public class SearchModesSchemaGenerator extends AbstractMojo {
 
     /**
      * Used to look up Artifacts in the remote serverDeployLocation.
-     * 
+     *
      * @parameter expression="${component.org.apache.maven.artifact.resolver.ArtifactResolver}"
      * @required
      * @readonly
@@ -78,7 +78,7 @@ public class SearchModesSchemaGenerator extends AbstractMojo {
 
     /**
      * Location of the local serverDeployLocation.
-     * 
+     *
      * @parameter expression="${localRepository}"
      * @readonly
      * @required
@@ -87,7 +87,7 @@ public class SearchModesSchemaGenerator extends AbstractMojo {
 
     /**
      * List of Remote Repositories used by the resolver
-     * 
+     *
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @required

@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 /**
  * @version $Id$
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  */
 public class AbstractRunHandlerConfig implements RunHandlerConfig {
 
@@ -38,7 +38,7 @@ public class AbstractRunHandlerConfig implements RunHandlerConfig {
     }
 
     public RunHandlerConfig readRunHandler(final Element element) {
-        
+
         // Override me to add custom deserialisation
         return this;
     }

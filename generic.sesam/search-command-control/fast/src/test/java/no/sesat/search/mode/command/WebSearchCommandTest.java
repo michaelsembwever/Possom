@@ -31,7 +31,7 @@ import static org.testng.AssertJUnit.*;
 
 /**
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 public final class WebSearchCommandTest extends AbstractSearchCommandTest {
@@ -134,7 +134,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
             final String query,
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException{
-        
+
         final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
 
         final WebSearchCommand cmd = new WebSearchCommand(cxt);

@@ -28,7 +28,7 @@ import no.sesat.search.datamodel.generic.DataObject;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject

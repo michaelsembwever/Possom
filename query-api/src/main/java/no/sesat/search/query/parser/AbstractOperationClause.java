@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * Implements ontop of AbstractClause.
  * <b>Objects of this class are immutable</b>
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractOperationClause extends AbstractClause implements OperationClause {

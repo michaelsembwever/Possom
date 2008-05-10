@@ -24,12 +24,12 @@ import no.sesat.search.query.parser.*;
 
 
 final class ChildFinder extends AbstractReflectionVisitor {
-    
+
     private boolean found;
     private Clause child = null;
 
     public synchronized boolean childExists(final OperationClause parent, final Clause child) {
-        
+
         found = false;
         this.child = child;
         visit(parent);
@@ -42,7 +42,7 @@ final class ChildFinder extends AbstractReflectionVisitor {
             clause.getSecondClause().accept(this);
         }
     }
-    
+
     protected void visitImpl(final OperationClause clause) {
         if (!found ) { // still looking
             clause.getFirstClause().accept(this);
@@ -50,7 +50,7 @@ final class ChildFinder extends AbstractReflectionVisitor {
     }
 
     protected void visitImpl(final LeafClause clause) {
-        
+
         found = clause == child;
     }
 

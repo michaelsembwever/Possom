@@ -37,7 +37,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * ORIGINAL FROM http://svn.apache.org/repos/asf/jakarta/velocity/engine/trunk/whiteboard/geir/URLResourceLoader.java
  *
  * original version Id: URLResourceLoader.java,v 1.3 2004/03/19 17:13:40 dlr Exp
- * @author <a href="mailto:geirm@apache.org">Geir Magnusson Jr.</a>
+ *
  *
  *
  * MODIFIED TO SUIT SCHIBSTEDSØK's NEEDS.
@@ -46,18 +46,18 @@ import org.apache.commons.collections.ExtendedProperties;
  * Since this class is hidden between the velocity API it made more sense to go from scratch to best
  * meet velocity's requirements...
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id: URLResourceLoader.java,v 1.3 2004/03/19 17:13:40 dlr Exp $
  */
 public class URLResourceLoader extends ResourceLoader {
-    
+
     public interface Context{
         boolean doesUrlExist(final URL url);
         URL getURL(final String resource, final Site site);
     }
 
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(URLResourceLoader.class);
 
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
@@ -67,26 +67,26 @@ public class URLResourceLoader extends ResourceLoader {
     private static final String DEBUG_HOST_HEADER_IS = "URL's host-header is ";
     private static final String DEBUG_DOESNT_EXIST = "Using fallback URL";
 
-    
+
     // Attributes ----------------------------------------------------
-    
+
     private Site site;
 
-    
+
     // Static --------------------------------------------------------
-    
+
     private static Context context = new DefaultContext();
 
     // Allows the tests to switch the Velocity ResourceLoader over to a file based one.
     static void setContext(final Context context){
         URLResourceLoader.context = context;
     }
-    
+
     // Constructors --------------------------------------------------
-    
-    
+
+
     // Public --------------------------------------------------------
-    
+
     /** {@inheritDoc}
      */
     public void init(final ExtendedProperties configuration) {
@@ -142,19 +142,19 @@ public class URLResourceLoader extends ResourceLoader {
         return 0;
     }
 
-    
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     private static URL findUrl(final String url, final Site currentSite) throws ResourceNotFoundException{
 
         try{
             LOG.trace(DEBUG_LOOKING_FOR + url );
             return findUrlImpl(url, currentSite);
-            
+
         }catch( IOException e ){
             LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
@@ -202,8 +202,8 @@ public class URLResourceLoader extends ResourceLoader {
             throw client.interceptIOException(ioe);
         }
     }
-    
-    
+
+
     // Inner classes -------------------------------------------------
 
     private static final class DefaultContext implements Context{
@@ -215,7 +215,7 @@ public class URLResourceLoader extends ResourceLoader {
             try {
                 return new URL(resource);
             } catch (MalformedURLException e) {
-                throw new ResourceNotFoundException(e); 
+                throw new ResourceNotFoundException(e);
             }
         }
     }

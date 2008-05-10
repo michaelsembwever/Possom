@@ -31,21 +31,21 @@ import org.apache.log4j.Logger;
 
 /** Paging navigation controller.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public final class ResultPagingNavigationController
         implements NavigationControllerFactory<ResultPagingNavigationConfig>, NavigationController {
 
     private static final Logger LOG = Logger.getLogger(ResultPagingNavigationController.class);
-    
+
     public static final String CURRENT_PAGE = "currentPage";
     public static final String NUMBER_OF_PAGES = "numberOfPages";
     public static final String FIRST_VISIBLE_PAGE = "firstVisiblePage";
     public static final String LAST_VISIBLE_PAGE = "lastVisiblePage";
     public static final String CURRENT_PAGE_FROM_COUNT = "currentPageFromCount";
     public static final String CURRENT_PAGE_TO_COUNT = "currentPageToCount";
-    
+
     private static final String MSG_PREV = "prev";
     private static final String MSG_NEXT = "next";
 

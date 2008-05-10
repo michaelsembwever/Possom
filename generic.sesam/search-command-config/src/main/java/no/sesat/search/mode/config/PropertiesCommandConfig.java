@@ -34,44 +34,44 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 /** Given the resource name for a properties file, loads it into a Map<String,String>.
- * 
+ *
  * The following is a tutorial for a simple enrichment using this command
  * https://dev.schibstedsok.no/confluence/display/SESAT/Developing+a+quick+and+simple+Enrichment+tutorial
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 @Controller("PropertiesCommand")
 public class PropertiesCommandConfig extends CommandConfig {
-    
+
     private static final Logger LOG = Logger.getLogger(PropertiesCommandConfig.class);
-    
+
     private String propertiesFilename;
-    
+
     private Map<String,String> properties;
-    
+
     public String getPropertiesFilename(){
         return propertiesFilename;
     }
-    
+
     public void setPropertiesFilename(final String propertiesFilename){
         this.propertiesFilename = propertiesFilename;
     }
-    
+
     public Map<String,String> getProperties(){
         return properties;
     }
-    
+
     public String getProperty(final String key){
         return properties.get(key);
     }
-    
+
     @Override
     public PropertiesCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit,
             final Context context) {
-        
+
 
         super.readSearchConfiguration(element, inherit, context);
 
@@ -87,7 +87,7 @@ public class PropertiesCommandConfig extends CommandConfig {
             }
         }
         properties = Collections.unmodifiableMap(map);
-                    
+
         return this;
-    }    
+    }
 }

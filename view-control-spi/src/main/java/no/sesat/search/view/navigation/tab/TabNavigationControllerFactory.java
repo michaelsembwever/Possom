@@ -24,7 +24,7 @@ import no.sesat.search.view.navigation.TabNavigationConfig;
 
 /**
  * TODO: Move into sesat-search-command-control-spi once that module is ready for action.
- * 
+ *
  */
 public final class TabNavigationControllerFactory implements NavigationControllerFactory<TabNavigationConfig> {
     public NavigationController get(final TabNavigationConfig nav) {

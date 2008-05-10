@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
  * Search against Yahoo! Contextual Web Service.
  * http://developer.yahoo.com/search/web/V1/contextSearch.html
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version $Id$
  */
 public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
@@ -126,8 +126,8 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    /** Returns the GET http request path and parameters 
-     * 
+    /** Returns the GET http request path and parameters
+     *
      * @return path and parameters to use.
      */
     protected String createRequestURL() {
@@ -135,8 +135,8 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
         final YahooWebCommandConfig conf = getSearchConfiguration();
 
         final String wrappedTransformedQuery =  getTransformedQuery() + ' ' + getAdditionalFilter();
-        final String site = null != conf.getSite() 
-                ? "site=" + conf.getSite() 
+        final String site = null != conf.getSite()
+                ? "site=" + conf.getSite()
                 : null != context.getDataModel().getParameters().getValue("site")
                 ? "site=" + context.getDataModel().getParameters().getValue("site").getUtf8UrlEncoded()
                 : "";
@@ -155,7 +155,7 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
                     conf.getLanguage(),
                     null != conf.getCountry() ? "country=" + conf.getCountry() + "&" : "",
                     site);
-            
+
         } catch (UnsupportedEncodingException ex) {
             throw new SearchCommandException(ERR_FAILED_CREATING_URL, ex);
         }
@@ -167,8 +167,8 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
         return (YahooWebCommandConfig)super.getSearchConfiguration();
     }
 
-    /** 
-     * 
+    /**
+     *
      * @param result
      * @return
      */

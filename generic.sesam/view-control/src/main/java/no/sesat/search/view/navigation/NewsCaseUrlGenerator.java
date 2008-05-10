@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * A UrlGenerator for the news aggregator. Generates URL on the format /search/nyheter/person/Al+Gore.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public final class NewsCaseUrlGenerator extends BasicUrlGenerator {
@@ -37,12 +37,12 @@ public final class NewsCaseUrlGenerator extends BasicUrlGenerator {
 
     @Override
     protected void appendParameterComponent(final String parameter, final String encodedValue) {
-        
+
         if (! ("c".equals(parameter) || "q".equals(parameter))) {
             super.appendParameterComponent(parameter, encodedValue);
         }
     }
-    
+
     @Override
     protected List<String> getPathComponents(NavigationConfig.Nav nav) {
         return PATH_COMPONENTS;

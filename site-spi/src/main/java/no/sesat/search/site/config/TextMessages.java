@@ -34,8 +34,8 @@ import org.apache.log4j.Logger;
 /** Wrapper to the MessageResources for a corresponding site.
  * The site to use is defined through the context.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public final class TextMessages {

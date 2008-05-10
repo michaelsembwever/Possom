@@ -45,7 +45,7 @@ import static org.testng.AssertJUnit.*;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class SpellingSuggestionChooserTest extends DataModelTestCase {

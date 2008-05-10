@@ -47,7 +47,7 @@ import java.util.List;
 import no.sesat.search.datamodel.BeanDataModelInvocationHandler.DataModelBeanContextSupport;
 
 /**
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T> {
@@ -79,10 +79,10 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             final DataModel datamodel,
             final PropertyInitialisor properties)
                 throws IntrospectionException {
-        
+
         this(cls, datamodel, new BeanContextSupport(), properties);
     }
-    
+
     /**
      * Creates a new instance of ProxyBeanDataObject
      */
@@ -96,13 +96,13 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
 
         // find the datamodel and use its context as the absoluteContext
         if(null != datamodel){
-            final BeanDataModelInvocationHandler handler 
+            final BeanDataModelInvocationHandler handler
                     = (BeanDataModelInvocationHandler) Proxy.getInvocationHandler(datamodel);
             absoluteContext = (DataModelBeanContextSupport) handler.getBeanContextChild();
         }else{
             absoluteContext = (DataModelBeanContextSupport) context;
         }
-        
+
         // make context to contextChild bindings
         for (PropertyDescriptor property : properties.childPropertyDescriptors) {
             for (Property p : properties.allProperties) {
@@ -121,7 +121,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
 
         // delegate our own properties
         dataObject = new BeanDataObjectInvocationHandler<T>(cls, properties.delegatedProperties);
-        
+
     }
 
     // Public --------------------------------------------------------
@@ -130,7 +130,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
 
         assureAccessAllowed(method);
-        
+
         // try our dataObject|dataNode delegated-properties
         try {
             return super.invoke(obj, method, args);
@@ -167,7 +167,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
     // Protected -----------------------------------------------------
 
     /**
-     * obj may be null. 
+     * obj may be null.
      */
     @Override
     protected void addChild(final Object obj) {
@@ -178,7 +178,7 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
             assert isSerializable(obj) : "Object not serializable: " + obj;
             final BeanDataObjectInvocationHandler<?> childsNewHandler
                     = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
-            
+
             /// XXX Application bottleneck. See https://jira.sesam.no/jira/browse/SEARCH-3591
             ///       BeanContextSupport.add synchronises against the static variable BeanContext.globalHierarchyLock
             ///        so every thread in the jvm must queue one at a time here :'(
@@ -194,11 +194,11 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
         if (obj == null) {
             return true;
         }
-        
+
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream os = new ObjectOutputStream(baos);
-            
+
             os.writeObject(obj);
             correct = true;
         } catch (NotSerializableException e) {
@@ -208,9 +208,9 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
         }
         return correct;
     }
-    
+
     /**
-     * obj may be null. 
+     * obj may be null.
      */
     @Override
     protected void removeChild(final Object obj) {
@@ -225,11 +225,11 @@ class BeanDataNodeInvocationHandler<T> extends BeanDataObjectInvocationHandler<T
 
         }
     }
-    
+
     // Private -------------------------------------------------------
 
     private boolean isDataObjectOrNode(final Object obj){
-        
+
         boolean dataObjectOrNode = false;
         final Class[] interfaces = obj.getClass().getInterfaces();
         for(int i = 0; !dataObjectOrNode && i < interfaces.length; ++i){

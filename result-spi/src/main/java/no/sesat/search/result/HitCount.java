@@ -30,7 +30,7 @@ import java.util.Locale;
  * Transforms negative hit counts into appropriate strings, eg -1 becomes "?".
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class HitCount {
 
@@ -49,13 +49,13 @@ public final class HitCount {
 
 
         switch(hitcount){
-            
+
             case -1:
                 return "?";
-                
-            default:                
+
+            default:
                 return NumberFormat.getIntegerInstance(locale).format(hitcount);
-        }        
+        }
     }
 
     // Constructors --------------------------------------------------

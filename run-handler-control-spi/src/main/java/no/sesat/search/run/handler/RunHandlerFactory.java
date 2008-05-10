@@ -30,8 +30,8 @@ import no.sesat.search.site.config.Spi;
 
 /** Obtain a working RunHandler.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
+ *
  * @version <tt>$Id: RunHandlerFactory.java 5819 2007-10-11 07:47:05Z ssmiweve $</tt>
  */
 public final class RunHandlerFactory {
@@ -59,7 +59,7 @@ public final class RunHandlerFactory {
      * @return
      */
     public static RunHandler getController(
-            final RunHandler.Context context, 
+            final RunHandler.Context context,
             final RunHandlerConfig config){
 
         final String name = "no.sesat.search.run.handler."

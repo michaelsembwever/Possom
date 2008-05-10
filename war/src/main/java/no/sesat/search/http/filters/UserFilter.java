@@ -47,8 +47,8 @@ import org.apache.log4j.Logger;
  * Responsible for Persistent User Login. Or "Remember Me" functionality. Based off
  * http://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice
  *
- * @author <a href="mailto:endre@sesam.no">Endre Midtgård Meckelborg</a>
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public final class UserFilter implements Filter {
@@ -195,9 +195,9 @@ public final class UserFilter implements Filter {
             final BasicUser user = basicUserService.authenticateByLoginKey(loginKey);
 
             if (null != user) {
-                
+
                 datamodel.getUser().setUser(user);
-                
+
                 // Updates the login cookie.
                 UserCookieUtil.setUserLoginCookie(response, user.getNextLoginKey());
             }
@@ -259,7 +259,7 @@ public final class UserFilter implements Filter {
 
         try {
             response.sendRedirect(url);
-            
+
         } catch (final IOException e) {
             LOG.error(e);
         }
@@ -280,7 +280,7 @@ public final class UserFilter implements Filter {
 
         LOG.debug("Url: " + url);
         LOG.debug("JndiName: " + jndi);
-        
+
         if( null != url && null != jndi ){
 
             final Properties properties = new Properties();

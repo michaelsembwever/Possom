@@ -46,7 +46,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  *
  * The default charset is utf-8.
  *
- * @author thomas
+ *
  */
 public final class CapitalizeWordsDirective extends Directive {
 

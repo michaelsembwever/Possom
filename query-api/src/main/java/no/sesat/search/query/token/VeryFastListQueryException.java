@@ -22,7 +22,7 @@ package no.sesat.search.query.token;
  * The VeryFastTokenEvaluator wont work because of this failure.
  * TokenPredicates (because of their associated known and possible predicates) cannot be wealy cached.
  *
- * @author <a href="mailto:mick@sesam.no">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class VeryFastListQueryException extends Exception {

@@ -34,8 +34,8 @@ import org.apache.commons.collections.Predicate;
  *
  * @todo improve design. inner classes providing functionality inside an interface is frowned upon.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public interface TokenPredicate extends Predicate, Serializable{
@@ -86,14 +86,14 @@ public interface TokenPredicate extends Predicate, Serializable{
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
     boolean evaluate(Object evalFactory);
-    
+
     /** A token predicate that requires an exact match against the whole query.
      * A exact peer instance must return itself.
-     * 
+     *
      * @return
      */
     TokenPredicate exactPeer();
-    
+
     // Inner Classes -----------------------------------------------------
 
     /** A formalised breakdown of metadata categories that search terms can match.
@@ -373,10 +373,10 @@ public interface TokenPredicate extends Predicate, Serializable{
         }
 
         public TokenPredicate exactPeer() {
-            
+
             return impl.exactPeer();
         }
-        
+
 
 
     }
@@ -411,7 +411,7 @@ public interface TokenPredicate extends Predicate, Serializable{
         // Constructors -----------------------------------------------------
 
         private TokenPredicateImpl(final String name, final Type type){
-            
+
             this.name = name;
             this.type = type;
 
@@ -428,7 +428,7 @@ public interface TokenPredicate extends Predicate, Serializable{
 
             TOKENS.add(this);
             TOKENS_BY_TYPE.get(type).add(this);
-            
+
             exactPeer = new ExactTokenPredicateImpl(this);
         }
 
@@ -454,46 +454,46 @@ public interface TokenPredicate extends Predicate, Serializable{
 
             return TokenPredicateImpl.evaluate(this, evalFactory);
         }
-        
+
         public TokenPredicate exactPeer() {
             return exactPeer;
         }
 
-        // private -----------------------------------------------------   
-        
+        // private -----------------------------------------------------
+
         private static boolean evaluate(final TokenPredicate token, final Object evalFactory) {
 
             // pre-condition checks
             if (! (evalFactory instanceof TokenEvaluationEngine)) {
                 throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
             }
-            
+
             return ((TokenEvaluationEngine)evalFactory).evaluate(token);
         }
 
     }
-    
+
     /**
      * An token predicate peer that only evaluates to true against its original token predicate on exact query matches.
      */
     static class ExactTokenPredicateImpl implements TokenPredicate{
-        
+
         // Constants -----------------------------------------------------
-        
+
         private static final String EXACT_PREFIX = "EXACT_";
-        
+
         // Attributes -----------------------------------------------------
-        
+
         private final TokenPredicate delegate;
 
         // Constructors -----------------------------------------------------
-        
+
         private ExactTokenPredicateImpl(final TokenPredicate token){
             delegate = token;
         }
-        
+
         // TokenPredicate implementation ------------------------------------
-        
+
         public String name() {
             return EXACT_PREFIX + delegate.name();
         }
@@ -503,14 +503,14 @@ public interface TokenPredicate extends Predicate, Serializable{
         }
 
         public boolean evaluate(Object evalFactory) {
-            
+
             final TokenEvaluationEngine engine = (TokenEvaluationEngine)evalFactory;
             final TokenEvaluationEngine.State originalState = engine.getState();
             try{
 
                 engine.setState(originalState.getQuery().getEvaluationState());
                 return engine.evaluate(this);
-            
+
             }finally{
                 engine.setState(originalState);
             }
@@ -519,10 +519,10 @@ public interface TokenPredicate extends Predicate, Serializable{
         public TokenPredicate exactPeer() {
             return this;
         }
-        
+
         // private -----------------------------------------------------
     }
-    
+
     /** Runtime exception thrown when evaluation fails.
      */
     static final class EvaluationException extends RuntimeException{

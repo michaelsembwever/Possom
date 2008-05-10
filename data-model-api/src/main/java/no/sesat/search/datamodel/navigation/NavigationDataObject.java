@@ -31,7 +31,7 @@ import no.sesat.search.result.NavigationItem;
 
 /** Contains Navigation information.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject

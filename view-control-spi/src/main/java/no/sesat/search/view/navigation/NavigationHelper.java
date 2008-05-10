@@ -29,9 +29,9 @@ import no.sesat.search.result.NavigationItem;
 /**
  * All public methods require take a datamodel argument. This datamodel must in VIEW_CONSTRUCTION state.
  * It essentially means that this helper class can only be used from jsp/velocity code.
- * 
- * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
+ *
+ *
  * @version $Id$
  *
  */
@@ -39,28 +39,28 @@ public final class NavigationHelper {
 
     // Constants -----------------------------------------------------
     public static String removeQuery(final String url) {
-        return url.replaceAll("(&amp;)?q=[^&]*", ""); 
+        return url.replaceAll("(&amp;)?q=[^&]*", "");
     }
 
     /**
      * @todo move into domain? (NavigationItem & BasicNavigationItem)
      */
     public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
-        
+
         if (dm.getParameters().getValue(nav.getId()) != null
                 && !nav.getChildNavs().isEmpty()
                 && !nav.getChildNavs().get(0).isVirtual()) {
-            
+
             return getFirstNotSelected(dm, nav.getChildNavs().get(0));
-            
+
         } else {
-            
-            final int navResultSize = null != nav.getId() 
+
+            final int navResultSize = null != nav.getId()
                     && null != dm.getNavigation().getNavigation(nav.getId())
                     && null != dm.getNavigation().getNavigation(nav.getId()).getResults()
                     ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
                     : 0;
-                    
+
 // TODO: Specification is a mess, so this becomes ugly. See history in prio-198 & SEARCH-3320.
 // TODO: Haven't found a general way to solve this. Special case for Oslo.
 // TODO: New JIRA created to resolve this: SEARCH-3451
@@ -74,7 +74,7 @@ public final class NavigationHelper {
                     : nav;
         }
     }
-    
+
     public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
         final NavigationItem item = dm.getNavigation().getNavigation(navId);
 
@@ -83,10 +83,10 @@ public final class NavigationHelper {
             return item.getChildByTitle(value);
         } else {
             final BasicNavigationItem navigationItem = new BasicNavigationItem();
-            
+
             navigationItem.setHitCount(0);
             navigationItem.setTitle(value);
-           
+
             return navigationItem;
         }
     }

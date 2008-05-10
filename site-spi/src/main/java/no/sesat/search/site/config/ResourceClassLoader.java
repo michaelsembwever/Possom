@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * @author magnuse
+ *
  * @version $Id$
  */
 public abstract class ResourceClassLoader extends ClassLoader {
@@ -109,7 +109,7 @@ public abstract class ResourceClassLoader extends ClassLoader {
                 LOG.debug(className + " already loaded by some other thread ");
 
             }
-            
+
             return loadedClass != null ? loadedClass : defineClass(className, bytecode, 0, bytecode.length);
         }
     }

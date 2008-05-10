@@ -22,22 +22,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision$</tt>
  */
 public final class MD5Generator {
-    
+
     private static final byte[] EMPTY_STRING = new byte[0];
-    
+
     private final String secret;
 
     public MD5Generator(final String secret) {
-        
+
         this.secret = secret;
     }
 
     public String generateMD5(final String s) {
-        
+
         final MessageDigest digest  = getDigest("MD5");
 
         digest.update(null != s ? s.getBytes() : EMPTY_STRING);
@@ -47,7 +47,7 @@ public final class MD5Generator {
     }
 
     public boolean validate(final String s, final String hash) {
-        
+
         return generateMD5(s).equals(hash);
 
     }
@@ -60,7 +60,7 @@ public final class MD5Generator {
      * @throws RuntimeException when a {@link java.security.NoSuchAlgorithmException} is caught,
      */
     static MessageDigest getDigest(String algorithm) {
-        
+
         try {
             return MessageDigest.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {

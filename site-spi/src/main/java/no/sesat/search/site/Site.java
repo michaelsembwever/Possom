@@ -36,9 +36,9 @@ import no.sesat.search.site.config.ResourceLoadException;
 import org.apache.log4j.Logger;
 
 /** A Site object identifies a Skin + Locale pairing.
- *  
+ *
  * This bean holds nothing more than the name of the virtual host (siteName) and locale used to access this Skin.
- * 
+ *
  * It is used as a key to obtain the correct factory instances in the application.
  * There is usually only one Skin per siteName and it is left up to the skin to handle different locales.
  * .
@@ -47,16 +47,16 @@ import org.apache.log4j.Logger;
  * Does a little bit of niggling wiggling to load the DEFAULT site. See static constructor.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class Site implements Serializable {
 
-    /** During construction of any site we must know who the parent site is going to be. 
+    /** During construction of any site we must know who the parent site is going to be.
      * It will likely be also constructed since leaf sites are those first requested.
-     * 
+     *
      * The base level sites, locale variants of the DEFAULT site, are expected to have a null parent.
      * These DEFAULT sites can just pass in a null context instead of constructing a context that returns a null parent.
-     * 
+     *
      * Not to be confused with the SiteContext.
      * This is a Context required for constructing a Site.
      * While a SiteContext is a context required to use a Site.
@@ -157,7 +157,7 @@ public final class Site implements Serializable {
                 // cxt.getParentSiteName(siteContext) is an expensive call due to resource load every call.
                 final String psn = cxt.getParentSiteName(siteContext);
                 parentSiteName = null != psn ? ensureTrailingSlash(psn) : null;
-                
+
             }else{
                 parentSiteName = siteName;
             }
@@ -265,9 +265,9 @@ public final class Site implements Serializable {
     /** Get the instance for the given siteName.
      * The port number will be changed if the server has explicitly assigned one port number to use.
      * A "www." prefix will be automatically ignored.
-     * 
+     *
      * TODO refactor to instanceOf(..). it is an instance returned not a primitive.
-     * 
+     *
      * @param cxt the cxt to use during creation. null will prevent constructing a new site.
      * @param siteName the virtual host name.
      * @param locale the locale desired
@@ -317,7 +317,7 @@ public final class Site implements Serializable {
 
         final Level oLevel = LOG.getLevel();
         LOG.setLevel(Level.ALL);
-        
+
         final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, System.getProperty(DEFAULT_SITE_KEY));
         LOG.info("defaultSiteName: " + defaultSiteName);
 
@@ -328,9 +328,9 @@ public final class Site implements Serializable {
         final String defaultSitePort
                 = props.getProperty(DEFAULT_SERVER_PORT_KEY, System.getProperty(DEFAULT_SERVER_PORT_KEY));
         LOG.info("defaultSitePort: " + defaultSitePort);
-        
+
         LOG.setLevel(oLevel);
-        
+
         SERVER_PORT = Integer.parseInt(defaultSitePort);
 
         constructingDefault = true;

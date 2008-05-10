@@ -40,12 +40,12 @@ import org.apache.log4j.Logger;
 
 
 /** Base definition of a factory used to create a datamodel, its datanodes, and its dataobjects.
- * Also provides the SiteKeyedFactory implementation, via static methods, 
+ * Also provides the SiteKeyedFactory implementation, via static methods,
  *  to store the current instances in the jvm per site.
  * Each site defines the final DataModelFactory implementation through the "sesam.datamodel.impl" property
  *  in its configuration.properties.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public abstract class DataModelFactory implements SiteKeyedFactory{
@@ -64,7 +64,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
     private static final String DATA_MODEL_FACTORY_IMPL = "sesam.datamodel.impl";
 
     private static final Logger LOG = Logger.getLogger(DataModelFactory.class);
-    
+
     // Attributes ----------------------------------------------------
 
     private final Context context;
@@ -72,10 +72,10 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
     // Static --------------------------------------------------------
 
     /** Instance applicable to the provided context.
-     * 
-     * @param cxt 
-     * @return 
-     * @throws no.sesat.search.site.SiteKeyedFactoryInstantiationException 
+     *
+     * @param cxt
+     * @return
+     * @throws no.sesat.search.site.SiteKeyedFactoryInstantiationException
      */
     public static DataModelFactory instanceOf(final Context cxt) throws SiteKeyedFactoryInstantiationException {
 
@@ -123,8 +123,8 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
         throw new IllegalArgumentException("Must use constructor with Context argument.");
     }
 
-    /** Creates a new instance of DataModelToolkitFactory 
-     * @param cxt 
+    /** Creates a new instance of DataModelToolkitFactory
+     * @param cxt
      */
     protected DataModelFactory(final Context cxt) {
 
@@ -134,8 +134,8 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
     // Public --------------------------------------------------------
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public abstract DataModel instantiate();
 
@@ -149,30 +149,30 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      *       new DataObject.Property("locale", null),
      *       new DataObject.Property("supportedLocales", null));
      * </pre>
-     ** @param cls 
-     * @param datamodel 
+     ** @param cls
+     * @param datamodel
      * @param properties
-     * @return 
+     * @return
      */
     public abstract <T> T instantiate(Class<T> cls, DataModel datamodel, DataObject.Property... properties);
-    
-    /** Lets the datamodel instance know that it has moved on and is now being accessed by a different level in the 
+
+    /** Lets the datamodel instance know that it has moved on and is now being accessed by a different level in the
      * control process stack.
-     * 
+     *
      * <b>This method is only to be used by SESAT classes, not skin implementations!</b>
      * Future version must impose this restriction.
-     * 
-     ** @param datamodel 
-     * @param controlLevel 
+     *
+     ** @param datamodel
+     * @param controlLevel
      * @return
      */
     public abstract DataModel assignControlLevel(final DataModel datamodel, final ControlLevel controlLevel);
-    
+
     /** What is the current ControlLevel for the given datamodel.
-     * 
+     *
      * <b>This method is only to be used by SESAT classes, not skin implementations!</b>
      * Future version must impose this restriction.
-     * 
+     *
      * @param datamodel related datamodel we are looking for its control level
      * @return the current control level
      */
@@ -200,10 +200,10 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
             if(null == clsName){
                 throw new SiteKeyedFactoryInstantiationException(
-                        "Couldn't find " + DATA_MODEL_FACTORY_IMPL + " in " + siteConf.getProperties().toString(), 
+                        "Couldn't find " + DATA_MODEL_FACTORY_IMPL + " in " + siteConf.getProperties().toString(),
                         new NullPointerException());
             }
-                
+
             @SuppressWarnings("unchecked")
             final Class<DataModelFactory> cls = (Class<DataModelFactory>) Class.forName(clsName);
 

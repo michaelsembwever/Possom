@@ -36,42 +36,42 @@ import no.sesat.search.result.ResultList;
  * An extension to the ParallelSearchCommandExecutor that supports individual thread pools for each skin's different
  *  commands.
  * Since each command's SearchConfiguration is a singleton (against the given the skin, mode, and id).
- * 
+ *
  * Any SearchCommand that misbehaves has it's corresponding pool frozen to the active number of threads.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor {
-   
-    private static final Map<SearchConfiguration,Throttle> THROTTLES 
+
+    private static final Map<SearchConfiguration,Throttle> THROTTLES
             = new HashMap<SearchConfiguration,Throttle>();
-    
+
     private static final ReadWriteLock THROTTLES_LOCK = new ReentrantReadWriteLock();
-    
+
     private static volatile long lastThrottleLog = System.currentTimeMillis() / 60000;
-    
+
     public ThrottledSearchCommandExecutor(){}
-    
+
 
     @Override
     public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
             Collection<SearchCommand> callables) throws InterruptedException  {
-        
+
         final Collection<SearchCommand> allowedCallables = new ArrayList<SearchCommand>(callables);
-        
+
         for(SearchCommand command : callables){
-            
+
             final Throttle throttle = getThrottle(command.getSearchConfiguration());
-            
+
             if(throttle.isThrottled()){
-                
+
                 LOG.error(command.getSearchConfiguration() + " is throttled and will not be executed");
                 allowedCallables.remove(command);
                 command.handleCancellation();
-                
+
             }else{
-                
+
                 throttle.incrementPedal();
             }
         }
@@ -80,35 +80,35 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
 
             logThrottles();
             lastThrottleLog = System.currentTimeMillis() / 60000;
-        }        
-        
+        }
+
         return super.invokeAll(allowedCallables);
     }
 
     @Override
     public Map<Future<ResultList<? extends ResultItem>>, SearchCommand> waitForAll(
-            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results, 
+            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
             final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException {
-        
+
         try{
             return super.waitForAll(results, timeoutInMillis);
-            
+
         }finally{
-            
+
             for(SearchCommand command : results.values()){
 
                 final Throttle throttle = getThrottle(command.getSearchConfiguration());
-                                
+
                 if(command.isCancelled()){
-                    
-                    LOG.warn("FREEZING (at " + Math.max(1, throttle.getPedal()) 
+
+                    LOG.warn("FREEZING (at " + Math.max(1, throttle.getPedal())
                             + ") THREAD POOL EXECUTOR " + command.getSearchConfiguration() + '\n');
 
                     // we freeze thread pool at current size (excluding the just failed callable)
                     throttle.throttle();
 
                 }else if(throttle.isThrottled()){
-                    
+
                     LOG.warn("Restoring ThreadPoolExecutor " + command.getSearchConfiguration() + '\n');
 
                     // command was successful unfreeze thread pool
@@ -119,51 +119,51 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
             }
         }
     }
-    
+
     protected Throttle getThrottle(final SearchConfiguration config) {
-        
+
         Throttle throttle;
         try{
-            
+
             THROTTLES_LOCK.readLock().lock();
             throttle = THROTTLES.get(config);
-        
+
         }finally{
             THROTTLES_LOCK.readLock().unlock();
         }
-        
+
         if(null == throttle){
             try{
-            
+
                 THROTTLES_LOCK.writeLock().lock();
-                
+
                 throttle = new Throttle();
-                
+
                 THROTTLES.put(config, throttle);
-                
+
             }finally{
                 THROTTLES_LOCK.writeLock().unlock();
             }
         }
-        
+
         return throttle;
     }
-    
+
     private static void logThrottles(){
-        
+
         final StringBuilder sb = new StringBuilder();
         THROTTLES_LOCK.readLock().lock();
         for(Map.Entry<SearchConfiguration,Throttle> entry : THROTTLES.entrySet()){
             sb.append('\n' + entry.getKey().toString() + " executing " + entry.getValue().getPedal());
         }
         THROTTLES_LOCK.readLock().unlock();
-        
+
         LOG.debug(sb.toString());
     }
-            
-        
+
+
     private static final class Throttle{
-    
+
         private int limit = Integer.MAX_VALUE;
 
         private volatile int pedal = 0;

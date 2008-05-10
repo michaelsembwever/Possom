@@ -41,7 +41,7 @@ import java.net.URLDecoder;
  *
  * The default encoding is utf-8.
  *
- * @author thomas
+ *
  */
 public final class UrlDecodeDirective extends Directive {
 

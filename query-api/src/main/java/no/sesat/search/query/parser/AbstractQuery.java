@@ -39,14 +39,14 @@ import no.sesat.search.query.token.TokenPredicate;
  * Is thread safe. No methods return null.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractQuery implements Query {
 
     private final FirstLeafFinder finder = new FirstLeafFinder();
     private final Counter counter = new Counter();
     private final PredicateCollector predicateCollector;
-    
+
     private final TokenEvaluationEngine.State evaluationState;
 
     private final String queryStr;
@@ -61,7 +61,7 @@ public abstract class AbstractQuery implements Query {
             public ParentFinder getParentFinder() {
                 return parentFinder;
             }
-            
+
             @Override
             public boolean isBlank() {
                 return blank;
@@ -72,7 +72,7 @@ public abstract class AbstractQuery implements Query {
      * @param queryStr the query string as inputted from the user.
      */
     protected AbstractQuery(final String queryStr) {
-        
+
         this.queryStr = queryStr;
         predicateCollector  = new PredicateCollector(this);
         evaluationState = new TokenEvaluationEngine.State(){
@@ -91,7 +91,7 @@ public abstract class AbstractQuery implements Query {
             public Set<TokenPredicate> getPossiblePredicates() {
                 return predicateCollector.getPossiblePredicates();
             }
-            
+
         };
     }
 

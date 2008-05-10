@@ -27,7 +27,7 @@ import no.sesat.search.result.*;
 /**
  *
  * @param T
- * @author magnuse
+ *
  * @version $Id$
  */
 public final class OvertureSearchResult<T extends ResultItem> extends BasicResultList<T> {

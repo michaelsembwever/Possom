@@ -36,7 +36,7 @@ import no.sesat.search.site.Site;
  * For example: "term1 ANDNOT term2".
  * <b>Objects of this class are immutable</b>
  *
- * @author <a hrefAndNotClauseImplk@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class AndNotClauseImpl extends AbstractOperationClause implements AndNotClause {

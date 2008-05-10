@@ -56,7 +56,7 @@ import org.testng.annotations.Test;
 
 /** Tests that all the velocity templates in the current skin are syntactically.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class VelocityTemplateTest extends DataModelTestCase{
@@ -86,8 +86,8 @@ public final class VelocityTemplateTest extends DataModelTestCase{
 
         final StringBuilder errors = new StringBuilder();
 
-        final String base = System.getProperty("basedir") 
-			+ File.separatorChar  + "src" + File.separatorChar  + "main" 
+        final String base = System.getProperty("basedir")
+			+ File.separatorChar  + "src" + File.separatorChar  + "main"
 			+ File.separatorChar  + "templates" + File.separatorChar;
         LOG.info("Looking in " + base);
 
@@ -199,8 +199,8 @@ public final class VelocityTemplateTest extends DataModelTestCase{
 
 		final String urlStr = base
                         + (wf.exists() && wf.isDirectory() ? "/war/src/main/templates/" : "/src/main/templates/")
-                        + rsc; 
-			
+                        + rsc;
+
                 return new URI("file://" + urlStr.replace(File.separatorChar, '/')).normalize().toURL();
 
             }catch (URISyntaxException ex) {

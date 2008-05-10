@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
 
 /** Default implementation of the DataModelFactory.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 final class DataModelFactoryImpl extends DataModelFactory{
@@ -74,23 +74,23 @@ final class DataModelFactoryImpl extends DataModelFactory{
 
         try{
             final Class<DataModel> cls = DataModel.class;
-            
-            final PropertyDescriptor[] propDescriptors 
+
+            final PropertyDescriptor[] propDescriptors
                     = Introspector.getBeanInfo(DataModel.class).getPropertyDescriptors();
             final Property[] properties = new Property[propDescriptors.length];
             for(int i = 0; i < properties.length; ++i){
                 properties[i] = new Property(
-                        propDescriptors[i].getName(), 
+                        propDescriptors[i].getName(),
                         propDescriptors[i] instanceof MappedPropertyDescriptor
                         ? new MapDataObjectSupport(Collections.EMPTY_MAP)
                         : null);
             }
-            
+
             final InvocationHandler handler = new BeanDataModelInvocationHandler(
                     new BeanDataModelInvocationHandler.PropertyInitialisor(DataModel.class, properties));
-            
+
             return (DataModel) ConcurrentProxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
-            
+
         }catch(IntrospectionException ie){
             throw new IllegalStateException("Need to introspect DataModel properties before instantiation");
         }
@@ -121,19 +121,19 @@ final class DataModelFactoryImpl extends DataModelFactory{
 
     public DataModel assignControlLevel(final DataModel datamodel, final ControlLevel controlLevel){
 
-        final BeanDataModelInvocationHandler handler 
+        final BeanDataModelInvocationHandler handler
                 = (BeanDataModelInvocationHandler) Proxy.getInvocationHandler(datamodel);
-        
+
         handler.setControlLevel(controlLevel);
-        
+
         return datamodel;
     }
-    
+
     public ControlLevel currentControlLevel(final DataModel datamodel){
-        
-        final BeanDataModelInvocationHandler handler 
+
+        final BeanDataModelInvocationHandler handler
                 = (BeanDataModelInvocationHandler) Proxy.getInvocationHandler(datamodel);
-        
+
         return ((BeanDataModelInvocationHandler.DataModelBeanContextSupport)handler.context).getControlLevel();
     }
 

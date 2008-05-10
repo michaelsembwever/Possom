@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  * TODO Replace the code in createQuery with a RunningQueryTransformer sub-module that is
  * configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
  *
- * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
+ *
  * @version $Id$
  */
 public final class QueryFactoryImpl extends QueryFactory {

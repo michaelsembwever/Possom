@@ -25,7 +25,7 @@ package no.sesat.search.query;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface AndClause extends DoubleOperatorClause{
 

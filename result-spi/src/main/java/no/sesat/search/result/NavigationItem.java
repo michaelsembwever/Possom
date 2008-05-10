@@ -15,23 +15,23 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * NavigationItem.java
- * 
+ *
  * Created on 11/06/2007, 10:42:11
- * 
+ *
  */
 
 package no.sesat.search.result;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public interface NavigationItem extends ResultList<NavigationItem>{
-    
+
     boolean isSelected();
     void setSelected(boolean selected);
-    
+
     boolean isChildSelected();
     NavigationItem getSelectedChild();
     NavigationItem getChildByTitle(String title);

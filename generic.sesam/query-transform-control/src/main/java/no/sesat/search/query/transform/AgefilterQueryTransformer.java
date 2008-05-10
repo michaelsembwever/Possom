@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public final class AgefilterQueryTransformer extends AbstractQueryTransformer {

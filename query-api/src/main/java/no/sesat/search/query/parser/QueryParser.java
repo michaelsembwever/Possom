@@ -45,7 +45,7 @@ import no.sesat.search.query.token.TokenEvaluationEngineContext;
  * This interface does not define the behaviour as to how the QueryParser will get the query string.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface QueryParser {
 

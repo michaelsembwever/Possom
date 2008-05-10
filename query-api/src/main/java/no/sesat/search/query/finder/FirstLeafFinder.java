@@ -30,7 +30,7 @@ public final class FirstLeafFinder extends AbstractReflectionVisitor implements 
     private LeafClause firstLeaf;
 
     public synchronized LeafClause getFirstLeaf(final Clause root) {
-        
+
         visit(root);
         return firstLeaf;
     }

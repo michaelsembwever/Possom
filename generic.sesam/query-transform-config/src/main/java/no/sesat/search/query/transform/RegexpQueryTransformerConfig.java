@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * Configuration bean for RegexpQueryTransformer.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  *
  */
 @Controller("RegexpQueryTransformer")

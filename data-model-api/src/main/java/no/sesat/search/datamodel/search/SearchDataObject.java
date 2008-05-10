@@ -15,9 +15,9 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * SearchDataObject.java
- * 
+ *
  * Created on 15/05/2007, 11:38:04
- * 
+ *
  */
 
 package no.sesat.search.datamodel.search;
@@ -32,25 +32,25 @@ import no.sesat.search.result.ResultList;
 
 /** Contains Search Command and Result information.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject
 public interface SearchDataObject {
-    
+
     SearchConfiguration getConfiguration();
-    
+
     void setConfiguration(SearchConfiguration configuration);
-        
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     ResultList<ResultItem> getResults();
 
     /**
-     * 
-     * @param results 
+     *
+     * @param results
      */
     @AccessAllow({})
     void setResults(ResultList<ResultItem> results);
@@ -58,17 +58,17 @@ public interface SearchDataObject {
     // QueryDataObject ------------------------------------------------------------
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     QueryDataObject getQuery();
 
     /**
-     * 
-     * @param query 
+     *
+     * @param query
      */
     @AccessAllow({})
     void setQuery(QueryDataObject query);
-    
-    
+
+
 }

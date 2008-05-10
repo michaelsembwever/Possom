@@ -31,13 +31,13 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  *
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class JavaScriptDirective extends AbstractDirective {
 
     private static final Logger LOG = Logger.getLogger(JavaScriptDirective.class);
-    
+
     private static final String NAME = "javascript";
 
    /**
@@ -50,7 +50,7 @@ public final class JavaScriptDirective extends AbstractDirective {
     public String getName() {
         return NAME;
     }
-    
+
    /**
      * {@inheritDoc}
      */
@@ -66,9 +66,9 @@ public final class JavaScriptDirective extends AbstractDirective {
 
             final String js = "/javascript/" + getArgument(context, node, 0);
             final String attributes = getArgument(context, node, 1);
-            
+
             final String url = FindResource.find(getDataModel(context).getSite().getSite(), js);
-            
+
             // eg <script type='text/javascript' src='/javascript/media.js'></script>
             writer.write("<script type='text/javascript' src=\"" + url + "\" " + attributes + "></script>");
 

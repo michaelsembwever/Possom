@@ -28,8 +28,8 @@ import no.sesat.search.mode.SearchModeFactory.Context;
 import org.w3c.dom.Element;
 
 /** Minimum behavior defined for any SearchConfiguration implementation.
- * 
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 public interface SearchConfiguration extends Serializable {
@@ -97,22 +97,22 @@ public interface SearchConfiguration extends Serializable {
     void setResultsToReturn(int numberOfResults);
 
     /**
-     * @return 
+     * @return
      */
     public String getQueryParameter();
 
     /**
-     * @return 
+     * @return
      */
     boolean isAlwaysRun();
-    
+
     /**
-     * @return 
+     * @return
      */
     boolean isRunBlank();
-    
+
     /**
-     * @return 
+     * @return
      */
     String getStatisticalName();
 
@@ -133,19 +133,19 @@ public interface SearchConfiguration extends Serializable {
      * Removes all field filters associated with this configuration.
      */
     void clearFieldFilters();
-    
+
     /**
      * Is the command used asynchronously, for example by ajax calls.
      * @return
      */
     boolean isAsynchronous();
-        
+
     /**
-     * 
-     * @param element 
-     * @param inherit 
-     * @param context 
+     *
+     * @param element
+     * @param inherit
+     * @param context
      * @return
      */
-    SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context); 
+    SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context);
 }

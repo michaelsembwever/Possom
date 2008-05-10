@@ -28,9 +28,9 @@ import org.jscience.geography.coordinates.crs.ReferenceEllipsoid;
 
 /**
  * Utility class for GEO search.
- * 
- * @author <a href="mailto:anders@sesam.no">Anders Johan Jamtli</a>
- * @author Stian Hegglund.
+ *
+ *
+ *
  * @version $Id$
  */
 public class GeoSearchUtil {
@@ -43,13 +43,13 @@ public class GeoSearchUtil {
     private static final String MAX_X = "maxX";
     private static final String MIN_Y = "minY";
     private static final String MAX_Y = "maxY";
-    
+
     /** UTM center x cordinate. */
     private static final String CENTER_X = "cx";
-    
+
     /** UTM center y cordinate. */
     private static final String CENTER_Y = "cy";
-    
+
     /** Request parameter name for radius restriction in GEO search. */
     private static final String RADIUS_PARAMETER_NAME = "radius";
 
@@ -78,7 +78,7 @@ public class GeoSearchUtil {
             throw new IllegalArgumentException(
                     "Given requestParameter object must contain parameters: minX,maxX,minY,maxY");
         }
-        
+
         if(hasCenterPoint(requestParameters)){
             int centerX = Integer.parseInt(requestParameters.getValue(CENTER_X).getString());
             int centerY = Integer.parseInt(requestParameters.getValue(CENTER_Y).getString());
@@ -86,7 +86,7 @@ public class GeoSearchUtil {
             LatLong latLong = UTM.utmToLatLong(utm, ReferenceEllipsoid.WGS84);
             final double latLongX = latLong.getOrdinate(0);
             final double latLongY = latLong.getOrdinate(1);
-            
+
             StringBuilder centerPoint = new StringBuilder();
             centerPoint.append("(").append(latLongX).append(",").append(latLongY).append(")");
             return centerPoint.toString();
@@ -128,7 +128,7 @@ public class GeoSearchUtil {
         if(hasCenterPoint(requestParameters)){
             return true;
         }
-        
+
         if (requestParameters.getValue(MIN_X) == null || requestParameters.getValue(MAX_X) == null
             || requestParameters.getValue(MIN_Y) == null || requestParameters.getValue(MAX_Y) == null) {
             return false;
@@ -140,14 +140,14 @@ public class GeoSearchUtil {
             || requestParameters.getValue(MAX_Y).getString().length() == 0) {
             return false;
         }
-        
-       
+
+
         return true;
     }
 
     /**
      * Responsible for checking if a ParameterDataObject has parameters for centerpoint.
-     * 
+     *
      * @param requestParameters The ParameterDataObject to check.
      * @return true if the given object has x,y and restriction radius.
      */
@@ -156,12 +156,12 @@ public class GeoSearchUtil {
                 requestParameters.getValue(RADIUS_PARAMETER_NAME) == null){
             return false;
         }
-        
+
         if(requestParameters.getValue(CENTER_X).getString().length() == 0 || requestParameters.getValue(CENTER_Y).getString().length() == 0||
         requestParameters.getValue(RADIUS_PARAMETER_NAME).getString().length() == 0){
             return false;
         }
-        
+
         return true;
     }
 
@@ -170,14 +170,14 @@ public class GeoSearchUtil {
      * @param pdo The ParameterDataObject.
      * @return The radius from the centerpoint to search.
      */
-    public static String getRadiusRestriction(final ParametersDataObject pdo) { 
+    public static String getRadiusRestriction(final ParametersDataObject pdo) {
         if (isGeoSearch(pdo)) {
             if(hasCenterPoint(pdo)){
                 return pdo.getValue(RADIUS_PARAMETER_NAME).getString();
             }
             final int minX = Integer.parseInt((String) pdo.getValue(MIN_X).getString());
             final int maxX = Integer.parseInt((String) pdo.getValue(MAX_X).getString());
-            
+
             double restrictedRadius =  ((maxX - minX) / 2) / 1000.0;
             return Double.toString(restrictedRadius);
         }

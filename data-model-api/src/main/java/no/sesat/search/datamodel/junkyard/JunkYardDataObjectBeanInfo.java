@@ -30,13 +30,13 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class JunkYardDataObjectBeanInfo extends MapDataObjectBeanInfo{
 
     // Constants -----------------------------------------------------
-    
+
     private static final Class BEAN_CLASS = JunkYardDataObject.class;
 
     private static final Logger LOG = Logger.getLogger(JunkYardDataObjectBeanInfo.class);

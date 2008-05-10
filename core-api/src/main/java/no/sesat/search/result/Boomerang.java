@@ -26,14 +26,14 @@ import org.apache.log4j.Logger;
  *
  * <b> Immutable. </b>
  *
- * @author Thomas Kjærstad <a href="thomas@sesam.no">thomas@sesam.no</a>
- * @author Mck <a href="mick@sesam.no">mick@sesam.no</a>
+ *
+ *
  * @version $Id$
  */
 public final class Boomerang {
 
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(Boomerang.class);
 
     private static final String BASE_URL = "boomerang/";
@@ -41,14 +41,14 @@ public final class Boomerang {
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
-    
+
     public static String getUrl(
             final Site site,
             final String orgUrl,
             final String paramString) {
-        
+
         final StringBuilder toUrl = new StringBuilder("http://" + site.getName() + BASE_URL);
-        
+
         // click attributes comes as a string seperated by ';'
         final StringTokenizer tokeniser = new StringTokenizer(paramString, ";");
         while(tokeniser.hasMoreTokens()){
@@ -80,14 +80,14 @@ public final class Boomerang {
     }
 
     // Constructors -------------------------------------------------
-    
+
     // Public --------------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }

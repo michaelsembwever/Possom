@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 public final class StockSearchCommand extends AbstractSearchCommand {

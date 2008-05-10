@@ -42,27 +42,27 @@ public final class SendMailServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(SendMailServlet.class);
 
     protected void doGet(
-            final HttpServletRequest req, 
+            final HttpServletRequest req,
             final HttpServletResponse res) throws ServletException, IOException {
 
         final DataModel datamodel = (DataModel) req.getSession().getAttribute(DataModel.KEY);
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
-        
+
         final String emailFrom = req.getParameter("emailFrom");
         final String emailTo = req.getParameter("emailTo");
-        
+
         String name = req.getParameter("mailName");
         if (name.trim().equals("")){
             name = "ukjent";
         }
-        
+
         String phone = req.getParameter("phone");
         if (phone.trim().equals("")){
             phone = "";
         }else{
             phone = " - tlf: " + phone;
         }
-        
+
         try {
             final InternetAddress from = new InternetAddress(emailFrom);
             final InternetAddress to = new InternetAddress(emailTo);
@@ -70,23 +70,23 @@ public final class SendMailServlet extends HttpServlet {
             final Session session = Session.getDefaultInstance(props);
 
             final Message msg = new MimeMessage(session);
-            final String txt = req.getParameter("text") 
+            final String txt = req.getParameter("text")
                     + "\n\n\n" + "Denne forespørselen er sendt via Sesam bedriftssøk (http://www.sesam.no)";
-            
+
             msg.setSubject("Kontaktskjema Sesam fra " + name + phone);
             msg.setText(txt);
             msg.setFrom(from);
             msg.addRecipient(MimeMessage.RecipientType.TO, to);
 
             Transport.send(msg);
-            
+
         } catch (MessagingException e) {
             LOG.error(e.getMessage(), e);
         }
-        
+
         final String redir = req.getContextPath() + req.getParameter("rdir");
         res.sendRedirect(redir);
     }
 
-   
+
 }

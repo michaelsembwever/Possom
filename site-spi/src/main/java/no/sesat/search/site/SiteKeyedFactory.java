@@ -27,15 +27,15 @@ package no.sesat.search.site;
  *  SiteKeyedFactories by default have a synchronised site to factory mapping.
  *  If this is not the case it must be clearly noted in the class's javadoc.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public interface SiteKeyedFactory {
-    
+
     /** Remove the factory the maps to the given site. *
      * @param site remove factory corresponding to this site.
      * @return true if a factory was successfully removed.
      */
     boolean remove(Site site);
-    
+
 }

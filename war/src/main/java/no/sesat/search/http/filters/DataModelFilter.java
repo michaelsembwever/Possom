@@ -71,7 +71,7 @@ import org.apache.log4j.Logger;
 /** Ensures that a session is created, and that a new DataModel, with Site and Browser dataObjects,
  * exists within it.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class DataModelFilter implements Filter {
@@ -237,7 +237,7 @@ public final class DataModelFilter implements Filter {
     }
 
     private static SiteDataObject getSiteDO(
-            final ServletRequest request, 
+            final ServletRequest request,
             final DataModelFactory factory,
             final DataModel datamodel) {
 
@@ -300,7 +300,7 @@ public final class DataModelFilter implements Filter {
     private static void cleanDataModel(final DataModelFactory factory, final DataModel datamodel){
 
         if(null != datamodel.getPage() && null != datamodel.getPage().getCurrentTab()){
-            
+
             final SearchTab.Scope scope = datamodel.getPage().getCurrentTab().getScope();
             // we need to reset control level so to be able to unset properties in it.
             factory.assignControlLevel(datamodel, ControlLevel.DATA_MODEL_CONSTRUCTION);
@@ -357,7 +357,7 @@ public final class DataModelFilter implements Filter {
      * @param parameter The parameter to retrieve
      * @return The correct decoded parameter
      *
-     * @author <a href="mailto:anders.johan.jamtli@sesam.no">Anders Johan Jamtli</a>
+     *
      */
     private static String getParameterSafely(final HttpServletRequest request, final String parameter){
 

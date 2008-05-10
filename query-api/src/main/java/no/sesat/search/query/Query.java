@@ -27,7 +27,7 @@ import no.sesat.search.query.token.TokenEvaluationEngine;
  * that visitors are free to use.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface Query extends Serializable {
 
@@ -53,24 +53,24 @@ public interface Query extends Serializable {
 
     /** Return the number of terms in this query.
      * Terms are represented by LeafClauses.
-     ** @return 
+     ** @return
      */
     int getTermCount();
-    
+
     /** Is the query blank (or just full of useless symbols). *
-     * @return 
+     * @return
      */
     boolean isBlank();
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     ParentFinder getParentFinder();
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     TokenEvaluationEngine.State getEvaluationState();
 }

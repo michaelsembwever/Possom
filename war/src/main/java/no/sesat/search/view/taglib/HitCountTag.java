@@ -32,7 +32,7 @@ import no.sesat.search.site.Site;
 
 /** SimpleTagSupport around the HitCount utility class.
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class HitCountTag extends SimpleTagSupport {
@@ -40,14 +40,14 @@ public final class HitCountTag extends SimpleTagSupport {
     private int hitcount;
 
     /**
-    * Called by the container to invoke this tag. 
+    * Called by the container to invoke this tag.
     * The implementation of this method is provided by the tag library developer,
     * and handles all tag processing, body iteration, etc.
-     * @throws javax.servlet.jsp.JspException 
+     * @throws javax.servlet.jsp.JspException
      */
     @Override
     public void doTag() throws JspException {
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         final JspWriter out = cxt.getOut();
 

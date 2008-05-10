@@ -69,7 +69,7 @@ import no.sesat.search.result.BasicResultList;
 /**
  * Used by the rssDecorator.jsp to print out the results in rss format.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  */
 public final class SyndicationGenerator {
 
@@ -127,10 +127,10 @@ public final class SyndicationGenerator {
      * Creates a new instance.
      *
      * @param context The context this class needs to do its work.
-     * @throws SyndicationNotSupportedException 
+     * @throws SyndicationNotSupportedException
      */
     public SyndicationGenerator(final Context context) throws SyndicationNotSupportedException{
-        
+
         if(null == context.getTab().getRssResultName()){ throw new SyndicationNotSupportedException(); }
 
         this.context = context;
@@ -138,7 +138,7 @@ public final class SyndicationGenerator {
         this.result = null != context.getDataModel().getSearch(context.getTab().getRssResultName())
                 ? context.getDataModel().getSearch(context.getTab().getRssResultName()).getResults()
                 : new BasicResultList<ResultItem>();
-        
+
         this.site = context.getSite();
 
         this.text = TextMessages.valueOf(getTextMessagesContext());
@@ -391,10 +391,10 @@ public final class SyndicationGenerator {
 //            }
 //        };
 //    }
-    
+
     // Inner classes -------------------------------------------------
-    
+
     public static final class SyndicationNotSupportedException extends Exception{
-        
+
     }
 }

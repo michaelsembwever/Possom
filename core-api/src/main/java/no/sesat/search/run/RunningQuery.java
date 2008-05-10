@@ -30,19 +30,19 @@ import no.sesat.search.view.config.SearchTab;
 /** A RunningQuery is the central controller for a user's submitted search.
  *
  * @version $Id$
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
+ *
  */
 public interface RunningQuery {
 
     public interface Context extends BaseContext, ResourceContext, DataModelContext {
-        /** 
-         * 
+        /**
+         *
          * @return
          */
         SearchMode getSearchMode();
-        /** 
-         * 
+        /**
+         *
          * @return
          */
         SearchTab getSearchTab();

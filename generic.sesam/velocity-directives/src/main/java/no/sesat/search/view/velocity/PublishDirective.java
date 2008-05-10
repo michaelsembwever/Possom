@@ -46,7 +46,7 @@ import org.apache.velocity.app.VelocityEngine;
  * </code>
  *
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public final class PublishDirective extends AbstractDirective {

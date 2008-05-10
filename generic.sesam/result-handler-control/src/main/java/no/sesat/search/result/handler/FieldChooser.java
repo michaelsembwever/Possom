@@ -26,19 +26,19 @@ import no.sesat.search.result.ResultList;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class FieldChooser implements ResultHandler {
-    
+
     private static final Logger LOG = Logger.getLogger(FieldChooser.class);
 
     private final ClassLoader cl = FieldChooserResultHandlerConfig.class.getClassLoader();
     private final FieldChooserResultHandlerConfig config;
 
     /**
-     * 
-     * @param config 
+     *
+     * @param config
      */
     public FieldChooser(final ResultHandlerConfig config) {
         final ClassLoader cl = config.getClass().getClassLoader();
@@ -53,31 +53,31 @@ public final class FieldChooser implements ResultHandler {
     }
 
     private void chooseField(final ResultList<ResultItem> searchResult, final Collection<String> fields) {
-        
+
         if (searchResult != null) {
-            
+
             for (ResultItem i : searchResult.getResults()) {
-                
+
                 ResultItem item = i;
-                
+
                 for (String field : fields) {
                     if (item.getField(field) != null) {
                         item = item.addField(config.getTarget(), item.getField(field));
                         break;
                     }
                 }
-                
+
                 if (config.getDefaultValue() != null && item.getField(config.getTarget()) == null) {
                     item = item.addField(config.getTarget(), config.getDefaultValue());
                 }
-                
-                if (item instanceof ResultList<?>) {                    
+
+                if (item instanceof ResultList<?>) {
                     chooseField((ResultList<ResultItem>)item, fields);
                 }
-                
+
                 searchResult.replaceResult(i, item);
             }
-            
+
         }
     }
 

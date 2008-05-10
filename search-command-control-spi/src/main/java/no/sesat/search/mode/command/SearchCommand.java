@@ -30,7 +30,7 @@ import no.sesat.search.result.ResultList;
 
 /** Behavour requirements for any implementating Search Command.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public interface SearchCommand extends Callable<ResultList<? extends ResultItem>> {
@@ -53,9 +53,9 @@ public interface SearchCommand extends Callable<ResultList<? extends ResultItem>
      * @return if cleaning was actually performed
      **/
     boolean handleCancellation();
-    
+
     boolean isCancelled();
-    
+
     boolean isPaginated();
-    
+
 }

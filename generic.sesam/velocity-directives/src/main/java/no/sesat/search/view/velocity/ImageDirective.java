@@ -31,13 +31,13 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  *
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class ImageDirective extends AbstractDirective {
 
     private static final Logger LOG = Logger.getLogger(ImageDirective.class);
-    
+
     private static final String NAME = "image";
 
    /**
@@ -50,7 +50,7 @@ public final class ImageDirective extends AbstractDirective {
     public String getName() {
         return NAME;
     }
-    
+
    /**
      * {@inheritDoc}
      */
@@ -66,9 +66,9 @@ public final class ImageDirective extends AbstractDirective {
 
             final String image = "/images/" + getArgument(context, node, 0);
             final String attributes = getArgument(context, node, 1);
-            
+
             final String url = FindResource.find(getDataModel(context).getSite().getSite(), image);
-            
+
             writer.write("<img src=\"" + url + "\" " + attributes + "/>");
 
             if (node.getLastToken().image.endsWith("\n")) {

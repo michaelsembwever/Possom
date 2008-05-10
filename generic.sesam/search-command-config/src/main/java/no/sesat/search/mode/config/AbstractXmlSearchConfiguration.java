@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractXmlSearchConfiguration extends CommandConfig {

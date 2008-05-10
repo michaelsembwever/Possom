@@ -29,7 +29,7 @@ import no.sesat.search.datamodel.generic.MapDataObject;
 /**
  *
  * @deprecated Provides access to datamodel elements not yet migrated into the DataModel proper.
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject

@@ -27,7 +27,7 @@ import java.util.Map;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
@@ -37,15 +37,15 @@ public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
 
 
     /**
-     * 
-     * @param command 
+     *
+     * @param command
      */
     public FastSearchResult() {}
 
     /**
-     * 
-     * @param navigatorName 
-     * @param modifier 
+     *
+     * @param navigatorName
+     * @param modifier
      */
     public void addModifier(final String navigatorName, final Modifier modifier) {
 
@@ -63,8 +63,8 @@ public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
 
 
     /**
-     * 
-     * @param navigatorName 
+     *
+     * @param navigatorName
      * @return
      * TODO: should not return null?
      */
@@ -73,13 +73,13 @@ public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
     }
 
     /**
-     * 
-     * @param navigatorName 
-     * @param modifierName 
-     * @return 
+     *
+     * @param navigatorName
+     * @param modifierName
+     * @return
      */
     public Modifier getModifier(final String navigatorName, final String modifierName) {
-        final List modifiers = getModifiers(navigatorName);      
+        final List modifiers = getModifiers(navigatorName);
 
         if (modifiers != null) {
             for (final Iterator iterator = modifiers.iterator(); iterator.hasNext();) {
@@ -94,10 +94,10 @@ public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
     }
 
     /**
-     * 
-     * @param navigatorName 
-     * @param modifierName 
-     * @return 
+     *
+     * @param navigatorName
+     * @param modifierName
+     * @return
      */
     public int getModifierCount(final String navigatorName, final String modifierName) {
         final Modifier modifier = getModifier(navigatorName, modifierName);
@@ -110,18 +110,18 @@ public class FastSearchResult<T extends ResultItem> extends BasicResultList<T>{
     }
 
     /**
-     * 
-     * @param currentNavigator 
-     * @param navKey 
+     *
+     * @param currentNavigator
+     * @param navKey
      */
     public void addCurrentNavigator(final Navigator currentNavigator, final String navKey) {
         currentNavigators.put(navKey, currentNavigator);
     }
 
     /**
-     * 
-     * @param navigatorName 
-     * @return 
+     *
+     * @param navigatorName
+     * @return
      */
     public Navigator getCurrentNavigator(final String navigatorName) {
         return currentNavigators.get(navigatorName);

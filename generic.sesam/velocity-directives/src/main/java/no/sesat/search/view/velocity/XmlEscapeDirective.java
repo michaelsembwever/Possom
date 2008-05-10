@@ -36,7 +36,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public class XmlEscapeDirective extends Directive {

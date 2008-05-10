@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 
 /**
  *
- * @author Geir H. Pettersen(T-Rank)
+ *
  */
 @Controller("ExactFieldFilterQueryTransformer")
 public class ExactFieldFilterQueryTransformerConfig extends AbstractQueryTransformerConfig {

@@ -29,8 +29,8 @@ import no.sesat.search.query.parser.*;
 import org.apache.log4j.Logger;
 
 /**
- * 
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
+ *
  * @version $Id$
  */
 public final class ForestFinder extends AbstractReflectionVisitor {
@@ -41,13 +41,13 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     private boolean searching = false;
     private final List<DoubleOperatorClause> roots = new ArrayList<DoubleOperatorClause>();
 
-    private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY 
+    private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
             = "visit(object) can't be called directly on this visitor!";
 
     /**
-     * 
-     * @param root 
-     * @return 
+     *
+     * @param root
+     * @return
      */
     public synchronized List<DoubleOperatorClause> findForestRoots(final OperationClause root) {
 
@@ -63,8 +63,8 @@ public final class ForestFinder extends AbstractReflectionVisitor {
 
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final OperationClause clause) {
 
@@ -72,8 +72,8 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final XorClause clause) {
 
@@ -82,8 +82,8 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final DoubleOperatorClause clause) {
 
@@ -93,8 +93,8 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     }
 
     /**
-     * 
-     * @param clause 
+     *
+     * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
         // leaves can't be forest roots :-)

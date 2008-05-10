@@ -35,17 +35,17 @@ import no.sesat.search.result.ResultList;
 /**
  * A {@link no.sesat.search.executor.SearchCommandExecutor} executing a list of callables in parallel.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
-    private final ExecutorService EXECUTOR = 
+    private final ExecutorService EXECUTOR =
                 new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
                 // Alternative to find memory leakages
                 //new DebugThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
-    
+
     private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
     /**
@@ -53,12 +53,12 @@ class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
      */
     public ParallelSearchCommandExecutor() {
     }
-    
+
     @Override
     public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
             Collection<SearchCommand> callables) throws InterruptedException  {
 
-        
+
         if(LOG.isDebugEnabled()){
             if( getExecutorService() instanceof ThreadPoolExecutor){
 
@@ -67,7 +67,7 @@ class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
                 if(tpe instanceof ParallelSearchCommandExecutor.DebugThreadPoolExecutor){
 
-                    final ParallelSearchCommandExecutor.DebugThreadPoolExecutor dtpe 
+                    final ParallelSearchCommandExecutor.DebugThreadPoolExecutor dtpe
                             = (ParallelSearchCommandExecutor.DebugThreadPoolExecutor)tpe;
 
                     LOG.debug("Still executing...");
@@ -87,45 +87,45 @@ class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
                 }
             }
         }
-        
+
         return super.invokeAll(callables);
-    }    
+    }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @Override
     protected ExecutorService getExecutorService(){
         return EXECUTOR;
     }
-      
+
     static class DebugThreadPoolExecutor extends ThreadPoolExecutor{
-        
+
         //final Collection<Runnable> EXECUTING = new ConcurrentSkipListSet<Runnable>(); // jdk1.6
         final Collection<Runnable> EXECUTING = new Vector<Runnable>();
-        
+
         DebugThreadPoolExecutor(int corePoolSize,
                               int maximumPoolSize,
                               long keepAliveTime,
                               TimeUnit unit,
                               BlockingQueue<Runnable> workQueue) {
-            
+
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         }
-        
+
         @Override
         protected void beforeExecute(final Thread t, final Runnable r) {
             super.beforeExecute(t, r);
-            
+
             EXECUTING.add(r);
         }
 
         @Override
         protected void afterExecute(final Runnable r, final Throwable t) {
             super.afterExecute(r, t);
-            
+
             EXECUTING.remove(r);
-        }        
+        }
     }
 }

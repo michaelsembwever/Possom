@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  *
  * The term url component is used to denote a part of a URL, be it a part of the path or a parameter.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractUrlGenerator implements UrlGenerator {

@@ -24,12 +24,12 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
 import org.w3c.dom.Element;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 @ControllerFactory("no.sesat.search.view.navigation.ResultPagingNavigationController")
 public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
-    
+
     /** Used for both the id of the configuration AND the parameter name. **/
     public static final String OFFSET_KEY = "offset";
 
@@ -75,7 +75,7 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
     public String getHitcountSource() {
         return hitcountSource;
 }
-    
+
     public void setHitcountSource(String hitcountSource) {
         this.hitcountSource = hitcountSource;
     }

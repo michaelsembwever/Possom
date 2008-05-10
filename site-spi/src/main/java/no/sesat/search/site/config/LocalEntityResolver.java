@@ -35,11 +35,11 @@ final class LocalEntityResolver implements EntityResolver {
 
         // the latter is only for development purposes when dtds have't been published to production yet
         if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
-            
+
             final String rsc = systemId.substring(systemId.lastIndexOf('/'));
             LOG.info(INFO_LOADING_DTD + rsc);
             return new InputSource(getClass().getResourceAsStream(rsc));
-            
+
         } else {
             // use the default behaviour
             return null;

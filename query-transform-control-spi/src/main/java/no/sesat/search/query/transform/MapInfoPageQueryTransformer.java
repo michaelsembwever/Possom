@@ -23,45 +23,45 @@ import no.sesat.search.datamodel.generic.StringDataObject;
 
 /**
  * Transformes the query if the requestparameters contains a contentId.
- * 
- * @author Stian Hegglund
+ *
+ *
  * @version $Revision:$
  */
 public class MapInfoPageQueryTransformer extends AbstractQueryTransformer {
-     
+
     private final MapInfoPageQueryTransformerConfig config;
-    
-    /** Required constructor. 
+
+    /** Required constructor.
      * @param config Query transformer config
      */
     public MapInfoPageQueryTransformer(final QueryTransformerConfig config){
         this.config = (MapInfoPageQueryTransformerConfig) config;
     }
-    
+
     /**
      * If the request parameteters contains the contentid parameter, append recordid to the query.
-     * 
+     *
      * @see no.sesat.search.query.transform.QueryTransformer
      */
     public String getTransformedQuery() {
         final String originalQuery = getContext().getTransformedQuery();
         Map<String,StringDataObject> requestParameters = getContext().getDataModel().getParameters().getValues();
-       
+
         if(requestParameters != null && requestParameters.containsKey(config.getParameterName())){
             return config.getPrefix() + ":" + requestParameters.get(config.getParameterName()).getString();
         }
-        
-        return originalQuery; 
+
+        return originalQuery;
     }
-    
+
     public String getFilter() {
         Map<String,StringDataObject> requestParameters = getContext().getDataModel().getParameters().getValues();
-       
+
         if(requestParameters != null && requestParameters.containsKey(config.getParameterName()) &&
                 requestParameters.containsKey(config.getFilterParameterName())){
             return "+" + config.getFilterPrefix() + ":'" + requestParameters.get(config.getFilterParameterName()).getString() + "'";
         }
-        
+
         return "";
     }
 }

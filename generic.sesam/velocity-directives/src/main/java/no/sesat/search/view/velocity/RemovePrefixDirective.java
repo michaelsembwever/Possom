@@ -42,7 +42,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * #removePrefix('this is the string to be checked', 'prefix to be removed', 'encoding to use')
  * </code>
  *
- * @author ajamtli
+ *
  */
 public final class RemovePrefixDirective extends Directive {
 

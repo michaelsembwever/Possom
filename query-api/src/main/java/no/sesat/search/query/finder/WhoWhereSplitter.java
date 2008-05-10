@@ -65,7 +65,7 @@ import no.sesat.search.query.token.TokenPredicate;
  * being kept uptodate.<br/>
  *
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class WhoWhereSplitter extends AbstractReflectionVisitor{

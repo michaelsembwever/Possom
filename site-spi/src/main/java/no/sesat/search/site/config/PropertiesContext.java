@@ -26,7 +26,7 @@ import no.sesat.search.site.SiteContext;
 /** Defines the context for consumers of PropertiesLoaders.
  *
  * @version $Id: ResourceContext.java 2045 2006-01-25 12:10:01Z mickw $
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface PropertiesContext extends BaseContext {
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.

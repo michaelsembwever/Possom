@@ -25,7 +25,7 @@ package no.sesat.search.site.config;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface ResourceLoader {
      /** Simple thread.join() wrapper to avoid dealing with InterruptedException.

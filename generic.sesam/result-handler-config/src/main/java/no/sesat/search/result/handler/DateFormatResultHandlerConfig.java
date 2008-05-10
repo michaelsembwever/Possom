@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * Transform fast inputdate to how it will be displayed in tv enrichment . Tv Enrichment
  * will most likely only display Hour of day.
  *
- * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
+ *
  * @version $Id$
  */
 @Controller("DateFormatHandler")

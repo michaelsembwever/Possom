@@ -44,61 +44,61 @@ import org.apache.log4j.Logger;
  * General support to import page fragments from publishing system.
  * Caches content on a one minute basis to reduce outbound socket connections.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class ImportPublish {
-    
+
     // Constants -----------------------------------------------------
 
-    private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
+    private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();
     private static final int REFRESH_PERIOD = 60; // one minute
     private static final int CACHE_CAPACITY = 1000;
 
     private static final Logger LOG = Logger.getLogger(ImportPublish.class);
     private static final Logger DUMP = Logger.getLogger("no.sesat.search.Dump");
-    
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
+
     static{
         CACHE.setCacheCapacity(CACHE_CAPACITY);
     }
 
     /**
-     * 
-     * @param page 
-     * @param datamodel 
-     * @return 
+     *
+     * @param page
+     * @param datamodel
+     * @return
      * @throws java.io.IOException
      */
     public static String importPage(
-            final String page, 
+            final String page,
             final DataModel datamodel) throws IOException{
-        
+
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
 
-        final String fileExtension = page.endsWith(".xml") ? "" : ".html"; 
-        
+        final String fileExtension = page.endsWith(".xml") ? "" : ".html";
+
         final URL u = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + fileExtension);
         final String physicalHost = props.getProperty(SiteConfiguration.PUBLISH_PHYSICAL_HOST);
         final String cacheKey = '[' + physicalHost + ']' + u.toString();
-        
+
         String content = "";
         try{
             content = (String) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
             LOG.debug("found cached content for " + page);
-        
+
         } catch (NeedsRefreshException nre) {
-        
+
             boolean updatedCache = false;
             final HTTPClient client = HTTPClient.instance(u, physicalHost);
-            
+
             try{
                 final BufferedReader reader = client.getBufferedReader("");
                 final StringBuilder builder = new StringBuilder();
-          
+
                 for(String line = reader.readLine(); line != null; line = reader.readLine()){
                     builder.append(line);
                     builder.append('\n');
@@ -106,37 +106,37 @@ public final class ImportPublish {
                 content = builder.toString();
                 CACHE.putInCache(cacheKey, content);
                 updatedCache = true;
-                
+
                 LOG.debug("new content for " + page);
 
             }catch(IOException ioe){
                 content = (String) nre.getCacheContent();
                 throw client.interceptIOException(ioe);
-                
+
             }finally{
-                if(!updatedCache){ 
+                if(!updatedCache){
                     CACHE.cancelUpdate(cacheKey);
                 }
             }
         }
         if(DUMP.isInfoEnabled()){ DUMP.info("Content for " + page + " is \n" + content); }
-        
+
         return content;
     }
-         
+
     /**
-     * 
-     * @param page 
-     * @param datamodel 
-     * @return 
+     *
+     * @param page
+     * @param datamodel
+     * @return
      * @throws java.io.IOException
      * @throws javax.xml.parsers.ParserConfigurationException
-     * @throws org.xml.sax.SAXException 
+     * @throws org.xml.sax.SAXException
      */
     public static Document importXml(
-            final String page, 
-            final DataModel datamodel) throws IOException, ParserConfigurationException, SAXException{ 
-        
+            final String page,
+            final DataModel datamodel) throws IOException, ParserConfigurationException, SAXException{
+
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
         try {
@@ -146,22 +146,22 @@ public final class ImportPublish {
             return builder.newDocument();
         }
     }
-    
+
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of NewClass */
     private ImportPublish() {
     }
-    
+
     // Public --------------------------------------------------------
-    
-    
+
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
+
 }

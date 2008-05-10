@@ -34,7 +34,7 @@ import no.sesat.search.site.Site;
 
 /** Obtain a working QueryTransformer from a given QueryTransformerConfig.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class QueryTransformerFactory {

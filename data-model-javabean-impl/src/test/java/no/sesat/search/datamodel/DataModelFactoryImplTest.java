@@ -13,7 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * DataModelFactoryImplTest.java
  *
  * Created on 30 January 2007, 15:33
@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 
 /** Instantiate all the nodes and objects that exist in the datamodel.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class DataModelFactoryImplTest {
@@ -72,7 +72,7 @@ public final class DataModelFactoryImplTest {
             public Site getSite() {
                 return Site.DEFAULT;
             }
-        
+
             public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
                                                         final String resource,
                                                         final Properties properties) {
@@ -104,8 +104,8 @@ public final class DataModelFactoryImplTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testInstantiateDataNodes() throws Exception{
@@ -126,8 +126,8 @@ public final class DataModelFactoryImplTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testDataObjectGetters() throws Exception{
@@ -199,7 +199,7 @@ public final class DataModelFactoryImplTest {
         final PropertyDescriptor[] properties = Introspector.getBeanInfo(cls).getPropertyDescriptors();
         for(PropertyDescriptor property : properties){
 
-            
+
             final Class<?> propCls = property instanceof MappedPropertyDescriptor
                     ? ((MappedPropertyDescriptor)property).getMappedPropertyType()
                     : property.getPropertyType();
@@ -209,7 +209,7 @@ public final class DataModelFactoryImplTest {
             if(null != propCls.getAnnotation(type)){
                 command.execute(propCls);
             }
-            
+
             if(null != propCls.getAnnotation(DataNode.class)){
                 // also descend down dataNodes in the datamodel
                 scan(type, propCls, command);

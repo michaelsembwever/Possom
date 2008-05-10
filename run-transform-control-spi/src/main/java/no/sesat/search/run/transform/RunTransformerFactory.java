@@ -30,7 +30,7 @@ import no.sesat.search.site.config.Spi;
 
 /** Obtain a working RunTransformers.
  *
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  * $Id$
  */
 public final class RunTransformerFactory {
@@ -58,7 +58,7 @@ public final class RunTransformerFactory {
      * @return
      */
     public static RunTransformer getController(
-            final RunTransformer.Context context, 
+            final RunTransformer.Context context,
             final RunTransformerConfig config){
 
         final String name = "no.sesat.search.run.transform."

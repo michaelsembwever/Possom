@@ -21,7 +21,7 @@ import no.sesat.search.result.Modifier;
 import java.util.Comparator;
 
 /**
- * @author Geir H. Pettersen(T-Rank)
+ *
  */
 public enum ModifierStringComparator implements Comparator<Modifier> {
     ALPHABETICAL;

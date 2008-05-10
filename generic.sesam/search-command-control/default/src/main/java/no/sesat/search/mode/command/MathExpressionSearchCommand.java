@@ -30,7 +30,7 @@ import org.nfunk.jep.type.Complex;
 
 /** Create a single result item that transforms the query into a mathematical expression with it's solution.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class MathExpressionSearchCommand extends AbstractSearchCommand {

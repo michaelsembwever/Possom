@@ -22,7 +22,7 @@ import no.sesat.search.result.ResultList;
 
 
 /**
- * @author Geir H. Pettersen (T-Rank)
+ *
  * @version $Id$
  */
 public final class FieldFilter implements ResultHandler {

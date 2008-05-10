@@ -42,7 +42,7 @@ import org.testng.annotations.Test;
 /** Executes all search commands in the given different tabs.
  * Corresponding to that tab's mode.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
@@ -51,20 +51,20 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
     private static final String DEBUG_EXECUTE_COMMAND = "Testing command ";
 
-    
+
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllNorskNettsokSearchCommands() throws Exception{
         executeTestOfQuery("linux", "d");
     }
 
-    
+
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllInternasjonalNettsokSearchCommands() throws Exception{
@@ -73,8 +73,8 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllWhitepagesSearchCommands() throws Exception{
@@ -83,8 +83,8 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllYellowpagesSearchCommands() throws Exception{
@@ -93,8 +93,8 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllNyheterSearchCommands() throws Exception{
@@ -103,8 +103,8 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllBilderSearchCommands() throws Exception{
@@ -113,26 +113,26 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
     }
 
     /**
-     * 
-     * @throws java.lang.Exception 
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testAllTvSearchCommands() throws Exception{
         executeTestOfQuery("linux", "t");
     }
-    
+
     private void executeTestOfQuery(
-            final String query, 
+            final String query,
             final String key) throws SiteKeyedFactoryInstantiationException{
 
         // proxy it back to the RunningQuery context.
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
-        
+
         updateAttributes(rqCxt.getDataModel().getJunkYard().getValues(), rqCxt);
         final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
         rqCxt.getDataModel().getJunkYard().getValues().put("query", rq);
 
-        final Collection<SearchCommand> commands 
+        final Collection<SearchCommand> commands
                 = new ArrayList<SearchCommand>();
 
         final SearchCommandFactory.Context commandFactoryContext = new SearchCommandFactory.Context() {
@@ -148,7 +148,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         final SearchCommandFactory commandFactory = new SearchCommandFactory(commandFactoryContext);
 
         for(SearchConfiguration conf : rqCxt.getSearchMode().getSearchConfigurations()){
-            
+
 
             LOG.info(DEBUG_EXECUTE_COMMAND + conf.getName());
 
@@ -161,28 +161,28 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         try{
 
             SearchCommandExecutorFactory.getController(rqCxt.getSearchMode().getExecutor()).invokeAll(commands);
-            
+
         } catch (InterruptedException ex) {
             throw new AssertionError(ex);
         }
     }
-    
+
     /** Matchs the same method in SearchServlet. **/
     private static Map<String,Object> updateAttributes(
             final Map<String,Object> map,
             final RunningQuery.Context rqCxt){
-        
-        
-        if (map.get(ResultPagingNavigationConfig.OFFSET_KEY) == null 
+
+
+        if (map.get(ResultPagingNavigationConfig.OFFSET_KEY) == null
                 || "".equals(map.get(ResultPagingNavigationConfig.OFFSET_KEY))) {
-            
+
             map.put(ResultPagingNavigationConfig.OFFSET_KEY, "0");
         }
 
         map.put("contextPath", "/");
         //map.set("tradedoubler", new TradeDoubler(request));
         map.put("no.sesat.Statistics", new StringBuffer());
-        
+
         //final Properties props = SiteConfiguration.valueOf(
         //                ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
         //

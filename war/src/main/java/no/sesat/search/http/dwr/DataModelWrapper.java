@@ -15,7 +15,7 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * DataModelWrapper.java
- * 
+ *
  * Created on 27-Jun-2007, 12:33:59
  */
 
@@ -32,26 +32,26 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author andersjj
+ *
  */
 public class DataModelWrapper {
 
     private static Logger LOG = Logger.getLogger(DataModelWrapper.class);
-    
+
     private DataModelWrapper() {
     }
-    
+
     public static DataModel getDataModel() {
-       
+
         HttpSession session = null;
-//  Uncomment the following two codelines to enable DWR. 
-//    The dwr dependency in the pom.xml and servlet in the web.xml will also need to be uncommented.  
+//  Uncomment the following two codelines to enable DWR.
+//    The dwr dependency in the pom.xml and servlet in the web.xml will also need to be uncommented.
 //        final org.directwebremoting.WebContext webContext = org.directwebremoting.WebContextFactory.get();
 //        session = webContext.getSession(false);
-        
+
         return null == session ? createDefaultDataModel() : (DataModel) session.getAttribute(DataModel.KEY);
     }
-   
+
     public static BrowserDataObject getBrowser() {
         final DataModel datamodel = getDataModel();
         return datamodel.getBrowser();
@@ -62,17 +62,17 @@ public class DataModelWrapper {
         final SearchDataObject searchDO = datamodel.getSearch(name);
         return searchDO;
     }
-    
+
     public static ResultList<ResultItem> getResults(final String name) {
         final DataModel datamodel = getDataModel();
         final SearchDataObject searchDO = datamodel.getSearch(name);
-        if (searchDO == null) { 
+        if (searchDO == null) {
             return null;
         }
         final ResultList<ResultItem> results = searchDO.getResults();
         return results;
     }
-    
+
     public static ResultItem getResultItem(final String name, final int index) {
         final ResultList<ResultItem> resultlist= getResults(name);
         final List<ResultItem> results = resultlist.getResults();
@@ -81,8 +81,8 @@ public class DataModelWrapper {
         }
         return null;
     }
-    
+
     private static DataModel createDefaultDataModel() {
-       return null; 
+       return null;
     }
 }

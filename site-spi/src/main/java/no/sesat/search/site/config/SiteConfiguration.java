@@ -33,7 +33,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * SiteConfiguration properties.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
@@ -59,16 +59,16 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     public static final String IS_SITESEARCH_KEY = "site.issitesearch";
 
     public static final String DEFAULTTAB_KEY = "site.defaultTab";
-    
+
     public static final String ALLOW_LIST = "site.allow";
     public static final String DISALLOW_LIST = "site.disallow";
-    
+
     public interface Context extends BaseContext, PropertiesContext, SiteContext {}
 
     private final Properties properties = new Properties();
 
     private final Site site;
-    
+
     private static final Map<Site, SiteConfiguration> INSTANCES = new HashMap<Site, SiteConfiguration>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
@@ -78,23 +78,23 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     private SiteConfiguration() {
         site = null;
     }
-    
+
     private SiteConfiguration(final Context cxt) {
 
         try {
             INSTANCES_LOCK.writeLock().lock();
             LOG.trace("SiteConfiguration(cxt)");
-            
+
             site = cxt.getSite();
 
             cxt.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(cxt.getSite(), this);
-            
+
         }catch(ResourceLoadException rle){
             LOG.fatal("BROKEN SITE HIERARCHY." + rle.getMessage());
             throw new VirtualMachineError(rle.getMessage()){};
-            
+
         } finally {
             INSTANCES_LOCK.writeLock().unlock();
         }

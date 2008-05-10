@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author Geir H. Pettersn (T-Rank)
+ *
  * @version $Id$
  */
 @Controller("FieldFilter")
@@ -52,7 +52,7 @@ public class FieldFilterResultHandlerConfig extends AbstractResultHandlerConfig 
     public void setFilterSrc(String string) {
         filterSrc = string;
     }
-    
+
     public Set<String> getMatchListSet() {
         if (matchListSet == null) {
             matchListSet = new HashSet<String>();
@@ -83,7 +83,7 @@ public class FieldFilterResultHandlerConfig extends AbstractResultHandlerConfig 
     public String getMatchList() {
         return matchList;
     }
-    
+
     public void setMatchList(String string) {
     	matchList = string;
     }
@@ -95,7 +95,7 @@ public class FieldFilterResultHandlerConfig extends AbstractResultHandlerConfig 
     public void setRemoveFields(String string) {
     	removeFields = string;
     }
-        
+
     public String getSrcPrefixes() {
 		return srcPrefixes;
 	}

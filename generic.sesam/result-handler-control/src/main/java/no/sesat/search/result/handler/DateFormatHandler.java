@@ -26,46 +26,46 @@ import no.sesat.search.result.ResultItem;
  * Transform fast inputdate to how it will be displayed in tv enrichment . Tv Enrichment
  * will most likely only display Hour of day.
  *
- * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
+ *
  * @version $Id$
  */
 public final class DateFormatHandler implements ResultHandler {
 
     /**
-     * 
+     *
      */
     public enum Fields {
         /**
-         * 
+         *
          */
         YEAR,
         /**
-         * 
+         *
          */
         MONTH,
         /**
-         * 
+         *
          */
         DAY,
         /**
-         * 
+         *
          */
         HOUR,
         /**
-         * 
+         *
          */
         MINUTE,
         /**
-         * 
+         *
          */
         SECOND;
     }
-    
+
     private final DateFormatResultHandlerConfig config;
-    
+
     /**
-     * 
-     * @param config 
+     *
+     * @param config
      */
     public DateFormatHandler(final ResultHandlerConfig config){
         this.config = (DateFormatResultHandlerConfig)config;
@@ -79,15 +79,15 @@ public final class DateFormatHandler implements ResultHandler {
             final String docDateTime = item.getField(config.getSource());
 
             if (docDateTime != null) {
-                
+
                 final String year = docDateTime.substring(0,4);
                 final String month = docDateTime.substring(5,7);
                 final String day = docDateTime.substring(8,10);
                 final String hour = docDateTime.substring(11, 13);
                 final String minute = docDateTime.substring(14, 16);
                 final String second = docDateTime.substring(17, 19);
-                
-                cxt.getSearchResult().replaceResult(item, 
+
+                cxt.getSearchResult().replaceResult(item,
                     item.addField(config.getPrefix() + Fields.YEAR.name(), year)
                             .addField(config.getPrefix() + Fields.MONTH.name(), month)
                             .addField(config.getPrefix() + Fields.DAY.name(), day)

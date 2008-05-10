@@ -48,17 +48,17 @@ public final class FindFileFormatResultHandlerConfig extends AbstractResultHandl
     public String getField(){
         return field;
     }
-    
+
     /**
-     * 
+     *
      * @param urlField
      */
     public void setUrlField(final String urlField){
         this.urlField = urlField;
     }
-    
+
     /**
-     * 
+     *
      * @return
      */
     public String getUrlField(){

@@ -28,7 +28,7 @@ import no.sesat.search.user.BasicUser;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 //@DataNode
@@ -36,16 +36,16 @@ import no.sesat.search.user.BasicUser;
 public interface UserDataObject extends Serializable {
 
     // Locations -- Delegate to Map<String,LocationDataObject> -------------------------------
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     BasicUser getUser();
-    
+
     /**
-     * 
-     * @param user 
+     *
+     * @param user
      */
     void setUser(final BasicUser user);
 

@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
 /**
  * Tests using SearchTabsCreator against File-based configuration files.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id: FileResourcesSiteConfigurationTest.java 3359 2006-08-03 08:13:22Z mickw $
  */
 public final class FileResourcesSiteConfigurationTest extends SiteTestCase {
@@ -42,10 +42,10 @@ public final class FileResourcesSiteConfigurationTest extends SiteTestCase {
             "\n\n"
             + "Unable to obtain configuration resources from classloader. \n"
             + "\n";
-	    
+
     public FileResourcesSiteConfigurationTest(final String testName) {
         super(testName);
-    }	    
+    }
 
     /**
      * Test of instanceOf method, of class no.sesat.search.configuration.SiteConfiguration.
@@ -87,10 +87,10 @@ public final class FileResourcesSiteConfigurationTest extends SiteTestCase {
                 return site;
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
         });

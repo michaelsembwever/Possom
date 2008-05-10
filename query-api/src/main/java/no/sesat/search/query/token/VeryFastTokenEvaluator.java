@@ -64,8 +64,8 @@ import org.xml.sax.SAXException;
  * @todo sesat-ise. bring out to generic.sesam. make CGI_PATH easily configurable. configurable cache settings.
  *
  *
- * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @author <a href="mailto:mick@wever.org">Mck Semb Wever</a>
+ *
+ *
  * @version $Id$
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator {
@@ -323,11 +323,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                         TokenPredicate token;
                         try{
                             token = TokenPredicate.Static.getTokenPredicate(tokenName);
-                            
+
                         }catch(IllegalArgumentException iae){
                             LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
                             token = TokenPredicate.Static.createAnonymousTokenPredicate(
-                                    tokenName, 
+                                    tokenName,
                                     TokenPredicate.Type.FAST);
                         }
 

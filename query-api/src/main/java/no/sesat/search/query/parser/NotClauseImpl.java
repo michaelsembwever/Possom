@@ -36,7 +36,7 @@ import no.sesat.search.site.Site;
  * For example: "NOT term1".
  * <b>Objects of this class are immutable</b>
  *
- * @author <a hrefNotClauseImplmick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class NotClauseImpl extends AbstractOperationClause implements NotClause {

@@ -36,7 +36,7 @@ import no.sesat.search.site.Site;
  * For example: "term1 AND term2".
  * <b>Objects of this class are immutable</b>
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class AndClauseImpl extends AbstractOperationClause implements AndClause {

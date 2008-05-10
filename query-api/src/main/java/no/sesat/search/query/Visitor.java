@@ -21,7 +21,7 @@ package no.sesat.search.query;
  * See complimentary Visitable interface.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface Visitor {
 

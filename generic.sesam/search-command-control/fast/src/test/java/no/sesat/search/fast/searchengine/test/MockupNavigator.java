@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision: 5819 $</tt>
  */
 public class MockupNavigator implements INavigator {
@@ -54,7 +54,7 @@ public class MockupNavigator implements INavigator {
     }
 
     /**
-     * @deprecated see INavigator's javadoc 
+     * @deprecated see INavigator's javadoc
      ***/
     public String getModifier() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.

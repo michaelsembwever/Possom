@@ -27,14 +27,14 @@ import org.w3c.dom.Element;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public interface QueryTransformerConfig extends Serializable {
     /**
-     * 
-     * @param element 
-     * @return 
+     *
+     * @param element
+     * @return
      */
     QueryTransformerConfig readQueryTransformer(Element element);
 }

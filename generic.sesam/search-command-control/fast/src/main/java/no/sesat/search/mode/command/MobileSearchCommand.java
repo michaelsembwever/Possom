@@ -55,7 +55,7 @@ import org.apache.log4j.Logger;
 /**
  * A search command that uses FAST's msearch API.
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 public final class MobileSearchCommand extends AbstractSearchCommand {
@@ -115,7 +115,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
             if ("telenor".equals(getParameter(ORIGINATION_PARAMETER))
               && !cfg.getTelenorPersonalizationGroup().equals("")){
-                
+
                 personalizationGroup = cfg.getTelenorPersonalizationGroup();
             }
 

@@ -29,7 +29,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractDirective extends Directive {
@@ -64,7 +64,7 @@ public abstract class AbstractDirective extends Directive {
     protected String getArgument(final InternalContextAdapter context, final Node node, final int i){
         return node.jjtGetChild(i).value(context).toString();
     }
-    
+
     protected Object getObjectArgument(final InternalContextAdapter context, final Node node, final int i){
         return node.jjtGetChild(i).value(context);
     }

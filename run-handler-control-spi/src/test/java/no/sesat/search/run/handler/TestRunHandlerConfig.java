@@ -23,7 +23,7 @@ import no.sesat.search.run.handler.AbstractRunHandlerConfig.Controller;
 
 /**
  * @version $Id$
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  */
 @Controller("TestRunHandler")
 public class TestRunHandlerConfig extends AbstractRunHandlerConfig {

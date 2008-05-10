@@ -27,7 +27,7 @@ package no.sesat.search.query;
 /** A clause representing a leaf. That is, a term or word in the query string.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface LeafClause extends Clause {
     /** Leaf clauses can be specified with a field.

@@ -17,7 +17,7 @@
 package no.sesat.search.site.config;
 
 /**
- * @author magnuse
+ *
  * @version $Id$
  */
 public enum Spi {

@@ -35,8 +35,8 @@ import static org.testng.AssertJUnit.*;
 /**
  * Tests using SearchTabsCreator against URL-based configuration files.
  * Only to be run when an application server is up and running.
- * 
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
+ *
  * @version $Id: UrlResourcesSiteConfigurationtest.java 3359 2006-08-03 08:13:22Z mickw $
  */
 @Test(groups = {"requires-tomcat"})
@@ -50,8 +50,8 @@ public final class UrlResourcesSiteConfigurationtest extends SiteTestCase {
 
     public UrlResourcesSiteConfigurationtest(final String testName) {
         super(testName);
-    }	     
-    
+    }
+
     /**
      * Test of instanceOf method, of class no.sesat.search.configuration.SiteConfiguration.
      */

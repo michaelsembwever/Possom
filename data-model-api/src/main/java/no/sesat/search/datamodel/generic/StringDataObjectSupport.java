@@ -37,56 +37,56 @@ import org.apache.log4j.Logger;
  * can, and is intended to be used either by subclassing this implementation,
  * or via ad-hoc delegation of an instance of this class from another.
  * </p>
- * 
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject
 public class StringDataObjectSupport implements StringDataObject{
-    
+
     private static final Logger LOG = Logger.getLogger(StringDataObjectSupport.class);
-    
+
     private final String string;
-    
+
     /**
-     * 
-     * @param string 
+     *
+     * @param string
      */
     public StringDataObjectSupport(final String string){
         this.string = string;
     }
-    
+
     public String getString() {
 
         return string;
     }
 
     public String getUtf8UrlEncoded(){
-        
+
         try {
             return null != getString() ? URLEncoder.encode(getString(), "UTF-8") : null;
-            
+
         }catch (UnsupportedEncodingException ex) {
             throw new IllegalStateException("JVM doesn't support UTF-8 encoding", ex);
         }
     }
-    
+
     public String getIso88591UrlEncoded(){
-        
+
         try {
             return null != getString() ? URLEncoder.encode(getString(), "ISO-8859-1") : null;
-            
+
         }catch (UnsupportedEncodingException ex) {
             throw new IllegalStateException("JVM doesn't support ISO-8859-1 encoding", ex);
         }
     }
-    
+
     public String getXmlEscaped(){
-        
-        return null != getString() 
+
+        return null != getString()
                 ? StringEscapeUtils.escapeXml(getString()).replaceAll("&apos;", "&#39;") // see SEARCH-4057
                 : null;
     }
-    
-    
+
+
 }

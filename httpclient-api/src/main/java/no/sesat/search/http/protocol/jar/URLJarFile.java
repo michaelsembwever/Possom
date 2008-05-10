@@ -184,7 +184,7 @@ public class URLJarFile extends JarFile {
      * cached JAR file object.
      */
     private static JarFile retrieve(
-            final URL url, 
+            final URL url,
             final JarURLConnection parentConnection) throws IOException {
         /*
          * See if interface is set, then call retrieve function of the class
@@ -193,11 +193,11 @@ public class URLJarFile extends JarFile {
          */
         if (callback != null) {
             return callback.retrieve(url);
-            
+
         }else {
 
             JarFile result = null;
-            
+
             final URLConnection connection = url.openConnection();
             // propagate request properties downwards. http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
             if(null != parentConnection){
@@ -243,7 +243,7 @@ public class URLJarFile extends JarFile {
                         }
                     }
 		    });
-            
+
             }catch (PrivilegedActionException pae) {
                 throw (IOException) pae.getException();
             }
@@ -259,7 +259,7 @@ public class URLJarFile extends JarFile {
     public static void setCallBack(URLJarFileCallBack cb) {
         callback = cb;
     }
-    
+
     private class URLJarFileEntry extends JarEntry {
         private JarEntry je;
 
@@ -294,7 +294,7 @@ public class URLJarFile extends JarFile {
             return csg == null ? null : (CodeSigner[]) csg.clone();
         }
     }
-    
+
     public interface URLJarFileCloseController {
         public void close(JarFile jarFile);
     }

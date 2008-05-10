@@ -31,7 +31,7 @@ import no.sesat.search.datamodel.generic.StringDataObject;
 /** The ParameterDataObject class is a container for all request based information.
  *  This mainly includes parameters, but also headers and attributes.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataNode
@@ -40,23 +40,23 @@ public interface ParametersDataObject extends MapDataObject<StringDataObject>{
     Map<String,StringDataObject> getValues();
 
     /**
-     * 
-     * @param key 
-     * @return 
+     *
+     * @param key
+     * @return
      */
     StringDataObject getValue(final String key);
 
     /**
-     * 
-     * @param key 
-     * @param value 
+     *
+     * @param key
+     * @param value
      */
     @AccessAllow({})
     void setValue(final String key, final StringDataObject value);
-    
-    /** The UniqueId is used to trace one request from it's origin (apace or tomcat) down through each command and 
+
+    /** The UniqueId is used to trace one request from it's origin (apace or tomcat) down through each command and
      * into the indexes.
-     * 
+     *
      * @return the uniqueId
      */
     String getUniqueId();

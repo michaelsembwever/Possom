@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
 
 /** DocumentLoader to deal with xml document resources.
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface DocumentLoader extends ResourceLoader {
     /** initialise this resource loader with the resource name/path and the builder used to create the dom.

@@ -32,11 +32,11 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  *
- * A velocity directive to bold (query) word(s) 
+ * A velocity directive to bold (query) word(s)
  * param 1: text to replace
  * param 2: query
  *
- * - "og" and "i" in the query should not be bolded. 
+ * - "og" and "i" in the query should not be bolded.
  * - Capitalized words should stay capitalized
  * - remove "," and "!" from query words
  * - independant word ("Billån" should not match lån)
@@ -47,13 +47,13 @@ import org.apache.velocity.runtime.parser.node.Node;
  * </code>
  *
  *
- * @author thomas
+ *
  * @version $Id$
  */
 public final class BoldWordDirective extends Directive {
 
     private static final Logger LOG = Logger.getLogger(BoldWordDirective.class);
-    
+
     private static final String NAME = "boldWord";
 
     /**
@@ -74,28 +74,28 @@ public final class BoldWordDirective extends Directive {
      * {@inheritDoc}
      */
     public boolean render(
-                final InternalContextAdapter context, 
-                final Writer writer, 
-                final Node node) 
+                final InternalContextAdapter context,
+                final Writer writer,
+                final Node node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        
+
         final int argCount = node.jjtGetNumChildren();
 
         if (argCount != 1) {
-            
+
             String text = node.jjtGetChild(0).value(context).toString();
             String uquery = node.jjtGetChild(1).value(context).toString();
             String query = org.apache.commons.lang.StringEscapeUtils.unescapeHtml(uquery);
             if(text == null) {
                 writer.write("");
                 return true;
-            }                      
+            }
             query = query.replaceAll("\"", "");
             query = query.replaceAll("'", "");
             String replace = "";
             String replaceUp = "";
             List list = Arrays.asList(query.split("[\\p{Punct}\\p{Space}]+"));
-            
+
             for (int i=0;i<list.size();i++) {
                 if (!list.get(i).toString().toLowerCase().equals("og") && !list.get(i).toString().toLowerCase().equals("i")) {
                     replace = " <b>" + list.get(i) + "</b>";
@@ -110,9 +110,9 @@ public final class BoldWordDirective extends Directive {
             if (node.getLastToken().image.endsWith("\n")) {
                 writer.write('\n');
             }
-        
+
         }else{
-            
+
             final String msg = '#' + getName() + " - wrong number of arguments";
             LOG.error(msg);
             rsvc.error(msg);

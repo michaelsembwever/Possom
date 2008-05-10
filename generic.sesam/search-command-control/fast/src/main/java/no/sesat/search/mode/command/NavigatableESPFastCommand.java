@@ -51,7 +51,7 @@ import no.sesat.search.datamodel.generic.StringDataObject;
  * This class provies an advanced fast search command with navigation
  * capabilities.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 public class NavigatableESPFastCommand extends ESPFastSearchCommand {
@@ -198,7 +198,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
                         break;
                     case YEAR_MONTH_DAY_DESCENDING:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH_DAY_DESCENDING);
-                        break;                        
+                        break;
                     case YEAR:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR);
                         break;
@@ -237,10 +237,10 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     protected Comparator getModifierComparator(final Navigator nav) {
         return null;
     }
-    
+
     @Override
     protected String getAdditionalFilter() {
-        
+
         final StringBuilder result = new StringBuilder();
         if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
             final Collection navStrings = createNavigationFilterStrings();

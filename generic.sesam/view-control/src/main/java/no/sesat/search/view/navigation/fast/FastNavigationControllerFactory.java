@@ -24,8 +24,8 @@ import no.sesat.search.view.navigation.NavigationController;
 
 /**
  * TODO: Move into sesat-search-command-control-spi once that module is ready for action.
- * 
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
+ *
  * @version $Id$
  */
 public final class FastNavigationControllerFactory implements NavigationControllerFactory<FastNavigationConfig> {

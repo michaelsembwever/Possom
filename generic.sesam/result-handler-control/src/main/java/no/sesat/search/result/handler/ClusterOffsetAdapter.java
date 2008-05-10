@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 /**
  * Adapts a old searchresult to use the newsSimpeOffsetPager
  *
- * @author Geir H. Pettersn (T-Rank)
+ *
  */
 public class ClusterOffsetAdapter implements ResultHandler {
     private static final Logger LOG = Logger.getLogger(ClusterOffsetAdapter.class);

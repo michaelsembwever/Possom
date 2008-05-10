@@ -35,7 +35,7 @@ import no.sesat.search.site.config.Spi;
 
 /** Obtain a working ResultHandler from a given ResultHandlerConfig.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class ResultHandlerFactory {

@@ -26,12 +26,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
- * @author geir
+ *
+ *
  * @version $Id$
  */
 public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
-    
+
     private static final Logger LOG = Logger.getLogger(NewsMyNewsSearchCommand.class);
     private static final Pattern cookiePattern = Pattern.compile("(?:\\A|\\|)([^\\|]+)\\:{2}([^\\|]+)\\|?");
 
@@ -88,7 +88,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
 
                         if (collectedResult != null
                                 && collectedResult.getResults().size() > 0) {
-                               // Article 
+                               // Article
                             if(!(collectedResult.getResults().get(0) instanceof ResultList<?>)) {
                                 ResultItem searchResultItem = collectedResult.getResults().get(0);
                                 searchResultItem = searchResultItem.addField("type", type);
@@ -123,13 +123,13 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 }
                 position++;
             }
-            
+
             mergedResult.setHitCount(hitCount);
             setNextOffset(mergedResult, config.getResultsToReturn());
 
             return mergedResult;
         } else {
-            
+
             LOG.info("Could not find cookie");
             ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
             searchResult.setHitCount(0);

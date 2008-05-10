@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
@@ -50,7 +50,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     // Constants -----------------------------------------------------
 
     private static final String ERR_COMMAND_TIMEOUT = "Timeout on search command ";
-    
+
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
@@ -70,56 +70,56 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
             final Collection<SearchCommand> callables) throws InterruptedException  {
 
         LOG.debug(DEBUG_INVOKEALL + getClass().getSimpleName());
-        
-        final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results 
-                = new HashMap<Future<ResultList<?>>,SearchCommand>(); 
-        
+
+        final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results
+                = new HashMap<Future<ResultList<?>>,SearchCommand>();
+
         for (SearchCommand c : callables) {
-            
+
             final ExecutorService es = getExecutorService();
             results.put(es.submit(c), c);
         }
 
         return results;
     }
-    
+
     public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitForAll(
             final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
             final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException{
-        
+
         // Give the commands a chance to finish its work
         //  Note the current time and subtract any elapsed time from the timeout value
         //   (as the timeout value is intended overall and not for each).
         final long invokedAt = System.currentTimeMillis();
-        
+
         for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
 
             try{
                 task.get(
-                        Math.max(1, timeoutInMillis - (System.currentTimeMillis() - invokedAt)), 
+                        Math.max(1, timeoutInMillis - (System.currentTimeMillis() - invokedAt)),
                         TimeUnit.MILLISECONDS);
-                
+
             }catch(TimeoutException te){
                 LOG.error(ERR_COMMAND_TIMEOUT + te.getMessage());
                 task.cancel(true);
             }
         }
-        
+
         // Ensure any cancellations are properly handled
         for(SearchCommand command : results.values()){
             command.handleCancellation();
         }
-        
+
         // throw a timeout exception if we did not complete in time.
         if(0 >= timeoutInMillis - (System.currentTimeMillis() - invokedAt)){
             throw new TimeoutException();
         }
-        
+
         return results;
     }
 
     public void stop() {
-        
+
         LOG.warn("Shutting down thread pool");
         getExecutorService().shutdownNow();
     }

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Arrays;
 
 /**
- * @author magnuse
+ *
  */
 public abstract class MultiParentClassLoader extends ClassLoader {
 

@@ -25,18 +25,18 @@ import org.w3c.dom.Element;
 
 /** Factory class for deserialising configurations from an xml document.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public abstract class AbstractConfigFactory<C> {
-    
+
     public interface Context extends BaseContext, SiteContext, BytecodeContext{};
 
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(AbstractConfigFactory.class);
     private static final String INFO_CONSTRUCT = "  Construct ";
-    
+
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
@@ -50,7 +50,7 @@ public abstract class AbstractConfigFactory<C> {
     // Public --------------------------------------------------------
 
     public boolean supported(final String xmlName, final Context context) {
-        
+
         try {
             return null != findClass(xmlName, context);
         }catch (ClassNotFoundException e) {
@@ -58,17 +58,17 @@ public abstract class AbstractConfigFactory<C> {
             return false;
         }
     }
-    
+
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------
 
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
 
     protected C construct(final Element element, final Context context) {
-        
+
         final String xmlName = element.getTagName();
         LOG.debug(INFO_CONSTRUCT + xmlName);
         try {
@@ -87,10 +87,10 @@ public abstract class AbstractConfigFactory<C> {
 
     @SuppressWarnings(value = "unchecked")
     protected Class<C> loadClass(
-            final Context context, 
-            final String classNameFQ, 
+            final Context context,
+            final String classNameFQ,
             final Spi spi) throws ClassNotFoundException {
-        
+
             final SiteClassLoaderFactory.Context c = ContextWrapper.wrap(
                     SiteClassLoaderFactory.Context.class,
                     new BaseContext() {
@@ -104,7 +104,7 @@ public abstract class AbstractConfigFactory<C> {
         final ClassLoader classLoader = SiteClassLoaderFactory.instanceOf(c).getClassLoader();
         return (Class<C>) classLoader.loadClass(classNameFQ);
     }
-    
+
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------

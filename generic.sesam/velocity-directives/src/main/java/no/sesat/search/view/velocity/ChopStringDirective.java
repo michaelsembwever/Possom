@@ -41,7 +41,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * </code>
  *
  *
- * @author thomas
+ *
  * @version $Id$
  */
 public final class ChopStringDirective extends AbstractDirective {
@@ -90,15 +90,15 @@ public final class ChopStringDirective extends AbstractDirective {
             final int length = argCount > 1
                     ? Integer.parseInt(getArgument(context, node, 1))
                     : Integer.MAX_VALUE;
-            
+
             final boolean esc = argCount > 2 && "esc".equals(getArgument(context, node, 2));
-            
+
             final boolean chopWord = argCount > 3 && Boolean.parseBoolean(getArgument(context, node, 3));
-            
+
             final String chopSuey = esc
                     ? StringEscapeUtils.escapeXml(StringChopper.chop(s, length, chopWord))
                     : StringChopper.chop(s, length, chopWord);
-            
+
             writer.write(chopSuey);
 
             if (node.getLastToken().image.endsWith("\n")) {

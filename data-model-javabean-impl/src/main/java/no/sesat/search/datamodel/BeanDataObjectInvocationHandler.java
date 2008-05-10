@@ -61,20 +61,20 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializable {
 
     // Constants -----------------------------------------------------
-    
+
     private static final Map<Property[], WeakReference<BeanDataObjectInvocationHandler<?>>> instances
             = new HashMap<Property[], WeakReference<BeanDataObjectInvocationHandler<?>>>();
 
     private static final ReentrantReadWriteLock instancesLock = new ReentrantReadWriteLock();
 
     private static final Logger LOG = Logger.getLogger(BeanDataObjectInvocationHandler.class);
-          
+
     private static final boolean ACCESS_CONTROLLED = !Boolean.getBoolean("sesat.datamodel.accesscontrol.ignore");
 
     // Attributes ----------------------------------------------------
@@ -91,14 +91,14 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
     // Most DataObjects dont have more than 3 properties.
     // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
-    private transient Map<Method,InvocationTarget> invocationTargetCache 
+    private transient Map<Method,InvocationTarget> invocationTargetCache
             = new ConcurrentHashMap<Method,InvocationTarget>(5, 0.75f, 2);
-    
+
     // many DataObjects never use a support object so initialCapacity is zero.
     // max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
-    private transient Map<Method,Method> supportMethodCache 
+    private transient Map<Method,Method> supportMethodCache
             = new ConcurrentHashMap<Method,Method>(0, 0.75f, 2);
-    
+
     private volatile transient String toString = null;
 
     // Static --------------------------------------------------------
@@ -153,7 +153,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         support = new Object();
         immutable = false;
     };
-   
+
     @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         invocationTargetCache = new ConcurrentHashMap<Method,InvocationTarget>(5, 0.75f, 2);
@@ -173,13 +173,13 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         stream.writeBoolean(immutable);
         stream.writeObject(properties);
     }
-    
+
     /** Creates a new instance of ProxyBeanDataObject */
     protected BeanDataObjectInvocationHandler(
             final Class<T> cls,
             final Property... properties)
                 throws IntrospectionException {
-        
+
         this(cls, new BeanContextSupport(), properties);
     }
 
@@ -193,7 +193,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
 
         implementOf = cls;
         this.context = context;
-        
+
         final List<Property> propertiesLeftToAdd = new ArrayList<Property>(Arrays.asList(properties));
 
         if( StringDataObject.class.isAssignableFrom(implementOf) ){
@@ -239,18 +239,18 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         }
 
         this.immutable = isImmutable(cls);
-    }   
-    
+    }
+
     private boolean isSerializable(final Object obj) {
         boolean correct = false;
         if (obj == null) {
             return true;
         }
-        
+
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream os = new ObjectOutputStream(baos);
-            
+
             os.writeObject(obj);
             correct = true;
         } catch (NotSerializableException e) {
@@ -260,21 +260,21 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         }
         return correct;
     }
-    
+
     private boolean checkPropertyClass(final Class cls, final Property property) {
         boolean correct = false;
         if (property.getValue() == null) {
             return true;
         }
-        
+
         try {
             PropertyDescriptor[] descriptors = Introspector.getBeanInfo(cls).getPropertyDescriptors();
             for (PropertyDescriptor descriptor : descriptors) {
                 if (descriptor.getName().equals(property.getName())) {
-                    final Class<?> propertyType = property.getValue().getClass().equals(MapDataObjectSupport.class) 
+                    final Class<?> propertyType = property.getValue().getClass().equals(MapDataObjectSupport.class)
                             ? Map.class : property.getValue().getClass();
                     correct |= descriptor.getPropertyType() == null || descriptor.getPropertyType().isAssignableFrom(propertyType);
-                    break; 
+                    break;
                 }
             }
         } catch (IntrospectionException e) {
@@ -282,12 +282,12 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         }
         return correct;
     }
-    
+
     // Public --------------------------------------------------------
 
     /** {@inherit} **/
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
-        
+
         assureAccessAllowed(method);
 
         final boolean setter = method.getName().startsWith("set");
@@ -338,14 +338,14 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         }
 
 
-        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property: " 
+        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property: "
                 + method.getName());
 
     }
 
     @Override
     public String toString(){
-        
+
         if(null == toString){
             toString = implementOf.getSimpleName()
                 + " [Proxy (" + getClass().getSimpleName() + ")] w/ " + toString(properties);
@@ -362,7 +362,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
     // Protected -----------------------------------------------------
 
     protected final void assureAccessAllowed(final Method method) throws IllegalAccessException{
-        
+
         // we need the current ControlLevel
         BeanContext beanContext = context;
         while(null != beanContext.getBeanContext()){
@@ -372,12 +372,12 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
             final ControlLevel level = ((DataModelBeanContextSupport)beanContext).getControlLevel();
             final AccessAllow allow = method.getAnnotation(AccessAllow.class);
             final AccessDisallow disallow = method.getAnnotation(AccessDisallow.class);
-            
+
             LOG.trace("level " + level);
             LOG.trace("method " + method);
             LOG.trace("allow " + allow);
             LOG.trace("disallow " + disallow);
-            
+
             boolean allowed = false;
             boolean disallowed = false;
             if(null != allow){
@@ -461,7 +461,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         return result;
     }
 
-    
+
     protected Object invokeSelf(final Method method, final Object[] args){
 
         // try invoking one of our own methods. (Works for example on methods declared by the Object class).
@@ -479,20 +479,20 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         }
         return result;
     }
-    
+
     /**
-     * obj may be null. 
+     * obj may be null.
      */
     protected void addChild(final Object obj) {
         // does nothing. DataObject don't have children.
     }
 
     /**
-     * obj may be null. 
+     * obj may be null.
      */
     protected void removeChild(final Object obj) {
         // does nothing. DataObject don't have children.
-    }    
+    }
 
     // Private -------------------------------------------------------
 

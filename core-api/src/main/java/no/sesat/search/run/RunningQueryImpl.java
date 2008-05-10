@@ -83,7 +83,7 @@ import org.apache.log4j.Logger;
  * Central controlling class around the individual search commands executed in any query search.
  *
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
@@ -421,7 +421,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 applicableSearchConfigurations.add(conf);
             }
         }
-        
+
         return performTransformers(applicableSearchConfigurations);
     }
 
@@ -503,18 +503,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitFor;
 
                 if(null != datamodel.getParameters().getValue(PARAM_WAITFOR)){
-                    
+
                     waitFor = new HashMap<Future<ResultList<? extends ResultItem>>,SearchCommand>();
-                    
-                    final String[] waitForArr 
+
+                    final String[] waitForArr
                             = datamodel.getParameters().getValue(PARAM_WAITFOR).getString().split(",");
-                    
+
                     for(String waitForStr : waitForArr){
                         // using generics on the next line crashes javac
-                        for(Entry/*<Future<ResultList<? extends ResultItem>>,SearchCommand>*/ entry 
+                        for(Entry/*<Future<ResultList<? extends ResultItem>>,SearchCommand>*/ entry
                                 : results.entrySet()){
-                            
-                            final String entryName 
+
+                            final String entryName
                                     = ((SearchCommand)entry.getValue()).getSearchConfiguration().getName();
                             if(waitForStr.equalsIgnoreCase(entryName)){
 
@@ -525,12 +525,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             }
                         }
                     }
-                    
+
                 }else if(null != datamodel.getParameters().getValue(PARAM_COMMANDS)){
-                    
+
                     // wait on everything explicitly asked for
                     waitFor = results;
-                    
+
                 }else{
 
                     // do not wait on asynchronous commands
@@ -578,7 +578,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     public PropertiesLoader newPropertiesLoader(final SiteContext siteContext, final String resource, final Properties properties) {
                         return context.newPropertiesLoader(siteContext, resource, properties);
                     }
-                    
+
                     public BytecodeLoader newBytecodeLoader(final SiteContext siteContext, final String className, final String jarFileName) {
                         return context.newBytecodeLoader(siteContext, className, jarFileName);
                     }
@@ -609,9 +609,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 },
                 context);
 
-        final List<RunHandlerConfig> rhcList 
+        final List<RunHandlerConfig> rhcList
                 = new ArrayList<RunHandlerConfig>(context.getSearchMode().getRunHandlers());
-        
+
         /* Adding NavigationRunHandler to all search modes. TODO move into modes.xml */
         rhcList.add(new NavigationRunHandlerConfig());
 
@@ -646,7 +646,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             noHitsOutput.append("</no-hits>");
             PRODUCT_LOG.info(noHitsOutput.toString());
         }
-        
+
         // maybe we can modify the query to broaden the search
         // replace all DefaultClause with an OrClause
         //  [simply done with wrapping the query string inside ()'s ]
@@ -664,10 +664,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         }
                     }));
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
-            
+
             // create and run a new RunningQueryImpl
             new RunningQueryImpl(context, '(' + queryStr + ')').run();
-            
+
             // TODO put in some sort of feedback to user that query has been changed.
         }
 

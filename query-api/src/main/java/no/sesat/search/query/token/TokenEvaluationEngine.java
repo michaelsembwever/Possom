@@ -37,8 +37,8 @@ import no.sesat.search.site.SiteContext;
  * {@link TokenEvaluator} that can handle a particular token {@link TokenPredicate}.
  *
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
- * @author <a href="mailto:mick@wever.org">Mck</a>
+ *
+ *
  * @version <tt>$Revision$</tt>
  */
 public interface TokenEvaluationEngine {
@@ -74,24 +74,24 @@ public interface TokenEvaluationEngine {
 
     /**
      * Holder for evaluation state during the engine's evaluation.
-     * Evaluation on any term, clause, or query requires state of the current term and query, 
+     * Evaluation on any term, clause, or query requires state of the current term and query,
      *  and of the already matched known and possible predicates.
      */
     interface State extends Serializable {
         /** the current clause's term, or null if in query-evaluation mode. *
-         * @return 
+         * @return
          */
         String getTerm();
         /** the current query, or null if in term-evaluation mode. *
-         * @return 
+         * @return
          */
         Query getQuery();
         /** known matching predicates. by making this available performance is improved. *
-         * @return 
+         * @return
          */
         Set<TokenPredicate> getKnownPredicates();
         /** possible matching predicates. by making this available performance is improved. *
-         * @return 
+         * @return
          */
         Set<TokenPredicate> getPossiblePredicates();
     }
@@ -116,9 +116,9 @@ public interface TokenEvaluationEngine {
       * @return
       */
     Site getSite();
-    
+
     /** The real evaluation method all other evaluate...(..) methods will delegate to.
-     * 
+     *
      * @param token
      * @return
      */

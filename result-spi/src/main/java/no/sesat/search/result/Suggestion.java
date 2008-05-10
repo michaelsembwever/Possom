@@ -15,9 +15,9 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Suggestion.java
- * 
+ *
  * Created on 10/05/2007, 13:20:03
- * 
+ *
  */
 
 package no.sesat.search.result;
@@ -26,26 +26,26 @@ import java.io.Serializable;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public interface Suggestion extends Serializable{
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     String getOriginal();
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     String getSuggestion();
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     String getHtmlSuggestion();
 }

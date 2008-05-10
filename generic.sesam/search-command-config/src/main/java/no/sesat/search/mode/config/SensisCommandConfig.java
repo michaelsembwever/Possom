@@ -21,7 +21,7 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Controller("SensisSearchCommand")

@@ -20,7 +20,7 @@ package no.sesat.mojo;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public class ArtifactItem extends org.apache.maven.plugin.dependency.fromConfiguration.ArtifactItem{
@@ -30,7 +30,7 @@ public class ArtifactItem extends org.apache.maven.plugin.dependency.fromConfigu
     //private static final Logger LOG = Logger.getLogger(ArtifactItem.class);
 
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -39,16 +39,16 @@ public class ArtifactItem extends org.apache.maven.plugin.dependency.fromConfigu
     }
 
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }

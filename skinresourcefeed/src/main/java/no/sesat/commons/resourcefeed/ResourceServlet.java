@@ -44,7 +44,7 @@ import java.util.Calendar;
  * classes, jar files and velocity templates for search-portal.
  * Css, images, and javascript require direct access from client.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class ResourceServlet extends HttpServlet {
@@ -63,7 +63,7 @@ public final class ResourceServlet extends HttpServlet {
     private static final Map<String,String> CONTENT_TYPES = new HashMap<String,String>();
     private static final Map<String,String> CONTENT_PATHS = new HashMap<String,String>();
     private static final Set<String> RESTRICTED = new HashSet<String>();
-    
+
     private static final Calendar CROWNING_OF_HAILE_SELASSIE = Calendar.getInstance();
 
     private long defaultLastModified = 0;
@@ -87,7 +87,7 @@ public final class ResourceServlet extends HttpServlet {
         CONTENT_TYPES.put("html", "text/plain");
         CONTENT_TYPES.put("class", "application/java");
         CONTENT_TYPES.put("jar", "application/java-archive");
-        
+
         // Things that don't expire
         CROWNING_OF_HAILE_SELASSIE.set(Calendar.YEAR, 9999);
         // call it in a safe environment (internals are not thread safe).
@@ -136,7 +136,7 @@ public final class ResourceServlet extends HttpServlet {
                 CONTENT_PATHS.put(pair[0], pair[1]);
             }
         }
-        
+
         this.paths = servletConfig.getServletContext().getResourcePaths("/WEB-INF/lib");
         LOG.warn("ResourcePaths are");
         for(String s : this.paths){
@@ -183,19 +183,19 @@ public final class ResourceServlet extends HttpServlet {
         }
         LOG.debug("pathInfo: " + pathInfo + " ; directory: " + directory);
         assert null != pathInfo : "Invalid resource " + pathInfo;
-        
+
         final String configName = pathInfo.replaceAll("/(\\d)+/","/");
-        
+
         assert 0 < configName.trim().length() : "Invalid resource " + pathInfo;
         assert 0 < configName.lastIndexOf('.') : "Invalid resource extension " + pathInfo;
 
         if (configName != null && configName.trim().length() > 0) {
 
             final String extension = configName.substring(configName.lastIndexOf('.') + 1).toLowerCase();
-            
+
             assert null != extension : "Invalid resource extension" + pathInfo;
             assert 0 < extension.trim().length() : "Invalid resource extension " + pathInfo;
-            
+
             final String ipAddr = null != request.getAttribute(REMOTE_ADDRESS_KEY)
                 ? (String) request.getAttribute(REMOTE_ADDRESS_KEY)
                 : request.getRemoteAddr();
@@ -210,7 +210,7 @@ public final class ResourceServlet extends HttpServlet {
                 LOG.trace(DEBUG_CLIENT_IP + ipAddr);
 
                 final boolean restricted = RESTRICTED.contains(extension);
-                
+
                 if (restricted && !isIpAllowed(ipAddr)) {
 
                     response.setContentType("text/html;charset=UTF-8");
@@ -276,7 +276,7 @@ public final class ResourceServlet extends HttpServlet {
 
         try  {
             is = configName.endsWith(".jar")
-                    ? getJarStream(configName) 
+                    ? getJarStream(configName)
                     : ResourceServlet.class.getResourceAsStream(configName);
 
             if (is != null) {
@@ -289,13 +289,13 @@ public final class ResourceServlet extends HttpServlet {
                 if(!restricted){
                     response.setHeader("Cache-Control", "Public");
                     // We used to use Long.MAX_VALUE but http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
-                    // shows the year field can only be four digits long. 
+                    // shows the year field can only be four digits long.
                     //  see https://helpdesk.basefarm.com/bin/customer?action=listTicket&ticketId=274212
                     response.setDateHeader("Expires", CROWNING_OF_HAILE_SELASSIE.getTimeInMillis());
                 }else{
                     // never cache private resources
                     response.setHeader("Cache-Control", "no-cache");
-                } 
+                }
 
                 // Avoid writing out the response body if it's a HEAD request or a GET that the browser has cache for
                 boolean writeBody = !"HEAD".equals(request.getMethod());
@@ -327,7 +327,7 @@ public final class ResourceServlet extends HttpServlet {
     }
 
     private InputStream getJarStream(final String resource) throws IOException {
-        
+
         final String baseName = resource.replace(".jar", "").replace("/", "");
         LOG.debug("getJarStream(" + resource + ") [baseName:" + baseName + ']');
 
@@ -339,7 +339,7 @@ public final class ResourceServlet extends HttpServlet {
                     .replaceAll("-(\\d+\\.?)+(-SNAPSHOT).*\\.jar", "")
                     .replaceAll("^([\\p{Alnum}]+\\.?)+-", "");
 
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Checking against " + jarName);
             }

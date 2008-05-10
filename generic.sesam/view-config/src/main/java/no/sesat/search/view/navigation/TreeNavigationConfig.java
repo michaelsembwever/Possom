@@ -74,7 +74,7 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
                 resetParameter = ((TreeNavigationConfig)parent).resetParameter;
            // }
         }
-        resetParameter.add(getField());        
+        resetParameter.add(getField());
     }
 
     /**

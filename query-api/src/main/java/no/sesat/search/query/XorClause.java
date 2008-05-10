@@ -26,9 +26,9 @@ package no.sesat.search.query;
 
 /** A special clause to distinguish between QueryParser's guesses to the specific LeafClause type.
  * By default the name of the hint indicates to what is on the left side, or the first child.
- * 
+ *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface XorClause extends OrClause {
 

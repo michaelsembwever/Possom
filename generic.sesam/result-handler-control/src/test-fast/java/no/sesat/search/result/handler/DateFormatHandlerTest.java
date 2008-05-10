@@ -41,7 +41,7 @@ import static org.testng.AssertJUnit.*;
 
 /** Fast navigation tests.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class DateFormatHandlerTest extends DataModelTestCase {

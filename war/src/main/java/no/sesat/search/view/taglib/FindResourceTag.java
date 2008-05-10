@@ -33,23 +33,23 @@ import no.sesat.search.view.FindResource;
 
 /** SimpleTagSupport around the FindResource utility class.
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class FindResourceTag extends SimpleTagSupport {
-    
+
     private String url;
-    
+
 
     /**
-    * Called by the container to invoke this tag. 
+    * Called by the container to invoke this tag.
     * The implementation of this method is provided by the tag library developer,
     * and handles all tag processing, body iteration, etc.
-     * @throws javax.servlet.jsp.JspException 
+     * @throws javax.servlet.jsp.JspException
      */
     @Override
     public void doTag() throws JspException {
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         final JspWriter out = cxt.getOut();
 
@@ -62,7 +62,7 @@ public final class FindResourceTag extends SimpleTagSupport {
 
             final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
             final Site site = datamodel.getSite().getSite();
-            
+
             out.print(FindResource.find(site, url));
 
         }catch(IOException e){
@@ -72,7 +72,7 @@ public final class FindResourceTag extends SimpleTagSupport {
     }
 
     /**
-     * 
+     *
      * @param url
      */
     public void setUrl(final String url) {

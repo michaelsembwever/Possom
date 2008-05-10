@@ -38,7 +38,7 @@ import no.sesat.search.site.config.TextMessages;
 /** Wraps functionality found in TextMessages into a custom tag.
  *
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 

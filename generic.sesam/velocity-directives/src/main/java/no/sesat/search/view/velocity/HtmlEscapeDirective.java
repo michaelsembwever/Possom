@@ -42,7 +42,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * #htmlescape("<h1>html</h1>')
  * </code>
  *
- * @author magnuse
+ *
  * @version $Id$
  * @deprecated use XmlEscapeDirective instead as we render xhtml pages.
  */
@@ -73,7 +73,7 @@ public final class HtmlEscapeDirective extends Directive {
             return false;
         }
 
-        
+
         if (node.jjtGetChild(0).value(context) != null)   {
 
 

@@ -25,7 +25,7 @@ package no.sesat.search.datamodel.access;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public enum ControlLevel {

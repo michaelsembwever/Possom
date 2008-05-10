@@ -43,7 +43,7 @@ import org.xml.sax.InputSource;
 /** Loads resource through ClassLoader resources.
  *
  * @version $Id: FileResourceLoader.java 3361 2006-08-03 13:44:54Z mickw $
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public class FileResourceLoader extends AbstractResourceLoader {
 
@@ -115,20 +115,20 @@ public class FileResourceLoader extends AbstractResourceLoader {
         String projectName = siteName
                 .replaceAll("(localhost|(alpha|nuclei|beta|electron|gamma).test.sesam)", "sesam")
                 .replaceAll("generic.(sesam.no)", "generic.sesam");
-        
+
         if( projectName.indexOf(':') > 0 ){
             projectName = projectName.substring(0, projectName.indexOf(':'));
         }
-        
+
         if( !projectName.endsWith("/")){
             projectName = projectName + '/';
         }
-        
+
         if( projectName.endsWith("sesam/") && !"generic.sesam/".equals(projectName) ){
             projectName = projectName.substring(0, projectName.length() - 1) + ".no/";
         }else if( !projectName.contains(".") ){
             projectName = projectName.substring(0, projectName.length() - 1) + ".sesam.no/";
-            
+
         }
         return projectName.replace('/', File.separatorChar);
     }
@@ -138,41 +138,41 @@ public class FileResourceLoader extends AbstractResourceLoader {
     protected final URL getResource(final Site site) {
 
         LOG.debug("getResource(" + site + ')');
-        
+
         final String suffix = "target" + File.separatorChar + getResourceDirectory();
         final String project = getProjectName(site.getName());
         int genericSesamLoop = 0;
-        
+
         try{
 
             if(getResource().contains("jar!") || getResource().endsWith(".class")){
                 final String classname = getResource().substring(getResource().indexOf("jar!") + 4);
                 // this will actually fail. but the class is loaded eventually cause everything is in one classloader.
                 return FileResourceLoader.class.getClassLoader().getResource(classname);
-            }            
-            
+            }
+
             String basedir = System.getProperty("basedir") + File.separatorChar;
             LOG.debug("project " + project);
             while(true){
                 String basedirNormalised = new File(basedir).toURI().normalize().toString()
                         .replaceFirst("file:", "")
                         .replace('/', File.separatorChar);
-                
+
                 if(!basedirNormalised.endsWith(File.separator)){
                     basedirNormalised =  basedirNormalised + File.separatorChar;
                 }
-                
+
                 LOG.debug("basedirNormalised " + basedirNormalised);
-                
+
                 if((File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)){
                     throw new IllegalStateException("At root of filesystem!" +
                             "+ Current requirement of tests is that sesat-kernel is checked out, and named such," +
                             " in any parent folder from here. I've searched all the way to the root of the filesystem");
                 }
-                
-                if(basedirNormalised.endsWith(project) 
+
+                if(basedirNormalised.endsWith(project)
                         || basedirNormalised.endsWith(project + "war" + File.separatorChar)){
-                    
+
                     LOG.debug("looking in " + basedir + suffix);
                     final File f = new File(basedir + suffix + getResource());
                     if(f.exists()){
@@ -188,22 +188,22 @@ public class FileResourceLoader extends AbstractResourceLoader {
                     if(new File(basedir + "generic.sesam").exists()){
                         // we are already inside sesat-kernel
                         basedir = basedir + "generic.sesam" + File.separatorChar + "war" + File.separatorChar;
-                        
+
                     }else{
-                        basedir = basedir + "sesat-kernel" + File.separatorChar 
+                        basedir = basedir + "sesat-kernel" + File.separatorChar
                                 + "generic.sesam" + File.separatorChar + "war" + File.separatorChar;
                     }
                 }else{
-                    basedir = basedir 
+                    basedir = basedir
                             + (basedir.endsWith("war"+ File.separatorChar) ? ".." + File.separatorChar : "")
                             + ".." + File.separatorChar + "war" + File.separatorChar;
                 }
             }
-            
+
         }catch (MalformedURLException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         }
-        
+
     }
 
     private String getResourceDirectory() {
@@ -236,7 +236,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
             // the latter is only for development purposes when dtds have't been published to production yet
             if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
-        
+
                 final String suffix = "sesat-kernel" + File.separatorChar
                     + "war" + File.separatorChar
                     + "src" + File.separatorChar
@@ -244,11 +244,11 @@ public class FileResourceLoader extends AbstractResourceLoader {
                     + "webapp" + File.separatorChar
                     + "dtds" + File.separatorChar +
                     systemId.substring(systemId.lastIndexOf('/'));
-                
+
                 String basedir = System.getProperty("basedir") + File.separatorChar;
-                
+
                 int genericSesamLoop = 0;
-                
+
                 while(true){
 
                     LOG.debug("looking in " + basedir + suffix);
@@ -267,7 +267,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
                     for(int i = 0; i < genericSesamLoop; ++i){
                         basedir = basedir + ".." + File.separatorChar;
                     }
-                }                
+                }
 
             } else {
                 // use the default behaviour

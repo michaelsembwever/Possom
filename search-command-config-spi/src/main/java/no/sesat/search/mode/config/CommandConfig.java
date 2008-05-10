@@ -45,28 +45,28 @@ import org.w3c.dom.NodeList;
  * A common base class for search configurations.
  * TODO rename to BaseSearchConfiguration since it is directly used by default commands in modes.xml
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public class CommandConfig implements SearchConfiguration {
-    
+
     // Constants -----------------------------------------------------
 
     /**
-     * 
+     *
      */
-    protected static final int DEFAULT_DOCUMENTS_TO_RETURN = 10;    
+    protected static final int DEFAULT_DOCUMENTS_TO_RETURN = 10;
 
     private static final Logger LOG = Logger.getLogger(CommandConfig.class);
 
     private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
             = "Each FastNavigator is only allowed to have one child. Parent was ";
-    
+
     private static final String ERR_FAILED_QUERYTRANSFORMERS_COPY = "Failed to defensively clone QueryTransformers";
     private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
 
     // Attributes ----------------------------------------------------
-    
+
     private String name;
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
     private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
@@ -84,11 +84,11 @@ public class CommandConfig implements SearchConfiguration {
      * Holds value of property fieldFilters.
      */
     private final Map<String,String> fieldFilters = new HashMap<String,String>();
-    
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
-    
+
     /**
      */
     public CommandConfig(){}
@@ -130,7 +130,7 @@ public class CommandConfig implements SearchConfiguration {
     }
 
     /**
-     * @param name 
+     * @param name
      */
     public final void setName(final String name) {
         this.name = name;
@@ -189,35 +189,35 @@ public class CommandConfig implements SearchConfiguration {
     }
 
     /** {@inheritDoc} *
-     * @return 
+     * @return
      */
     public boolean isAlwaysRun() {
         return alwaysRun;
     }
 
     /**
-     * @param enable 
+     * @param enable
      */
     public void setAlwaysRun(final boolean enable){
         alwaysRun = enable;
     }
 
     /** {@inheritDoc} *
-     * @return 
+     * @return
      */
     public boolean isRunBlank() {
         return runBlank;
     }
 
     /**
-     * @param enable 
+     * @param enable
      */
     public void setRunBlank(final boolean enable){
         runBlank = enable;
     }
-    
+
     /**
-     * @param useParameterAsQuery 
+     * @param useParameterAsQuery
      */
     public void setQueryParameter(final String useParameterAsQuery) {
         this.queryParameter = useParameterAsQuery;
@@ -229,26 +229,26 @@ public class CommandConfig implements SearchConfiguration {
     }
 
     /**
-     * @param name 
+     * @param name
      */
     public void setStatisticalName(final String name){
         statisticalName = name;
     }
-    
-    
-    /** {@inheritDoc} 
+
+
+    /** {@inheritDoc}
      */
     public boolean isAsynchronous() {
         return asynchronous;
     }
 
     /**
-     * @param asynchronous 
+     * @param asynchronous
      */
     public void setAsynchronous(final boolean asynchronous){
         this.asynchronous = asynchronous;
     }
-    
+
 
     /** {@inheritDoc} **/
     @Override
@@ -268,9 +268,9 @@ public class CommandConfig implements SearchConfiguration {
 
     /**
      * Syntax: field-filters="size, nyhetskilde AS newssource"
-     * 
-     * Just "size" will be the same as writing "size AS size" 
-     * 
+     *
+     * Just "size" will be the same as writing "size AS size"
+     *
      * @param fieldFilters Array of field filters.
      */
     public void setFieldFilters(final String[] fieldFilters) {
@@ -296,21 +296,21 @@ public class CommandConfig implements SearchConfiguration {
     public void clearResultHandlers() {
         resultHandlers.clear();
     }
-    
+
     /** {@inheritDoc} **/
     public void clearFieldFilters() {
         fieldFilters.clear();
     }
-    
+
     /** {@inherit}
      */
     public CommandConfig readSearchConfiguration(
-            final Element element, 
+            final Element element,
             final SearchConfiguration inherit,
             final Context context){
-        
+
         setName(element.getAttribute("id"));
-        
+
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "alwaysRun", ParseType.Boolean, element, "true");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "runBlank", ParseType.Boolean, element, "false");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "asynchronous", ParseType.Boolean, element, "false");
@@ -339,13 +339,13 @@ public class CommandConfig implements SearchConfiguration {
         if (element.getAttribute("result-fields").length() > 0) {
             addResultFields(element.getAttribute("result-fields").split(","));
         }
-        
+
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsToReturn", ParseType.Int, element, "-1");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "statisticalName", ParseType.String, element, "");
 
         return this;
     }
-    
+
     /** Currently only used by the fast subclasses but hopefully open to all one day. **/
     protected final Collection<Navigator> parseNavigators(final Element navsE) {
 
@@ -363,7 +363,7 @@ public class CommandConfig implements SearchConfiguration {
                     final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
 
                     final boolean boundaryMatch = navE.getAttribute("boundary-match").equals("true");
-                    
+
                     final Navigator nav = new Navigator(
                             name,
                             navE.getAttribute("field"),
@@ -384,9 +384,9 @@ public class CommandConfig implements SearchConfiguration {
             return navigators;
         }
 
-    
+
     // Inner classes -------------------------------------------------
-    
+
     /**
      *
      */

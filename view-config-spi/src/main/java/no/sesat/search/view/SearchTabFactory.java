@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
 
 /** Deserialises views.xml into SearchTab (& its inner classes).
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class SearchTabFactory extends AbstractDocumentFactory implements SiteKeyedFactory{
@@ -341,7 +341,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                             properties.put(propE.getNodeName(), propE.getFirstChild().getNodeValue());
                         }
                     }
-                    
+
                     placements.add(new SearchTab.EnrichmentPlacementHint(placementId, threshold, max, properties));
                 }
 
@@ -367,13 +367,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     }
 
                     final SearchTab.EnrichmentHint enrichment = new SearchTab.EnrichmentHint(
-                            rule, 
-                            baseScore, 
-                            threshold, 
-                            weight, 
-                            command, 
+                            rule,
+                            baseScore,
+                            threshold,
+                            weight,
+                            command,
                             properties);
-                    
+
                     enrichments.add(enrichment);
                 }
 
@@ -406,7 +406,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final NodeList layoutsNodeList = tabE.getElementsByTagName("layout");
 
                 Layout defaultLayout = null;
-                final Layout defaultInheritedLayout = null != inherit 
+                final Layout defaultInheritedLayout = null != inherit
                         ? inherit.getDefaultLayout()
                         : null;
                 final Map<String,Layout> layouts = new HashMap<String,Layout>();
@@ -415,7 +415,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
                     final Element layoutE = (Element) layoutsNodeList.item(j);
                     final String layoutId = null != layoutE.getAttribute("id") ? layoutE.getAttribute("id") : "";
-                    final Layout inheritedLayout = null != inherit && null != inherit.getLayouts().get(layoutId) 
+                    final Layout inheritedLayout = null != inherit && null != inherit.getLayouts().get(layoutId)
                             ? inherit.getLayouts().get(layoutId)
                             : defaultInheritedLayout;
                     final Layout layout = new Layout(inheritedLayout).readLayout(layoutE);

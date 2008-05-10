@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * Adds a filter caluse to a ESP5 query to exactly match a value.
  *
  *
- * @author Geir H. Pettersen (T-Rank)
+ *
  */
 public class ExactFieldFilterQueryTransformer extends AbstractQueryTransformer {
 

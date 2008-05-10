@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  * original parameter value. If this second parameter does not exist or it's not an accurate signing of the original
  * parameter then the request immediately returns with a 404 response error.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class MD5ProtectedParametersFilter implements Filter {

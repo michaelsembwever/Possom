@@ -19,7 +19,7 @@ package no.sesat.search.site.config;
 /**
  * <tt>ResourceLoader</tt> for loading java byte code from SESAT skins.
  *
- * @author magnuse
+ *
  */
 public interface BytecodeLoader extends ResourceLoader {
     /**

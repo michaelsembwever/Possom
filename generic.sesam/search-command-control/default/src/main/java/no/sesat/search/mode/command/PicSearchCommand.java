@@ -43,7 +43,7 @@ import no.sesat.search.result.ResultList;
  *
  * A search command that uses the picsearch API.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public class PicSearchCommand extends AbstractSearchCommand {
@@ -214,7 +214,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
         } catch (IOException e) {
             LOG.error("Problems with connection to " + url, e);
             throw new SearchCommandException(e);
-            
+
         } catch (SAXException e) {
             LOG.error("XML Parse error " + url , e);
             throw new SearchCommandException(e);

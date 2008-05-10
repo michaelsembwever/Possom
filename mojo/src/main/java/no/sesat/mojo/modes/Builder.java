@@ -45,7 +45,7 @@ public final class Builder {
         outputDir = new File(dir).getAbsolutePath() + File.separator;
         id = idString;
         RootDocImpl root = null;
-        
+
         // hack to suppress javadoc's warnings.
         final PrintStream out = System.out;
         final PrintStream err = System.err;
@@ -65,7 +65,7 @@ public final class Builder {
 
             final Options compOpts = Options.instance(context);
             compOpts.put("-classpath", classpath);
-            
+
             try {
                 root = comp.getRootDocImpl("", "", new ModifierFilter(PUBLIC | PROTECTED), javaNames.toList(), options
                         .toList(), false, subPackages.toList(), xcludePackages.toList(), false, false, false);

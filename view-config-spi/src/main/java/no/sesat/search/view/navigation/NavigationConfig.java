@@ -48,7 +48,7 @@ import no.sesat.search.view.config.SearchTab;
  * As a bonus from using this, you don't need to data-model the commands that only are
  * there for navigation.
  *
- * @author Geir H. Pettersen(T-Rank)
+ *
  * @version $Id$
  */
 public final class NavigationConfig implements Serializable {

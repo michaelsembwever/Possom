@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
 /** Default implementation of QueryParser.Context's createXxxClause methods.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractQueryParserContext implements AbstractQueryParser.Context {
 

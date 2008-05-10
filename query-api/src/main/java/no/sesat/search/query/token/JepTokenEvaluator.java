@@ -28,7 +28,7 @@ import org.nfunk.jep.type.Complex;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class JepTokenEvaluator implements TokenEvaluator {
 

@@ -49,7 +49,7 @@ import org.xml.sax.SAXParseException;
  *  using resources from the search-front-config application.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractResourceLoader
         implements Runnable, DocumentLoader, PropertiesLoader, BytecodeLoader {
@@ -60,19 +60,19 @@ public abstract class AbstractResourceLoader
         DOWN_HIERARCHY,
         UP_HEIRARCHY
     }
-    
+
     private enum Resource{
-        
+
         PROPERTIES(Polymorphism.UP_HEIRARCHY),
         DOM_DOCUMENT(Polymorphism.NONE),
         BYTECODE(Polymorphism.NONE);
 
         final private Polymorphism polymorphism;
-        
+
         Resource(final Polymorphism polymorphism){
             this.polymorphism = polymorphism;
         }
-        
+
         Polymorphism getPolymorphism(){
             return polymorphism;
         }
@@ -111,7 +111,7 @@ public abstract class AbstractResourceLoader
     private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
     private static final String FATAL_RESOURCE_NOT_LOADED = "Resource not found ";
     private static final String WARN_PARENT_SITE = "Parent site is: ";
-    
+
     /** Illegal Constructor. Must use AbstractResourceLoader(SiteContext). */
     private AbstractResourceLoader() {
         throw new IllegalArgumentException(ERR_MUST_USE_CONTEXT_CONSTRUCTOR);
@@ -123,11 +123,11 @@ public abstract class AbstractResourceLoader
     protected AbstractResourceLoader(final SiteContext cxt) {
         context = cxt;
     }
-    
+
     public abstract boolean urlExists(URL url);
-    
+
     protected abstract URL getResource(final Site site);
-    
+
     protected abstract InputStream getInputStreamFor(final URL resource);
 
     /** Get the SiteContext.
@@ -203,7 +203,7 @@ public abstract class AbstractResourceLoader
 
 
     private void preInit(final String resource){
-        
+
         if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
@@ -215,7 +215,7 @@ public abstract class AbstractResourceLoader
             }else{
                 this.resource = resource;
             }
-            
+
             if (jarFileName != null) {
                 // Construct the path portion of a JarUrl.
                 this.resource = jarFileName + "!/" + this.resource;
@@ -225,11 +225,11 @@ public abstract class AbstractResourceLoader
             this.resource = resource;
         }
     }
-    
+
     private void postInit(){
-        
+
         future = EXECUTOR.submit(this);
-        
+
         if(LOG.isTraceEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
             final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
             LOG.trace(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
@@ -243,13 +243,13 @@ public abstract class AbstractResourceLoader
         if (future == null) {
             throw new IllegalStateException(ERR_NOT_INITIALISED);
         }
-        
+
         try {
-            
+
             final long time = System.currentTimeMillis();
             future.get();
             LOG.debug("abut(" + (System.currentTimeMillis() - time) + "ms) for " + getResource(context.getSite()));
-            
+
 
         } catch (InterruptedException ex) {
             LOG.error(ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD, ex);
@@ -261,11 +261,11 @@ public abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void run() {
-        
+
         // Inheriting from Site & UniqueId from parent thread is meaningless in a thread pool.
         MDC.put(Site.NAME_KEY, context.getSite());
         MDC.remove("UNIQUE_ID");
-        
+
         switch(resourceType.getPolymorphism()){
             case UP_HEIRARCHY:
                 // Properties inherent through the fallback process. Keys are *not* overridden.
@@ -277,14 +277,14 @@ public abstract class AbstractResourceLoader
                     throw new ResourceLoadException("Could not find resource " + getResource(context.getSite()));
                 }
                 break;
-                
+
             case DOWN_HIERARCHY:
                 throw new UnsupportedOperationException("Not yet implemented");
-                
+
             case FIRST_FOUND:
                 // Default behavour: only load first found resource
                 Site site = getContext().getSite();
-                
+
                 do {
                     if (loadResource(getResource(site))) {
                         break;
@@ -296,12 +296,12 @@ public abstract class AbstractResourceLoader
                         }
                     }
                 } while (site != null);
-                
+
                 if (site == null) {
                     LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
                 }
                 break;
-                
+
             case NONE:
                 // if the resource doesn't exist then fake an empty result.
                 if (!loadResource(getResource(getContext().getSite()))) {
@@ -312,7 +312,7 @@ public abstract class AbstractResourceLoader
     }
 
     private boolean loadEmptyResource(final URL url) {
-        
+
         LOG.debug("Loading empty resource for " + resource);
 
         switch(resourceType){
@@ -327,43 +327,43 @@ public abstract class AbstractResourceLoader
             case BYTECODE:
                 bytecode = new byte[0];
                 break;
-            
+
         }
 
         return true;
     }
-    
-    
+
+
     private boolean loadResource(final URL url) {
 
         boolean success = false;
 
         if(urlExists(url)){
-            
+
             final InputStream is = getInputStreamFor(url);
 
             try {
 
                 switch(resourceType){
-                    
+
                     case PROPERTIES:
-                        
+
                         // only add properties that don't already exist!
                         // allows us to inherent back through the fallback process.
                         final Properties newProps = new Properties();
                         newProps.load(is);
-                        
+
                         props.put(context.getSite().getName(), url);
-                        
+
                         for(Object p : newProps.keySet()){
-                            
+
                             if(!props.containsKey(p)){
                                 final String prop = (String)p;
                                 props.setProperty(prop, newProps.getProperty(prop));
                             }
                         }
                         break;
-                        
+
                     case DOM_DOCUMENT:
                         document = builder.parse( new InputSource(new InputStreamReader(is)) );
                         break;
@@ -387,14 +387,14 @@ public abstract class AbstractResourceLoader
 
             } catch (IOException e) {
                 LOG.warn(readResourceDebug(url), e);
-                
+
             } catch (SAXParseException e) {
                 throw new ResourceLoadException(
                         readResourceDebug(url) + " at " + e.getLineNumber() + ":" + e.getColumnNumber(), e);
-                
+
             } catch (SAXException e) {
                 throw new ResourceLoadException(readResourceDebug(url), e);
-                
+
             }finally{
                 if( null != is ){
                     try{
@@ -407,9 +407,9 @@ public abstract class AbstractResourceLoader
         }
         return success;
     }
-    
+
     protected String readResourceDebug(final URL url){
-        
+
         return "Read Configuration from " + resource;
     }
 }

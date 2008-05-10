@@ -23,16 +23,16 @@ import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.result.ResultItem;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public class MockupResultHandler implements ResultHandler {
-    
+
     private ResultList<ResultItem> result;
     private Map parameters;
 
     public void handleResult(final Context cxt, final DataModel datamodel) {
-        
+
         this.result = cxt.getSearchResult();
         this.parameters = parameters;
     }

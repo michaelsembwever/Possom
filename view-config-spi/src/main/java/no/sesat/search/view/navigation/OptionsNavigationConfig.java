@@ -40,8 +40,8 @@ import no.sesat.search.view.config.SearchTab;
 
 /**
  *
- * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
+ *
  */
 @ControllerFactory("no.sesat.search.view.navigation.OptionNavigationController")
 public final class OptionsNavigationConfig extends NavigationConfig.Nav {
@@ -203,7 +203,7 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
         public Map<String, String> getStaticParameters() {
             return Collections.unmodifiableMap(staticParameters);
         }
-        
+
         @Override
         public String toString() {
             return "\nOption{" +
@@ -219,5 +219,5 @@ public final class OptionsNavigationConfig extends NavigationConfig.Nav {
         }
 
     }
-    
+
 }

@@ -22,7 +22,7 @@ import no.sesat.search.site.SiteContext;
 /**
  * Interface providing a way to get bytecode resource loaders.
  *
- * @author magnuse
+ *
  */
 public interface BytecodeContext extends BaseContext {
     /**

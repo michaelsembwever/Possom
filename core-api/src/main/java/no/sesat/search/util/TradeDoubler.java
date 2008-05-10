@@ -27,24 +27,24 @@ import org.apache.commons.codec.binary.Hex;
 
 /**
  * <b> Must be threadsafe </b>
- * @author <a href="mailto:anders.johan.jamtli@sesam.no">Anders Johan Jamtli</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class TradeDoubler {
-    
+
     private final static String secretCode = "997";
     private final static String organization = "1064392";
     private final static String event = "46757";
     private final HttpServletRequest request;
-    
+
     public TradeDoubler(HttpServletRequest request) {
         this.request = request;
     }
-    
+
     public String getChecksum(
             final String orderNumber,
             final String orderValue) throws RuntimeException {
-        
+
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("MD5");
@@ -55,39 +55,39 @@ public final class TradeDoubler {
         digest.update(s.getBytes());
         return new String(Hex.encodeHex(digest.digest()));
     }
-    
+
     public String getUUID() {
         return UUID.randomUUID().toString();
     }
-    
+
     public static String getEvent() {
         return event;
     }
-    
+
     public static String getOrganization() {
         return organization;
     }
-    
+
     public static String getSecretCode() {
         return secretCode;
     }
-    
+
     public String getCookieTDUID() {
         return getCookie("TRADEDOUBLER");
     }
-    
+
     public String getCookieOrderNumber(){
         return getCookie("TRADEDOUBLER-onr");
     }
-    
+
     public String getCookieChecksum(){
         return getCookie("TRADEDOUBLER-cs");
     }
-    
+
     public String getCookieReportInfo(){
         return getCookie("TRADEDOUBLER-ri");
     }
-    
+
     private String getCookie(String name){
         if (this.request == null){
             return "";

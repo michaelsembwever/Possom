@@ -35,7 +35,7 @@ public class SearchResultModuleImpl extends ModuleImpl
     private String numberOfHits;
     private String articleAge;
     private String newsSource;
-    
+
     /**
      * Creates a new instance of this class.
      */

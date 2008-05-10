@@ -52,8 +52,8 @@ import no.sesat.search.view.navigation.UrlGenerator;
  * As a bonus from using this, you don't need to data-model the commands that only are
  * there for navigation.
  *
- * @author Geir H. Pettersen(T-Rank)
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
+ *
  * @version $Id: NavigationRunHandler.java 5846 2007-10-28 13:15:35Z ssmaeklu $
  */
 public final class NavigationRunHandler implements RunHandler{

@@ -41,12 +41,12 @@ import org.apache.log4j.Logger;
  * The factory class to clean instances from is indicated by the value of ReloadArg.
  * Also performs a System.gc() to clean out WeakReference caches.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class FactoryReloads {
 
-    
+
     public enum ReloadArg{
         ALL,
         SITE_CONFIGURATION,
@@ -69,7 +69,7 @@ public final class FactoryReloads {
     // Static --------------------------------------------------------
 
     /** Remove factory instances for a given Site and its locale derivatives.
-     * The factory class to clean instances from is indicated by the value of ReloadArg. 
+     * The factory class to clean instances from is indicated by the value of ReloadArg.
      * Also performs a System.gc() to clean out WeakReference caches.
      **/
     @SuppressWarnings("fallthrough")
@@ -82,51 +82,51 @@ public final class FactoryReloads {
         switch(reload){
             case ALL:
             case SITE_CONFIGURATION:
-        
+
                 performReload(site, SiteConfiguration.instanceOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
-        
+
             case SEARCH_TAB_FACTORY:
-                
+
                 performReload(site, SearchTabFactory.instanceOf(
                         ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
-                
+
             case SEARCH_MODE_FACTORY:
 
                 performReload(site, SearchModeFactory.instanceOf(
                         ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt)));
                 if( ReloadArg.ALL != reload){ break;}
-        
+
             case ANALYSIS_RULES_FACTORY:
-                
+
                 performReload(site, AnalysisRuleFactory.instanceOf(
                         ContextWrapper.wrap(AnalysisRuleFactory.Context.class, genericCxt)));
-        
+
             case REG_EXP_EVALUATOR_FACTORY:
-                
+
                 performReload(site, RegExpEvaluatorFactory.instanceOf(
                         ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
-        
+
             case VELOCITY_ENGINE_FACTORY:
-                
+
                 performReload(site, VelocityEngineFactory.instanceOf(
                         ContextWrapper.wrap(VelocityEngineFactory.Context.class, genericCxt)));
                 if(ReloadArg.ALL != reload){ break;}
-            
+
         }
-        
+
         // clean out WeakReference caches
         System.gc();
     }
-    
+
     private static void performReload(
             final Site site,
             final SiteKeyedFactory factory){
-        
-        LOG.warn(removeAllLocalesFromSiteKeyedFactory(site, factory) 
+
+        LOG.warn(removeAllLocalesFromSiteKeyedFactory(site, factory)
                 + WARN_CLEANED_1 + factory.getClass().getSimpleName() + WARN_CLEANED_2 + site);
     }
 
@@ -162,5 +162,5 @@ public final class FactoryReloads {
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
-    
+
 }

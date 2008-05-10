@@ -41,7 +41,7 @@ import java.util.Map;
  * //Uses a ReentrantReadWriteLock in a delegated HashMap in preference to a Hashtable to maximise performance.
  * //Access to the whole map is through a Collections.unmodifiable(map) defensive copy.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject
@@ -61,7 +61,7 @@ public final class MapDataObjectSupport<V> implements MapDataObject<V>{
     };
 
     public MapDataObjectSupport(final Map<String,V> map){
-        
+
         if( null != map ){
             this.map.putAll(map);
         }

@@ -65,16 +65,16 @@ import org.apache.velocity.tools.generic.NumberTool;
  * Each instance maps to an VelocityEngine instance.
  * All template operations (getting and merging) are done through this class
  *   rather than directly against Velocity's API.
- * 
+ *
  * <b>Developer Aid</b><br/>
  * Ola-marius extended the engine so to run in debug mode that outlines (& titles) each rendered template.
- * See 
+ * See
  * <a href="http://sesat.no/debugging-velocity-templates.html">
  *  Debugging Velocity Templates
  * </a><br/>
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class VelocityEngineFactory implements SiteKeyedFactory{
 
@@ -108,10 +108,10 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     // Static --------------------------------------------------------
 
-    
+
     /** Find the appropriate velocity Template by its name against a given engine and site.
      * Will throw a ResourceNotFoundException if not found.
-     * 
+     *
      * @param engine the VelocityEngine appropriate for the current site.
      * @param site the current site.
      * @param templateName the name of the template. must not contain ".vm" suffix.
@@ -259,7 +259,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
             // truncate last ','
             directives.setLength(directives.length()-1);
-            
+
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
 
             engine = new VelocityEngine(){
@@ -281,7 +281,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 }
 
             };
-            
+
 
             final ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
             try{
@@ -316,7 +316,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                         + site.getTemplateDir() + "/VM_global_library.vm,"
                         + site.getTemplateDir() + "/VM_site_library.vm,"
                         + site.getTemplateDir() + "/VM_map_library.vm"); //XXX not happy with this. it isn't SESAT.
-                
+
                 final SiteClassLoaderFactory.Context classContext = ContextWrapper.wrap(
                         SiteClassLoaderFactory.Context.class,
                         new BaseContext() {
@@ -335,7 +335,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
             }catch (Exception e) {
                 throw new InfrastructureException(e);
-            }finally{                
+            }finally{
                 Thread.currentThread().setContextClassLoader(origLoader);
             }
 

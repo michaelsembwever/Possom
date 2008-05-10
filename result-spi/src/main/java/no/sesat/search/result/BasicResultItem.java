@@ -32,7 +32,7 @@ import java.util.Map;
  *
  * Any field "recordid" is considered as a key to equality between result items.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public class BasicResultItem implements ResultItem {

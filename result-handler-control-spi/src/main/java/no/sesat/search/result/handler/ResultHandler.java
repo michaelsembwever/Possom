@@ -28,7 +28,7 @@ import no.sesat.search.view.config.SearchTab;
 
 /**
  * @version <tt>$Id$</tt>
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  *
  */
 public interface ResultHandler {

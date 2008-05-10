@@ -36,7 +36,7 @@ import no.sesat.search.site.Site;
  * For example: "term1 OR term2".
  * <b>Objects of this class are immutable</b>
  *
- * @author <a hrefOrClauseImpl:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public class OrClauseImpl extends AbstractOperationClause implements OrClause {

@@ -44,14 +44,14 @@ import org.apache.log4j.Logger;
  * Provides default implementation to get the query object.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public abstract class AbstractQueryParser implements QueryParser {
 
     // Constants -----------------------------------------------------
-    
+
     public static final String SKIP_REGEX;
-    
+
     /** Protected so an .jj file implementing this class can reuse.
      **/
     protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
@@ -61,17 +61,17 @@ public abstract class AbstractQueryParser implements QueryParser {
      ***/
     protected static final String ERR_EMPTY_CONTEXT
         = "The \"QueryParser(QueryParser.Context)\" constructor must be used!";
-    
+
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException of ";
 
     // Attributes ----------------------------------------------------
-    
+
     private final Stack<String> methodStack = new Stack<String>();
-    
+
     /** the context this query parser implementation must work against.
      ***/
     protected transient Context context;
-    
+
     /** the resulting query object.
      ***/
     private Query query;
@@ -79,7 +79,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     // Static --------------------------------------------------------
 
     static{
-        
+
         // build our skip regular expression
         final StringBuilder builder = new StringBuilder();
         for(char[] range : QueryParser.SKIP_CHARACTER_RANGES){
@@ -92,9 +92,9 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
     // Constructors --------------------------------------------------
-    
+
     // Public --------------------------------------------------------
-    
+
     /**
      * do the actual parsing.
      * This method shouldn't be public but that's the way javacc creates it unfortunately.
@@ -111,11 +111,11 @@ public abstract class AbstractQueryParser implements QueryParser {
     public Query getQuery(){
         if( query == null ){
             final String q = context.getQueryString();
-            
+
             if( context == null ){
                 throw new IllegalStateException(ERR_EMPTY_CONTEXT);
             }
-            
+
             final ParentFinder parentFinder = new ParentFinder();
             try{
                 if( null != q && 0 < q.replaceAll(SKIP_REGEX, "").trim().length() && !"*".equals(q) ){
@@ -130,22 +130,22 @@ public abstract class AbstractQueryParser implements QueryParser {
             }catch(ParseException pe){
                 LOG.warn(ERR_PARSING + q, pe);
                 // also let product department know these queries are not working
-                PRODUCT_LOG.info("<invalid-query type=\"ParseException\">" 
+                PRODUCT_LOG.info("<invalid-query type=\"ParseException\">"
                         + StringEscapeUtils.escapeXml(q) + "</invalid-query>");
-                
+
             } catch (TokenMgrError tme)  {
                 LOG.error(ERR_PARSING + q, tme);
                 // also let product department know these queries are not working
-                PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">" 
+                PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">"
                         + StringEscapeUtils.escapeXml(q) + "</invalid-query>");
             }
 
             if( query == null ){
-                
+
                 final Clause empty = context.createWordClause("",null);
                 final String qStr = context.getQueryString();
-                // common post-exception handling. 
-                // * is a special query to search for everything 
+                // common post-exception handling.
+                // * is a special query to search for everything
                 //  and should be treated as a non-blank query despite having crashed the parser.
                 query = createQuery(qStr, !"*".equals(qStr), empty, parentFinder);
             }
@@ -159,7 +159,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     // Protected -----------------------------------------------------
 
     /** Create a new context the return the argument on any call to its getQueryString() method.
-     * 
+     *
      * @param input the query string returned from the created context's getQueryString() method.
      * @return new content supplying access to query string "input"
      */
@@ -178,7 +178,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
     /** Debugging method for tracing a method entry.
-     * 
+     *
      * @param method the name of the method
      */
     protected final void enterMethod(final String method){
@@ -205,16 +205,16 @@ public abstract class AbstractQueryParser implements QueryParser {
 
     /** Ensure that for every leftChar there is a matching rightChar.
      * Otherwise remove all occurences of both leftChar and rightChar.
-     * 
-     * @param query 
-     * @param leftChar 
-     * @param rightChar 
-     * @return 
+     *
+     * @param query
+     * @param leftChar
+     * @param rightChar
+     * @return
      */
     protected final String balance(String query, final char leftChar, final char rightChar){
         int left = 0, right = 0;
         final char[] chars = query.toCharArray();
-        for( int i = 0; i < chars.length; ++i ){ 
+        for( int i = 0; i < chars.length; ++i ){
             if( chars[i] == leftChar ){ ++left; }
             if( chars[i] == rightChar ){ ++right; }
         }
@@ -227,19 +227,19 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
     /** Ensure that there are a even number of c characters in the phrase, otherwise remove all occurences of c.
-     * 
-     * @param query 
+     *
+     * @param query
      * @param c the character to ensure has an even occurence count.
      * @return unchanged or changes string.
      */
     protected final String even(String query, final char c){
         int count = 0;
         final char[] chars = query.toCharArray();
-        for( int i = 0; i < chars.length; ++i ){ 
+        for( int i = 0; i < chars.length; ++i ){
             if( chars[i] == c ){ ++count; }
         }
         if( count % 2 >0 ){
-            // uneven amount of (). Ignore all of them then.    
+            // uneven amount of (). Ignore all of them then.
             query = query.replaceAll("\\" + c, "");
             ReInit(new StringReader(query));
         }
@@ -248,74 +248,74 @@ public abstract class AbstractQueryParser implements QueryParser {
 
     /** HACK because phone numbers and organisation numbers need to finish
      * with a space. SEARCH-672
-     * 
-     * @param query 
-     * @return 
+     *
+     * @param query
+     * @return
      */
     protected final String numberNeedsTrailingSpace(String query){
-        
+
         if( query.length() > 0 && Character.isDigit( query.charAt(query.length()-1) ) ){
             query = query + ' ';
             ReInit(new StringReader(query));
         }
         return query;
     }
-    
+
     /** HACK because a floating hyphon is interpretted as a NotClause.
      * Sesam syntax requires the hyphon to be adjacent, without whitespace, to the next term. SEARCH-3390
-     * 
-     * @param query 
-     * @return 
+     *
+     * @param query
+     * @return
      */
     protected final String fixFloatingHyphon(String query){
-        
+
         if(0 <= query.indexOf(" - ")){
             query = query.replaceAll("( )+-( )+", "- ");
             ReInit(new StringReader(query));
         }
         return query;
     }
-    
+
     protected abstract void ReInit(Reader reader);
-    
+
     // Private -------------------------------------------------------
-    
+
     private Clause alternate(final Clause original, final ParentFinder parentFinder){
-        
+
         Clause result = original;
         for(Alternation alternation : getAlternations(parentFinder)){
             result = alternation.alternate(result);
         }
         return result;
     }
-    
+
     private List<Alternation> getAlternations(final ParentFinder parentFinder){
 
         // the list we'll return
         final List<Alternation> alternations = new ArrayList<Alternation>();
-        
+
         // the context each alternation will work with
         final Alternation.Context cxt = ContextWrapper.wrap(
                 Alternation.Context.class,
                 new BaseContext(){
                     public ParentFinder getParentFinder(){
                         return parentFinder;
-                    }   
+                    }
                 },
                 context);
-                
+
         // create and add each alternation
         alternations.add(new RotationAlternation(cxt));
-        //alternations.add(new FullnameAlternation(cxt)); // disable. see SEARCH-2269 
+        //alternations.add(new FullnameAlternation(cxt)); // disable. see SEARCH-2269
 
         return alternations;
     }
 
 
     private static Query createQuery(
-            final String string, 
+            final String string,
             final boolean blank,
-            final Clause root, 
+            final Clause root,
             final ParentFinder parentFinder){
 
         return AbstractQuery.createQuery(string, blank, root, parentFinder);

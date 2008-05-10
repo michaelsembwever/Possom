@@ -30,7 +30,7 @@ import no.sesat.search.query.XorClause;
 /**
  *
  * A search command for the web search.
- * @author magnuse
+ *
  * @version $Id$
  */
 public class WebSearchCommand extends FastSearchCommand {

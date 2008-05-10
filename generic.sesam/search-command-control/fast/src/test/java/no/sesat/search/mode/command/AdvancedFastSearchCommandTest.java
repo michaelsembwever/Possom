@@ -92,7 +92,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
             final String query,
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException {
-        
+
         final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
         final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt);
         final String generatedQuery = cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());

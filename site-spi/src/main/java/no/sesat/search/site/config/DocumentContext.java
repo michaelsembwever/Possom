@@ -26,7 +26,7 @@ import no.sesat.search.site.SiteContext;
 /** Defines the context for consumers of DocumentLoaders.
  *
  * @version $Id: ResourceContext.java 2045 2006-01-25 12:10:01Z mickw $
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface DocumentContext extends BaseContext {
     /** Create a new DocumentLoader for the given resource name/path and load it with the given DocumentBuilder.

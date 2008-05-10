@@ -34,7 +34,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  * This directive hashes a url parameter so you can build url's with protected parameters.
  *
- * @author <a href="mailto:endre@sesam.no">Endre Midtgård Meckelborg</a>
+ *
  * @version <tt>$Revision: $</tt>
  */
 public final class MD5ParameterDirective extends AbstractDirective {

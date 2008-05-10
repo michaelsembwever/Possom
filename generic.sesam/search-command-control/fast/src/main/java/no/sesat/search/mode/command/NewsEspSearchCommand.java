@@ -55,7 +55,7 @@ import com.fastsearch.esp.search.result.IllegalType;
 /** Navigatable ESP search command for news.
  * @todo documentation what additional functionality actually amounts to it benefitting news verticals.
  *
- * @author Geir H. Pettersen (T-Rank)
+ *
  * @version $Id$
  */
 public class NewsEspSearchCommand extends NavigatableESPFastCommand {

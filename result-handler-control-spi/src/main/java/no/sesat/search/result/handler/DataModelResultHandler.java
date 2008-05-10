@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
 /** Handles the insertion of the results into the datamodel.
  * This class must remain safe under multi-threaded conditions.
  *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 public final class DataModelResultHandler implements ResultHandler{
@@ -116,9 +116,9 @@ public final class DataModelResultHandler implements ResultHandler{
             originalControlLevel = factory.currentControlLevel(datamodel);
             factory.assignControlLevel(datamodel, SEARCH_COMMAND_EXECUTION);
         }
-        
+
         datamodel.setSearch(config.getName(), searchDO);
-        
+
         if(null != originalControlLevel && SEARCH_COMMAND_EXECUTION == factory.currentControlLevel(datamodel)){
             // restore the control level, given that nobody else has touched it.
             factory.assignControlLevel(datamodel, originalControlLevel);

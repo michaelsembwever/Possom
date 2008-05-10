@@ -22,7 +22,7 @@ import javax.servlet.ServletRequest;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision$</tt>
  */
 public class SesamCacheFilter extends CacheFilter {

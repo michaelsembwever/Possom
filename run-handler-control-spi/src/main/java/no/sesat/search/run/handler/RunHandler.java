@@ -31,12 +31,12 @@ import no.sesat.search.site.SiteContext;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
- * @author <a href="anders@jamtli.no">Anders Johan Jamtli</a>
+ *
+ *
  * @version $Id: RunHandler.java 5821 2007-10-11 11:25:11Z ssmiweve $
  */
 public interface RunHandler extends Serializable {
-                               
+
     interface Context extends DataModelContext, PropertiesContext, SiteContext, ResourceContext {
     }
 

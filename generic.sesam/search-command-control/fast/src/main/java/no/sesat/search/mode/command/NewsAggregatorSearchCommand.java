@@ -52,7 +52,7 @@ import java.util.Map;
  * Search command that will try to get pregenerated clusters from xml files. If the xml file is not available it will
  * fall back to a search.
  *
- * @author Geir H. Pettersen (T-Rank)
+ *
  * @version $Id$
  */
 public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastCommand {
@@ -67,13 +67,13 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         super(cxt);
     }
 
- 
+
     @Override
     public ResultList<? extends ResultItem> execute() {
         final NewsAggregatorCommandConfig config = getSearchConfiguration();
         final StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
         final String xmlUrl = getXmlUrlString(datamodel, config);
-                
+
         LOG.debug("Loading xml file at: " + xmlUrl);
         ResultList<? extends ResultItem> searchResult;
         if (clusterId == null) {
@@ -84,7 +84,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         LOG.debug("Done (+Tried loading xml file at: " + xmlUrl + ")");
         return searchResult;
     }
-    
+
     private String getXmlUrlString(final DataModel dataModel, final NewsAggregatorCommandConfig config) {
         String geographic = "main";
         String category = "main";
@@ -239,12 +239,12 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
          * @throws java.io.IOException      if the file could not be read for some reason
          */
         private Document getDocumentFromUrl(String urlString) throws IOException, SAXException {
-        	
+
             final URL url = new URL(urlString);
             final HTTPClient httpClient = HTTPClient.instance(url);
             return httpClient.getXmlDocument(url.getPath());
         }
-        
+
         /**
          * Loads an XML document from a URL i.e. file:// or http:// or cache based on a cache timeout
          * Gets from URL and stores the result in the cache
@@ -278,7 +278,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                 }
             }
             return doc;
-        } 
+        }
 
         /**
          * Parses a specific identified cluster
@@ -330,7 +330,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                 final NewsAggregatorCommandConfig config,
                 final int offset,
                 final String xmlUrl) throws IOException, SAXException {
-            
+
             // following will throw a ClassCastException or NPE
             final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>();
             final Document doc = getDocumentFromCache(xmlUrl);
@@ -497,7 +497,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
                 final NewsAggregatorCommandConfig config,
                 final ResultList<ResultItem> srcResult,
                 final ResultList<ResultItem> targetResult) {
-            
+
             addResult(config, srcResult, targetResult, null, false);
         }
 

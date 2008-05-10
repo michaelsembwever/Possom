@@ -33,7 +33,7 @@ import java.io.Serializable;
  * The SiteDataObject is the datamodel's container for Site related classes.
  * These objects are intended to be shared instances corresponding to each site and therefore thread-safe.
  *
- * @author <a href="mailto:mick@semb.wever.org">Mck</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @DataObject

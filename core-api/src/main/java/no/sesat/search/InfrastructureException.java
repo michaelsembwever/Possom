@@ -18,7 +18,7 @@
 package no.sesat.search;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision$</tt>
  */
 public class InfrastructureException extends RuntimeException {
@@ -27,7 +27,7 @@ public class InfrastructureException extends RuntimeException {
 
     /**
      * Create a new InfrastructureException.
-     * 
+     *
      * @param e
      */
     public InfrastructureException(Exception e) {
@@ -36,7 +36,7 @@ public class InfrastructureException extends RuntimeException {
 
     /**
      * Create a new InfrastructureException.
-     * 
+     *
      * @param s
      * @param e
      */

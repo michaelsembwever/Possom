@@ -54,7 +54,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 /** Base class to help with importing velocity templates.
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 
@@ -80,14 +80,14 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-    
+
     /** Find (and initialise into the PageContext) the layout this request is to use.
-     * 
+     *
      * @param datamodel
      * @return
      */
     protected final Layout findLayout(final DataModel datamodel){
-        
+
         Layout layout = null;
         final PageContext cxt = (PageContext) getJspContext();
         if(null != cxt && null != datamodel && null != datamodel.getPage()){
@@ -101,7 +101,7 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
         }
         return layout;
     }
-    
+
     protected final Site getSiteManually(final PageContext cxt) {
         Site site = null;
         try {
@@ -112,30 +112,30 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
         }
         return site;
     }
-        
+
     /** Imports the specified jsp.
-     * 
+     *
      * @param include must contain ".jsp" suffix.
      * @throws java.io.IOException
-     * @throws javax.servlet.ServletException 
+     * @throws javax.servlet.ServletException
      */
     protected final void importJsp(final String include) throws JspException{
-        
+
         try{
             ((PageContext)getJspContext()).include(include);
-            
+
         }catch(IOException ioe){
             throw new JspException(ioe);
         }catch(ServletException ioe){
             throw new JspException(ioe);
         }
-    }  
+    }
 
     /** Imports the specified velocity template.
-     * 
+     *
      * @param templateName may or may not contain ".vm" extension.
      * @param map key-value pairs to put into the velocity's context.
-     * @throws javax.servlet.jsp.JspException 
+     * @throws javax.servlet.jsp.JspException
      */
     protected final void importVelocity(final String templateName, final Map<String,Object> map) throws JspException {
 
@@ -171,8 +171,8 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
 
             final Template template = VelocityEngineFactory.getTemplate(
-                    engine, 
-                    site, 
+                    engine,
+                    site,
                     templateName.replaceAll(".vm$", ""));
 
             final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
@@ -186,13 +186,13 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             }
             context.put("datamodel", datamodel);
             context.put("text", text);
-            
+
             // it's quite long to write $datamodel.site.siteConfiguration.properties so put this in for convenience
             context.put("configuration", null != datamodel && null != datamodel.getSite()
                     ? datamodel.getSite().getSiteConfiguration().getProperties()
                     // we haven't gone through the SiteLocatorFilter so get site manually
                     : SiteConfiguration.instanceOf(site).getProperties());
-            
+
             //context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes

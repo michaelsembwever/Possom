@@ -24,12 +24,12 @@ import no.schibstedsok.commons.ioc.BaseContext;
 
 /**
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public interface SearchConfigurationContext extends BaseContext {
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     SearchConfiguration getSearchConfiguration();
 }

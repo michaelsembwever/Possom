@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  * @version $Id$
  */
 
@@ -47,7 +47,7 @@ public final class PublishingPageTag extends AbstractVelocityTemplateTag {
     private static final Logger LOG = Logger.getLogger(PublishingPageTag.class);
 
     private String page;
-    
+
     private String template;
 
     /**Called by the container to invoke this tag.
@@ -67,14 +67,14 @@ public final class PublishingPageTag extends AbstractVelocityTemplateTag {
             }
 
             final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
-            
+
             if(null == template){
                 out.write(ImportPublish.importPage(page, datamodel));
-                
+
             }else{
-                
+
                 try {
-                    
+
                     final Map<String,Object> map = new HashMap<String,Object>();
                     map.put("document", ImportPublish.importXml(page, datamodel));
                     importVelocity(template, map);
@@ -85,7 +85,7 @@ public final class PublishingPageTag extends AbstractVelocityTemplateTag {
                     LOG.error("Failed to import " + page + ".html");
                 }
             }
-            
+
         }catch(IOException e){
             LOG.error("Failed to import " + page + ".html");
         }
@@ -98,7 +98,7 @@ public final class PublishingPageTag extends AbstractVelocityTemplateTag {
     public void setPage(final String value) {
         this.page = value;
     }
-    
+
     /** Setter for template to parse **/
     public void setTemplate(final String template){
         this.template = template;

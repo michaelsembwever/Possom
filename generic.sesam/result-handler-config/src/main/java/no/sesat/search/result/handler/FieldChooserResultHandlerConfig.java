@@ -27,7 +27,7 @@ import java.util.List;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 @Controller("FieldChooser")
@@ -44,7 +44,7 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
     public void addField(final String fieldName) {
         fields.add(fieldName);
     }
-    
+
     public void addFields(final String[] fieldNames) {
         for (int i = 0; i < fieldNames.length; i++) {
             addField(fieldNames[i]);

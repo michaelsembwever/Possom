@@ -36,7 +36,7 @@ import java.util.Map;
  * Query query can be applied to queries before sending them away to
  * indices or other sources for further processing.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision: 3829 $</tt>
  */
 public interface QueryTransformer extends Visitor{

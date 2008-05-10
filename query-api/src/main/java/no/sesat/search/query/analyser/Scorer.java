@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  * This class is not thread-safe.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public final class Scorer extends AbstractReflectionVisitor {
 
@@ -74,7 +74,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         report("   <predicate-add name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
                 + "</predicate-add>\n");
-        
+
         score += predicateScore.getScore();
     }
 
@@ -103,12 +103,12 @@ public final class Scorer extends AbstractReflectionVisitor {
                 + predicateScore.getScore()
                 + "</predicate-error>\n");
     }
-    
+
     private void report(final String msg){
-        
+
         try{
             context.getReportBuffer().append(msg);
-        
+
         }catch(IOException ioe){
             LOG.warn(ioe.getMessage());
         }

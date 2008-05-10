@@ -22,7 +22,7 @@ import no.fast.ds.search.IDocumentSummaryField;
 import java.util.Iterator;
 
 /**
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Revision: 5819 $</tt>
  */
 public class MockupDocumentSummary implements IDocumentSummary {

@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 
 /**
  *
- * @author geir
+ *
  * @version $Id$
  */
 @Controller("NewsAggregatorSearchCommand")

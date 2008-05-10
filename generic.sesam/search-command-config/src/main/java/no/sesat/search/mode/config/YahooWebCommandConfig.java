@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 
 /** Configuration for searches against Yahoo's Contextual Web Service.
  * see http://developer.yahoo.com/search/web/V1/contextSearch.html
- * @author mick
+ *
  * @version <tt>$Id$</tt>
  */
 @Controller("YahooWebSearchCommand")
@@ -90,7 +90,7 @@ public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
     public void setAppid(final String appid) {
         setPartnerId(appid);
     }
-    
+
     /**
      * Holds value of property language.
      */
@@ -175,7 +175,7 @@ public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
     public void setAdult(final boolean adult) {
         this.adult = adult;
     }
-    
+
     @Override
     public YahooWebCommandConfig readSearchConfiguration(
             final Element element,

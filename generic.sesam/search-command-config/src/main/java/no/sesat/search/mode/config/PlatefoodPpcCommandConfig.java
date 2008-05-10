@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 
 /**
  *
- * @author SSTHKJER
+ *
  * @version $Id$
  */
 @Controller("PlatefoodPPCSearchCommand")

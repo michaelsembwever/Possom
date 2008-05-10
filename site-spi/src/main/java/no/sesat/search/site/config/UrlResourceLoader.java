@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 /** Loads resources through URL references.
  *
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ *
  */
 public class UrlResourceLoader extends AbstractResourceLoader {
 
@@ -52,7 +52,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
     private static final int CACHE_CAPACITY = 1000;
-    
+
 
     // Attributes ----------------------------------------------------
 
@@ -136,13 +136,13 @@ public class UrlResourceLoader extends AbstractResourceLoader {
             boolean updatedCache = false;
             try {
 
-                success = (null != hostHeader 
-                        ? HTTPClient.instance(url, hostHeader) 
+                success = (null != hostHeader
+                        ? HTTPClient.instance(url, hostHeader)
                         : HTTPClient.instance(url) )
                         .exists("");
 
                 LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + url + " is " + success);
-                
+
                 PRESENCE_CACHE.putInCache(url.toString(), success);
                 updatedCache = true;
 

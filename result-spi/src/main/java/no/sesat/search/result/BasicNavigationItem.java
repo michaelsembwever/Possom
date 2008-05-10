@@ -15,9 +15,9 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  * BasicNavigationItem.java
- * 
+ *
  * Created on 11/06/2007, 11:25:25
- * 
+ *
  */
 
 package no.sesat.search.result;
@@ -27,14 +27,14 @@ import java.util.Vector;
 
 /**
  *
- * @author <a href="mailto:mick@semb.wever.org">Mick</a>
+ *
  * @version $Id$
  */
 public class BasicNavigationItem extends BasicResultList<NavigationItem> implements NavigationItem{
 
     private boolean selected = false;
     private int depth = 0;
-    
+
     public BasicNavigationItem(){}
 
     /**
@@ -59,14 +59,14 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
     public boolean isSelected() {
         return selected;
     }
-    
+
     public NavigationItem getSelectedChild() {
-        
+
         return getChildSelectedImpl();
     }
 
     public boolean isChildSelected() {
-        
+
         return null != getChildSelectedImpl();
     }
 
@@ -97,7 +97,7 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
     }
 
     /**
-     * Create a list off all children collected recursivly (Depth first). 
+     * Create a list off all children collected recursivly (Depth first).
      *
      * @return
      */
@@ -130,12 +130,12 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
     }
 
     private NavigationItem getChildSelectedImpl() {
-        
+
         // XXX Geir's original work had a dirty flag here to cache this result.
-        //  I doubt that this is an application hotspot, 
-        //  and the flag wasn't bomb-proof, 
+        //  I doubt that this is an application hotspot,
+        //  and the flag wasn't bomb-proof,
         // so it's all been removed for now.
-        
+
         NavigationItem childSelected = null;
         for (NavigationItem item : getResults()) {
             if (item.isSelected()) {

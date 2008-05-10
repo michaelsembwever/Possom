@@ -15,14 +15,14 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version $Id$
  */
 package no.sesat.search.view.navigation;
 
 /* Immutable helper class for handling offsets.
- * 
- **/ 
+ *
+ **/
 public final class PagingHelper {
 
     private final int hitCount;
@@ -74,11 +74,11 @@ public final class PagingHelper {
     public int getCurrentPage() {
         return offset / pageSize + 1;
     }
-    
+
     public int getCurrentPageFromCount(){
         return offset + 1;
     }
-    
+
     public int getCurrentPageToCount(){
         return Math.min(offset + pageSize, hitCount);
     }

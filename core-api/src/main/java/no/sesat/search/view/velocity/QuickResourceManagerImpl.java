@@ -38,7 +38,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * in the cache are loaded synchronously. The reduced locking is achieved at the expense of resources possibly getting
  * loaded several times during startup or reload.
  *
- * @author Magnus Eklund
+ *
  * @version $Id$
  */
 public final class QuickResourceManagerImpl extends ResourceManagerImpl {
@@ -67,7 +67,7 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
             // Use cached resource for this invocation but also start a thread to update cache with a brand new
             // resource instance.
             if (resource.requiresChecking()) {
-                
+
                 // Touch the resource so that a closely following caller won't trigger an update thread.
                 // Keeps updates of the same resource from piling up when traffic is high.
                 resource.touch();
@@ -75,9 +75,9 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
             }
 
             return resource;
-            
+
         } else {
-            
+
             return new Loader(resource, name, type, encoding).load();
         }
     }
@@ -105,14 +105,14 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
          * @param enc The encoding of the resource.
          */
         private Loader(final Resource oldResource, final String name, final int type, final String enc) {
-            
+
             this.oldResource = oldResource;
             this.name = name;
             this.type = type;
             this.enc = enc;
 
             key = type + name;
-            
+
             if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
                 final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
                 LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
@@ -174,10 +174,10 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
          * Loads resource if it has been modified since it was last loaded.
          */
         public void run() {
-            
+
             try {
                 load();
-                
+
             }  catch (ResourceNotFoundException rnfe) {
                 log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
             } catch (ParseErrorException pee) {

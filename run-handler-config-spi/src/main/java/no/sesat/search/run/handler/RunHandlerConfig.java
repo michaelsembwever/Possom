@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 
 /**
  * $Id$
- * @author <a href="mailto:anders@jamtli.no">Anders Johan Jamtli</a>
+ *
  */
 public interface RunHandlerConfig extends Serializable {
     RunHandlerConfig readRunHandler(final Element element);

@@ -25,11 +25,11 @@ import org.apache.log4j.Logger;
 
 /** TODO rename to DebugOutputResultHandler
  *
- * @author <a href="mailto:magnus.eklund@gmail.com">Magnus Eklund</a>
+ *
  * @version <tt>$Id$</tt>
  */
 public final class TextOutputResultHandler implements ResultHandler {
-    
+
     private static final Logger LOG = Logger.getLogger(TextOutputResultHandler.class);;
 
     public void handleResult(final Context cxt, final DataModel datamodel) {

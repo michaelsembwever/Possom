@@ -27,7 +27,7 @@ import no.sesat.search.mode.config.CommandConfig.Controller;
 
 /**
  *
- * @author magnuse
+ *
  * @version $Id$
  */
 @Controller("WebSearchCommand")
