@@ -46,8 +46,8 @@ import no.sesat.search.site.config.PropertiesContext;
 
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.query.QueryStringContext;
-import no.sesat.search.query.parser.QueryParser;
 import static no.sesat.search.query.parser.AbstractQueryParser.SKIP_REGEX;
+import static no.sesat.search.query.parser.AbstractQueryParser.OPERATOR_REGEX;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 
@@ -99,7 +99,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final int REFRESH_PERIOD = 60;
     private static final int CACHE_QUERY_CAPACITY = 100; // smaller than usual as each entry can contain up to 600 values!
 
-    private static final String OPERATOR_REGEX;
 
     // Attributes ----------------------------------------------------
 
@@ -111,20 +110,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     static{
         CACHE_QUERY.setCacheCapacity(CACHE_QUERY_CAPACITY);
-
-        // build our operator regular expression
-        final StringBuilder operatorRegexpBuilder = new StringBuilder();
-
-        operatorRegexpBuilder.append('(');
-
-        for (String c : QueryParser.OPERATORS) {
-            operatorRegexpBuilder.append('"' + Matcher.quoteReplacement(c) + "\"|");
-        }
-
-        operatorRegexpBuilder.setLength(operatorRegexpBuilder.length() - 1);
-        operatorRegexpBuilder.append(')');
-
-        OPERATOR_REGEX = operatorRegexpBuilder.toString();
     }
 
     // Constructors -------------------------------------------------

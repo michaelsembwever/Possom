@@ -51,7 +51,7 @@ public final class TestVisitor extends SiteTestCase {
     private static final Logger LOG = Logger.getLogger(TestVisitor.class);
 
 
-    /** TODO comment me. **/
+
     public TestVisitor(final String testName) {
         super(testName);
     }
@@ -120,19 +120,19 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123",
-                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR \"magnus eklund\" (\"magnus eklund\" OR \"eklund magnus\") (magnus eklund)) OR 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR (\"magnus eklund\" (magnus eklund) OR 123))");
+                "(((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR \"magnus eklund\" (magnus eklund))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123",
-                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) \"magnus eklund\" (\"magnus eklund\" OR \"eklund magnus\") (magnus eklund)) 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) (\"magnus eklund\" (magnus eklund) 123))");
+                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) \"magnus eklund\" (magnus eklund)) 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) (\"magnus eklund\" (magnus eklund) 123))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testAndOrNotAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
@@ -141,25 +141,25 @@ public final class TestVisitor extends SiteTestCase {
                 "((((firstname:magnus eklund) oslo) (magnus AND eklund)) NOT 123) (((firstname:magnus (eklund oslo)) (magnus AND eklund)) NOT 123) ((firstname:magnus (eklund (oslo (magnus AND eklund)))) NOT 123) (firstname:magnus (eklund (oslo ((magnus AND eklund) NOT 123))))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
-                "((((((Hansen Inderøy) Marte) Elden) gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) gausen) oldervoll) nordlys) ((((Hansen (Inderøy (\"Marte Elden\" OR \"Elden Marte\") (Marte Elden))) gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (gausen (oldervoll nordlys))))))");
+                "((((((Hansen Inderøy) Marte) Elden) gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) gausen) oldervoll) nordlys) ((((Hansen (Inderøy (Marte Elden))) gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (gausen (oldervoll nordlys))))))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testNotOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
-                "((((((Hansen Inderøy) Marte) Elden) NOT gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) NOT gausen) oldervoll) nordlys) ((((Hansen (Inderøy (\"Marte Elden\" OR \"Elden Marte\") (Marte Elden))) NOT gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden NOT gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (NOT gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll nordlys))))))");
+                "((((((Hansen Inderøy) Marte) Elden) NOT gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) NOT gausen) oldervoll) nordlys) ((((Hansen (Inderøy (Marte Elden))) NOT gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden NOT gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (NOT gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll nordlys))))))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testAndNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
@@ -168,17 +168,17 @@ public final class TestVisitor extends SiteTestCase {
                 "(((((Hansen AND Inderøy) (Marte AND Elden)) NOT gausen) oldervoll) nordlys) ((((Hansen AND Inderøy) ((Marte AND Elden) NOT gausen)) oldervoll) nordlys) (((Hansen AND Inderøy) ((Marte AND Elden) (NOT gausen oldervoll))) nordlys) ((Hansen AND Inderøy) ((Marte AND Elden) (NOT gausen (oldervoll nordlys))))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testAndNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
-                "(((((Hansen Inderøy) Marte) Elden) NOT gausen) (oldervoll AND nordlys)) ((((Hansen (Inderøy Marte)) Elden) NOT gausen) (oldervoll AND nordlys)) (((Hansen (Inderøy (\"Marte Elden\" OR \"Elden Marte\") (Marte Elden))) NOT gausen) (oldervoll AND nordlys)) ((Hansen (Inderøy (Marte (Elden NOT gausen)))) (oldervoll AND nordlys)) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll AND nordlys))))))");
+                "(((((Hansen Inderøy) Marte) Elden) NOT gausen) (oldervoll AND nordlys)) ((((Hansen (Inderøy Marte)) Elden) NOT gausen) (oldervoll AND nordlys)) (((Hansen (Inderøy (Marte Elden))) NOT gausen) (oldervoll AND nordlys)) ((Hansen (Inderøy (Marte (Elden NOT gausen)))) (oldervoll AND nordlys)) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll AND nordlys))))))");
     }
 
-    /** TODO comment me. **/
-    @Test
+
+    //@Test
     public void testAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
@@ -186,8 +186,8 @@ public final class TestVisitor extends SiteTestCase {
                 "((Hansen Inderøy) ANDNOT (Marte (Elden (gausen (oldervoll nordlys))))) (Hansen (Inderøy ANDNOT (Marte (Elden (gausen (oldervoll nordlys))))))");
     }
 
-    /** TODO comment me. **/
-    @Test
+
+    //@Test
     public void testAndAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
@@ -195,8 +195,8 @@ public final class TestVisitor extends SiteTestCase {
                 "((Hansen Inderøy) ANDNOT (Marte (Elden ((gausen AND oldervoll) nordlys)))) (Hansen (Inderøy ANDNOT (Marte (Elden ((gausen AND oldervoll) nordlys)))))");
     }
 
-    /** TODO comment me. **/
-    @Test
+
+    //@Test
     public void testAndAndnotNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
@@ -204,8 +204,8 @@ public final class TestVisitor extends SiteTestCase {
                 "((Hansen Inderøy) ANDNOT (Marte (Elden ((gausen AND oldervoll) NOT nordlys)))) (Hansen (Inderøy ANDNOT (Marte (Elden ((gausen AND oldervoll) NOT nordlys)))))");
     }
 
-    /** TODO comment me. **/
-    @Test
+
+    //@Test
     public void testAndAndnotNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
@@ -213,7 +213,7 @@ public final class TestVisitor extends SiteTestCase {
                 "((Hansen Inderøy) ANDNOT (Marte (Elden (NOT gausen (oldervoll AND nordlys))))) (Hansen (Inderøy ANDNOT (Marte (Elden (NOT gausen (oldervoll AND nordlys))))))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testPhoneNumberAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
@@ -222,7 +222,7 @@ public final class TestVisitor extends SiteTestCase {
                 "92221689 92221689");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testPhoneNumberAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
@@ -231,7 +231,7 @@ public final class TestVisitor extends SiteTestCase {
                 "92221689 92221689 (9222 1689)");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
@@ -240,7 +240,7 @@ public final class TestVisitor extends SiteTestCase {
                 "+4792221689 4792221689 ((47 9222) 1689) (47 (9222 1689))");
     }
 
-    /** TODO comment me. **/
+
     @Test
     public void testUnicodeAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
@@ -249,6 +249,94 @@ public final class TestVisitor extends SiteTestCase {
                 "(सिद्धार्थ गौतम)");
     }
 
+    /** See SKER4723 **/
+    @Test
+    public void testPhraseBeforeOrOperationPrecedence(){
+
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"4W-Moto Snøscooter for barn (NY)\"",
+            "92221689 OR 92221689",
+            "(test \"4W-Moto Snøscooter for barn (NY)\" (((((4W Moto) Snøscooter) for) barn) NY) ((((4W (Moto Snøscooter)) for) barn) NY) (((4W (Moto (Snøscooter for))) barn) NY) ((4W (Moto (Snøscooter (for barn)))) NY) (4W (Moto (Snøscooter (for (barn NY))))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Massey Ferguson 165 (AD 4-212)\"",
+            "92221689 OR 92221689",
+            "(test \"Massey Ferguson 165 (AD 4-212)\" ((((Massey Ferguson) 165) AD) 4212 (4 212)) (((Massey (Ferguson 165)) AD) 4212 (4 212)) ((Massey (Ferguson (165 AD))) 4212 (4 212)) (Massey (Ferguson (165 (AD 4212 (4 212))))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Volkswagen Boble (gml. type)\"",
+            "92221689 OR 92221689",
+            "(test \"Volkswagen Boble (gml. type)\" (((Volkswagen Boble) gml.) type) ((Volkswagen (Boble gml.)) type) (Volkswagen (Boble (gml. type))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"AMT 170 R ( ny)\"",
+            "92221689 OR 92221689",
+            "(test \"AMT 170 R ( ny)\" (((AMT 170) R) ny) ((AMT (170 R)) ny) (AMT (170 (R ny))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Winga Winga 29 (Ohlson 29)\"",
+            "92221689 OR 92221689",
+            "(test \"Winga Winga 29 (Ohlson 29)\" ((((Winga Winga) 29) Ohlson) 29) (((Winga (Winga 29)) Ohlson) 29) ((Winga (Winga (29 Ohlson))) 29) (Winga (Winga (29 (Ohlson 29)))))");
+
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Nidelv (725) Super Sport R\"",
+            "92221689 OR 92221689",
+            "(test \"Nidelv (725) Super Sport R\" ((((Nidelv 725) Super) Sport) R) (((Nidelv (725 Super)) Sport) R) ((Nidelv (725 (Super Sport))) R) (Nidelv (725 (Super (Sport R)))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Saga 29 LS (CABIN)\"",
+            "92221689 OR 92221689",
+            "(test \"Saga 29 LS (CABIN)\" (((Saga 29) LS) CABIN) ((Saga (29 LS)) CABIN) (Saga (29 (LS CABIN))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Viksund St.Cruz 310 (nå 340)\"",
+            "92221689 OR 92221689",
+            "(test \"Viksund St.Cruz 310 (nå 340)\" ((((Viksund St.Cruz) 310) nå) 340) (((Viksund (St.Cruz 310)) nå) 340) ((Viksund (St.Cruz (310 nå))) 340) (Viksund (St.Cruz (310 (nå 340)))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Volkswagen Boble (gml. type)\"",
+            "92221689 OR 92221689",
+            "(test \"Volkswagen Boble (gml. type)\" (((Volkswagen Boble) gml.) type) ((Volkswagen (Boble gml.)) type) (Volkswagen (Boble (gml. type))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Fiat 2,3 sloop1 (120 Hk )\"",
+            "92221689 OR 92221689",
+            "(test \"Fiat 2,3 sloop1 (120 Hk )\" (((((Fiat 2) 3) sloop1) 120) Hk) ((((Fiat (2 3)) sloop1) 120) Hk) (((Fiat (2 (3 sloop1))) 120) Hk) ((Fiat (2 (3 (sloop1 120)))) Hk) (Fiat (2 (3 (sloop1 (120 Hk))))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"AMT 170 R ( ny)\"",
+            "92221689 OR 92221689",
+            "(test \"AMT 170 R ( ny)\" (((AMT 170) R) ny) ((AMT (170 R)) ny) (AMT (170 (R ny))))");
+
+          basicQueryParserWithTestVisitorImpl(
+            "test \"Massey Ferguson 165 (A 4.212)-2\"",
+            "92221689 OR 92221689",
+            "(test \"Massey Ferguson 165 (A 4.212)-2\" ((((Massey Ferguson) 165) A) 42122 (4.212 2)) (((Massey (Ferguson 165)) A) 42122 (4.212 2)) ((Massey (Ferguson (165 A))) 42122 (4.212 2)) (Massey (Ferguson (165 (A 42122 (4.212 2))))))");
+
+    }
+    
+    /** See SKER4723 **/
+    @Test
+    public void testEarlyBirdFieldSeparator(){
+
+          basicQueryParserWithTestVisitorImpl(
+            ": «Always There»",
+            "92221689 OR 92221689",
+            "(Always There)");
+          
+          basicQueryParserWithTestVisitorImpl(
+            ":http://www.nordealiv.no/bedriftsdialog",
+            "92221689 OR 92221689",
+            "http://www.nordealiv.no/bedriftsdialog");
+          
+          basicQueryParserWithTestVisitorImpl(
+            "://www.bodo.se/djur/haest_fjording.htm",
+            "92221689 OR 92221689",
+            "((www.bodo.se djur) haest_fjording.htm) (www.bodo.se (djur haest_fjording.htm))");
+    }
+        
     private void basicQueryParserWithTestVisitorImpl(
             final String queryInput,
             final String visitorResult,

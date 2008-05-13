@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Clause;
@@ -35,10 +36,11 @@ import no.sesat.search.query.Query;
 import no.sesat.search.query.QueryStringContext;
 import no.sesat.search.query.finder.ParentFinder;
 import no.sesat.search.query.parser.alt.Alternation;
-import no.sesat.search.query.parser.alt.FullnameAlternation;
 import no.sesat.search.query.parser.alt.RotationAlternation;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import sun.java2d.SunGraphicsEnvironment.T1Filter;
 
 /** Abstract helper for implementing a QueryParser
  * Provides default implementation to get the query object.
@@ -51,6 +53,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     // Constants -----------------------------------------------------
 
     public static final String SKIP_REGEX;
+    public static final String OPERATOR_REGEX;
 
     /** Protected so an .jj file implementing this class can reuse.
      **/
@@ -89,6 +92,20 @@ public abstract class AbstractQueryParser implements QueryParser {
         builder.setLength(builder.length() - 1);
         // our skip regular expression
         SKIP_REGEX = '(' + builder.toString() + ')';
+
+        // build our operator regular expression
+        final StringBuilder operatorRegexpBuilder = new StringBuilder();
+
+        operatorRegexpBuilder.append('(');
+
+        for (String c : QueryParser.OPERATORS) {
+            operatorRegexpBuilder.append('"' + Matcher.quoteReplacement(c) + "\"|");
+        }
+
+        operatorRegexpBuilder.setLength(operatorRegexpBuilder.length() - 1);
+        operatorRegexpBuilder.append(')');
+
+        OPERATOR_REGEX = operatorRegexpBuilder.toString();
     }
 
     // Constructors --------------------------------------------------

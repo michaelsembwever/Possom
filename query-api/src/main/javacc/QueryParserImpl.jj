@@ -111,7 +111,7 @@ TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?(<DIGIT>(<PHONE_MIDDLE>)?)
 TOKEN : { <NUMBER_GROUP: ((<DIGIT>)+(" ")+){2,}> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED>
-TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
+TOKEN : { <QUOTED_WORD: "\"" (~[])* "\""> }
 
 
 <*>TOKEN : {
@@ -201,9 +201,15 @@ Clause noPrecedence() :{
 }
 
 Clause looseJoinPrecedence() :{
-    Clause clause;
+    Clause clause = null;
+    Token field = null;
     enterMethod("looseJoinPrecedence()");
 }{
+    // Quotes or phrases take higher precedence than an OrOperation created by ()'s
+    ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedQuote(field)) {try{return clause;}finally{exitMethod();}}
+    |
+    (clause = fieldedQuote(null)) { try{ return clause;}finally{exitMethod();}}
+    |
     (clause = orOperation()) { try{return clause;}finally{exitMethod();} }
     |
     (clause = strongJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
@@ -319,12 +325,13 @@ Clause leaf() :{
     (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null))
         {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
     |
-    (clause = fieldedLeaf(null)) {try{return clause;}finally{exitMethod();}}
+    ((<FIELD_SUFFIX>)?(clause = fieldedLeaf(null))) {try{return clause;}finally{exitMethod();}}
 }
 
 
 Clause fieldedLeaf(final Token field) :{
     enterMethod("fieldedLeaf()");
+    Clause clause = null;
 }{
     <PHONE_NUMBER>
         {
@@ -358,20 +365,7 @@ Clause fieldedLeaf(final Token field) :{
             }finally{exitMethod();}
         }
     |
-    <QUOTED_WORD>
-        {
-            try{
-                final String f = field == null ? null : field.image;
-                final PhraseClause phClause = context.createPhraseClause(token.image, f );
-
-                // Create a XorClause
-                final String term = token.image.trim().replaceAll("\"","");
-                final QueryParserImpl p = new QueryParserImpl(createContext(term), QUOTED_WORD_DISABLED);
-                final Clause altClause = p.parse();
-                return context.createXorClause(phClause, altClause, XorClause.Hint.PHRASE_ON_LEFT);
-
-            }finally{exitMethod();}
-        }
+    (clause = fieldedQuote(field)) {try{ return clause; }finally{exitMethod();}}
     |
     <WORD>
         {
@@ -408,5 +402,29 @@ Clause fieldedLeaf(final Token field) :{
 
             }finally{exitMethod();}
         }
+}
 
+XorClause fieldedQuote(final Token field) :{
+    enterMethod("fieldedQuote()");
+}{
+    <QUOTED_WORD>
+        {
+            try{
+                final String f = field == null ? null : field.image;
+                final PhraseClause phClause = context.createPhraseClause(token.image, f );
+
+                // Create unphrased query. also strip all operator and skip characters out. SKER4723.
+                final String term = token.image
+                                        .replaceAll("\"","")
+                                        .replaceAll(SKIP_REGEX, " ")
+                                        .replaceAll(OPERATOR_REGEX, " ")
+                                        .trim();
+                final QueryParserImpl p = new QueryParserImpl(createContext(term), QUOTED_WORD_DISABLED);
+                final Clause altClause = p.parse();
+
+                // Create a XorClause
+                return context.createXorClause(phClause, altClause, XorClause.Hint.PHRASE_ON_LEFT);
+
+            }finally{exitMethod();}
+        }
 }

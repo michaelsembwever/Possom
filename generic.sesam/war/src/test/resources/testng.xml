@@ -12,4 +12,20 @@
             <class name="no.sesat.search.mode.SearchModeFactoryTest"/>
         </classes>
     </test>
+    
+    <test name="Parser">
+        <packages>
+            <package name="no.sesat.search.query.parser"/>
+        </packages>
+    </test>
+    <test name="Token">
+        <packages>
+            <package name="no.sesat.search.query.token"/>
+        </packages>
+    </test>
+    <test name="Analysis">
+        <packages>
+            <package name="no.sesat.search.query.analyser"/>
+        </packages>
+    </test>
 </suite>

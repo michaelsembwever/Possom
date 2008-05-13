@@ -1,4 +1,21 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 
 <suite name="TestNG test" verbose="10" parallel="false">
+
+<!-- These are the tests you can add to any skin to ensure that the query-api library works. -->
+    <!--test name="Parser">
+        <packages>
+            <package name="no.sesat.search.query.parser"/>
+        </packages>
+    </test>
+    <test name="Token">
+        <packages>
+            <package name="no.sesat.search.query.token"/>
+        </packages>
+    </test>
+    <test name="Analysis">
+        <packages>
+            <package name="no.sesat.search.query.analyser"/>
+        </packages>
+    </test-->    
 </suite>
