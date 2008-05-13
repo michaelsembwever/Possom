@@ -16,16 +16,18 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <parent>
-      <groupId>sesat</groupId>
-      <artifactId>sesat-kernel</artifactId>
-      <version>2.18-SNAPSHOT</version>
-    </parent>
+    
+    <!-- We used to inherit from sesat-kernel.
+      - But once a day when new snapshots were looked for, 
+      -  and after each release,
+      -  it all fell apart into a ugly recursive mess. 
+      -->
     
     <modelVersion>4.0.0</modelVersion>
     <name>Sesat Mojo</name>
+    <groupId>sesat</groupId>
     <artifactId>sesat-mojo</artifactId>
+    <version>2.18-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <description>SESAT's Mojos.</description>
@@ -125,4 +127,21 @@
           </dependencies>
       </profile>
   </profiles>
+    <distributionManagement>
+        <site>
+          <id>Sesat</id>
+          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
+        </site>
+        <repository>
+          <id>Sesat</id>
+          <name>Sesat Repository</name>
+          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
+        </repository>
+        <snapshotRepository>
+          <id>Sesat</id>
+          <name>Sesat Snapshot</name>
+          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
+          <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
