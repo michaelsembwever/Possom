@@ -67,14 +67,18 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
         fillBeanProperty(this, navigation, "value", AbstractDocumentFactory.ParseType.String, navElement, name);
         fillBeanProperty(this, navigation, "hideParameter", AbstractDocumentFactory.ParseType.Boolean, navElement, "false");
 
+        
         if (parent == null) {
             resetParameter = new HashSet<String>();
         } else {
-           // if(parent instanceof TreeNavigationConfig) {
+            if(parent instanceof TreeNavigationConfig) {
                 resetParameter = ((TreeNavigationConfig)parent).resetParameter;
-           // }
+            }
         }
-        resetParameter.add(getField());
+        
+        if(resetParameter!=null) {
+            resetParameter.add(getField());
+        }
     }
 
     /**

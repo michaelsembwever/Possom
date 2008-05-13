@@ -20,6 +20,7 @@
 package no.sesat.search.view.navigation;
 
 import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.datamodel.generic.StringDataObject;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class TreeUrlGenerator extends AbstractUrlGenerator {
 
     public TreeUrlGenerator(DataModel dataModel, NavigationConfig.Navigation navigation, NavigationState state) {
         super(dataModel, navigation, state);
+
     }
 
     public String getURL(String value, NavigationConfig.Nav nav){
@@ -50,21 +52,26 @@ public class TreeUrlGenerator extends AbstractUrlGenerator {
         String url = getPrefix() + "?";
 
         Set <String> parameters = getUrlComponentNames(nav, extraParameters.keySet(), value);
+        //parameters.addAll(getCurrentParameters().keySet());
 
-        Set<String> remove = ((TreeNavigationConfig)nav).getResetParameter();
+        parameters.addAll(getNavigationState().getParameterNames(nav, false));
 
-        parameters.removeAll(remove);
-
-        for(String param: parameters) {
-            url += generateUrlParameter(param, getUrlComponentValue(nav,  param,extraParameters));
-        }
-
-        TreeNavigationConfig n = (TreeNavigationConfig)nav;
-        while(n != null) {
-            if(!n.isHideParameter()) {
-                url += generateUrlParameter(n.getField(), n.getValue());
+        if (nav instanceof TreeNavigationConfig) {
+            Set<String> remove = ((TreeNavigationConfig)nav).getResetParameter();
+            
+            parameters.removeAll(remove);
+            
+            for(String param: parameters) {
+                url += generateUrlParameter(param, getUrlComponentValue(nav, param, extraParameters));
             }
-            n = (TreeNavigationConfig)n.getParent();
+            
+            TreeNavigationConfig n = (TreeNavigationConfig)nav;
+            while(n != null) {
+                if(!n.isHideParameter()) {
+                    url += generateUrlParameter(n.getField(), n.getValue());
+                }
+                n = (TreeNavigationConfig)n.getParent();
+            }
         }
 
         return url;
@@ -82,5 +89,14 @@ public class TreeUrlGenerator extends AbstractUrlGenerator {
             return enc(name) + "=" + enc(value) + "&amp;";
         }
         return "";
+    }
+
+    private Map<String, String> getCurrentParameters() {
+        Map<String, StringDataObject> param = getDataModel().getParameters().getValues();
+        Map<String, String> res = new HashMap<String, String>();
+        for(String name : param.keySet()) {
+            res.put(name, param.get(name).getString());
+        }
+        return res;
     }
 }
