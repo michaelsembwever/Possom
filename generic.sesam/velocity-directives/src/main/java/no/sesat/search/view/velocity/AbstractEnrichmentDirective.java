@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.Site;
 import no.sesat.search.view.config.SearchTab;
-import org.apache.commons.lang.text.StrBuilder;
 import org.apache.velocity.Template;
 import static no.sesat.search.view.config.SearchTab.EnrichmentHint.*;
 import org.apache.velocity.app.VelocityEngine;
@@ -64,16 +63,10 @@ public abstract class AbstractEnrichmentDirective extends AbstractDirective {
     // subclasses have to copy this
     private static final String NAME = "enrichments";
 
-    /**
-      * {@inheritDoc}
-     */
     public String getName() {
         return NAME;
     }
 
-    /**
-      * {@inheritDoc}
-      */
     public int getType() {
         return LINE;
     }

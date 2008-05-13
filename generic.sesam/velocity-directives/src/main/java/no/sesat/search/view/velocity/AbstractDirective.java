@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,7 +27,10 @@ import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.parser.node.Node;
 
-/**
+/** Useful wrapper around Velocity's Directive class.
+ * Adds:
+ *  * methods to simplify fetching arguments,
+ *  * method to get the current datamodel out of the InternalContext Adapter,
  *
  *
  * @version $Id$
