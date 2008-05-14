@@ -140,13 +140,20 @@ public class FileResourceLoader extends AbstractResourceLoader {
         LOG.debug("getResource(" + site + ')');
         
         final String suffix = "target" + File.separatorChar + getResourceDirectory();
+        return getResource(suffix, getResource(), site, false);
+    }
+    
+    protected final URL getResource(final String directory, final String resource, final Site site, final boolean forceUrl){
+        
+        LOG.debug("getResource(" + directory + ", " + resource + ", " + site + ")");
+        
         final String project = getProjectName(site.getName());
         int genericSesamLoop = 0;
         
         try{
 
-            if(getResource().contains("jar!") || getResource().endsWith(".class")){
-                final String classname = getResource().substring(getResource().indexOf("jar!") + 4);
+            if(resource.contains("jar!") || resource.endsWith(".class")){
+                final String classname = resource.substring(resource.indexOf("jar!") + 4);
                 // this will actually fail. but the class is loaded eventually cause everything is in one classloader.
                 return FileResourceLoader.class.getClassLoader().getResource(classname);
             }            
@@ -164,7 +171,10 @@ public class FileResourceLoader extends AbstractResourceLoader {
                 
                 LOG.debug("basedirNormalised " + basedirNormalised);
                 
-                if((File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)){
+                if((File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)
+                        || (File.separatorChar + "generic.sesam" + File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)
+                        || (File.separatorChar + "sesat-kernel" + File.separatorChar + "generic.sesam" + File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)){
+                    
                     throw new IllegalStateException("At root of filesystem!" +
                             "+ Current requirement of tests is that sesat-kernel is checked out, and named such," +
                             " in any parent folder from here. I've searched all the way to the root of the filesystem");
@@ -173,9 +183,9 @@ public class FileResourceLoader extends AbstractResourceLoader {
                 if(basedirNormalised.endsWith(project) 
                         || basedirNormalised.endsWith(project + "war" + File.separatorChar)){
                     
-                    LOG.debug("looking in " + basedir + suffix);
-                    final File f = new File(basedir + suffix + getResource());
-                    if(f.exists()){
+                    LOG.debug("looking in " + basedir + directory);
+                    final File f = new File(basedir + directory + resource);
+                    if(f.exists() || forceUrl){
                         return f.toURI().normalize().toURL();
                     }
                 }
