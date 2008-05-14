@@ -54,8 +54,8 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
     private static final Logger LOG = Logger.getLogger(QuickResourceManagerImpl.class);
     private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
-    /**
-     * {@inheritDoc}
+    /** {@inheritDoc}
+     * Overridden to layer caching capabilities.
      */
     @Override
     public Resource getResource(final String name, final int type, final String encoding) throws Exception {
