@@ -33,7 +33,6 @@ import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.OperationClause;
 import no.sesat.search.query.OrClause;
-import no.sesat.search.query.UrlClause;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.BasicResultList;
@@ -45,14 +44,14 @@ import org.apache.log4j.Logger;
 
 import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
-import com.fastsearch.esp.search.query.SearchParameter;
 import com.fastsearch.esp.search.result.EmptyValueException;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.result.IllegalType;
 
-/** Navigatable ESP search command for news.
+/**
+ * Navigatable ESP search command for news.
  * @todo documentation what additional functionality actually amounts to it benefitting news verticals.
  *
  * @author Geir H. Pettersen (T-Rank)
@@ -82,21 +81,32 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
     @Override
     protected void modifyQuery(final IQuery query) {
-
         super.modifyQuery(query);
+
         final NewsEspCommandConfig config = getSearchConfiguration();
 
-        // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direcetion,
-        // and not the +fieldname syntax
+        // @TODO: There are some mixing of sort field and sort direction that should have been cleaned up
+
+        // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direction,
+        // and not the + field name syntax
         final StringDataObject sort = datamodel.getParameters().getValue(config.getUserSortParameter());
         String sortType;
+
         if (sort != null) {
             sortType = sort.getString();
         } else {
             sortType = config.getDefaultSort();
         }
+
         if (sortType.equals("relevance")) {
-            query.setParameter(BaseParameter.SORT_BY, config.getRelevanceSortField());
+            if (getQuery().getTermCount() == 1 && !"".equals(config.getRelevanceSingleTermSortField())) {
+                query.setParameter(BaseParameter.SORT_BY, config.getRelevanceSingleTermSortField());
+            } else if (getQuery().getTermCount() > 1 && !"".equals(config.getRelevanceMultipleTermSortField())) {
+                query.setParameter(BaseParameter.SORT_BY, config.getRelevanceMultipleTermSortField());
+            } else {
+                query.setParameter(BaseParameter.SORT_BY, config.getRelevanceSortField());
+            }
+
             query.setParameter(BaseParameter.SORT_DIRECTION, "descending");
         } else {
             query.setParameter(BaseParameter.SORT_BY, config.getSortField());
@@ -128,7 +138,6 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown age symbol " + config.getAgeSymbol());
-
             }
 
             final String latestDate = new SimpleDateFormat(FAST_DATE_FORMAT).format(cal.getTime());
@@ -144,6 +153,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
             if (query.getQueryString().length() > 0) {
                 q.append(")");
             }
+
             query.setQueryString(q.toString());
         }
     }

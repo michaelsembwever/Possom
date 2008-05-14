@@ -16,30 +16,46 @@
  */
 package no.sesat.search.mode.config;
 
-import no.sesat.search.mode.config.*;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
+
 import org.w3c.dom.Element;
 
-/** Configuration for a NewsEspSearchCommand
- * @author geir
+/**
+ * Configuration for a NewsEspSearchCommand.
+ *
  * @version $Id$
  */
 @Controller("NewsEspSearchCommand")
 public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
+
+    private static final long serialVersionUID = -8717500908531092289L;
+
     /** Constant for medium value representing all mediums. */
     public static final String ALL_MEDIUMS = "all";
+
     private String mediumPrefix = "medium";
     private String defaultMedium = "webnewsarticle";
     private String mediumParameter = "medium";
+
     private String nestedResultsField;
     private int collapsingMaxFetch;
+
+    /** Name of the sort parameter used in the url. */
     private String userSortParameter;
+    /** Sort field used when sort is not relevance. */
     private String sortField;
+    /** Default sort direction if no sort is configured. */
     private String defaultSort;
+    /** Sort field to use when relevance sort is used. */
     private String relevanceSortField;
+    /** Sort field that can override <code>relevanceSortField</code> in a single term search. */
+    private String relevanceSingleTermSortField;
+    /** Sort field that can override <code>relevanceSortField</code> in a multiple term search. */
+    private String relevanceMultipleTermSortField;
+
     private String maxAge;
     private int maxAgeAmount;
     private String ageField;
@@ -131,15 +147,15 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         this.mediumPrefix = mediumPrefix;
     }
 
-    /**
-     * @return
+    /** Getter for the defaultMedium property.
+     * @return the defaultMedium value
      */
     public String getDefaultMedium() {
         return defaultMedium;
     }
 
-    /**
-     * @param defaultMedium
+    /** Setter for the defaultMedium property.
+     * @param defaultMedium the new defaultMedium value
      */
     public void setDefaultMedium(final String defaultMedium) {
         this.defaultMedium = defaultMedium;
@@ -171,6 +187,34 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
      */
     public void setRelevanceSortField(final String relevanceSortField) {
         this.relevanceSortField = relevanceSortField;
+    }
+
+    /** Getter for the relevanceSingleTermSortField property.
+     * @return the relevanceSortSingleTermField value
+     */
+    public String getRelevanceSingleTermSortField() {
+        return relevanceSingleTermSortField;
+    }
+
+    /** Setter for the relevanceSingleTermSortField property.
+     * @param relevanceSingleTermSortField the new relevanceSingleTermSortField value
+     */
+    public void setRelevanceSingleTermSortField(final String relevanceSingleTermSortField) {
+        this.relevanceSingleTermSortField = relevanceSingleTermSortField;
+    }
+
+    /** Getter for the relevanceMultipleTermSortField property.
+     * @return the relevanceMultipleTermSortField value
+     */
+    public String getRelevanceMultipleTermSortField() {
+        return relevanceMultipleTermSortField;
+    }
+
+    /** Setter for the relevanceMultipleTermSortField property.
+     * @param relevanceMultipleTermSortField the new relevanceMultipleTermSortField value
+     */
+    public void setRelevanceMultipleTermSortField(final String relevanceMultipleTermSortField) {
+        this.relevanceMultipleTermSortField = relevanceMultipleTermSortField;
     }
 
     /** Getter for the maxAge property.
@@ -230,23 +274,34 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
 
         super.readSearchConfiguration(element, inherit, context);
 
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "mediumPrefix", ParseType.String, element, "medium");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "defaultMedium", ParseType.String, element, "webnewsarticle");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "mediumParameter", ParseType.String, element, "medium");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "nestedResultsField", ParseType.String, element, "entries");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "collapsingMaxFetch", ParseType.Int, element, "10");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "mediumPrefix", ParseType.String, element, "medium");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "defaultMedium", ParseType.String, element, "webnewsarticle");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "mediumParameter", ParseType.String, element, "medium");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "nestedResultsField", ParseType.String, element, "entries");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "collapsingMaxFetch", ParseType.Int, element, "10");
 
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortField", ParseType.String, element, "publishedtime");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "defaultSort", ParseType.String, element, "descending");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "userSortParameter", ParseType.String, element, "sort");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "relevanceSortField", ParseType.String, element, "freshnessprofile");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "maxAge", ParseType.String, element, null);
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "ageField", ParseType.String, element, "publishedtime");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "sortField", ParseType.String, element, "publishedtime");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "defaultSort", ParseType.String, element, "descending");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "userSortParameter", ParseType.String, element, "sort");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "relevanceSortField", ParseType.String, element, "freshnessprofile");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "relevanceSingleTermSortField", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "relevanceMultipleTermSortField", ParseType.String, element, "");
+
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "maxAge", ParseType.String, element, null);
+        AbstractDocumentFactory.fillBeanProperty(
+                this, inherit, "ageField", ParseType.String, element, "publishedtime");
 
         // maxAge is of the format 10h (for 10 hours).
         if (maxAge != null) {
