@@ -186,7 +186,8 @@ public final class Site implements Serializable {
                     : Site.valueOf(cxt, parentSiteName, theLocale);
             }
 
-            assert null != parent || constructingDefault : "Parent must exist for all Sites except the DEFAULT";
+            assert null != parent || constructingDefault || DEFAULT.getName().equals(cxtName)
+                    : "Parent must exist for all Sites except the DEFAULT";
 
             // register in global pool.
             LOG.debug("INSTANCES.put(" + uniqueName + ", this)");
