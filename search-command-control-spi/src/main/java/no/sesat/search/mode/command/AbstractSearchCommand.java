@@ -195,7 +195,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     @Override
     public String toString() {
-        return getSearchConfiguration().getName() + ' ' + datamodel.getQuery().getString();
+        return getSearchConfiguration().getId() + ' ' + datamodel.getQuery().getString();
     }
 
     /**
@@ -286,7 +286,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         if (!completed) {
             LOG.error(ERR_HANDLING_CANCELLATION
-                    + getSearchConfiguration().getName()
+                    + getSearchConfiguration().getId()
                     + " [" + getClass().getSimpleName() + ']');
 
             if (null != thread) {
@@ -503,17 +503,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             hitCount = result.getHitCount();
 
-            LOG.debug("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
+            LOG.debug("Hits is " + getSearchConfiguration().getId() + ':' + hitCount);
 
             return result;
 
         } finally {
 
             watch.stop();
-            LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
+            LOG.info("Search " + getSearchConfiguration().getId() + " took " + watch);
 
             statisticsInfo(
-                    "<search-command id=\"" + getSearchConfiguration().getName()
+                    "<search-command id=\"" + getSearchConfiguration().getId()
                             + "\" name=\"" + getSearchConfiguration().getStatisticalName()
                             + "\" type=\"" + getClass().getSimpleName() + "\">"
                             + (hitCount != null ? "<hits>" + hitCount + "</hits>" : "<failure/>")
@@ -609,7 +609,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(OFFSET_KEY)
                 : null;
 
-        return null != offsetNav && getSearchConfiguration().getName().equals(offsetNav.getCommandName());
+        return null != offsetNav && getSearchConfiguration().getId().equals(offsetNav.getCommandName());
     }
 
     /**
@@ -807,7 +807,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         String field = null;
         if (null != clause.getField()) {
-            final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilterMap();
             if (fieldFilters.containsKey(clause.getField())) {
                 field = clause.getField();
             } else {
@@ -1124,7 +1124,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         private void appendFilter(String term, final String field) {
 
-            final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilterMap();
             if ("site".equals(field)) {
                 // XXX fast specific stuff. push down to fast command.
                 // site fields do not accept quotes

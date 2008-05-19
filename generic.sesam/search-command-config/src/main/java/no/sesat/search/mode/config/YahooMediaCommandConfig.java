@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ public final class YahooMediaCommandConfig extends AbstractYahooSearchConfigurat
      */
     public final static String DEFAULT_CATALOG = "image";
 
-    private String catalog;
-    private String ocr;
-    private String site;
+    private String catalog = DEFAULT_CATALOG;
+    private String ocr = DEFAULT_OCR;
+    private String site = "";
 
     /**
      * Getter for property 'site'.

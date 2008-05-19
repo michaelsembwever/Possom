@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 package no.sesat.search.mode;
 
 import java.io.Serializable;
-import no.sesat.search.mode.config.*;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -28,7 +27,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import no.sesat.search.mode.config.SearchConfiguration;
@@ -125,7 +123,7 @@ public final class SearchMode implements Serializable {
     public SearchConfiguration getSearchConfiguration(final String name) {
 
         for( SearchConfiguration sc : searchConfigurations){
-            if( sc.getName().equals(name) ){
+            if( sc.getId().equals(name) ){
                 return sc;
             }
         }

@@ -180,7 +180,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (SocketTimeoutException ste) {
 
-            LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
+            LOG.error(getSearchConfiguration().getId() +  " --> " + ste.getMessage());
             return new BasicResultList<ResultItem>();
 
         } catch (final IOException e) {
@@ -276,7 +276,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     private ResultItem createResultItem(final Element listing) {
         final BasicResultItem item = new BasicResultItem();
 
-        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
+        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFieldMap().entrySet()){
 
             // Special case for thumb width & height.
             if (entry.getKey().equals(FIELD_THUMB_HEIGHT)) {

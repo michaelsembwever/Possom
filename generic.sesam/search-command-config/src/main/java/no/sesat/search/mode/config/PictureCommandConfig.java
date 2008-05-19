@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -36,17 +36,17 @@ public class PictureCommandConfig extends CommandConfig {
     /**
      * Holds value of property key for the queryServerHost.
      */
-    private String queryServerHost;
+    private String queryServerHost = "";
 
     /**
      * Holds value of property key for the queryServerPort.
      */
-    private String queryServerPort;
+    private String queryServerPort = "";
 
-    private String filter;
-    private String customerId;
-    private String site;
-    private String domainBoost;
+    private String filter = "medium";
+    private String customerId = "558735";
+    private String site = "";
+    private String domainBoost = "";
 
     /**
      * Getter for property key for queryServerUrl.

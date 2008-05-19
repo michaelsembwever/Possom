@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ public class OverturePpcCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property url.
      */
-    private String url;
+    private String url = "";
 
-    private String type;
+    private String type = "";
 
     /**
      * Getter for property url.

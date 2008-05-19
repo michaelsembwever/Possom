@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -68,26 +68,26 @@ public class FastCommandConfig extends CommandConfig {
     private final Map<String,String> searchParameters = new HashMap<String,String>();
     private boolean lemmatise;
     private boolean spellcheck;
-    private String spellchecklanguage;
+    private String spellchecklanguage = "";
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
-    private String sortBy;
-    private String alternativeSortBy;
+    private String sortBy = "";
+    private String alternativeSortBy = "";
     private boolean collapsing;
-    private String queryServerUrl;
+    private String queryServerUrl = "";
     private boolean keywordClusteringEnabled = false;
-    private String qtPipeline;
+    private String qtPipeline = "";
     private transient volatile String collectionString;
     private boolean expansion;
 
-    private String resultView;
+    private String resultView = "";
     private boolean clustering = false;
     private boolean ignoreNavigation = false;
-    private int offensiveScoreLimit = 0;
-    private int spamScoreLimit = 0;
+    private int offensiveScoreLimit = -1;
+    private int spamScoreLimit = -1;
 
-    private String filter;
-    private String filtertype;
-    private String project;
+    private String filter = "";
+    private String filtertype = "";
+    private String project = "";
 
     private boolean relevantQueries = false;
 
@@ -565,7 +565,7 @@ public class FastCommandConfig extends CommandConfig {
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "lemmatise", ParseType.Boolean, element, "false");
 
         if (getQueryServerUrl() == null || "".equals(getQueryServerUrl())) {
-            LOG.debug("queryServerURL is empty for " + getName());
+            LOG.debug("queryServerURL is empty for " + getId());
         }
 
         // navigators

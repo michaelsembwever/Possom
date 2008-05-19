@@ -161,7 +161,7 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (SocketTimeoutException ste) {
 
-            LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
+            LOG.error(getSearchConfiguration().getId() +  " --> " + ste.getMessage());
             return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {
@@ -186,7 +186,7 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
         final StringBuilder fields = new StringBuilder();
 
-        for (final String field : context.getSearchConfiguration().getResultFields().keySet()) {
+        for (final String field : context.getSearchConfiguration().getResultFieldMap().keySet()) {
             fields.append(field);
             fields.append(',');
         }
@@ -229,7 +229,7 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
         final BasicResultItem item = new BasicResultItem();
 
-        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
+        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFieldMap().entrySet()){
 
             final Element fieldE = (Element) result.getElementsByTagName(entry.getKey().toUpperCase()).item(0);
             if(fieldE.getChildNodes().getLength() >0){

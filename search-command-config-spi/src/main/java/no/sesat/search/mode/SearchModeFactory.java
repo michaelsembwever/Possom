@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ import no.sesat.search.result.handler.ResultHandlerConfig;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
-import no.sesat.search.site.config.AbstractConfigFactory.Context;
 import no.sesat.search.site.config.Spi;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.ResourceContext;
@@ -281,8 +280,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         // commands
                         final SearchConfiguration sc
                                 = SEARCH_CONFIGURATION_FACTORY.parseSearchConfiguration(context, childElement, mode);
-
-                        modesCommands.put(sc.getName(), sc);
+                        modesCommands.put(sc.getId(), sc);
                         searchConfigurations.add(sc);
 
 //                    }else if("navigation".equals(childElement.getTagName())){
@@ -543,9 +541,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass())
                     : "Can only inherit from same or superclass configuration. "
                     + element.getAttribute("id") + '(' + sc.getClass().getSimpleName() + ')'
-                    + " trying to inherit from " + inherit.getName() + '(' + inherit.getClass().getSimpleName() + ')';
+                    + " trying to inherit from " + inherit.getId() + '(' + inherit.getClass().getSimpleName() + ')';
 
-            return sc.readSearchConfiguration(element, inherit, context);
+            if ("new".equals(System.getenv("SearchModeFactory"))) {
+                sc.readSearchConfiguration(element, inherit);
+            }
+            else {
+                sc.readSearchConfiguration(element, inherit, context);
+            }
+            return sc;
         }
 
         protected Class<SearchConfiguration> findClass(final String xmlName, final Context context)

@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ public final class SearchModeTest extends DataModelTestCase {
 
         final FastCommandConfig webCrawl = new FastCommandConfig();
 
-        webCrawl.setName("test-fast-search-configuration");
+        webCrawl.setId("test-fast-search-configuration");
         webCrawl.setQueryServerUrl("queryServerURL.1");
         webCrawl.addCollections(new String[]{"webcrawlno1", "webcrawlno1deep1"});
         webCrawl.addCollections(new String[]{"webcrawlno2"});
@@ -142,7 +142,7 @@ public final class SearchModeTest extends DataModelTestCase {
         final SearchMode mode = new SearchMode();
         mode.setExecutor(SearchMode.SearchCommandExecutorConfig.PARALLEL);
         final OverturePpcCommandConfig searchConfiguration = new OverturePpcCommandConfig();
-        searchConfiguration.setName("test-overture-ppc-command");
+        searchConfiguration.setId("test-overture-ppc-command");
         searchConfiguration.setResultsToReturn(3);
         searchConfiguration.setHost("overtureHost");
         searchConfiguration.setPort("overturePort");

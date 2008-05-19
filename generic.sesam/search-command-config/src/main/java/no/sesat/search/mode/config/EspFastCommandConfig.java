@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ public class EspFastCommandConfig extends FastCommandConfig {
 
     // Constants -----------------------------------------------------
 
-    private String view;
-    private String queryServer;
-    private String sortBy;
-    private String alternativeSortBy;
+    private String view = "";
+    private String queryServer = "";
+    private String sortBy = "default";
+    private String alternativeSortBy = "";
     private boolean collapsingEnabled;
     private boolean expansionEnabled;
     private boolean collapsingRemoves;
-    private String qtPipeline;
+    private String qtPipeline = "";
     private boolean lemmatize;
 
 

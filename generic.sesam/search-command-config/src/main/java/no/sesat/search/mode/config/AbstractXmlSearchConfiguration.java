@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -41,17 +41,17 @@ public abstract class AbstractXmlSearchConfiguration extends CommandConfig {
     /**
      * Holds value of property key for host.
      */
-    private String host;
+    private String host = "";
 
     /**
      * Holds value of property encoding.
      */
-    private String encoding;
+    private String encoding = "";
 
     /**
      * Holds value of property key for port.
      */
-    private String port;
+    private String port = "";
 
     // Static --------------------------------------------------------
 
@@ -114,7 +114,7 @@ public abstract class AbstractXmlSearchConfiguration extends CommandConfig {
     /**
      * Holds value of property hostHeader.
      */
-    private String hostHeader;
+    private String hostHeader = "";
 
     /**
      * Getter for property hostHeader.

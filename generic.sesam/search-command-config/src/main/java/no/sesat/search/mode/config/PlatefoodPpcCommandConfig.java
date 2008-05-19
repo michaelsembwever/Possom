@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ public class PlatefoodPpcCommandConfig extends AbstractYahooSearchConfiguration 
     /**
      * Holds value of property url.
      */
-    private String url;
+    private String url = "";
 
     /**
      * Getter for property url.
@@ -72,7 +72,7 @@ public class PlatefoodPpcCommandConfig extends AbstractYahooSearchConfiguration 
         this.url = url;
     }
 
-    private String top3BackfillBlock;
+    private String top3BackfillBlock = "";
 
     public String getTop3BackfillBlock() {
         return top3BackfillBlock;

@@ -24,13 +24,11 @@ package no.sesat.search.mode.command;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.util.HashMap;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import no.sesat.search.mode.config.PlatefoodPpcCommandConfig;
-import no.sesat.search.mode.config.AbstractYahooSearchConfiguration;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
@@ -124,7 +122,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (SocketTimeoutException ste) {
 
-            LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
+            LOG.error(getSearchConfiguration().getId() +  " --> " + ste.getMessage());
             return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {

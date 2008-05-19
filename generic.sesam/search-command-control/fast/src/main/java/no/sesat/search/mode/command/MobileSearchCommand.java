@@ -194,7 +194,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
         ResultItem item = new BasicResultItem();
 
-        for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
+        for (final Map.Entry<String,String> entry : cfg.getResultFieldMap().entrySet()) {
 
                 final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 

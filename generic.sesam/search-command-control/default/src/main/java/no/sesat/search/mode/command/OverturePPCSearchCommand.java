@@ -102,7 +102,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (SocketTimeoutException ste) {
 
-            LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
+            LOG.error(getSearchConfiguration().getId() +  " --> " + ste.getMessage());
             return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {

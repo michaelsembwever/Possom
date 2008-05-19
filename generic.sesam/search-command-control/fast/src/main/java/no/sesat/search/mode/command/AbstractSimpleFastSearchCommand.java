@@ -510,7 +510,7 @@ import no.sesat.search.result.WeightedSuggestion;
 
         ResultItem item = new BasicResultItem();
 
-        for (final Map.Entry<String, String> entry : getSearchConfiguration().getResultFields().entrySet()) {
+        for (final Map.Entry<String, String> entry : getSearchConfiguration().getResultFieldMap().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
             if (summary != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for (SearchConfiguration searchConfiguration : applicableSearchConfigurations()) {
 
                 final SearchConfiguration config = searchConfiguration;
-                final String confName = config.getName();
+                final String confName = config.getId();
 
                 try{
 
@@ -325,7 +325,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 final SearchCommand command = results.get(task);
                                 final SearchConfiguration config = command.getSearchConfiguration();
 
-                                final String name = config.getName();
+                                final String name = config.getId();
                                 final EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
 
                                 final float score = scores.get(name) != null
@@ -337,7 +337,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 hits.put(name, searchResult.getHitCount());
 
                                 if( searchResult.getHitCount() <= 0 && command.isPaginated() ){
-                                    noHitsOutput.append("<command id=\"" + config.getName()
+                                    noHitsOutput.append("<command id=\"" + config.getId()
                                             + "\" name=\""  + config.getStatisticalName()
                                             + "\" type=\"" + config.getClass().getSimpleName()
                                             + "\"/>");
@@ -405,15 +405,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             // check for specified list of commands to run in url
             for(String explicitCommand : explicitCommands){
-                applicable |= explicitCommand.equalsIgnoreCase(conf.getName());
+                applicable |= explicitCommand.equalsIgnoreCase(conf.getId());
             }
 
             // check output is rss, only run the command that will produce the rss output. only disable applicable.
-            applicable &= !isRss() || context.getSearchTab().getRssResultName().equals(conf.getName());
+            applicable &= !isRss() || context.getSearchTab().getRssResultName().equals(conf.getId());
 
             // check for alwaysRun or for a possible enrichment (since its scoring will be the final indicator)
             applicable &= conf.isAlwaysRun() ||
-                    (null != context.getSearchTab().getEnrichmentByCommand(conf.getName())
+                    (null != context.getSearchTab().getEnrichmentByCommand(conf.getId())
                     && !datamodel.getQuery().getQuery().isBlank());
 
             // add search configuration if applicable
@@ -469,14 +469,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     scoresByRule.put(eHint.getRule(), score);
                     analysisReport.append(analysisRuleReport);
 
-                    LOG.debug("Score for " + config.getName() + " is " + score);
+                    LOG.debug("Score for " + config.getId() + " is " + score);
 
                 } else {
                     score = scoresByRule.get(eHint.getRule());
                 }
             }
 
-            scores.put(config.getName(), score);
+            scores.put(config.getId(), score);
 
             result = score >= eHint.getThreshold();
 
@@ -515,7 +515,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 : results.entrySet()){
 
                             final String entryName
-                                    = ((SearchCommand)entry.getValue()).getSearchConfiguration().getName();
+                                    = ((SearchCommand)entry.getValue()).getSearchConfiguration().getId();
                             if(waitForStr.equalsIgnoreCase(entryName)){
 
                                 waitFor.put(

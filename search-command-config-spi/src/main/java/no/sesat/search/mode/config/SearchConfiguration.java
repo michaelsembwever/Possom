@@ -68,6 +68,8 @@ public interface SearchConfiguration extends Serializable {
      *
      * @return the name of the configuration.
      */
+    String getId();
+
     String getName();
 
     /**
@@ -81,7 +83,7 @@ public interface SearchConfiguration extends Serializable {
      * @return
      */
 
-    Map<String,String> getResultFields();
+    Map<String,String> getResultFieldMap();
 
     /**
      * @param resultField
@@ -121,7 +123,7 @@ public interface SearchConfiguration extends Serializable {
      *
      * @return Value of property fieldFilters.
      */
-    Map<String, String> getFieldFilters();
+    Map<String, String> getFieldFilterMap();
 
     /***/
     void clearQueryTransformers();
@@ -147,5 +149,7 @@ public interface SearchConfiguration extends Serializable {
      * @param context
      * @return
      */
+    void readSearchConfiguration(Element element, SearchConfiguration inherit);
+
     SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context);
 }

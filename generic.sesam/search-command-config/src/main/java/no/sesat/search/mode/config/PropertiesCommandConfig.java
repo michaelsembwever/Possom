@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ public class PropertiesCommandConfig extends CommandConfig {
 
     private static final Logger LOG = Logger.getLogger(PropertiesCommandConfig.class);
 
-    private String propertiesFilename;
+    private String propertiesFilename = "";
 
     private Map<String,String> properties;
 

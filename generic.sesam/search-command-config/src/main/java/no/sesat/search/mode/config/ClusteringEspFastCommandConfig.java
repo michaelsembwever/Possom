@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
 
     private String clusterIdParameter = "clusterId";
     private int resultsPerCluster;
-    private String clusterField;
-    private boolean clusteringDisabled;
+    private String clusterField = "cluster";
+    private boolean clusteringDisabled = false;
 
     /** Getter for clusterIdParameter property.
      * @return the clusterIdParameter value

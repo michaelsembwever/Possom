@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -34,17 +34,16 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private String mediumPrefix = "medium";
     private String defaultMedium = "webnewsarticle";
     private String mediumParameter = "medium";
-    private String nestedResultsField;
-    private int collapsingMaxFetch;
-    private String userSortParameter;
-    private String sortField;
-    private String defaultSort;
-    private String relevanceSortField;
-    private String maxAge;
+    private String nestedResultsField = "entries";
+    private int collapsingMaxFetch = 10;
+    private String userSortParameter = "sort";
+    private String sortField = "publishedtime";
+    private String defaultSort = "descending";
+    private String relevanceSortField = "freshnessprofile";
+    private String maxAge = null;
     private int maxAgeAmount;
-    private String ageField;
+    private String ageField = "publishedtime";
     private char ageSymbol;
-
 
     /** Getter for the userSortParameter property.
      * @return the userSortParameter value
@@ -257,4 +256,13 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         return this;
     }
 
+    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
+        // maxAge is of the format 10h (for 10 hours).
+        if (maxAge != null) {
+            ageSymbol = maxAge.charAt(maxAge.length() - 1);
+            maxAgeAmount = Integer.parseInt(maxAge.substring(0, maxAge.length() - 1));
+        }
+
+        super.readSearchConfigurationAfter(element, inherit);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

@@ -21,22 +21,11 @@ package no.sesat.search.mode.command;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
-import no.sesat.search.mode.config.YahooIdpCommandConfig;
+
 import no.sesat.search.mode.config.YahooWebCommandConfig;
-import no.sesat.search.query.AndClause;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.Clause;
-import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OrClause;
-import no.sesat.search.query.PhraseClause;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.ResultItem;
@@ -115,7 +104,7 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (SocketTimeoutException ste) {
 
-            LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
+            LOG.error(getSearchConfiguration().getId() +  " --> " + ste.getMessage());
             return new BasicResultList<ResultItem>();
 
         } catch (IOException e) {
@@ -176,7 +165,7 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
 
         final BasicResultItem item = new BasicResultItem();
 
-        for (final Map.Entry<String,String> entry : getSearchConfiguration().getResultFields().entrySet()){
+        for (final Map.Entry<String,String> entry : getSearchConfiguration().getResultFieldMap().entrySet()){
 
             final Element fieldE = (Element) result.getElementsByTagName(entry.getKey()).item(0);
             if(null != fieldE && fieldE.getChildNodes().getLength() >0){

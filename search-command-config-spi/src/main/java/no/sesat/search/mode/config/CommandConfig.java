@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import no.sesat.search.mode.SearchModeFactory.Context;
+import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.result.Navigator;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
@@ -48,7 +49,7 @@ import org.w3c.dom.NodeList;
  *
  * @version <tt>$Id$</tt>
  */
-public class CommandConfig implements SearchConfiguration {
+public class CommandConfig extends AbstractSearchConfiguration implements SearchConfiguration {
 
     // Constants -----------------------------------------------------
 
@@ -72,13 +73,13 @@ public class CommandConfig implements SearchConfiguration {
     private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
 
     private final Map<String,String> resultFields = new HashMap<String,String>();
-    private int resultsToReturn;
+    private int resultsToReturn = -1;
 
-    private String queryParameter;
+    private String queryParameter = "";
     private boolean alwaysRun = true;
     private boolean runBlank = false;
     private boolean asynchronous = false;
-    private String statisticalName;
+    private String statisticalName = "";
 
     /**
      * Holds value of property fieldFilters.
@@ -124,20 +125,16 @@ public class CommandConfig implements SearchConfiguration {
         resultHandlers.add(handler);
     }
 
-    /** {@inheritDoc} **/
     public final String getName() {
         return name;
     }
 
-    /**
-     * @param name
-     */
-    public final void setName(final String name) {
-        this.name = name;
+    /** {@inheritDoc} **/
+    public final String getId() {
+        return name;
     }
 
     /**
-     * Same as setName
      *
      * @param id Name for this configuration.
      */
@@ -155,7 +152,9 @@ public class CommandConfig implements SearchConfiguration {
      *            String seperated with ' AS '.
      */
     private final void addResultField(final String resultField) {
-        addResultField(resultField.trim().split(" AS "));
+        if (resultField != null && !resultField.equals("")) {
+            addResultField(resultField.trim().split(" AS "));
+        }
     }
 
     /**
@@ -168,8 +167,17 @@ public class CommandConfig implements SearchConfiguration {
         }
     }
 
+    public final String[] getResultFields() {
+        String [] res = new String[resultFields.size()];
+        int index = 0;
+        for (String key : resultFields.keySet()) {
+            res[index] = key + " AS " + resultFields.get(key);
+        }
+        return res;
+    }
+
     /** {@inheritDoc} **/
-    public final Map<String,String> getResultFields() {
+    public final Map<String,String> getResultFieldMap() {
         return Collections.unmodifiableMap(resultFields);
     }
 
@@ -283,7 +291,7 @@ public class CommandConfig implements SearchConfiguration {
      * Getter for property fieldFilters.
      * @return Value of property fieldFilters.
      */
-    public Map<String,String> getFieldFilters() {
+    public Map<String,String> getFieldFilterMap() {
         return Collections.unmodifiableMap(fieldFilters);
     }
 
@@ -302,6 +310,16 @@ public class CommandConfig implements SearchConfiguration {
         fieldFilters.clear();
     }
 
+    protected void readSearchConfigurationBefore(Element element, SearchConfiguration inherit) {
+        if(null!=inherit){
+            fieldFilters.putAll(inherit.getFieldFilterMap());
+        }
+        if(null!=inherit){
+            resultFields.putAll(inherit.getResultFieldMap());
+        }
+        super.readSearchConfigurationBefore(element, inherit);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     /** {@inherit}
      */
     public CommandConfig readSearchConfiguration(
@@ -309,7 +327,7 @@ public class CommandConfig implements SearchConfiguration {
             final SearchConfiguration inherit,
             final Context context){
 
-        setName(element.getAttribute("id"));
+        setId(element.getAttribute("id"));
 
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "alwaysRun", ParseType.Boolean, element, "true");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "runBlank", ParseType.Boolean, element, "false");
@@ -317,7 +335,7 @@ public class CommandConfig implements SearchConfiguration {
 
         // field-filters
         if(null!=inherit){
-            fieldFilters.putAll(inherit.getFieldFilters());
+            fieldFilters.putAll(inherit.getFieldFilterMap());
         }
         if (element.hasAttribute("field-filters")) {
             if (element.getAttribute("field-filters").length() > 0) {
@@ -334,7 +352,7 @@ public class CommandConfig implements SearchConfiguration {
 
         // result-fields
         if(null!=inherit){
-            resultFields.putAll(inherit.getResultFields());
+            resultFields.putAll(inherit.getResultFieldMap());
         }
         if (element.getAttribute("result-fields").length() > 0) {
             addResultFields(element.getAttribute("result-fields").split(","));

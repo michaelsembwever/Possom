@@ -150,9 +150,9 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         for(SearchConfiguration conf : rqCxt.getSearchMode().getSearchConfigurations()){
 
 
-            LOG.info(DEBUG_EXECUTE_COMMAND + conf.getName());
+            LOG.info(DEBUG_EXECUTE_COMMAND + conf.getId());
 
-            final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getName());
+            final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getId());
 
             final SearchCommand cmd = commandFactory.getController(cxt);
 

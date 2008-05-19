@@ -382,7 +382,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
         ResultList<ResultItem> newResult = new BasicResultList<ResultItem>();
 
-        for (final Map.Entry<String, String> entry : config.getResultFields().entrySet()) {
+        for (final Map.Entry<String, String> entry : config.getResultFieldMap().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
             if (summary != null && !summary.isEmpty()) {
                 newResult = newResult.addField(entry.getValue(), summary.getStringValue().trim());

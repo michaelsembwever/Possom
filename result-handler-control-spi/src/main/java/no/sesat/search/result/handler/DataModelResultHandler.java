@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ public final class DataModelResultHandler implements ResultHandler{
         final SearchConfiguration config = cxt.getSearchConfiguration();
 
         // results
-        LOG.debug(DEBUG_ADD_RESULT + config.getName());
+        LOG.debug(DEBUG_ADD_RESULT + config.getId());
 
         final DataModelFactory factory = getDataModelFactory(cxt);
 
@@ -117,7 +117,7 @@ public final class DataModelResultHandler implements ResultHandler{
             factory.assignControlLevel(datamodel, SEARCH_COMMAND_EXECUTION);
         }
 
-        datamodel.setSearch(config.getName(), searchDO);
+        datamodel.setSearch(config.getId(), searchDO);
 
         if(null != originalControlLevel && SEARCH_COMMAND_EXECUTION == factory.currentControlLevel(datamodel)){
             // restore the control level, given that nobody else has touched it.

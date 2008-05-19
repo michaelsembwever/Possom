@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property database.
      */
-    private String database;
+    private String database = "";
 
     /**
      * Getter for property database.
@@ -54,7 +54,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property dateRange.
      */
-    private String dateRange;
+    private String dateRange = "";
 
     /**
      * Getter for property dateRange.
@@ -75,7 +75,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property spellState.
      */
-    private String spellState;
+    private String spellState = "";
 
     /**
      * Getter for property spellstate.
@@ -96,7 +96,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property regionMix.
      */
-    private String regionMix;
+    private String regionMix = "";
 
     /**
      * Getter for property regionMix.
@@ -117,7 +117,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property unique.
      */
-    private String unique;
+    private String unique = "";
 
     /**
      * Getter for property unique.
@@ -138,7 +138,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property region.
      */
-    private String region;
+    private String region = "";
 
     /**
      * Getter for property region.
@@ -159,7 +159,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property filter.
      */
-    private String filter;
+    private String filter = "";
 
     /**
      * Getter for property filter.
@@ -180,7 +180,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property hideDomain.
      */
-    private String hideDomain;
+    private String hideDomain = "";
 
     /**
      * Getter for property hideDomain.
@@ -202,7 +202,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property language.
      */
-    private String language;
+    private String language = "";
 
     /**
      * Getter for property language.
@@ -223,7 +223,7 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     /**
      * Holds value of property languageMix.
      */
-    private String languageMix;
+    private String languageMix = "";
 
     /**
      * Getter for property languageMix.

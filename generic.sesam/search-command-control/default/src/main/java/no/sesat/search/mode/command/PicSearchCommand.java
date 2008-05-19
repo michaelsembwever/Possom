@@ -124,7 +124,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
 
                         final BasicResultItem item = new BasicResultItem();
 
-                        for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
+                        for (final Map.Entry<String,String> entry : cfg.getResultFieldMap().entrySet()) {
 
                             item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
                         }

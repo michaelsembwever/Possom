@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -163,7 +163,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
 
         LOG.debug("------ Running search to get clusters ---------");
         LOG.debug("clusterId=" + clusterId);
-        LOG.debug("result-fields=" + config.getResultFields());
+        LOG.debug("result-fields=" + config.getResultFieldMap());
         LOG.debug("query-server=" + config.getQueryServer());
         LOG.debug("-----------------------------------------------");
         return super.execute();
