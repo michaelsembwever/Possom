@@ -317,7 +317,16 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
         if(null!=inherit){
             resultFields.putAll(inherit.getResultFieldMap());
         }
-        super.readSearchConfigurationBefore(element, inherit);    //To change body of overridden methods use File | Settings | File Templates.
+        super.readSearchConfigurationBefore(element, inherit);
+    }
+
+    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
+        if (element.hasAttribute("field-filters")) {
+            if (element.getAttribute("field-filters").length() == 0) {
+               clearFieldFilters();
+            }
+        }
+        super.readSearchConfigurationAfter(element, inherit);
     }
 
     /** {@inherit}
