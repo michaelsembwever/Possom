@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 package no.sesat.search.site.config;
 
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.sesat.search.site.SiteContext;
 import org.apache.log4j.Logger;
 
-import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-/**
+/** ClassLoader abstraction to handle loading classes across skins.
  * @author magnuse
  * @version $Id$
  */
@@ -99,18 +99,22 @@ public abstract class ResourceClassLoader extends ClassLoader {
             throw new ClassNotFoundException(className + " not found");
         }
 
+        // Make sure that the class hasn't been defined by another thread while we are loading the byte code.
+        // Only checking below inside the synchronisation block leads to a performance bottleneck.
+        if(null != findLoadedClass(className)){
+            LOG.debug(className + " already loaded by some other thread ");
+            return findLoadedClass(className);
+        }
 
-        // Make sure that the class hasn't been defined by another thread while we were busy looking for and loading the
-        // byte code.
-        synchronized(className.intern()) {
-            final Class loadedClass = findLoadedClass(className);
-
-            if (LOG.isDebugEnabled() && null != loadedClass) {
+        synchronized(this) {
+            // Check again! (failure to do so within the synchronisation block leads to LinkError from duplicates).
+            // Make sure that the class hasn't been defined by another thread while we are loading the byte code.
+            if(null != findLoadedClass(className)){
                 LOG.debug(className + " already loaded by some other thread ");
-
+                return findLoadedClass(className);
+            }else{
+                return defineClass(className, bytecode, 0, bytecode.length);
             }
-            
-            return loadedClass != null ? loadedClass : defineClass(className, bytecode, 0, bytecode.length);
         }
     }
 }
