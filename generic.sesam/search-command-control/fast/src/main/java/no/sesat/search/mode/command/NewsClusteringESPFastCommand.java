@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -79,13 +79,15 @@ public class NewsClusteringESPFastCommand extends NewsEspSearchCommand {
      */
     @Override
     protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
-
         try {
             final ClusteringEspFastCommandConfig config = getSearchConfiguration();
-            final StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
+            final StringDataObject clusterId = datamodel.getParameters() != null
+                    ? datamodel.getParameters().getValue(config.getClusterIdParameter()) : null;
+
             if (config.isClusteringDisabled()) {
-                FastSearchResult<ResultItem> searchResult = super.createSearchResult(result);
-                int offset = getOffset();
+                final FastSearchResult<ResultItem> searchResult = super.createSearchResult(result);
+                final int offset = getOffset();
+
                 if (offset + config.getResultsToReturn() < result.getDocCount()) {
                     addNextOffsetField(offset + config.getResultsToReturn(), searchResult);
                 }
@@ -102,6 +104,7 @@ public class NewsClusteringESPFastCommand extends NewsEspSearchCommand {
         } catch (RuntimeException e) {
             LOG.error(ERR_CONVERT, e);
         }
+
         // Falling back to super implementation, because this one does not work.
         return super.createSearchResult(result);
     }
