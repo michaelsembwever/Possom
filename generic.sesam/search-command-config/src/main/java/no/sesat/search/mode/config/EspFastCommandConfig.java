@@ -290,5 +290,24 @@ public class EspFastCommandConfig extends FastCommandConfig {
         return this;
     }
 
+    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
+        super.readSearchConfigurationAfter(element, inherit);
+        final EspFastCommandConfig efscInherit = inherit instanceof EspFastCommandConfig
+                ? (EspFastCommandConfig) inherit
+                : null;
 
+        if (efscInherit != null && efscInherit.getNavigators() != null) {
+
+            navigators.putAll(efscInherit.getNavigators());
+        }
+
+        final NodeList nList = element.getElementsByTagName("navigators");
+
+        for (int i = 0; i < nList.getLength(); ++i) {
+            final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
+            for (Navigator navigator : navigators) {
+                addNavigator(navigator, navigator.getId());
+            }
+        }
+    }
 }

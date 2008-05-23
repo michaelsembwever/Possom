@@ -416,7 +416,7 @@ import no.sesat.search.result.WeightedSuggestion;
      */
     protected void setAdditionalParameters(final ISearchParameters params) {
 
-        for(Map.Entry<String,String> entry : getSearchConfiguration().getSearchParameters().entrySet()){
+        for(Map.Entry<String,String> entry : getSearchConfiguration().getSearchParameterMap().entrySet()){
             params.setParameter(new SearchParameter(entry.getKey(), entry.getValue()));
         }
     }

@@ -549,6 +549,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             else {
                 sc.readSearchConfiguration(element, inherit, context);
             }
+            LOG.info("ParsedSearchConfiguration: " + sc);
             return sc;
         }
 

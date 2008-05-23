@@ -18,12 +18,8 @@
  */
 package no.sesat.search.mode.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
 import no.sesat.search.result.Navigator;
@@ -101,8 +97,10 @@ public class FastCommandConfig extends CommandConfig {
      *
      * @return
      */
-    public List<String> getCollections() {
-        return collections;
+    public String[] getCollections() {
+        String[] res = new String[collections.size()];
+        collections.toArray(res);
+        return res;
     }
 
     /**
@@ -111,7 +109,8 @@ public class FastCommandConfig extends CommandConfig {
      */
     public void addCollections(final String[] collectionArray) {
         for (String string : collectionArray) {
-            collections.add(string);
+            if (!string.equals(""))
+                collections.add(string);
         }
     }
 
@@ -175,7 +174,7 @@ public class FastCommandConfig extends CommandConfig {
      *
      * @return
      */
-    public Map<String,String> getSearchParameters() {
+    public Map<String,String> getSearchParameterMap() {
         return searchParameters;
     }
 
@@ -188,6 +187,20 @@ public class FastCommandConfig extends CommandConfig {
             final String[] paramSplit = parameter.split("=");
             searchParameters.put(paramSplit[0].trim(), paramSplit[1].trim());
         }
+    }
+
+    /**
+     *
+     * @return Array of search parameters.
+     */
+    public String[] getSearchParameters() {
+        String[] res = new String[searchParameters.size()];
+        int index = 0;
+        for (String key : searchParameters.keySet()) {
+            res[index] = key + "=" + searchParameters.get(key);
+            index ++;
+        }
+        return res;
     }
 
     /**
@@ -464,14 +477,6 @@ public class FastCommandConfig extends CommandConfig {
     }
 
     /**
-     * Setter for property collectionFilterString.
-     * @param collectionFilterString New value of property collectionFilterString.
-     */
-    public void setCollectionFilterString(final String collectionFilterString) {
-        this.collectionString = collectionFilterString;
-    }
-
-    /**
      * Setter for property filter.
      * @param filter New value of property filter.
      */
@@ -537,12 +542,14 @@ public class FastCommandConfig extends CommandConfig {
         if (element.getAttribute("collections").length() > 0) {
             addCollections(element.getAttribute("collections").split(","));
         }else if(null != fscInherit){
-            collections.addAll(fscInherit.getCollections());
+            for(String collection : fscInherit.getCollections()) {
+                collections.add(collection);
+            }
         }
 
         // search parameters
         if(null != fscInherit){
-            searchParameters.putAll(fscInherit.getSearchParameters());
+            searchParameters.putAll(fscInherit.getSearchParameterMap());
         }
         if (element.getAttribute("search-parameters").length() > 0) {
             setSearchParameters(element.getAttribute("search-parameters").split(","));
@@ -587,5 +594,27 @@ public class FastCommandConfig extends CommandConfig {
         return this;
     }
 
+    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
+        super.readSearchConfigurationAfter(element, inherit);
+        final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig
+                ? (FastCommandConfig) inherit
+                : null;
+        if (getQueryServerUrl() == null || "".equals(getQueryServerUrl())) {
+            LOG.debug("queryServerURL is empty for " + getId());
+        }
 
+        if (fscInherit != null && fscInherit.getNavigators() != null) {
+
+            navigators.putAll(fscInherit.getNavigators());
+        }
+
+        final NodeList nList = element.getElementsByTagName("navigators");
+
+        for (int i = 0; i < nList.getLength(); ++i) {
+            final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
+            for (Navigator navigator : navigators) {
+                addNavigator(navigator, navigator.getId());
+            }
+        }
+    }
 }

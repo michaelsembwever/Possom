@@ -171,7 +171,9 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
         String [] res = new String[resultFields.size()];
         int index = 0;
         for (String key : resultFields.keySet()) {
-            res[index] = key + " AS " + resultFields.get(key);
+            String value = resultFields.get(key);
+            res[index] = (key.equals(value)) ? key :  key + " AS " + value;
+            index ++;
         }
         return res;
     }
@@ -255,13 +257,6 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
      */
     public void setAsynchronous(final boolean asynchronous){
         this.asynchronous = asynchronous;
-    }
-
-
-    /** {@inheritDoc} **/
-    @Override
-    public String toString(){
-        return getClass().getSimpleName() + " [" + name + "]";
     }
 
     /**
