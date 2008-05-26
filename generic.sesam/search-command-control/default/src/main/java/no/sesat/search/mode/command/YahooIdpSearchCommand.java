@@ -72,7 +72,7 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String TOTALHITS_ELEMENT ="TOTALHITS";
     private static final String DEEPHITS_ELEMENT = "DEEPHITS";
     private static final String RESULT_ELEMENT = "RESULT";
-    private static final String NUMRESULT_ELEMENT = "NUMRESULT";
+    private static final String NUMRESULT_ELEMENT = "NUMRESULTS";
     private static final String WORDCOUNTS_ELEMENT = "WORDCOUNTS";
 
     // private static final String ALLWORDS = "ALLWORDS("; // not used for now. could be as ANYWORDS optimisation
@@ -107,30 +107,36 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                     final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
                     final Element deepHitsE = (Element) headerE.getElementsByTagName(DEEPHITS_ELEMENT).item(0);
+                    final Element numResultsE = (Element) headerE.getElementsByTagName(NUMRESULT_ELEMENT).item(0);
 
                     int totalHits;
                     try {
                         totalHits = Integer.parseInt(totalHitsE.getFirstChild().getNodeValue());
-                    }
-                    catch(NumberFormatException e) {
+                    }catch(NumberFormatException e) {
                         totalHits = Integer.MAX_VALUE;
                     }
-                    searchResult.addField("totalhits", ""+totalHits);
+                    searchResult.addField("totalhits", String.valueOf(totalHits));
 
                     int deepHits;
                     try {
                         deepHits = Integer.parseInt(deepHitsE.getFirstChild().getNodeValue());
-                    }
-                    catch(NumberFormatException e) {
+                    }catch(NumberFormatException e) {
                         deepHits = Integer.MAX_VALUE;
                     }
-                    searchResult.addField("deephits", ""+deepHits);
+                    searchResult.addField("deephits", String.valueOf(deepHits));
                     searchResult.setHitCount(deepHits);
 
                     if(searchResult.getHitCount() > totalHits) {
                         searchResult.addField("hasMoreHits", "true");
                     }
 
+                    int numResults;
+                    try {
+                        numResults = Integer.parseInt(numResultsE.getFirstChild().getNodeValue());
+                    }catch(NumberFormatException e) {
+                        numResults = Integer.MAX_VALUE;
+                    }
+                    searchResult.addField("numResults", String.valueOf(numResults));
 
 
                     // build results
