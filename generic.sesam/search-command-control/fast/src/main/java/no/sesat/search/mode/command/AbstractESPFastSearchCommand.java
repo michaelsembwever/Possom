@@ -244,13 +244,17 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @return sortby field
      */
     protected String getSortBy() {
+
         String sortBy = cfg.getSortBy();
 
-        if (null != getParameter("userSortBy")) {
+        if (isUserSortable()) {
 
-            final String userSortBy = getParameter("userSortBy");
-            LOG.debug("execute: SortBy " + userSortBy);
+            final String userSortBy = getUserSortBy();
+            LOG.debug("userSortBy " + userSortBy);
 
+            // TODO move-out to genericno. this is configuration hardcoded.
+            // it would be nice to have a sortBy-fields to allow these types of mappings to be configured easily.
+            // see AbstractSimpleFastSearchCommand.createQuery()
             if("default".equals(userSortBy)) {
                 sortBy = cfg.getSortBy();
             } else if ("alternative".equals(userSortBy) && cfg.getAlternativeSortBy() != null) {

@@ -72,6 +72,7 @@ public class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String TOTALHITS_ELEMENT ="TOTALHITS";
     private static final String DEEPHITS_ELEMENT = "DEEPHITS";
     private static final String RESULT_ELEMENT = "RESULT";
+    private static final String NUMRESULT_ELEMENT = "NUMRESULT";
     private static final String WORDCOUNTS_ELEMENT = "WORDCOUNTS";
 
     // private static final String ALLWORDS = "ALLWORDS("; // not used for now. could be as ANYWORDS optimisation

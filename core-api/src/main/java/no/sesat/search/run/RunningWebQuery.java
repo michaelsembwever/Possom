@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -62,10 +62,11 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
     /**
      *
-     * @param mode
+     * @param cxt
      * @param query
      * @param request
      * @param response
+     * @throws SiteKeyedFactoryInstantiationException
      */
     public RunningWebQuery(final Context cxt,
                            final String query,

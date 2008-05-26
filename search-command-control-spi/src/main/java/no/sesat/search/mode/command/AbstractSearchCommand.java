@@ -62,6 +62,7 @@ import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
 import no.sesat.search.view.config.SearchTab;
+import static no.sesat.search.view.navigation.NavigationConfig.USER_SORT_KEY;
 import static no.sesat.search.view.navigation.ResultPagingNavigationConfig.OFFSET_KEY;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -585,7 +586,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * Zero if the command has no "offset" navigator configured,
      *  the value of the offset parameter otherwise.
      *
-     * @return i plus the offset of the current page.
+     * @return the offset.
      */
     protected int getOffset(){
 
@@ -610,6 +611,43 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 : null;
 
         return null != offsetNav && getSearchConfiguration().getId().equals(offsetNav.getCommandName());
+    }
+
+   /**
+    * Returns the userSortBy applicable to this command and request.
+    * Null if the command has no "sort" navigator configured,
+    *  the value of the user's userSortBy parameter.
+    *
+    * This method does not return any command configuration's sort-by attribute (as some subclasses have).
+    *
+    * @return the userSortBy. returns null when false == isUserSortable().
+    */
+    protected String getUserSortBy(){
+
+        String result = null;
+
+        if(isUserSortable()){
+
+            final StringDataObject userSortByString = context.getDataModel().getParameters().getValue(USER_SORT_KEY);
+
+            if(null != userSortByString){
+                result = userSortByString.getString();
+            }
+        }
+
+        return result;
+    }
+
+    public boolean isUserSortable(){
+
+        final boolean navMapExists = null != context.getDataModel().getNavigation()
+                && null != context.getDataModel().getNavigation().getConfiguration();
+
+        final Nav sortingNav = navMapExists
+                ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(USER_SORT_KEY)
+                : null;
+
+        return null != sortingNav && getSearchConfiguration().getName().equals(sortingNav.getCommandName());
     }
 
     /**

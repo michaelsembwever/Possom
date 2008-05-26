@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,10 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * QueryFactoryImpl is part of no.sesat.search.query.
  * Use this class to create an instance of a RunningQuery.
- * <p/>
- * TODO Replace the code in createQuery with a RunningQueryTransformer sub-module that is
- * configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
  *
+ * <p/>
+ * TODO Instantiate a RunningQuery specified in the mode. With default as RunningQueryImpl.
  *
  * @version $Id$
  */
@@ -45,17 +44,11 @@ public final class QueryFactoryImpl extends QueryFactory {
     /**
      * Create a new instance of running query. The implementation can
      * be RunningWebQuery for example.
-     * <p/>
-     * <b>NewsSearch business rules:</b>
-     * <p/>
-     * Set default parameter userSortBy to "datetime" if query is empty
-     * Set contentsource to Norske Nyheter if query is empty and  contentsource is null.
-     * (Kindof WEIRD business rules!!) It the query is not empty, then default is
-     * to search in all contentsource
      *
-     * @param mode    with SearchConfiguration passed to RunningQuery
+     * @param cxt
      * @param request with parameters populated with search params
      * @return instance of RunningQuery
+     * @throws SiteKeyedFactoryInstantiationException
      */
     public RunningQuery createQuery(
             final RunningQuery.Context cxt,
@@ -65,39 +58,23 @@ public final class QueryFactoryImpl extends QueryFactory {
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
 
-        final String tParam = null != parametersDO.getValue("t") ? parametersDO.getValue("t").getString() : "";
+        final String qParam = null != parametersDO.getValue("q") ? parametersDO.getValue("q").getString() : "";
 
-        LOG.debug("createQuery() Type=" + tParam);
+        final RunningQueryImpl query = new RunningWebQuery(cxt, qParam, request, response);
 
-        final RunningQueryImpl query;
+        final String cParam = cxt.getSearchTab().getKey();
 
-        if ("adv_urls".equals(tParam)) {
 
-            // Search for similar urls
-            final String qUrlsParam = null != parametersDO.getValue("q_urls")
-                    ? parametersDO.getValue("q_urls").getString()
-                    : "";
-
-            final String q = "urls:" + qUrlsParam;
-            LOG.debug("Query modified to " + q);
-            query = new RunningWebQuery(cxt, q, request, response);
-
-        } else {
-
-            final String qParam = null != parametersDO.getValue("q") ? parametersDO.getValue("q").getString() : "";
-
-            query = new RunningWebQuery(cxt, qParam, request, response);
-
-            final String cParam = null != parametersDO.getValue("c") ? parametersDO.getValue("c").getString() : "";
-
-            if ("nm".equals(cParam)) {
-                final Cookie[] cookies = request.getCookies();
-                if (cookies != null) {
-                    for (Cookie cookie : cookies) {
-                        if ("myNews".equals(cookie.getName().trim())) {
-                            LOG.debug("Adding cookie: " + cookie.getName() + "=" + cookie.getValue());
-                            datamodel.getJunkYard().getValues().put("myNews", cookie.getValue());
-                        }
+         /** TODO Replace the code in createQuery with a RunningQueryTransformer sub-module that is
+           * configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
+          **/
+        if ("nm".equals(cParam)) {
+            final Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("myNews".equals(cookie.getName().trim())) {
+                        LOG.debug("Adding cookie: " + cookie.getName() + "=" + cookie.getValue());
+                        datamodel.getJunkYard().getValues().put("myNews", cookie.getValue());
                     }
                 }
             }

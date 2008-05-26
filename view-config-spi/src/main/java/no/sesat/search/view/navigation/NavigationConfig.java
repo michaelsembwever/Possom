@@ -53,6 +53,8 @@ import no.sesat.search.view.config.SearchTab;
  */
 public final class NavigationConfig implements Serializable {
 
+    public static final String USER_SORT_KEY = "sort";
+
     private final Map<String, Nav> navMap = new HashMap<String, Nav>();
     private final Map<String, Navigation> navigationMap = new HashMap<String, Navigation>();
     private final List<Navigation> navigationList = new ArrayList<Navigation>();

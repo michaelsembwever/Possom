@@ -35,6 +35,7 @@ import no.sesat.search.result.ResultList;
  */
 public interface SearchCommand extends Callable<ResultList<? extends ResultItem>> {
 
+
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it
      * creates.
      */
@@ -54,8 +55,21 @@ public interface SearchCommand extends Callable<ResultList<? extends ResultItem>
      **/
     boolean handleCancellation();
 
+    /** Has this command be cancelled.
+     *
+     * @return true if cancelled.
+     */
     boolean isCancelled();
 
+    /** Can this command provide paginated results.
+     *
+     * @return true if results can be paginated.
+     */
     boolean isPaginated();
 
+    /** Can this command be sorted differently at user's requst.
+     *
+     * @return true if user sorting is applicable.
+     */
+    boolean isUserSortable();
 }

@@ -653,11 +653,12 @@ import no.sesat.search.result.WeightedSuggestion;
 
         }
 
+        // default SORT_BY is defined by configuration
         if (getSortBy() != null && getSortBy().length() > 0) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getSortBy()));
         }
 
-        // XXX Move out. This code is specific to Norway's mobileYellowGeo mode!
+        // XXX Move-out. This code is specific to Norway's mobileYellowGeo mode!
         if (null != getParameter("c") && getParameter("c").equals("yg")) {
             if (getParameter("type").equals("f")) {
                 params.setParameter(new SearchParameter(
@@ -679,29 +680,35 @@ import no.sesat.search.result.WeightedSuggestion;
                 params.setParameter(new SearchParameter("qtf_geosearch:radius", getParameter("rad")));
                 params.setParameter(new SearchParameter("sortdirection", "ascending"));
             }
-        }
+        } // <-- END-OF move-out
 
         if (null != getParameter("rank")) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getParameter("rank")));
         }
 
         // This  now uses sort order from canfiguration, old ones still here for backwards compability untill all are uppdated
-        if (null != getParameter("userSortBy")) {
+        if (isUserSortable()) {
 
-            final String sortBy = getParameter("userSortBy");
-            LOG.debug("createQuery: SortBy " + sortBy);
+            final String sortBy = getUserSortBy();
+            LOG.debug("userSortBy " + sortBy);
 
+            // TODO move-out to genericno. this is configuration hardcoded.
             if("default".equals(sortBy)) {
                  params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getSearchConfiguration().getSortBy()));
+
             }else if ("alternative".equals(sortBy) && getSearchConfiguration().getAlternativeSortBy() != null ) {
                  params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getSearchConfiguration().getAlternativeSortBy()));
+
             }else if ("standard".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retriever"));
+
             } else if ("datetime".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
+
             } else if ("-datetime".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "+docdatetime"));
-            }
+
+            } // <-- END-OF move-out.
         }
 
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, getNavigatorsString()));
