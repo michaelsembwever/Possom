@@ -543,11 +543,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     + element.getAttribute("id") + '(' + sc.getClass().getSimpleName() + ')'
                     + " trying to inherit from " + inherit.getId() + '(' + inherit.getClass().getSimpleName() + ')';
 
-            if ("new".equals(System.getenv("SearchModeFactory"))) {
-                sc.readSearchConfiguration(element, inherit);
+            if ("old".equals(System.getenv("SearchModeFactory"))) {
+                sc.readSearchConfiguration(element, inherit, context);
             }
             else {
-                sc.readSearchConfiguration(element, inherit, context);
+                sc.readSearchConfiguration(element, inherit);
             }
             LOG.info("ParsedSearchConfiguration: " + sc);
             return sc;
