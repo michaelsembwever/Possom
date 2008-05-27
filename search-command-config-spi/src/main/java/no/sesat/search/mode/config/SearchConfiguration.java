@@ -82,7 +82,6 @@ public interface SearchConfiguration extends Serializable {
     /**
      * @return
      */
-
     Map<String,String> getResultFieldMap();
 
     /**
@@ -104,17 +103,17 @@ public interface SearchConfiguration extends Serializable {
     public String getQueryParameter();
 
     /**
-     * @return
+     * @return true if the command should always run.
      */
     boolean isAlwaysRun();
 
     /**
-     * @return
+     * @return true if the command should run when query string is blank.
      */
     boolean isRunBlank();
 
     /**
-     * @return
+     * @return The statistical name.
      */
     String getStatisticalName();
 
@@ -125,10 +124,14 @@ public interface SearchConfiguration extends Serializable {
      */
     Map<String, String> getFieldFilterMap();
 
-    /***/
+    /**
+     * Clear all query transformers associated with this configuration.
+     */
     void clearQueryTransformers();
 
-    /***/
+    /**
+     * Clear all result handlers associated with this configuration.
+     */
     void clearResultHandlers();
 
     /**
@@ -143,11 +146,11 @@ public interface SearchConfiguration extends Serializable {
     boolean isAsynchronous();
 
     /**
+     * Apply the attributes found in element to 'this'. If some attributes are not found
+     * in element then try to fetch them from inherit and set them on 'this'.
      *
      * @param element
      * @param inherit
-     * @param context
-     * @return
      */
     void readSearchConfiguration(Element element, SearchConfiguration inherit);
 

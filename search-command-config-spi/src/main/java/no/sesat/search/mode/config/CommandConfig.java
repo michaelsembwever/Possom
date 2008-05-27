@@ -129,7 +129,6 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
         return name;
     }
 
-    /** {@inheritDoc} **/
     public final String getId() {
         return name;
     }
@@ -290,17 +289,14 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
         return Collections.unmodifiableMap(fieldFilters);
     }
 
-    /** {@inheritDoc} **/
     public void clearQueryTransformers() {
         queryTransformers.clear();
     }
 
-    /** {@inheritDoc} **/
     public void clearResultHandlers() {
         resultHandlers.clear();
     }
 
-    /** {@inheritDoc} **/
     public void clearFieldFilters() {
         fieldFilters.clear();
     }
