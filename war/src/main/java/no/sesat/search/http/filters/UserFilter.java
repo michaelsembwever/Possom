@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -6,7 +6,7 @@
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   SESAT is distributed in the hope that it will be usefu,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Affero General Public License for more details.
@@ -272,28 +272,29 @@ public final class UserFilter implements Filter {
      * @return the user service
      */
     private static BasicUserService getBasicUserService(final DataModel datamodel) {
+        if (!"true".equalsIgnoreCase(System.getProperty("jnp.disableDiscovery"))) {
+            // lookup the ejb3-client service
+            final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
+            final String url = siteConf.getProperty("schibstedsok_remote_service_url");
+            final String jndi = siteConf.getProperty("user_service_jndi_name");
 
-        // lookup the ejb3-client service
-        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
-        final String url = siteConf.getProperty("schibstedsok_remote_service_url");
-        final String jndi = siteConf.getProperty("user_service_jndi_name");
+            LOG.debug("Url: " + url);
+            LOG.debug("JndiName: " + jndi);
 
-        LOG.debug("Url: " + url);
-        LOG.debug("JndiName: " + jndi);
+            if( null != url && null != jndi ){
 
-        if( null != url && null != jndi ){
+                final Properties properties = new Properties();
+                properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
+                properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
+                properties.put("java.naming.provider.url", url);
 
-            final Properties properties = new Properties();
-            properties.put("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
-            properties.put("java.naming.factory.url.pkgs", "org.jboss.naming:org.jnp.interfaces");
-            properties.put("java.naming.provider.url", url);
+                try {
+                    return (BasicUserService) new InitialContext(properties).lookup(jndi);
 
-            try {
-                return (BasicUserService) new InitialContext(properties).lookup(jndi);
-
-            } catch (final NamingException ne) {
-                // acceptable for sesat not to have to have a user service backend
-                LOG.debug(ne.getMessage(), ne);
+                } catch (final NamingException ne) {
+                    // acceptable for sesat not to have to have a user service backend
+                    LOG.debug(ne.getMessage(), ne);
+                }
             }
         }
         return null;
