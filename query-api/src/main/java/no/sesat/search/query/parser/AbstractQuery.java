@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ public abstract class AbstractQuery implements Query {
             }
         };
     }
+
     /** Creates a new instance of AbstractQuery .
      * @param queryStr the query string as inputted from the user.
      */
@@ -95,26 +96,18 @@ public abstract class AbstractQuery implements Query {
         };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getQueryString() {
         return queryStr;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public LeafClause getFirstLeafClause() {
         return finder.getFirstLeaf(getRootClause());
     }
 
-    /** TODO comment me. **/
     public int getTermCount() {
         return counter.getTermCount(getRootClause());
     }
 
-    /** TODO comment me. **/
     public boolean isBlank(){
         return false;
     }

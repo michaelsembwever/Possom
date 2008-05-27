@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -57,20 +57,20 @@ public interface Query extends Serializable {
      */
     int getTermCount();
 
-    /** Is the query blank (or just full of useless symbols). *
+    /** Is the query blank (or just full of useless symbols).
      * @return
      */
     boolean isBlank();
 
-    /**
-     *
-     * @return
+    /** Returns the ParentFinder instance applicable for this query.
+     * The ParentFinder keeps a cache of parent-finds so it's useful to store an instance against the Query like this.
+     * @return the ParentFinder instance applicable for this query.
      */
     ParentFinder getParentFinder();
 
-    /**
+    /** Returns the object that holds State for any TokenEvaluationEngine actions.
      *
-     * @return
+     * @return the object that holds State for any TokenEvaluationEngine actions.
      */
     TokenEvaluationEngine.State getEvaluationState();
 }
