@@ -49,5 +49,5 @@
       - /static/(.*)
       - /tradedoubler/(.*)
       -->
-    <rule><from>^/([^/]+)$</from><to>/search/?q=$1</to></rule>
+    <rule><from>^/([^/\?]*)(?:\?(.*))?$</from><to>/search/?q=$1&amp;$2</to></rule>
 </urlrewrite>
