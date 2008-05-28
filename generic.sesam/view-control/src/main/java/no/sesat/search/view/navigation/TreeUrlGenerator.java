@@ -22,6 +22,7 @@ package no.sesat.search.view.navigation;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
@@ -52,20 +53,21 @@ public class TreeUrlGenerator extends AbstractUrlGenerator {
         String url = getPrefix() + "?";
 
         Set <String> parameters = getUrlComponentNames(nav, extraParameters.keySet(), value);
-        //parameters.addAll(getCurrentParameters().keySet());
 
         parameters.addAll(getNavigationState().getParameterNames(nav, false));
 
         if (nav instanceof TreeNavigationConfig) {
+            TreeNavigationConfig n = (TreeNavigationConfig)nav;
+            parameters.addAll(Arrays.asList(n.getParametersToKeep().split(" *, *")));
+
             Set<String> remove = ((TreeNavigationConfig)nav).getResetParameter();
-            
+
             parameters.removeAll(remove);
-            
+
             for(String param: parameters) {
                 url += generateUrlParameter(param, getUrlComponentValue(nav, param, extraParameters));
             }
-            
-            TreeNavigationConfig n = (TreeNavigationConfig)nav;
+
             while(n != null) {
                 if(!n.isHideParameter()) {
                     url += generateUrlParameter(n.getField(), n.getValue());
@@ -86,17 +88,8 @@ public class TreeUrlGenerator extends AbstractUrlGenerator {
      */
     public static String generateUrlParameter(final String name, final String value) {
         if (null != value && value.length() > 0) {
-            return enc(name) + "=" + enc(value) + "&amp;";
+            return enc(name) + "=" + value + "&amp;";
         }
         return "";
-    }
-
-    private Map<String, String> getCurrentParameters() {
-        Map<String, StringDataObject> param = getDataModel().getParameters().getValues();
-        Map<String, String> res = new HashMap<String, String>();
-        for(String name : param.keySet()) {
-            res.put(name, param.get(name).getString());
-        }
-        return res;
     }
 }

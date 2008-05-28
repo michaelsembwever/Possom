@@ -28,8 +28,7 @@ import java.util.*;
 import org.apache.log4j.Logger;
 
 public class TreeNavigationController implements NavigationController {
-    private static final Logger LOG = Logger.getLogger(TreeNavigationController.class);
-    private final TreeNavigationConfig nav;
+    private final TreeNavigationConfig conf;
 
     /**
      *  Factor class for the TreeNavigationController
@@ -41,7 +40,7 @@ public class TreeNavigationController implements NavigationController {
     }
 
     private TreeNavigationController(final TreeNavigationConfig nav) {
-        this.nav = nav;
+        this.conf = nav;
     }
 
     /**
@@ -53,18 +52,19 @@ public class TreeNavigationController implements NavigationController {
      * views.xml.
      */
     public NavigationItem getNavigationItems(final Context context) {
-
-        final DataModel dataModel = context.getDataModel();
+        if (conf.getParent() instanceof TreeNavigationConfig) {
+            return null;
+        }
 
         final NavigationItem item = new BasicNavigationItem();
 
-        final String url = context.getUrlGenerator().getURL(null, nav);
+        final String url = context.getUrlGenerator().getURL(null, conf);
 
-        final BasicNavigationItem i = new BasicNavigationItem(nav.getName(), url, -1);
+        final BasicNavigationItem i = new BasicNavigationItem(conf.getName(), url, -1);
         i.setSelected(true);
         item.addResult(i);
 
-        getNavigationItemsHelper(context, i, nav.getChildNavs(), 1);
+        getNavigationItemsHelper(context, i, conf.getChildNavs(), 1);
 
         return item;
     }

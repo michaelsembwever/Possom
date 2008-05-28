@@ -30,7 +30,7 @@ import java.util.HashSet;
  *
  * Usage:
  *  <navigation url-generator="no.sesat.search.view.navigation.TreeUrlGenerator" prefix="/search/">
- *              <tree id="geonav" hide-parameter="True" name="Hele norge">
+ *              <tree id="geonav" hide-parameter="True" name="Hele norge" parameters-to-keep="sort">
  *                  <tree field="countryregion" name="Nord-Norge">
  *                      <tree field="county" name="Finnmark"/>
  *                      <tree field="county" name="Nordland"/>
@@ -49,7 +49,8 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
     private String name;
     private String value;
     private boolean hideParameter;
-    private Set resetParameter;
+    private Set<String> resetParameter;
+    private String parametersToKeep;
 
     /**
      *
@@ -66,8 +67,8 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
         fillBeanProperty(this, navigation, "name", AbstractDocumentFactory.ParseType.String, navElement, null);
         fillBeanProperty(this, navigation, "value", AbstractDocumentFactory.ParseType.String, navElement, name);
         fillBeanProperty(this, navigation, "hideParameter", AbstractDocumentFactory.ParseType.Boolean, navElement, "false");
+        fillBeanProperty(this, navigation, "parametersToKeep", AbstractDocumentFactory.ParseType.String, navElement, null);
 
-        
         if (parent == null) {
             resetParameter = new HashSet<String>();
         } else {
@@ -75,7 +76,7 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
                 resetParameter = ((TreeNavigationConfig)parent).resetParameter;
             }
         }
-        
+
         if(resetParameter!=null) {
             resetParameter.add(getField());
         }
@@ -119,7 +120,7 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
      *
      * @return Set of parameter names that should be reset when generating url
      */
-    public Set getResetParameter() {
+    public Set<String> getResetParameter() {
         return resetParameter;
     }
 
@@ -141,5 +142,30 @@ public class TreeNavigationConfig extends NavigationConfig.Nav {
      */
     public void setHideParameter(boolean hideParameter) {
         this.hideParameter = hideParameter;
+    }
+
+    /**
+     * Return the parameters that we want to keep, this could be parameters from some navigators that we
+     * run in parallel.
+     *
+     * @return String of parameters that we want to keep. The string is comma separated.
+     */
+    public String getParametersToKeep() {
+        if (parametersToKeep == null) {
+            if (getParent() instanceof TreeNavigationConfig) {
+                return ((TreeNavigationConfig)getParent()).getParametersToKeep();
+            }
+        }
+        return parametersToKeep;
+    }
+
+    /**
+     * Set the parameters that we want to keep. The list is represented with a comma separated string. Parameters
+     * that we want to keep could be parameters from other navigators like a sort navigator.
+     *
+     * @param parametersToKeep
+     */
+    public void setParametersToKeep(String parametersToKeep) {
+        this.parametersToKeep = parametersToKeep;
     }
 }
