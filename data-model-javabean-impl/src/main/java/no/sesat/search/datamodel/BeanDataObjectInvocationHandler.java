@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -373,10 +373,12 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
             final AccessAllow allow = method.getAnnotation(AccessAllow.class);
             final AccessDisallow disallow = method.getAnnotation(AccessDisallow.class);
 
-            LOG.trace("level " + level);
-            LOG.trace("method " + method);
-            LOG.trace("allow " + allow);
-            LOG.trace("disallow " + disallow);
+            if(LOG.isTraceEnabled()){
+                LOG.trace("level " + level);
+                LOG.trace("method " + method);
+                LOG.trace("allow " + allow);
+                LOG.trace("disallow " + disallow);
+            }
 
             boolean allowed = false;
             boolean disallowed = false;

@@ -121,6 +121,7 @@ public final class SearchServlet extends HttpServlet {
                 throws ServletException, IOException {
 
         logAccessRequest(request);
+        LOG.trace("doGet()");
 
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
@@ -167,9 +168,15 @@ public final class SearchServlet extends HttpServlet {
 
         try{
 
-            if (!isEmptyQuery(datamodel, response, genericCxt)) {
+            final String cParameter = null != parametersDO.getValue(SearchTab.PARAMETER_KEY)
+                    ? parametersDO.getValue(SearchTab.PARAMETER_KEY).getString()
+                    : null;
 
-                LOG.trace("doGet()");
+            final SearchTab searchTab = updateSearchTab(cParameter, request, dmFactory, genericCxt);
+
+            if (null!= searchTab) {
+
+
                 LOG.debug("Character encoding ="  + request.getCharacterEncoding());
 
                 final StopWatch stopWatch = new StopWatch();
@@ -187,38 +194,30 @@ public final class SearchServlet extends HttpServlet {
 
                 updateContentType(site, response, request);
 
-                final String cParameter = null != parametersDO.getValue(SearchTab.PARAMETER_KEY)
-                        ? parametersDO.getValue(SearchTab.PARAMETER_KEY).getString()
-                        : null;
+                // If the rss is hidden, require a partnerId.
+                // The security by obscurity has been somewhat improved by the
+                // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter).
+                final StringDataObject output = parametersDO.getValue("output");
+                boolean hiddenRssWithoutPartnerId = null != output
+                    && "rss".equals(output.getString())
+                    && searchTab.isRssHidden()
+                    && null == parametersDO.getValues().get("rssPartnerId");
 
-                final SearchTab searchTab = updateSearchTab(cParameter, request, dmFactory, genericCxt);
+                if (hiddenRssWithoutPartnerId) {
 
-                if (null!= searchTab) {
-
-                    // If the rss is hidden, require a partnerId.
-                    // The security by obscurity has been somewhat improved by the
-                    // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter).
-                    final StringDataObject output = parametersDO.getValue("output");
-                    boolean hiddenRssWithoutPartnerId = null != output
-                        && "rss".equals(output.getString())
-                        && searchTab.isRssHidden()
-                        && null == parametersDO.getValues().get("rssPartnerId");
-
-                    if (hiddenRssWithoutPartnerId) {
-
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
-                    } else if (null != output && "rss".equals(output.getString()) && "".equals(searchTab.getRssResultName())) {
-
-                        LOG.warn("RSS not supported for requested vertical " + searchTab.toString());
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-
-                    } else {
-                        performSearch(request, response, genericCxt, searchTab, stopWatch);
-                    }
-                }else{
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                } else if (null != output && "rss".equals(output.getString()) && "".equals(searchTab.getRssResultName())) {
+
+                    LOG.warn("RSS not supported for requested vertical " + searchTab.toString());
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                } else {
+                    performSearch(request, response, genericCxt, searchTab, stopWatch);
                 }
+
+            }else{
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
 
         }finally{
@@ -230,41 +229,6 @@ public final class SearchServlet extends HttpServlet {
     }
 
     // Private -------------------------------------------------------
-
-    private static boolean isEmptyQuery(
-            final DataModel datamodel,
-            final HttpServletResponse response,
-            final SiteContext ctx) throws IOException{
-
-        String redirect = null;
-        final ParametersDataObject parametersDO = datamodel.getParameters();
-        final Map<String,StringDataObject> params = parametersDO.getValues();
-        final String qParam = null != params.get("q") ? params.get("q").getString() : "";
-        final String cParm = null != params.get("c") ? params.get("c").getString() : "";
-        final String wParam = null != params.get("where") ? params.get("where").getString() : "";
-
-        // check if this is a sitesearch
-        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
-        final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY));
-
-        if (qParam == null) {
-            redirect = "/";
-        } else if (null != cParm
-                && ("d".equals(cParm) || "g".equals(cParm) || "cat".equals(cParm) || "catip".equals(cParm))
-                && !isSitesearch) {
-            // Extra check for the Norwegian web search. Search with an empty query string
-            // should return the first page.
-            if (qParam.trim().length() == 0) {
-                redirect = "/";
-            }
-        }
-
-        if (null != redirect) {
-            LOG.info("doGet(): Empty Query String redirect=" + redirect);
-            response.sendRedirect(redirect);
-        }
-        return null != redirect;
-    }
 
     private static void performFactoryReloads(
             final String reload,

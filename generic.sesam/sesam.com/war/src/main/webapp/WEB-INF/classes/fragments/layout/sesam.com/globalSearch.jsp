@@ -38,7 +38,7 @@
                             arg0="${DataModel.navigation.navigations.offset.fields.currentPageFromCount}"
                             arg1="${DataModel.navigation.navigations.offset.fields.currentPageToCount}"
                             arg2="${DataModel.searches[commandName].results.hitCount}"
-                            arg3="${DataModel.query.utf8UrlEncoded}"/>
+                            arg3="${DataModel.query.xmlEscaped}"/>
                     </span>
                 </div>
 

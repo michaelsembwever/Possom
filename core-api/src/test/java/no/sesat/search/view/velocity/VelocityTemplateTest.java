@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -87,8 +87,8 @@ public final class VelocityTemplateTest extends DataModelTestCase{
         final StringBuilder errors = new StringBuilder();
 
         final String base = System.getProperty("basedir")
-			+ File.separatorChar  + "src" + File.separatorChar  + "main"
-			+ File.separatorChar  + "templates" + File.separatorChar;
+                        + File.separatorChar  + "src" + File.separatorChar  + "main"
+                        + File.separatorChar  + "templates" + File.separatorChar;
         LOG.info("Looking in " + base);
 
         final File templatesFolder = new File(base);
@@ -181,33 +181,39 @@ public final class VelocityTemplateTest extends DataModelTestCase{
         }
 
         public URL getURL(final String resource, final Site site) {
-            LOG.trace("getURL(" + resource + ')');
+            LOG.debug("getURL(" + resource + ", site)");
 
-            try{
+            final String rsc = resource
+                    .substring(resource.lastIndexOf("templates/") + 10)
+                    .replaceAll(".vm.vm", ".vm");
 
-                final String siteFolder = site.getConfigContext();
+            return super.getResource("src/main/templates/", rsc, site, true);
 
-                final String base = System.getProperty("basedir") // test jvm sets this property
-                        + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
-                        + getProjectName(siteFolder);
-
-                final File wf = new File(base + "/war");
-
-                final String rsc = resource
-                        .substring(resource.lastIndexOf("templates/") + 10)
-                        .replaceAll(".vm.vm", ".vm");
-
-		final String urlStr = base
-                        + (wf.exists() && wf.isDirectory() ? "/war/src/main/templates/" : "/src/main/templates/")
-                        + rsc;
-
-                return new URI("file://" + urlStr.replace(File.separatorChar, '/')).normalize().toURL();
-
-            }catch (URISyntaxException ex) {
-                throw new ResourceLoadException(ex.getMessage(), ex);
-            } catch (final MalformedURLException ex) {
-                throw new ResourceLoadException(ex.getMessage(), ex);
-            }
+//            try{
+//
+//                final String siteFolder = site.getConfigContext();
+//
+//                final String base = System.getProperty("basedir") // test jvm sets this property
+//                        + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
+//                        + getProjectName(siteFolder);
+//
+//                final File wf = new File(base + "/war");
+//
+//                final String rsc = resource
+//                        .substring(resource.lastIndexOf("templates/") + 10)
+//                        .replaceAll(".vm.vm", ".vm");
+//
+//                final String urlStr = base
+//                        + (wf.exists() && wf.isDirectory() ? "/war/src/main/templates/" : "/src/main/templates/")
+//                        + rsc;
+//
+//                return new URI("file://" + urlStr.replace(File.separatorChar, '/')).normalize().toURL();
+//
+//            }catch (URISyntaxException ex) {
+//                throw new ResourceLoadException(ex.getMessage(), ex);
+//            } catch (final MalformedURLException ex) {
+//                throw new ResourceLoadException(ex.getMessage(), ex);
+//            }
         }
     }
 }
