@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *   SESAT is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Affero General Public License as published by
@@ -251,7 +251,9 @@ public final class DataModelFilter implements Filter {
                 new DataObject.Property("siteConfiguration", siteConf));
     }
 
-    /** Update the request elements in the datamodel. **/
+    /** Update the request elements in the datamodel.
+     * TODO public documentation on "-isUrl" and "-isCookie" parameter key suffixes.
+     **/
     private static ParametersDataObject updateDataModelForRequest(
             final DataModelFactory factory,
             final DataModel datamodel,
@@ -269,15 +271,29 @@ public final class DataModelFilter implements Filter {
                     StringDataObject.class,
                     datamodel,
                     new DataObject.Property("string", getParameterSafely(request, key))));
+
+                // meta-data noting this is a parameter from the url
+                values.put(key + "-isUrl", factory.instantiate(
+                        StringDataObject.class,
+                        datamodel,
+                        new DataObject.Property("string", "true")));
             }
 
             // Adding all cookies into parameters.
             if (null != request.getCookies()) {
                 for (Cookie cookie : request.getCookies()) {
+
+                    // the cookie key-value
                     values.put(cookie.getName(), factory.instantiate(
                             StringDataObject.class,
                             datamodel,
                             new DataObject.Property("string", cookie.getValue())));
+
+                    // meta-data noting this is a parameter from cookie
+                    values.put(cookie.getName() + "-isCookie", factory.instantiate(
+                            StringDataObject.class,
+                            datamodel,
+                            new DataObject.Property("string", "true")));
                 }
             }
         }catch(Exception e){
