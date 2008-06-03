@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -30,6 +30,8 @@ import org.w3c.dom.Element;
  */
 @Controller("YahooWebSearchCommand")
 public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
+
+    private String appid = "YahooDemo";
 
     /**
      * Holds value of property similar.
@@ -75,20 +77,23 @@ public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
     }
 
     /**
-     * Getter for property appid. Delegates to getPartnerId().
+     * Getter for property appid.
      * @return Value of property appid.
      */
     public String getAppid() {
-        return getPartnerId();
+        return appid;
     }
 
     /**
-     * Setter for property appid. Delegates to setPartnerId(..).
+     * Setter for property appid.
+     *
+     * This value will be propagated to setPartnerId(..) in readSearchConfigurationAfter.
+     *
      * Apply for a application ID here http://developer.yahoo.com/faq/index.html#appid
      * @param appid New value of property appid.
      */
     public void setAppid(final String appid) {
-        setPartnerId(appid);
+        this.appid = appid;
     }
 
     /**
@@ -195,6 +200,10 @@ public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
         return this;
     }
 
-
+    @Override
+    protected void readSearchConfigurationAfter(final Element element, final SearchConfiguration inherit) {
+        super.readSearchConfigurationAfter(element, inherit);
+        setPartnerId(getAppid());
+    }
 
 }
