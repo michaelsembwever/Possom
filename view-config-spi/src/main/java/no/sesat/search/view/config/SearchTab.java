@@ -203,6 +203,7 @@ public final class SearchTab implements Serializable{
 
     /**
      * Getter for property key.
+     * Implicitly favours parent-key if it exists.
      * @return Value of property key.
      */
     public String getKey() {
@@ -212,6 +213,15 @@ public final class SearchTab implements Serializable{
         } else {
             return key;
         }
+    }
+
+    /**
+     * Getter for the property key.
+     * Does not give prefence to parent-key like "getKey()" does.
+     * @return Valaue of property key.
+     */
+    public String getRealKey(){
+        return key;
     }
 
     /**
