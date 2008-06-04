@@ -87,6 +87,7 @@
                                     <dir>.</dir>
                                     <includes>
                                         <include>**/modes.xml</include>
+                                        <!-- <include>**/views.xml</include> -->
                                     </includes>
                                     <excludes>
                                         <exclude>**/target/**</exclude>

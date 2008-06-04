@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE views SYSTEM "http://sesam.no/dtds/views.dtd">
 <!-- Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
@@ -20,9 +19,9 @@
     Created on : 4 April 2006, 16:25
     Author     : mick
     Description:
-        Purpose of the document follows.
--->
-<views>
+        Purpose of the document follows. -->
+
+<views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../views.xsd">
     <!-- Override default to show its css -->
     <tab id="default" display-css="true" inherit="default"/>
     <!-- Our base sesam.com view -->
@@ -50,3 +49,4 @@
         </layout>
     </tab>
 </views>
+

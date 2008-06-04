@@ -1,0 +1,155 @@
+<?xml version='1.0'?>
+<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema' id='generic.sesam'>
+    <xsd:element name='views' type='views'/>
+    <xsd:complexType name='views'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='tab' type='tab'/>
+        </xsd:choice>
+        <xsd:attribute name='template-prefix'/>
+    </xsd:complexType>
+    <xsd:complexType name='tab'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='layout' type='layout'/>
+			<xsd:element name='enrichment' type='enrichment'/>
+			<xsd:element name='navigation' type='navigation'/>
+			<xsd:element name='enrichment-placement' type='enrichment-placement'/>
+	        <xsd:any minOccurs="0" processContents='lax'/>
+        </xsd:choice>
+        <xsd:attribute name='id'/>
+        <xsd:attribute name='key'/>
+        <xsd:attribute name='mode'/>
+        <xsd:attribute name='inherit'/>
+		<xsd:attribute name='rss-result-name'/>
+		<xsd:attribute name='page-size'/>
+		<xsd:attribute name='display-css'/>
+		<xsd:attribute name='ad-on-top'/>
+		<xsd:attribute name='css'/>
+		<xsd:attribute name='ad-limit'/>
+		<xsd:attribute name='javascript'/>
+		<xsd:attribute name='execute-on-blank'/>
+		<xsd:attribute name='parent-key'/>
+    </xsd:complexType>
+	<xsd:complexType name='layout'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='include' type='include'/>
+			<xsd:element name='property' type='property'/>
+        </xsd:choice>
+        <xsd:attribute name='main'/>
+        <xsd:attribute name='origin'/>
+        <xsd:attribute name='front'/>
+    </xsd:complexType>
+	<xsd:complexType name='include'>
+        <xsd:attribute name='key'/>
+        <xsd:attribute name='template'/>
+    </xsd:complexType>
+	<xsd:complexType name='enrichment'>
+        <xsd:attribute name='rule'/>
+        <xsd:attribute name='threshold'/>
+		<xsd:attribute name='weight'/>
+		<xsd:attribute name='command'/>
+    </xsd:complexType>
+	   <xsd:complexType name='enrichment-placement'>
+        <xsd:attribute name='id'/>
+        <xsd:attribute name='max'/>
+        <xsd:attribute name='threshold'/>
+    </xsd:complexType>
+	<xsd:complexType name='navigation'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='navigation' type='navigation'/>
+			<xsd:element name='result-paging' type='result-paging'/>
+			<xsd:element name='nav' type='nav'/>
+			<xsd:element name='tree' type='tree'/>
+			<xsd:element name='reset' type='reset'/>
+			<xsd:element name='fast' type='fast'/>
+        </xsd:choice>
+        <xsd:attribute name='id'/>
+		<xsd:attribute name='command-name'/>
+		<xsd:attribute name='url-generator'/>
+		<xsd:attribute name='prefix'/>
+		<xsd:attribute name='tab'/>
+		<xsd:attribute name='out'/>
+		<xsd:attribute name='exclude-query'/>
+		<xsd:attribute name='statistical-name'/>
+    </xsd:complexType>
+	<xsd:complexType name='result-paging'>
+        <xsd:attribute name='id'/>
+        <xsd:attribute name='command-name'/>
+        <xsd:attribute name='page-size'/>
+        <xsd:attribute name='number-of-pages'/>
+		<xsd:attribute name='hitcount-source'/>
+    </xsd:complexType>
+	<xsd:complexType name='nav'>
+		<xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='options' type='options'/>
+			<xsd:any minOccurs="0" processContents='lax'/>
+        </xsd:choice>
+        <xsd:attribute name='id'/>
+		<xsd:attribute name='field'/>
+		<xsd:attribute name='command-name'/>
+    </xsd:complexType>
+	<xsd:complexType name='reset'>
+        <xsd:attribute name='id'/>
+    </xsd:complexType>
+	<xsd:complexType name='tree'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='tree' type='tree'/>
+        </xsd:choice>
+        <xsd:attribute name='id'/>
+        <xsd:attribute name='hide-parameter'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='parameters-to-keep'/>
+		<xsd:attribute name='field'/>
+    </xsd:complexType>
+	<xsd:complexType name='options'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='config' type='config'/>
+        </xsd:choice>
+    </xsd:complexType>
+	<xsd:complexType name='config'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='add' type='add'/>
+			<xsd:element name='keep' type='keep'/>
+        </xsd:choice>
+    </xsd:complexType>
+	<xsd:complexType name='add'>
+        <xsd:attribute name='value'/>
+        <xsd:attribute name='display-name'/>
+        <xsd:attribute name='default-select'/>
+        <xsd:attribute name='value-ref'/>
+        <xsd:attribute name='default-select-value-ref'/>
+		<xsd:attribute name='tab'/>
+		<xsd:attribute name='command-name'/>
+		<xsd:attribute name='use-hit-count'/>
+		<xsd:anyAttribute/>
+    </xsd:complexType>
+	<xsd:complexType name='keep'>
+        <xsd:attribute name='value'/>
+        <xsd:attribute name='display-name'/>
+    </xsd:complexType>
+	<xsd:complexType name='fast'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='fast' type='fast'/>
+			<xsd:element name='options' type='options'/>
+			<xsd:element name='static-parameter' type='static-parameter'/>
+        </xsd:choice>
+		<xsd:attribute name='id'/>
+		<xsd:attribute name='field'/>
+		<xsd:attribute name='tab'/>
+		<xsd:attribute name='out'/>
+		<xsd:attribute name='command-name'/>
+		<xsd:attribute name='maxsize'/>
+		<xsd:attribute name='back-text'/>
+		<xsd:attribute name='prefix'/>
+		<xsd:attribute name='url-generator'/>
+		<xsd:attribute name='auto-navigation'/>
+		<xsd:attribute name='exclude-other-matches'/>
+    </xsd:complexType>
+	<xsd:complexType name='static-parameter'>
+        <xsd:attribute name='value'/>
+        <xsd:attribute name='name'/>
+    </xsd:complexType>
+	<xsd:complexType name='property'>
+        <xsd:attribute name='key'/>
+        <xsd:attribute name='value'/>
+    </xsd:complexType>
+</xsd:schema>
