@@ -161,15 +161,22 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     @Override
     protected FastSearchResult<ResultItem> createSearchResult(final IQueryResult result) throws IOException {
 
+        FastSearchResult<ResultItem> fastResult = null;
+
         final NewsEspCommandConfig config = getSearchConfiguration();
-        try {
-            return createCollapsedResults(config, getOffset(), result);
-        } catch (final IllegalType e) {
-            LOG.error("Could not convert result", e);
-        } catch (final EmptyValueException e) {
-            LOG.error("Could not convert result", e);
+        if(config.isCollapsingEnabled()){
+            try {
+                fastResult = createCollapsedResults(config, getOffset(), result);
+
+            } catch (final IllegalType e) {
+                LOG.error("Could not convert result", e);
+            } catch (final EmptyValueException e) {
+                LOG.error("Could not convert result", e);
+            }
+        }else{
+            fastResult = super.createSearchResult(result);
         }
-        return super.createSearchResult(result);
+        return fastResult;
     }
 
     private void addMedium(final Clause clause) {
@@ -362,7 +369,9 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
                         collectedHits++;
                     }
                 } else {
-                    addResult(config, parentResult, document);
+                    if(config.isExpansionEnabled()){
+                        addResult(config, parentResult, document);
+                    }
                     parentResult.setHitCount(parentResult.getHitCount() + 1);
                     collectedHits++;
                 }
