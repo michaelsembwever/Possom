@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,7 +23,9 @@
 package no.sesat.search.mode;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+
+import org.apache.log4j.Logger;
+
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 
@@ -43,6 +45,7 @@ import no.sesat.search.site.config.Spi;
  */
 public final class SearchCommandFactory {
 
+    private static final Logger LOG = Logger.getLogger(SearchCommandFactory.class);
     public interface Context extends SiteContext, BytecodeContext {}
 
     private final Context context;
@@ -90,16 +93,10 @@ public final class SearchCommandFactory {
 
             return constructor.newInstance(cxt);
 
-        } catch (ClassNotFoundException ex) {
-            throw new IllegalArgumentException(ex);
-        } catch (NoSuchMethodException ex) {
-            throw new IllegalArgumentException(ex);
-        } catch (InvocationTargetException ex) {
-            throw new IllegalArgumentException(ex);
-        } catch (InstantiationException ex) {
-            throw new IllegalArgumentException(ex);
-        } catch (IllegalAccessException ex) {
-            throw new IllegalArgumentException(ex);
+        }
+        catch (Exception e) {
+            LOG.fatal("Failed to instansiating controller: " + controllerName + " with search configuration: " + config, e);
+            throw new IllegalArgumentException(e);
         }
     }
 }
