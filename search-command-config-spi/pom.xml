@@ -65,6 +65,11 @@
             <artifactId>sesat-run-transform-config-spi</artifactId>
             <version>${sesat.version}</version>
         </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-util</artifactId>
+            <version>${sesat.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

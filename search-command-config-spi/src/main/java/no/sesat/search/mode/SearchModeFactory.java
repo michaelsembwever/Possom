@@ -18,6 +18,7 @@
 package no.sesat.search.mode;
 
 
+import no.sesat.Interpreter;
 import no.sesat.search.run.transform.RunTransformerConfig;
 import no.sesat.search.site.config.AbstractConfigFactory;
 import no.schibstedsok.commons.ioc.ContextWrapper;
@@ -621,5 +622,32 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             LOG.info("Found class " + clazz.getName());
             return clazz;
         }
+    }
+
+
+    static {
+        Interpreter.addFunction("commands", new Interpreter.Function() {
+            public String execute(Interpreter.Context ctx) {
+                String res = "";
+                COMMANDS_LOCK.readLock().lock();
+                try {
+                    for (SearchMode c : COMMANDS.keySet()) {
+                        res += "Mode: " + c + "\n";
+                        for (String s : COMMANDS.get(c).keySet()) {
+                            res += "   " + COMMANDS.get(c).get(s).toString() + "\n";
+                        }
+                        res += "\n";
+                    }
+                }
+                finally {
+                    COMMANDS_LOCK.readLock().unlock();
+                }
+                return res;
+
+            }
+            public String describe() {
+                return "Print out the SearchModes in COMMANDS.";
+            }
+        });
     }
 }

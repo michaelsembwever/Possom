@@ -20,6 +20,9 @@ package no.sesat.search.mode.config;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import no.sesat.Interpreter;
+import no.sesat.Interpreter.Context;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -33,33 +36,38 @@ public abstract class AbstractSearchConfiguration {
     private static final String[] setters = {"set", "add"};
 
     /**
-     * This method will be called before settings from the modes.xml files will be applied.
-     * Default implementation is empty.
+     * This method will be called before settings from the modes.xml files will
+     * be applied. Default implementation is empty.
      *
-     * @param element The xml element where the attribues are found.
-     * @param inherit The configuration that we inherit from.
+     * @param element
+     *            The xml element where the attribues are found.
+     * @param inherit
+     *            The configuration that we inherit from.
      */
     protected void readSearchConfigurationBefore(final Element element, final SearchConfiguration inherit) {
 
     }
 
     /**
-     * This method will be called after settings from the modes.xml files will be applied.
-     * Default implementation is empty.
+     * This method will be called after settings from the modes.xml files will
+     * be applied. Default implementation is empty.
      *
-     * @param element The xml element where the attribues are found.
-     * @param inherit The configuration that we inherit from.
+     * @param element
+     *            The xml element where the attribues are found.
+     * @param inherit
+     *            The configuration that we inherit from.
      */
     protected void readSearchConfigurationAfter(final Element element, final SearchConfiguration inherit) {
 
     }
 
-
     /**
      * This method will apply the attributes found in element.
      *
-     * @param element The xml element where the attribues are found.
-     * @param inherit The configuration that we inherit from.
+     * @param element
+     *            The xml element where the attribues are found.
+     * @param inherit
+     *            The configuration that we inherit from.
      */
     public final void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         readSearchConfigurationBefore(element, inherit);
@@ -98,7 +106,7 @@ public abstract class AbstractSearchConfiguration {
     }
 
     private static boolean startsWith(String string, String[] prefixes) {
-        for( String p : prefixes) {
+        for (String p : prefixes) {
             if (string.startsWith(p))
                 return true;
         }
@@ -131,7 +139,9 @@ public abstract class AbstractSearchConfiguration {
                 if (paramTypes.length == 1) {
                     MethodWrapper.Type type = MethodWrapper.getType(paramTypes[0]);
                     if (type == MethodWrapper.Type.Unsupported) {
-                        LOG.trace("Unsupported type for: " + name + " " + method.getParameterTypes()[0].getSimpleName());
+                        LOG
+                                .trace("Unsupported type for: " + name + " "
+                                        + method.getParameterTypes()[0].getSimpleName());
                     } else {
 
                         if (!methodMap.containsKey(name)) {
@@ -188,8 +198,7 @@ public abstract class AbstractSearchConfiguration {
 
         if (method != null) {
             if (!method.setValue(this, value)) {
-                LOG.error("Setting value on " + getClass().getSimpleName() + " " + name + "==" + value
-                        + " failed.");
+                LOG.error("Setting value on " + getClass().getSimpleName() + " " + name + "==" + value + " failed.");
             }
         } else {
             LOG.error("Setting value on " + getClass().getSimpleName() + " " + name + "==" + value
@@ -207,7 +216,7 @@ public abstract class AbstractSearchConfiguration {
     private static MethodWrapper getMethodWrapper(Class klass, final String name, final String[] pre) {
         Map<String, MethodWrapper> map = getMethodMap(klass);
         while (map != null) {
-            for(String s : pre) {
+            for (String s : pre) {
                 String g = s + name.substring(0, 1).toUpperCase() + name.substring(1);
                 if (map.containsKey(g)) {
                     return map.get(g);
@@ -223,11 +232,11 @@ public abstract class AbstractSearchConfiguration {
         String res = getClass().getSimpleName() + " ";
         Set<String> methods = getMethodNames(getters);
         for (String s : methods) {
-            res += s + " == ";
+            res += s + "==";
             Object o = getAttribute(this, s);
             if (o instanceof String[]) {
                 res += "[";
-                for (String a : (String[])o) {
+                for (String a : (String[]) o) {
                     res += "\"" + a + "\" ";
                 }
                 res += "] ";
@@ -239,8 +248,6 @@ public abstract class AbstractSearchConfiguration {
         }
         return res;
     }
-
-
 
     /**
      * Helper class to encapsulate a method.
@@ -263,33 +270,33 @@ public abstract class AbstractSearchConfiguration {
             if (value instanceof String) {
                 String valueString = (String) value;
                 switch (type) {
-                    case String:
-                        break;
-                    case StringArray:
-                        value = valueString.split(",");
-                        break;
-                    case Integer:
-                        value = Integer.parseInt(valueString);
-                        break;
-                    case Boolean:
-                        value = Boolean.parseBoolean(valueString);
-                        break;
-                    case Char:
-                        value = valueString.charAt(0);
-                        if (valueString.length() > 1)
-                            LOG.error("Setting char attribute where input was more then a character long");
-                        break;
-                    default:
-                        LOG.error("Failed to set attribute " + method.getName() + ", unnsuported type.");
-                        return false;
-                    }
-                }
-                try {
-                    method.invoke(obj, value);
-                } catch (Exception e) {
-                    LOG.info("Failed to set attribute with name: " + method.getName() + "(" + type + ").");
+                case String:
+                    break;
+                case StringArray:
+                    value = valueString.split(",");
+                    break;
+                case Integer:
+                    value = Integer.parseInt(valueString);
+                    break;
+                case Boolean:
+                    value = Boolean.parseBoolean(valueString);
+                    break;
+                case Char:
+                    value = valueString.charAt(0);
+                    if (valueString.length() > 1)
+                        LOG.error("Setting char attribute where input was more then a character long");
+                    break;
+                default:
+                    LOG.error("Failed to set attribute " + method.getName() + ", unnsuported type.");
                     return false;
                 }
+            }
+            try {
+                method.invoke(obj, value);
+            } catch (Exception e) {
+                LOG.info("Failed to set attribute with name: " + method.getName() + "(" + type + ").");
+                return false;
+            }
             return true;
         }
 
@@ -297,7 +304,8 @@ public abstract class AbstractSearchConfiguration {
             try {
                 return method.invoke(obj);
             } catch (Exception e) {
-                LOG.error("Failed to get attribute with name: " + type + " " + method.getName() + "(). " + e.getMessage(), e);
+                LOG.error("Failed to get attribute with name: " + type + " " + method.getName() + "(). "
+                        + e.getMessage(), e);
             }
             return null;
         }
@@ -320,6 +328,33 @@ public abstract class AbstractSearchConfiguration {
                 type = MethodWrapper.Type.Unsupported;
             return type;
         }
+
+        public String toString() {
+            return method.getName() + " Type: " + type;
+        }
+    }
+
+    /**
+     * Add some debug function to the interpreter.
+     */
+    static {
+        Interpreter.addFunction("scmap", new Interpreter.Function() {
+            public String execute(Context ctx) {
+                String res = "";
+                for (Class c : ClassMethodMap.keySet()) {
+                    res += "CLASS: " + c.getSimpleName() + "\n";
+                    for (String s : ClassMethodMap.get(c).keySet()) {
+                        res += "   " + ClassMethodMap.get(c).get(s).toString() + "\n";
+                    }
+                    res += "\n";
+                }
+                return res;
+            }
+
+            public String describe() {
+                return "Print out the ClassMethodMap cache in AbstractSearchConfiguration.";
+            }
+
+        });
     }
 }
-
