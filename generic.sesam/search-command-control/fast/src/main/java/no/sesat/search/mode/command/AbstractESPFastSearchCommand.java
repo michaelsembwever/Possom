@@ -60,7 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Base class for commands querying a FAST EPS Server.
  * See https://dev.sesat.no/confluence/display/TECHDEV/FAST+ESP+5.0+Documentation
- * 
+ *
  * @version $Id$
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
@@ -186,19 +186,19 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getOffset()));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
             query.setParameter(new SearchParameter(BaseParameter.SORT_BY, sortBy));
-            query.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, cfg.isLemmatize()));            
+            query.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, cfg.isLemmatize()));
             query.setParameter(new SearchParameter(BaseParameter.FILTER, filterBuilder.toString()));
 
             if (!isNavigatable()) {
                 query.setParameter(new SearchParameter(BaseParameter.NAVIGATION, 0));
-            }                                    
+            }
 
             if (!"".equals(cfg.getQtPipeline())) {
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
             }
 
             modifyQuery(query);
-            
+
             DUMP.info(query);
 
             result = searchView.search(query);
@@ -266,7 +266,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         return sortBy;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -336,10 +336,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     @Override
     protected final String escapeTerm(final String term) {
+
+        final String termLC = term.toLowerCase();
+
         for (ReservedWord word : ReservedWord.values()) {
+
             // Term might already be prefixed by the TermPrefixTransformer.
-            if (term.contains(":") && term.endsWith(':' + word.getWord()) || term.equals(word.getWord())) {
-                return term.replace(word.getWord(), '"' + word.getWord() + '"');
+            if (termLC.contains(":") && termLC.endsWith(':' + word.getWord()) || termLC.equals(word.getWord())) {
+                return termLC.replace(word.getWord(), '"' + word.getWord() + '"');
             }
         }
 
