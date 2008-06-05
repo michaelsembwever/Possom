@@ -505,7 +505,7 @@ public final class SearchServlet extends HttpServlet {
     }
 
     // probably apache commons could simplify this // duplicated in SiteLocatorFilter
-    private static String getCookieValue(final HttpServletRequest request, final String cookieName){
+    static String getCookieValue(final HttpServletRequest request, final String cookieName){
 
         String value = "";
         // Look in attributes (it could have already been updated this request)

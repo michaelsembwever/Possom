@@ -95,15 +95,17 @@ public final class BoomerangServlet extends HttpServlet {
                 final String destination = url.substring(
                         url.indexOf("/", url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1) + 1);
 
-                // request attribute to keep
-//SKER4763                entrails.put("referer", req.getHeader("Referer"));
-//                entrails.put("method", req.getMethod());
-//                entrails.put("ipaddress", req.getRemoteAddr());
-//                entrails.put("user-agent", req.getHeader("User-Agent"));
-//                entrails.put("user-id", SearchServlet.getCookieValue(req, "SesamID"));
-//                entrails.put("user", SearchServlet.getCookieValue(req, "SesamUser"));
-                // the grub details to add
                 final Map<String,String> entrails = new HashMap<String,String>();
+
+                // request attribute to keep
+                entrails.put("referer", req.getHeader("Referer"));
+                entrails.put("method", req.getMethod());
+                entrails.put("ipaddress", req.getRemoteAddr());
+                entrails.put("user-agent", req.getHeader("User-Agent"));
+                entrails.put("user-id", SearchServlet.getCookieValue(req, "SesamID"));
+                entrails.put("user", SearchServlet.getCookieValue(req, "SesamUser"));
+
+                // the grub details to add
                 if(0 < grub.length()){
                     final StringTokenizer tokeniser = new StringTokenizer(grub, ";");
                     while(tokeniser.hasMoreTokens()){
