@@ -47,17 +47,19 @@
         <p style="padding-left: 50px; margin-top:20px;">
                 <b>Schibsted Søk AS</b><br />
                 Postboks 277 Sentrum<br />
-                0103 Oslo<br /><br />
-                Telephone: 23 05 97 00 (08:00GMT - 15:00GMT)<br />
-                Fax:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>22 42 96 97 <br />
+                0103 Oslo<br />
+                Norway<br/><br />
+                Telephone: +47 23 05 97 00<br />
+                Fax:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]> +47 22 42 96 97 <br />
                 Email:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>
                 <a href="mailto:info@sesam.no?SUBJECT=Feedback fra www.sesam.com">info@sesam.no</a><br/><br/>
         </p>
         <p style="padding-left: 50px; margin-top:20px;">
                 <b>Schibsted Sök AB</b><br />
-                105 17 STOCKHOLM<br /><br />
-                Telephone: 08 13 53 10<br />
-                Fax:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>08 20 96 70<br />
+                105 17 STOCKHOLM<br />
+                Sweden<br/><br />
+                Telephone: +46 08 13 53 10<br />
+                Fax:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>+46 08 20 96 70<br />
                 Email:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>
                 <a href="mailto:kontakt@sesam.se?SUBJECT=Feedback fra www.sesam.com">kontakt@sesam.se</a><br />
         </p>
