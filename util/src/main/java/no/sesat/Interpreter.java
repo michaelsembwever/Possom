@@ -43,7 +43,7 @@ public class Interpreter {
      * @param fun
      *            The function
      */
-    public static void addFunction(String name, Function fun) {
+    public static void addFunction(final String name, final Function fun) {
         if (functions != null) {
             functions.put(name, fun);
         }
@@ -55,14 +55,14 @@ public class Interpreter {
      * @param name
      *            Named function
      */
-    public static void removeFunction(String name) {
+    public static void removeFunction(final String name) {
         if (functions != null) {
             functions.remove(name);
         }
     }
 
     private static interface FunctionInterface {
-        public String execute(Context ctx);
+        String execute(Context ctx);
     }
 
     /**
@@ -91,15 +91,21 @@ public class Interpreter {
     }
 
     /**
-     * Context for a function
+     * Context for a function.
      */
-    public static class Context {
+    public static final class Context {
+        /**
+         * The original argument array.
+         */
         protected String[] args;
 
-        private Context(String[] args) {
+        private Context(final String[] args) {
             this.args = args;
         }
 
+        /**
+         * @return Number of arguments.
+         */
         protected int length() {
             return args.length;
         }
@@ -107,10 +113,10 @@ public class Interpreter {
 
     static {
         addFunction("help", new Function() {
-            public String execute(Context ctx) {
+            public String execute(final Context ctx) {
                 if (ctx.length() == 1) {
                     String res = "Help for " + ctx.args[0] + "\n";
-                    Function fun = functions.get(ctx.args[0].trim());
+                    final Function fun = functions.get(ctx.args[0].trim());
                     if (fun != null) {
                         res += "    " + fun.help();
                     } else {
@@ -133,17 +139,17 @@ public class Interpreter {
         });
 
         addFunction("loggers", new Function() {
-            public String execute(Context ctx) {
+            public String execute(final Context ctx) {
                 String res = "Active loggers:\n";
-                LoggerRepository repo = Logger.getRootLogger().getLoggerRepository();
+                final LoggerRepository repo = Logger.getRootLogger().getLoggerRepository();
 
-                Enumeration e = repo.getCurrentCategories();
+                final Enumeration e = repo.getCurrentCategories();
                 while (e.hasMoreElements()) {
-                    Logger logger = (Logger) e.nextElement();
+                    final Logger logger = (Logger) e.nextElement();
                     if (ctx.length() == 0 || (ctx.length() > 0 && logger.getName().matches(ctx.args[0]))) {
                         res += logger.getName() + " " + logger.getLevel();
                         if (ctx.length() == 2) {
-                            Level level = Level.toLevel(ctx.args[1]);
+                            final Level level = Level.toLevel(ctx.args[1]);
                             if (level.toString().equalsIgnoreCase(ctx.args[1])) {
                                 res += " (Setting level to " + level + ")";
                                 logger.setLevel(level);
@@ -163,7 +169,7 @@ public class Interpreter {
         });
 
         addFunction("quit", new Function() {
-            public String execute(Context ctx) {
+            public String execute(final Context ctx) {
                 run = false;
                 return "Bye!";
             }
@@ -173,18 +179,18 @@ public class Interpreter {
             }
         });
 
-        Thread replThread = new Thread("REPL") {
-            Console console = System.console();
+        final Thread replThread = new Thread("REPL") {
+            private Console console = System.console();
 
             public void run() {
                 if (console != null) {
                     while (run) {
                         console.printf("$ ");
-                        String line = console.readLine();
+                        final String line = console.readLine();
                         if (line != null) { // check for null, this will happen on shutdown
-                            String[] input = line.split("\\s");
+                            final String[] input = line.split("\\s");
                             if (input.length > 0) {
-                                String name = input[0].trim();
+                                final String name = input[0].trim();
                                 if (name.length() > 0) {
                                     if (functions.containsKey(input[0])) {
                                         try {
