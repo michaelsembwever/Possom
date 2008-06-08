@@ -340,10 +340,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     @Override
     protected final String escapeTerm(final String term) {
+
+        final String termLC = term.toLowerCase();
+
         for (ReservedWord word : ReservedWord.values()) {
+
             // Term might already be prefixed by the TermPrefixTransformer.
-            if (term.contains(":") && term.endsWith(':' + word.getWord()) || term.equals(word.getWord())) {
-                return term.replace(word.getWord(), '"' + word.getWord() + '"');
+            if (termLC.contains(":") && termLC.endsWith(':' + word.getWord()) || termLC.equals(word.getWord())) {
+                return termLC.replace(word.getWord(), '"' + word.getWord() + '"');
             }
         }
 
