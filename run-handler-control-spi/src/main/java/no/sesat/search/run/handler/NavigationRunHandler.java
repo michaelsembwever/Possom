@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Properties;
 import java.lang.reflect.Constructor;
 
+import java.lang.reflect.InvocationTargetException;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.site.config.BytecodeLoader;
 import no.sesat.search.site.config.DocumentLoader;
@@ -199,10 +200,34 @@ public final class NavigationRunHandler implements RunHandler{
 
             return s.newInstance(context.getDataModel(), navigation, navigationManager.getNavigationState());
 
-        } catch (Exception e) {
+        }catch (InstantiationException ex) {
             throw new IllegalArgumentException(
                     "Unable to load desired url generator: " + navigation.getUrlGenerator(),
-                    e);
+                    ex);
+        }catch (IllegalAccessException ex) {
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    ex);
+        }catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    ex);
+        }catch (InvocationTargetException ex) {
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    ex);
+        }catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    ex);
+        }catch (SecurityException ex) {
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    ex);
+        }catch(ClassNotFoundException ex){
+            throw new IllegalArgumentException(
+                    "Unable to load desired url generator: " + navigation.getUrlGenerator(),
+                    ex);
         }
     }
 
