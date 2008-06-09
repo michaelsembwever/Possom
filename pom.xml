@@ -136,7 +136,6 @@
         <!-- sitemap-generator must be after generic.sesam-search-command-control because they both use assembly -->
         <module>sitemap-generator</module>
         <module>war</module>
-        <module>util</module>
     </modules>
 
     <build>
@@ -573,6 +572,11 @@
             <artifactId>testng</artifactId>
             <scope>test</scope>
             <classifier>jdk15</classifier>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>commons-interpreter</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
     <reporting>

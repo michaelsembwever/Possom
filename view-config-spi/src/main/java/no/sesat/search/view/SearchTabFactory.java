@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.Interpreter;
 import no.sesat.search.site.config.AbstractConfigFactory;
 import no.sesat.search.view.navigation.NavigationConfig;
 import no.sesat.search.site.config.DocumentLoader;
@@ -120,6 +121,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
             } catch (ParserConfigurationException ex) {
                 LOG.error(ERR_DOC_BUILDER_CREATION,ex);
             }
+            instance.addInterpreterFunctions();
         }
         return instance;
     }
@@ -602,4 +604,21 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         }
     }
 
+    private void addInterpreterFunctions() {
+        Interpreter.addFunction("tabs", new Interpreter.Function() {
+            public String execute(Interpreter.Context ctx) {
+                String res = "";
+                for (String s : tabsByKey.keySet()) {
+                    res += "View: " + s + "\n";
+                    res += tabsByKey.get(s).toString();
+                    res += "\n";
+                }
+                return res;
+
+            }
+            public String describe() {
+                return "Print out the tabs in tabsByKey.";
+            }
+        });
+    }
 }
