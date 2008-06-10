@@ -415,7 +415,6 @@ import no.sesat.search.result.WeightedSuggestion;
      * TODO comment me
      */
     protected void setAdditionalParameters(final ISearchParameters params) {
-
         for(Map.Entry<String,String> entry : getSearchConfiguration().getSearchParameterMap().entrySet()){
             params.setParameter(new SearchParameter(entry.getKey(), entry.getValue()));
         }
@@ -856,32 +855,35 @@ import no.sesat.search.result.WeightedSuggestion;
         return BasicWeightedSuggestion.instanceOf(orig, string, string, 1000);
     }
 
+    @SuppressWarnings("unchecked")
     private void collectRelevantQueries(IQueryResult result, FastSearchResult searchResult) {
 
         if (result.getQueryTransformations(false).getSuggestions().size() > 0) {
-            for (Iterator iterator = result.getQueryTransformations(false).getAllQueryTransformations().iterator(); iterator.hasNext();)
-            {
-                IQueryTransformation transformation = (IQueryTransformation) iterator.next();
+
+            for (IQueryTransformation transformation
+                    : (Collection<IQueryTransformation>)result
+                            .getQueryTransformations(false).getAllQueryTransformations()){
 
                 if (transformation.getName().equals("FastQT_Synonym") && transformation.getMessageID() == 8) {
-                    String query = transformation.getQuery();
 
-                    String[] forWords = query.split("#!#");
+                    final String query = transformation.getQuery();
+                    final String[] forWords = query.split("#!#");
 
                     for (int i = 0; i < forWords.length; i++) {
-                        String[] forOneWord = forWords[i].split("###");
+
+                        final String[] forOneWord = forWords[i].split("###");
 
                         for (int j = 0; j < forOneWord.length; j++) {
 
-                            String[] suggAndWeight = forOneWord[j].split("@");
+                            final String[] suggNweight = forOneWord[j].split("@");
 
-                            if (!datamodel.getQuery().getString().equalsIgnoreCase(suggAndWeight[0])) {
+                            if (!datamodel.getQuery().getString().equalsIgnoreCase(suggNweight[0])) {
 
                                 final WeightedSuggestion rq = BasicWeightedSuggestion.instanceOf(
                                         getQuery().getQueryString(),
-                                        suggAndWeight[0],
-                                        suggAndWeight[0],
-                                        Integer.valueOf(suggAndWeight[1]));
+                                        suggNweight[0],
+                                        suggNweight[0],
+                                        2 == suggNweight.length ? Integer.valueOf(suggNweight[1]) : Integer.MIN_VALUE);
 
                                 searchResult.addRelevantQuery(rq);
                             }

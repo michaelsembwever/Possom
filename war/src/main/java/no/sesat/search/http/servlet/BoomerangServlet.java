@@ -1,5 +1,5 @@
 /*
- * Copyright (2006-2007) Schibsted Søk AS
+ * Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -42,8 +42,10 @@ import org.apache.log4j.Logger;
  * Javascript functionality (or user behavour) is logged with <b>hunting</b> boomerangs that do not come back.
  *
  * A cermonial example is:
+ * http://sesam.no/boomerang/category=results;subcategory=main/http://wever.org
  *
- *
+ * A hunting example is:
+ * http://sesam.no/hunting/?parameter-list
  *
  * @version <tt>$Id: 3361 $</tt>
  *
@@ -53,7 +55,7 @@ public final class BoomerangServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(BoomerangServlet.class);
     private static final Logger ACCESS = Logger.getLogger("no.sesat.Access");
 
-    private static final String CEREMONIAL = "/boomerang";
+    private static final String CEREMONIAL = "/boomerang/";
 
     @Override
     public void destroy() {  }
@@ -70,7 +72,7 @@ public final class BoomerangServlet extends HttpServlet {
         res.setHeader("Pragma", "no-cache"); // for old browsers
         res.setDateHeader("Expires", 0); // to be double-safe
 
-        if(req.getServletPath().startsWith(CEREMONIAL)){
+        if(req.getRequestURI().startsWith(CEREMONIAL)){
 
             // ceremonial boomerang
             final StringBuffer url = req.getRequestURL();
@@ -79,7 +81,7 @@ public final class BoomerangServlet extends HttpServlet {
             }
 
             // pick out the entrails
-            final int boomerangStart = url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1;
+            final int boomerangStart = url.indexOf(CEREMONIAL) + CEREMONIAL.length();
 
             try{
                 final String grub = url.substring(boomerangStart, url.indexOf("/", boomerangStart));
@@ -89,8 +91,17 @@ public final class BoomerangServlet extends HttpServlet {
                 final String destination = url.substring(
                         url.indexOf("/", url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1) + 1);
 
-                // grub it up
                 final Map<String,String> entrails = new HashMap<String,String>();
+
+                // request attribute to keep
+                entrails.put("referer", req.getHeader("Referer"));
+                entrails.put("method", req.getMethod());
+                entrails.put("ipaddress", req.getRemoteAddr());
+                entrails.put("user-agent", req.getHeader("User-Agent"));
+                entrails.put("user-id", SearchServlet.getCookieValue(req, "SesamID"));
+                entrails.put("user", SearchServlet.getCookieValue(req, "SesamUser"));
+
+                // the grub details to add
                 if(0 < grub.length()){
                     final StringTokenizer tokeniser = new StringTokenizer(grub, ";");
                     while(tokeniser.hasMoreTokens()){
@@ -121,7 +132,7 @@ public final class BoomerangServlet extends HttpServlet {
 
         }else{
 
-            // hunting boomerang, just grub
+            // hunting boomerang, just grub, and the grub comes as clean parameters.
             final DataModel datamodel = (DataModel) req.getSession().getAttribute(DataModel.KEY);
             kangerooGrub(datamodel.getParameters().getValues());
 

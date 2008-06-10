@@ -218,13 +218,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     </servlet-mapping>
     
     <servlet-mapping>
+        <!-- Ceremonial boomerangs -->
         <servlet-name>Boomerang</servlet-name>
         <url-pattern>/boomerang/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
+        <!-- Hunting boomerangs -->
         <servlet-name>Boomerang</servlet-name>
-        <url-pattern>/search/writeLog.do</url-pattern>
+        <url-pattern>/hunting/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
