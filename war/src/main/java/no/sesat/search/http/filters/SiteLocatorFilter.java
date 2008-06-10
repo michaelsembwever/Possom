@@ -30,13 +30,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Stack;
 import java.util.UUID;
 import java.text.MessageFormat;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import javax.enterprise.deploy.model.J2eeApplicationObject;
-import javax.enterprise.deploy.model.J2eeApplicationObject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -55,8 +51,8 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.site.config.ResourceLoadException;
 import no.sesat.search.view.FindResource;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -88,6 +84,10 @@ public final class SiteLocatorFilter implements Filter {
     private static final String PUBLISH_DIR = "/img/";
 
     private static final String UNKNOWN = "unknown";
+
+    private static final String USER_REQUEST_STACK = "userRequestStack";
+    private static final long WAIT_TIME = 5000;
+    private static final int REQUEST_QUEUE_SIZE = 5;
 
 
     // Any request coming into Sesat with /conf/ is immediately returned as a 404.
@@ -385,43 +385,49 @@ public final class SiteLocatorFilter implements Filter {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
+    private static void doChainFilter(final FilterChain chain, final ServletRequest request,
+            final ServletResponse response) throws IOException, ServletException {
+        if (request instanceof HttpServletRequest) {
+            HttpSession session = ((HttpServletRequest) request).getSession();
 
-    private static void doChainFilter(
-            final FilterChain chain,
-            final ServletRequest request,
-            final ServletResponse response) throws IOException, ServletException{
+            Stack<ServletRequest> stack = (Stack<ServletRequest>) session.getAttribute(USER_REQUEST_STACK);
+            if (null == stack) {
+                stack = new Stack<ServletRequest>();
+                session.setAttribute(USER_REQUEST_STACK, stack);
+            }
 
-        Lock lock = request instanceof HttpServletRequest
-                ? (Lock) ((HttpServletRequest)request).getSession().getAttribute("userLock")
-                : new ReentrantLock();
+            if (stack.size() > REQUEST_QUEUE_SIZE) {
+                if (response instanceof HttpServletResponse) {
+                    LOG.warn(" -- response 409 (More then " + REQUEST_QUEUE_SIZE + " request in queue)");
+                    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
+                }
+            } else {
+                stack.push(request);
 
-        if(null == lock){
-            lock = new ReentrantLock();
-            ((HttpServletRequest)request).getSession().setAttribute("userLock", lock);
-        }
-
-        // datamodel is NOT request-safe. all the user's requests must execute in sequence!
-        //  ten seconds is enough to wait.
-        boolean done = false;
-        try{
-            if( lock.tryLock(10, TimeUnit.SECONDS) ){
-                try{
-                    // request will be processed by search-portal
-                    LOG.info("Incoming! Duck!");
-                    chain.doFilter(request, response);
-                    done = true;
-                }finally{
-                    lock.unlock();
+                long start = System.currentTimeMillis();
+                synchronized (session) {
+                    long timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
+                    while (stack.peek() != request && timeLeft > 0) {
+                        try {
+                            session.wait(timeLeft);
+                            timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
+                        } catch (InterruptedException e) {
+                            LOG.error(e);
+                            timeLeft = -1;
+                        }
+                    }
+                    if (timeLeft >= 0) {
+                        chain.doFilter(request, response);
+                    } else {
+                        LOG.warn(" -- response 409 (Timeout: Waited " + (WAIT_TIME - timeLeft) + " ms. )");
+                        ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
+                    }
+                    stack.pop();
+                    session.notifyAll();
                 }
             }
-        }catch(InterruptedException ie){
-            LOG.warn("The duck got trucked", ie);
-        }
-
-        if(!done && response instanceof HttpServletResponse){
-            // failed to get lock in time
-            LOG.warn(" -- response 409");
-            ((HttpServletResponse)response).sendError(HttpServletResponse.SC_CONFLICT);
+        } else {
+            chain.doFilter(request, response);
         }
     }
 
@@ -654,6 +660,5 @@ public final class SiteLocatorFilter implements Filter {
         public int getStatus(){
             return status;
         }
-
     }
 }
