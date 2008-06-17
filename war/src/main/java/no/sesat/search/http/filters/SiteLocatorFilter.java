@@ -390,10 +390,13 @@ public final class SiteLocatorFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             HttpSession session = ((HttpServletRequest) request).getSession();
 
-            Stack<ServletRequest> stack = (Stack<ServletRequest>) session.getAttribute(USER_REQUEST_STACK);
-            if (null == stack) {
-                stack = new Stack<ServletRequest>();
-                session.setAttribute(USER_REQUEST_STACK, stack);
+            Stack<ServletRequest> stack;
+            synchronized (session) {
+                stack = (Stack<ServletRequest>) session.getAttribute(USER_REQUEST_STACK);
+                if (null == stack) {
+                    stack = new Stack<ServletRequest>();
+                    session.setAttribute(USER_REQUEST_STACK, stack);
+                }
             }
 
             if (stack.size() > REQUEST_QUEUE_SIZE) {
