@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ public enum Spi {
     /** */
     SERVLET_HANDLER("servlet-handler"),
     /** */
-    VELOCITY_DIRECTIVES("velocity-directives");
+    VELOCITY_DIRECTIVES("velocity-directives", RESULT);
 
     private final Spi parent;
     private final String canonicalName;
