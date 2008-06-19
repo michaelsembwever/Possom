@@ -1,4 +1,4 @@
-<%-- Copyright (2008) Schibsted SÃ¸k AS
+<%-- Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,6 +13,15 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+--%><%
+{
+    if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
+        response.setContentType("text/xml; charset=iso-8859-1");
+    } else {
+        response.setContentType("text/xml; charset=utf-8");
+    }
+}
+%><%--
 --%><%@ page import="no.sesat.search.view.config.SearchTab"%><%--
 --%><%@ page import="no.sesat.search.view.output.SyndicationGenerator"%><%--
 --%><%@ page import="no.sesat.search.site.Site"%><%--
@@ -21,7 +30,6 @@
 --%><%@ page import="javax.xml.parsers.DocumentBuilder" %><%--
 --%><%@ page import="java.util.Properties" %><%--
 --%><%@ page import="no.sesat.search.site.config.*" %><%--
---%><%@page contentType="text/xml"%><%@page pageEncoding="UTF-8"%><%--
 --%><%
 
     final HttpServletRequest req = request;

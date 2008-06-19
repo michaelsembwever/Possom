@@ -13,6 +13,25 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- --%><%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><% String currentC = (String) request.getAttribute("c"); %><%if (currentC.equals("yvc") || currentC.equals("yip")) { %><search:velocity template="/results/vcardYellow"/><% } else { %><search:velocity template="/results/vcardWhite"/><%}%>      
-
-
+ --%><%
+ {
+	 final String userAgent = request.getHeader("User-Agent");
+	 String showid = request.getParameter("showId");
+	 String charset = "utf-8";
+	
+	 if (userAgent.indexOf("Windows") != -1) {
+	     charset = "iso-8859-1";
+	 }
+	 if (showid == null) {
+	     showid = "";
+	 }
+	 
+	 response.setCharacterEncoding(charset);
+	 response.setContentType("text/x-vcard; charset=" + charset);
+	 response.setHeader("Content-Disposition","attachment;filename=vcard-" + showid + ".vcf");
+ }
+ %>
+ <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><%--
+ 
+ --%><% String currentC = (String) request.getAttribute("c"); %><%--
+ --%><%if (currentC.equals("yvc") || currentC.equals("yip")) { %><search:velocity template="/results/vcardYellow"/><% } else { %><search:velocity template="/results/vcardWhite"/><%}%>      

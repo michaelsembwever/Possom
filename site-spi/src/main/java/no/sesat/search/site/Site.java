@@ -32,6 +32,9 @@ import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
 import org.apache.log4j.Level;
+
+import no.sesat.Interpreter;
+import no.sesat.Interpreter.Function;
 import no.sesat.search.site.config.ResourceLoadException;
 import org.apache.log4j.Logger;
 
@@ -370,5 +373,30 @@ public final class Site implements Serializable {
         return theSiteName.endsWith("/")
             ? theSiteName
             : theSiteName + '/';
+    }
+
+    static {
+        Interpreter.addFunction("sites", new Function() {
+            public String execute(no.sesat.Interpreter.Context ctx) {
+                String res = "Sites instances:\n";
+                try{
+                    INSTANCES_LOCK.readLock().lock();
+                    for(String s : INSTANCES.keySet()) {
+                        Site site = INSTANCES.get(s);
+                        res += "Site: " + s + "\n";
+                        res += "    Name:       " + site.getName() + "\n";
+                        res += "    Local:      " + site.getLocale() + "\n";
+                        res += "    cxtName:    " + site.cxtName + "\n";
+                        res += "    UniqueName: " + site.uniqueName + "\n\n";
+                    }
+                }finally{
+                    INSTANCES_LOCK.readLock().unlock();
+                }
+                return res;
+            }
+            public String describe() {
+                return "List content of INSTANCES in Site.";
+            }
+        });
     }
 }

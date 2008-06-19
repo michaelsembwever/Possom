@@ -13,7 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- --%><%@ page language="java" pageEncoding="UTF-8" contentType="text/xml" %><%--
+--%><%@ page pageEncoding="UTF-8" contentType="text/xml" %><%--
 --%><%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %><%--
 --%><%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><%--
 --%><?xml version="1.0" encoding="UTF-8"?>

@@ -1,4 +1,4 @@
-<%-- Copyright (2008) Schibsted SÃ¸k AS
+<%-- Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,6 +13,19 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- --%><%@page contentType="text/calendar; charset=utf-8"%><%@page pageEncoding="UTF-8"%><%--
+ --%><%
+ {
+	 final String fileName = ".ics";
+	 final String charset = "utf-8";
+	 String showid = request.getParameter("showId");
+	
+	 if (showid == null) {
+	     showid = "";
+	 }
+	
+	 response.setContentType("text/calendar; charset=" + charset);
+	 response.setHeader("Content-Disposition","attachment;filename=sesam-tvsok-" + showid + fileName);
+ }
+ %><%--
 --%><%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><%--
 --%><search:velocity template="/results/tvCalendar"/>

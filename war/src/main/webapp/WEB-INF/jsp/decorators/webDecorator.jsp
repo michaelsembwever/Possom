@@ -1,4 +1,4 @@
-<%-- Copyright (2006-2007) Schibsted Søk AS
+<%-- Copyright (2006-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,4 +18,16 @@
   --
   -- @author <a href="mailto:mick@semb.wever.org">Michael Semb Wever</a>
   -- @version $Id$
-  --%><%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><search:main/>
+  --%><%
+ {
+      if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
+          response.setContentType("text/html; charset=iso-8859-1"); // for external javascript document.write(), where server uses iso encoding
+      }
+      else {
+          response.setContentType("text/html; charset=UTF-8");
+      }
+ }
+  %><%--
+  --%><%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %><%--
+  --%>
+ <search:main/> 

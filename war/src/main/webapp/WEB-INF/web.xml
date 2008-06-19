@@ -44,11 +44,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <filter-name>DataModelFilter</filter-name>
         <filter-class>no.sesat.search.http.filters.DataModelFilter</filter-class>
     </filter>
-    
-    <filter>
-        <filter-name>sitemesh</filter-name>
-        <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
-    </filter>
 
     <filter> <!-- TODO desparately needs sesat-ising. fortunately it's not a required secret anymore. SEARCH-4366 -->
         <filter-name>md5ProtectParameters</filter-name>
@@ -104,30 +99,23 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <filter-mapping>
         <filter-name>UserFilter</filter-name>
         <url-pattern>/search/*</url-pattern>
-        <dispatcher>INCLUDE</dispatcher> 
+        <dispatcher>INCLUDE</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>md5ProtectParameters</filter-name>
         <url-pattern>/search/*</url-pattern>
-        <dispatcher>INCLUDE</dispatcher> 
+        <dispatcher>INCLUDE</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
-        <filter-name>sitemesh</filter-name>
-        <url-pattern>/search/*</url-pattern>
-        <dispatcher>INCLUDE</dispatcher> 
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>REQUEST</dispatcher> 
-    </filter-mapping>
-    <filter-mapping>
         <filter-name>SiteJspLoaderFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
     </filter-mapping>
-    
     <!-- Servlets -->
 
     <servlet>

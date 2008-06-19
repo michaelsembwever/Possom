@@ -178,10 +178,6 @@
         </dependency>
         <dependency>
             <groupId>opensymphony</groupId>
-            <artifactId>sitemesh</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
         </dependency>
         <dependency>

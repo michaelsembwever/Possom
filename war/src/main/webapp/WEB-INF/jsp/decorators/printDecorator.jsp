@@ -13,13 +13,8 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- --%><%@ page
-        language="java"
-        pageEncoding="UTF-8"
-        contentType="text/html;charset=utf-8"%>
-
-<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
-
+ --%><%@ page contentType="text/html; charset=utf-8" %><%--
+ --%><%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

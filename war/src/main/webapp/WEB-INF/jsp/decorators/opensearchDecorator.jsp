@@ -1,4 +1,4 @@
-<%-- Copyright (2008) Schibsted Søk AS
+<%-- Copyright (2008) Schibsted SÃ¸k AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,7 +13,8 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- --%><?xml version="1.0" encoding="UTF-8" ?>
+--%><%@ page contentType="text/xml; charset=utf-8" %><%--
+--%><?xml version="1.0" encoding="UTF-8" ?>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">

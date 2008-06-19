@@ -20,12 +20,7 @@
  */
 package no.sesat.search.view.taglib;
 
-
-import com.opensymphony.module.sitemesh.Page;
-import com.opensymphony.module.sitemesh.RequestConstants;
-import com.opensymphony.module.sitemesh.util.OutputConverter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -205,23 +200,6 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
                 if (!context.containsKey(attrName)) {
                     context.put(attrName, cxt.getRequest().getAttribute(attrName));
                 }
-            }
-
-            // populate sitemesh attributes -- will be removed
-            final Page siteMeshPage = (Page) cxt.findAttribute(RequestConstants.PAGE);
-                if(siteMeshPage != null){
-                context.put("page", siteMeshPage);
-                context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
-                {
-                    final StringWriter buffer = new StringWriter();
-                    siteMeshPage.writeBody(OutputConverter.getWriter(buffer));
-                    context.put("body", buffer.toString());
-                }
-                //{ // missing from our version of sitemesh
-                //    final StringWriter buffer = new StringWriter();
-                //    siteMeshPage.writeHead(OutputConverter.getWriter(buffer));
-                //    context.put("head", buffer.toString());
-                //}
             }
 
             // merge it into the JspWriter

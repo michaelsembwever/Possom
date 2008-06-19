@@ -20,7 +20,8 @@ package no.sesat.search.http.servlet;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -33,17 +34,14 @@ import no.sesat.search.mode.SearchMode;
 import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.run.QueryFactory;
 import no.sesat.search.run.RunningQuery;
-import no.sesat.search.security.MD5Generator;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.access.ControlLevel;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.datamodel.generic.StringDataObjectSupport;
 import no.sesat.search.datamodel.page.PageDataObject;
 import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.http.servlet.FactoryReloads.ReloadArg;
-import no.sesat.search.result.ResultItem;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
@@ -175,8 +173,6 @@ public final class SearchServlet extends HttpServlet {
             final SearchTab searchTab = updateSearchTab(cParameter, request, dmFactory, genericCxt);
 
             if (null!= searchTab) {
-
-
                 LOG.debug("Character encoding ="  + request.getCharacterEncoding());
 
                 final StopWatch stopWatch = new StopWatch();
@@ -191,8 +187,6 @@ public final class SearchServlet extends HttpServlet {
                         genericCxt,
                         ipAddr,
                         datamodel.getSite().getSiteConfiguration());
-
-                updateContentType(site, response, request);
 
                 // If the rss is hidden, require a partnerId.
                 // The security by obscurity has been somewhat improved by the
@@ -219,6 +213,17 @@ public final class SearchServlet extends HttpServlet {
             }else{
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
+
+            String output = request.getParameter("output");
+            if (output == null || output.isEmpty()) {
+                if (site.getName().startsWith("xml")) {
+                    output = "mobile";
+                } else {
+                    output = "web";
+                }
+            }
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/jsp/decorators/" + output + "Decorator.jsp");
+            dispatcher.forward(request, response);
 
         }finally{
 
@@ -259,73 +264,6 @@ public final class SearchServlet extends HttpServlet {
             }else{
                 LOG.warn("ipaddress " + ipAddr + " not allowed to performFactoryReload(..)");
             }
-        }
-    }
-
-    private static void updateContentType(
-            final Site site,
-            final HttpServletResponse response,
-            final HttpServletRequest request){
-
-        /* Setting default encoding */
-        response.setCharacterEncoding("UTF-8");
-
-        // TODO. Any better way to do this. Sitemesh?
-        if (request.getParameter("output") != null && request.getParameter("output").equals("rss")) {
-            if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
-                response.setContentType("text/xml; charset=iso-8859-1");
-                response.setCharacterEncoding("iso-8859-1"); // correct encoding
-            } else {
-                response.setContentType("text/xml; charset=utf-8");
-            }
-        } else if (site.getName().startsWith("mobil") || site.getName().startsWith("xml")) {
-            response.setContentType("text/xml; charset=utf-8");
-            try {
-                // Just can't get sitemesh to work in the way I imagine it works.
-                response.getWriter().write(
-                    "<html><head><META name=\"decorator\" content=\"mobiledecorator\"/></head></html>");
-            } catch (IOException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
-        } else if (request.getParameter("output") != null
-                && request.getParameter("output").equals("savedecorator")) {
-            final String fileName = ".ics";
-            final String charset = "utf-8";
-            String showid = request.getParameter("showId");
-
-            if (showid == null) {
-                showid = "";
-            }
-
-            response.setContentType("text/calendar; charset=" + charset);
-            response.setHeader("Content-Disposition","attachment;filename=sesam-tvsok-" + showid + fileName);
-        } else if (request.getParameter("output") != null && request.getParameter("output").equals("vcarddecorator")) {
-            final String userAgent = request.getHeader("User-Agent");
-            String showid = request.getParameter("showId");
-            String charset = "utf-8";
-
-            if (userAgent.indexOf("Windows") != -1) {
-                charset = "iso-8859-1";
-            }
-            if (showid == null) {
-                showid = "";
-            }
-
-            response.setCharacterEncoding(charset);
-            response.setContentType("text/x-vcard; charset=" + charset);
-            response.setHeader("Content-Disposition","attachment;filename=vcard-" + showid + ".vcf");
-        } else if (request.getParameter("output") != null
-                && (request.getParameter("output").equals("opensearch")
-                        || request.getParameter("output").equals("xml"))) {
-            final String charset = "utf-8";
-            response.setCharacterEncoding(charset);
-            response.setContentType("text/xml; charset=" + charset);
-        } else if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
-            response.setContentType("text/html; charset=iso-8859-1"); // for external javascript document.write(), where server uses iso encoding
-            response.setCharacterEncoding("iso-8859-1");
-        } else {
-            final String charset = "utf-8";
-            response.setContentType("text/html; charset=" + charset);
         }
     }
 
