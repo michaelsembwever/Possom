@@ -78,7 +78,7 @@ public final class HTTPClient {
     private static final String DEBUG_USING_URL = "Using url {0} and Host-header {1} ";
 
     // Attributes ----------------------------------------------------
-    
+
     private final String id;
     private URLConnection urlConn;
     private final URL u;
@@ -95,14 +95,14 @@ public final class HTTPClient {
      * @return a client.
      */
     public static HTTPClient instance(final String host, final int port) {
-        
+
         assert !host.contains("://") : "Not allowed to specify protocol, use another instance method.";
-        
+
         return instance(host, port, host);
     }
 
     /**
-     * Returns client for specified host, port and physical host (if the host is virtual). 
+     * Returns client for specified host, port and physical host (if the host is virtual).
      * Useful if you need to use a virtual host different
      * from the physical host.
      * Defaults to the http protocol if the host argument doesn't specify it.
@@ -114,10 +114,10 @@ public final class HTTPClient {
      * @return a client.
      */
     public static HTTPClient instance(final String host, final int port, final String physicalHost) {
-        
+
         try {
             return new HTTPClient(new URL(ensureProtocol(host) + ':' + port), physicalHost);
-            
+
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -125,9 +125,9 @@ public final class HTTPClient {
 
     /**
      * Returns client instance for the specified URL. The URL can either be complete or just contain the host.
-     * 
+     *
      * Note that only the host and port and used since the url must be supplied again against the HTTPClient instance.
-     * 
+     *
      * The path can be supplied later when using the querying methods like
      * {@link HTTPClient#getBufferedStream(String path)}.
      *
@@ -151,23 +151,23 @@ public final class HTTPClient {
     public static HTTPClient instance(final URL url, final String physicalHost) {
         return new HTTPClient(url, physicalHost);
     }
-    
+
     // Constructors --------------------------------------------------
-                                                                                              
+
     private HTTPClient(final URL url, final String physicalHost) {
-        
+
         try {
             handler = new PhysicalHostStreamHandler(physicalHost);
             u = new URL(url, "", handler);
             id = u.getHost() + ':' + u.getPort();
-            
+
         } catch (final MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
 
     // Public --------------------------------------------------------
-    
+
     /**
      * @param path
      * @return
@@ -374,13 +374,13 @@ public final class HTTPClient {
 
         Statistic.getStatistic(id).addInvocation(time);
     }
-        
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     private static IOException interceptIOException(
             final String id,
             final URLConnection urlConn,
@@ -401,7 +401,9 @@ public final class HTTPClient {
             cleanErrorStream((HttpURLConnection) urlConn);
         }
 
-        LOG.error("IOException occured for server at: " + id + " (" + urlConn.getURL() + ')');
+        LOG.error("IOException occured for server at: " + id + " ("
+                + urlConn.getURL() + ") ["
+                + ioe.getMessage() + ']');
 
         return ioe;
     }
@@ -437,7 +439,7 @@ public final class HTTPClient {
     }
 
     // Inner classes -------------------------------------------------
-    
+
     private static class PhysicalHostStreamHandler extends URLStreamHandler {
 
         private final String physicalHost;
@@ -445,7 +447,7 @@ public final class HTTPClient {
         public PhysicalHostStreamHandler(final String physicalHost) {
             this.physicalHost = physicalHost;
         }
-        
+
         String getPhysicalHost(){
             return physicalHost;
         }
@@ -463,21 +465,21 @@ public final class HTTPClient {
                 final URL containedURL = new URL(u.getFile());
                 final String innerPath = containedURL.toString()
                         .replace("://" + containedURL.getHost(), "://" + physicalHost);
-                
+
                 url = new URL("jar:" + innerPath);
                 host = containedURL.getHost();
-                
-                // HACK around http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774                
-                // XXX !!Danger!! Not at all synchronized! 
-                //    Makes a new callback only applicable to this url, 
+
+                // HACK around http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
+                // XXX !!Danger!! Not at all synchronized!
+                //    Makes a new callback only applicable to this url,
                 //       required that callbacks are not overlapped or repeated!!
                 URLJarFile.setCallBack(new URLJarFileCallBackImpl(host));
                 // EndOfHACK
-                
+
                 // HACK Third solution. Use own URLStreamHandler
                 connection = url.openConnection();//new JarURLConnection(url, null);
                 // EndOfHACK
-                
+
             } else {
                 url = new URL(u.getProtocol(), physicalHost, u.getPort(), u.getFile());
                 host = u.getHost();
@@ -485,7 +487,7 @@ public final class HTTPClient {
             }
 
             connection.addRequestProperty("host", host);
-            
+
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
 
@@ -495,9 +497,9 @@ public final class HTTPClient {
 
             return connection;
         }
-        
+
         /**
-         * HACK around http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774 
+         * HACK around http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
          * XXX !!Danger!! Not at all synchronized!
          * Makes a new callback only applicable to this url, required that callbacks are not overlapped or repeated!!
          **/
@@ -583,7 +585,7 @@ public final class HTTPClient {
         private volatile long readTimeouts = 0;
         private volatile long failures = 0;
         private static volatile long lastPrint = System.currentTimeMillis() / 60000;
-        
+
         static{
             Runtime.getRuntime().addShutdownHook(new Thread(){
                 @Override
@@ -596,9 +598,9 @@ public final class HTTPClient {
         static Statistic getStatistic(final String id) {
 
             if (null == STATISTICS.get(id)) {
-                
+
                 STATISTICS.put(id, new Statistic(id));
-                
+
                 // log STATISTICS size
                 LOG.info("STATISTICS.size is "  + STATISTICS.size());
             }
