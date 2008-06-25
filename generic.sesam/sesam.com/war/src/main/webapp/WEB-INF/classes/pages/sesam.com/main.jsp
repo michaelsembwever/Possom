@@ -1,9 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><jsp:root version="2.0"
-        xmlns:jsp="http://java.sun.com/JSP/Page"
-        xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin --><jsp:output 
-        doctype-root-element="html" 
-        doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
-        doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" /><!-- 
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:search="urn:jsptld:/WEB-INF/SearchPortal.tld"><!-- XXX a little awkward since SearchPortal.tld never exists in the skin --><jsp:output 
+          doctype-root-element="html" 
+          doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<jsp:directive.page contentType="text/html" />
+
+<!-- 
  * Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
@@ -23,7 +27,9 @@
     Document   : main
     Author     : mick
     Version    : $Id$
---><html xmlns="http://www.w3.org/1999/xhtml">
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <search:include include="head-element"/>
 </head>
