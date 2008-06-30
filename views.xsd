@@ -34,9 +34,11 @@
             <xsd:element name='include' type='include'/>
 			<xsd:element name='property' type='property'/>
         </xsd:choice>
+        <xsd:attribute name='id'/>
         <xsd:attribute name='main'/>
         <xsd:attribute name='origin'/>
         <xsd:attribute name='front'/>
+        <xsd:attribute name='content-type'/>
     </xsd:complexType>
 	<xsd:complexType name='include'>
         <xsd:attribute name='key'/>
