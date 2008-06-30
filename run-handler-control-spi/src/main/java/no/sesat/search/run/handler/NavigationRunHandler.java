@@ -62,13 +62,13 @@ public final class NavigationRunHandler implements RunHandler{
     private NavigationControllerSpiFactory controllerFactoryFactory;
     private NavigationManager navigationManager;
 
-    private static final String PARAM_OUTPUT = "output";
+    private static final String PARAM_LAYOUT = "layout";
 
     public NavigationRunHandler(final RunHandlerConfig rhc) {}
 
     private boolean isRss(final DataModel datamodel) {
         final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
-        return parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).getString().equals("rss");
+        return parameters.get(PARAM_LAYOUT) != null && parameters.get(PARAM_LAYOUT).getString().equals("rss");
     }
 
     public void handleRunningQuery(final Context context) {

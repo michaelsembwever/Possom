@@ -70,13 +70,11 @@ public final class VelocityTemplateTag extends AbstractVelocityTemplateTag {
      */
     @Override
     public void doTag() throws JspException {
-
-        final Layout layout = findLayout((DataModel)((PageContext)getJspContext()).findAttribute(DataModel.KEY));
+        final Layout layout = findLayout((PageContext)getJspContext());
         final Map<String,Object> map = new HashMap<String,Object>();
         map.put("layout", layout);
         map.put("commandName", command != null ? command : this.template);
         importVelocity(this.template, map);
-
     }
 
     /**

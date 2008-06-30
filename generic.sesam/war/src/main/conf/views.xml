@@ -41,5 +41,6 @@ prority attribute of the navigation hints -->
             <include key="bottom-seven"/>
             <include key="bottom-eight"/>
         </layout>
+        <layout id="opensearch" main="opensearchDecorator.jsp"/>
     </tab>
 </views>

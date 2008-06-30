@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         }
     }
 
-    public static VelocityContext newContextInstance(final VelocityEngine engine){
+    public static VelocityContext newContextInstance(){
 
         final VelocityContext context = new VelocityContext();
 
@@ -295,8 +295,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                     engine.setProperty("url.resource.loader.cache", "false");
                     engine.setProperty("velocimacro.library.autoreload", "true");
                 } else {
-                	engine.setProperty("url.resource.loader.cache", "true");
-                	engine.setProperty("url.resource.loader.modificationCheckInterval", "60");
+                    engine.setProperty("url.resource.loader.cache", "true");
+                    engine.setProperty("url.resource.loader.modificationCheckInterval", "60");
                     engine.setProperty(Velocity.RESOURCE_MANAGER_CLASS, QuickResourceManagerImpl.class.getName());
                     engine.setProperty(Velocity.RESOURCE_MANAGER_CACHE_CLASS, QuickResourceCacheImpl.class.getName());
                     engine.setProperty(Velocity.RESOURCE_MANAGER_DEFAULTCACHE_SIZE, "0");

@@ -87,7 +87,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
     public void doTag() throws JspException, IOException {
 
         final PageContext cxt = (PageContext) getJspContext();
-        final Layout layout = findLayout((DataModel) cxt.findAttribute(DataModel.KEY));
+        final Layout layout = findLayout(cxt);
 
         if(null != layout.getInclude(include) && layout.getInclude(include).length() > 0 ){
 

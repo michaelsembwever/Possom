@@ -25,14 +25,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.run.RunningQueryImpl;
-import no.sesat.search.view.config.SearchTab;
 import no.sesat.search.view.config.SearchTab.Layout;
 
 import org.apache.log4j.Logger;
@@ -90,9 +86,10 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
                 ? layout.getFront()
                 : null;
 
-        String include = datamodel.getQuery().getQuery().isBlank() && null != front
+        String include = datamodel.getQuery() != null && datamodel.getQuery().getQuery().isBlank() && null != front
                 ? front
                 : layout.getMain();
+
         include = include.startsWith("/")
                 ? include
                 : PAGES_DIRECTORY + include;
@@ -100,14 +97,16 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
         try{
             if(null != include){
 
-            include = include.startsWith("/") ? include : PAGES_DIRECTORY + include;
-
                 final Map<String,Object> map = new HashMap<String,Object>();
                 map.put("layout", layout);
 
+                if(layout.getContentType() != null) {
+                    cxt.getResponse().setContentType(layout.getContentType());
+                }
+
                 if(include.endsWith(".jsp")){
 
-                    importJsp(include);
+                    forwardJsp(include);
 
                 }else if(include.endsWith(".vm")){
 

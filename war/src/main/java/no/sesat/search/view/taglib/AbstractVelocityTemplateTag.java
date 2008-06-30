@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.ServletException;
+import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -76,23 +77,41 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
 
     // Protected -----------------------------------------------------
 
-    /** Find (and initialise into the PageContext) the layout this request is to use.
+    /**
+     * Find the layout that belongs to this model.
      *
      * @param datamodel
-     * @return
+     * @return Layout
      */
-    protected final Layout findLayout(final DataModel datamodel){
+    public static Layout findLayout(final DataModel datamodel){
 
         Layout layout = null;
-        final PageContext cxt = (PageContext) getJspContext();
-        if(null != cxt && null != datamodel && null != datamodel.getPage()){
+        if(null != datamodel && null != datamodel.getPage()){
             final SearchTab tab = datamodel.getPage().getCurrentTab();
             final ParametersDataObject params = datamodel.getParameters();
             final StringDataObject layoutDO = null != params ? params.getValue(RunningQueryImpl.PARAM_LAYOUT) : null;
-            layout = null != cxt.getAttribute("layout") ? (Layout)cxt.getAttribute("layout") : null != layoutDO && null != tab && null != tab.getLayouts()
+            layout = null != layoutDO && null != tab && null != tab.getLayouts()
                     ? tab.getLayouts().get(layoutDO.getXmlEscaped())
                     : null != tab ? tab.getDefaultLayout() : null;
-            cxt.setAttribute("layout", layout);
+        }
+        return layout;
+    }
+
+    /**
+     * Find the layout from the context. If not found in context we look for it
+     * in the datamodel and set it in the context.
+     *
+     * @param cxt
+     * @return Layout
+     */
+    protected Layout findLayout(final JspContext cxt) {
+        Layout layout = null;
+        if (cxt != null) {
+            layout = (Layout)cxt.getAttribute("layout");
+            if (layout == null) {
+                layout = findLayout((DataModel) cxt.findAttribute(DataModel.KEY));
+                cxt.setAttribute("layout", layout);
+            }
         }
         return layout;
     }
@@ -125,6 +144,23 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
             throw new JspException(ioe);
         }
     }
+
+   /** Forward to the specified jsp.
+    *
+    * @param include must contain ".jsp" suffix.
+    * @throws java.io.IOException
+    * @throws javax.servlet.ServletException
+    */
+   protected final void forwardJsp(final String include) throws JspException{
+
+       try{
+           ((PageContext)getJspContext()).forward(include);
+       }catch(IOException ioe){
+           throw new JspException(ioe);
+       }catch(ServletException ioe){
+           throw new JspException(ioe);
+       }
+   }
 
     /** Imports the specified velocity template.
      *
@@ -170,7 +206,7 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
                     site,
                     templateName.replaceAll(".vm$", ""));
 
-            final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
+            final VelocityContext context = VelocityEngineFactory.newContextInstance();
 
             // populate context with request and response // TODO remove, since all attributes are copied in
             context.put("request", cxt.getRequest());
@@ -196,7 +232,7 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
                     ; e.hasMoreElements();) {
 
                 final String attrName = e.nextElement();
-                /* do not overwrite parameters already in the velocity context */
+                // do not overwrite parameters already in the velocity context
                 if (!context.containsKey(attrName)) {
                     context.put(attrName, cxt.getRequest().getAttribute(attrName));
                 }

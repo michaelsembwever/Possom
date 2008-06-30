@@ -119,7 +119,7 @@ public final class VelocityTemplateTest extends DataModelTestCase{
                         })
                         .getEngine();
                 final Template template = VelocityEngineFactory.getTemplate(engine, site, templateName);
-                final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
+                final VelocityContext context = VelocityEngineFactory.newContextInstance();
                 context.put("datamodel", datamodel);
                 template.merge(context, new StringWriter());
 

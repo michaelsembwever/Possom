@@ -532,6 +532,7 @@ public final class SearchTab implements Serializable{
         private String front;
         private Map<String,String> includes;
         private Map<String,String> properties;
+        private String contentType;
 
         private Layout(){}
 
@@ -547,6 +548,7 @@ public final class SearchTab implements Serializable{
                 front = inherit.front;
                 includes = inherit.includes;
                 properties = inherit.properties;
+                contentType = inherit.contentType;
             }
         }
 
@@ -617,6 +619,15 @@ public final class SearchTab implements Serializable{
             return front;
         }
 
+       /**
+        * Get the content type that is specified in views.xml.
+        *
+        * @return content type
+        */
+       public String getContentType(){
+           return contentType;
+       }
+
         /** Will return null when the element argument is null.
          * Otherwise returns the Layout object deserialised from the contents of the Element.
          ** @param element
@@ -636,6 +647,9 @@ public final class SearchTab implements Serializable{
                 }
                 if(0 < element.getAttribute("front").length()){
                     front = element.getAttribute("front");
+                }
+                if(0 < element.getAttribute("content-type").length()){
+                    contentType = element.getAttribute("content-type");
                 }
                 includes = readMap(includes, element.getElementsByTagName("include"), "key", "template");
                 properties = readMap(properties, element.getElementsByTagName("property"), "key", "value");

@@ -28,12 +28,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
+
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.sesat.search.mode.SearchMode;
-import no.sesat.search.mode.SearchModeFactory;
-import no.sesat.search.run.QueryFactory;
-import no.sesat.search.run.RunningQuery;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.access.ControlLevel;
@@ -42,17 +39,27 @@ import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.page.PageDataObject;
 import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.http.servlet.FactoryReloads.ReloadArg;
+import no.sesat.search.mode.SearchMode;
+import no.sesat.search.mode.SearchModeFactory;
+import no.sesat.search.run.QueryFactory;
+import no.sesat.search.run.RunningQuery;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
-import no.sesat.search.site.config.*;
-import no.sesat.search.view.config.SearchTab;
-import no.sesat.search.view.SearchTabFactory;
+import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.site.config.DocumentLoader;
+import no.sesat.search.site.config.PropertiesLoader;
+import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.TextMessages;
+import no.sesat.search.site.config.UrlResourceLoader;
+import no.sesat.search.view.SearchTabFactory;
+import no.sesat.search.view.config.SearchTab;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
 
 /** The Central Controller to incoming queries.
  * Controls the SearchMode -> RunningQuery creation and handling.
@@ -61,7 +68,7 @@ import org.apache.log4j.Logger;
  *
  * @version <tt>$Id$</tt>
  */
-public final class SearchServlet extends HttpServlet {
+public final class SearchServlet extends  HttpServlet {
 
    // Constants -----------------------------------------------------
 
@@ -191,9 +198,9 @@ public final class SearchServlet extends HttpServlet {
                 // If the rss is hidden, require a partnerId.
                 // The security by obscurity has been somewhat improved by the
                 // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter).
-                final StringDataObject output = parametersDO.getValue("output");
-                boolean hiddenRssWithoutPartnerId = null != output
-                    && "rss".equals(output.getString())
+                final StringDataObject layout = parametersDO.getValue("layout");
+                boolean hiddenRssWithoutPartnerId = null != layout
+                    && "rss".equals(layout.getString())
                     && searchTab.isRssHidden()
                     && null == parametersDO.getValues().get("rssPartnerId");
 
@@ -201,7 +208,7 @@ public final class SearchServlet extends HttpServlet {
 
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
-                } else if (null != output && "rss".equals(output.getString()) && "".equals(searchTab.getRssResultName())) {
+                } else if (null != layout && "rss".equals(layout.getString()) && "".equals(searchTab.getRssResultName())) {
 
                     LOG.warn("RSS not supported for requested vertical " + searchTab.toString());
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -214,15 +221,7 @@ public final class SearchServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
 
-            String output = request.getParameter("output");
-            if (output == null || output.isEmpty()) {
-                if (site.getName().startsWith("xml")) {
-                    output = "mobile";
-                } else {
-                    output = "web";
-                }
-            }
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/jsp/decorators/" + output + "Decorator.jsp");
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/jsp/start.jsp");
             dispatcher.forward(request, response);
 
         }finally{
@@ -234,6 +233,7 @@ public final class SearchServlet extends HttpServlet {
     }
 
     // Private -------------------------------------------------------
+
 
     private static void performFactoryReloads(
             final String reload,
@@ -363,7 +363,7 @@ public final class SearchServlet extends HttpServlet {
         }
 
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
-        final StringDataObject output = datamodel.getParameters().getValue("output");
+        final StringDataObject layout = datamodel.getParameters().getValue("layout");
 
         final RunningQuery.Context rqCxt = ContextWrapper.wrap(
                 RunningQuery.Context.class,
@@ -383,7 +383,7 @@ public final class SearchServlet extends HttpServlet {
 
         updateAttributes(request, rqCxt);
 
-        if(null == output || !"opensearch".equalsIgnoreCase(output.getString())){
+        if(null == layout || !"opensearch".equalsIgnoreCase(layout.getString())){
 
             try {
 
@@ -405,7 +405,7 @@ public final class SearchServlet extends HttpServlet {
 
                         STATISTICS_LOG.info(
                             "<search-servlet"
-                                + (null != output ? " output=\"" + output.getXmlEscaped() + "\">" : ">")
+                                + (null != layout ? " layout=\"" + layout.getXmlEscaped() + "\">" : ">")
                                 + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>"
                                 + "<time>" + stopWatch + "</time>"
                                 + ((StringBuffer)request.getAttribute("no.sesat.Statistics")).toString()

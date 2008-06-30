@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -315,7 +315,7 @@ public final class SyndicationGenerator {
         final String templateUri = templateDir + name;
 
         try {
-            final VelocityContext cxt = VelocityEngineFactory.newContextInstance(engine);
+            final VelocityContext cxt = VelocityEngineFactory.newContextInstance();
 
             cxt.put("text", text);
             cxt.put("now", nowStringUTC);
@@ -327,7 +327,7 @@ public final class SyndicationGenerator {
 
             cxt.put("datamodel", context.getDataModel());
 
-            final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
+            final String origUri = uri.replaceAll("&?layout=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             cxt.put("uri", origUri);
 
             final Template tpl = VelocityEngineFactory.getTemplate(engine, site, templateUri);

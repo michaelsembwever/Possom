@@ -100,8 +100,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final String PARAM_COMMANDS = "commands";
     // TODO generic parameter key to be put into ParameterDataObject
     private static final String PARAM_WAITFOR = "waitFor";
-    // TODO generic parameter key to be put into ParameterDataObject
-    private static final String PARAM_OUTPUT = "output";
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.sesat.search.analyzer.Analysis");
@@ -623,7 +621,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private boolean isRss() {
 
-        final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_OUTPUT);
+        final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_LAYOUT);
         return null != outputParam && "rss".equals(outputParam.getString());
     }
 
@@ -636,12 +634,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0
                 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
 
-            final String output = null != parameters.get("output")
-                    ? parameters.get("output").getString()
+            final String layout = null != parameters.get(PARAM_LAYOUT)
+                    ? parameters.get(PARAM_LAYOUT).getString()
                     : null;
 
             noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
-                    + (null != output ? "\" output=\"" + output : "") + "\">"
+                    + (null != layout ? "\" layout=\"" + layout : "") + "\">"
                     + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
             noHitsOutput.append("</no-hits>");
             PRODUCT_LOG.info(noHitsOutput.toString());
