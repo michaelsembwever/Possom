@@ -28,6 +28,7 @@ import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
 import no.sesat.search.site.Site;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 
 /**
  * TokenEvaluateFactory provides knowledge about which implementation of
@@ -187,6 +188,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private final class FastEvaluatorCreator implements Runnable{
         public void run() {
 
+            MDC.put("UNIQUE_ID", "-unknown-"); // SKER4916
             try {
 
                 fastEvaluator = new VeryFastTokenEvaluator(
