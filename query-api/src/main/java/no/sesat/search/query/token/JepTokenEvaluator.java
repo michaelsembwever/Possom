@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,22 +46,26 @@ public final class JepTokenEvaluator implements TokenEvaluator {
     // Constructors --------------------------------------------------
 
     /**
-     * Creates a new instance of JepTokenEvaluator
+     * Creates a new instance of JepTokenEvaluator and evaluate the query.
      */
     public JepTokenEvaluator(final String query) {
+        if (query.matches("[0-9.]+")) {
+            result = null; // If the query is just a number don't evaluate it.
+        }
+        else {
+            final JEP parser = new JEP();
 
-        final JEP parser = new JEP();
+            parser.addStandardConstants();
+            parser.addStandardFunctions();
+            parser.addComplex();
+    //        parser.setImplicitMul(true);
 
-        parser.addStandardConstants();
-        parser.addStandardFunctions();
-        parser.addComplex();
-//        parser.setImplicitMul(true);
+            parser.parseExpression(query);
 
-
-        parser.parseExpression(query);
-
-        result = parser.getComplexValue();
+            result = parser.getComplexValue();
+        }
     }
+
 
     // Public --------------------------------------------------------
 
