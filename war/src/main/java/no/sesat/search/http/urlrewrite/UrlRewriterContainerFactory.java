@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,7 +13,6 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
  */
 /*
  * UrlRewriterContainerFactory.java
@@ -24,11 +23,11 @@
 package no.sesat.search.http.urlrewrite;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,14 +39,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import no.schibstedsok.commons.ioc.BaseContext;
-import no.sesat.search.site.config.ResourceContext;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
 import no.sesat.search.site.config.DocumentContext;
 import org.apache.log4j.Logger;
-import org.tuckey.web.filters.urlrewrite.UrlRewriterContainer;
+import org.tuckey.web.filters.urlrewrite.Conf;
+import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 import org.w3c.dom.Document;
 
 /** Provides a SiteKeyedFactory around urlrewrite.xml configurations instead of tuckey's default
@@ -61,7 +60,9 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     /**
      * The context any SearchTabFactory must work against.
      */
-    public interface Context extends BaseContext, DocumentContext, SiteContext {}
+    public interface Context extends BaseContext, DocumentContext, SiteContext {
+        ServletContext getServletContext();
+    }
 
    // Constants -----------------------------------------------------
 
@@ -83,7 +84,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
 
     // Attributes ----------------------------------------------------
 
-    private final UrlRewriterContainer urlRewriterContainer;
+    private final UrlRewriter urlRewriter;
     private final DocumentLoader loader;
     private final Context context;
 
@@ -121,6 +122,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
 
         try{
             INSTANCES_LOCK.writeLock().lock();
+            urlRewriter.destroy();
             return null != INSTANCES.remove(site);
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
@@ -145,7 +147,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
             loader = context.newDocumentLoader(cxt, URLREWRITE_XMLFILE, builder);
 
             // start initialisation
-            urlRewriterContainer = initUrlRewriterContainer();
+            urlRewriter = initUrlRewriter();
 
             // update the store of factories
             INSTANCES.put(context.getSite(), this);
@@ -161,11 +163,11 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     /**
      * @return
      */
-    public UrlRewriterContainer getUrlRewriterContainer(){
+    public UrlRewriter getUrlRewriter(){
 
-        LOG.trace("getUrlRewriterContainer()");
+        LOG.trace("getUrlRewriter()");
 
-        return urlRewriterContainer;
+        return urlRewriter;
     }
 
     // Package protected ---------------------------------------------
@@ -175,7 +177,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     // Private -------------------------------------------------------
 
 
-    private UrlRewriterContainer initUrlRewriterContainer() {
+    private UrlRewriter initUrlRewriter() {
 
         loader.abut();
         LOG.info("Parsing " + URLREWRITE_XMLFILE + " started");
@@ -184,7 +186,15 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
         // finished
         LOG.info("Parsing " + URLREWRITE_XMLFILE + " finished");
 
-        return new URC(0 < output.trim().length() ? output : EMPTY_RULES);
+        byte[] byteArr = 0 < output.trim().length()
+                ? output.getBytes()
+                : EMPTY_RULES.getBytes();
+
+        return new UrlRewriter(new Conf(
+                context.getServletContext(),
+                new ByteArrayInputStream(byteArr),
+                URLREWRITE_XMLFILE,
+                ""));
     }
 
     private static StringWriter transformDocumentToString(final Document xml){
@@ -205,19 +215,5 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     }
 
     // Inner classes -------------------------------------------------
-
-    private static class URC extends UrlRewriterContainer{
-
-        private final String rules;
-
-        URC(final String rules){
-            super();
-            this.rules = rules;
-        }
-
-        protected InputStream getInputStream(){
-            return new ByteArrayInputStream(rules.getBytes());
-        }
-    }
 
 }

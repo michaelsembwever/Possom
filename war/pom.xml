@@ -225,10 +225,10 @@
       </dependency>
 
       <dependency>
-        <groupId>urlrewrite</groupId>
-        <artifactId>urlrewrite</artifactId>
+        <groupId>org.tuckey</groupId>
+        <artifactId>urlrewritefilter</artifactId>
         <type>jar</type>
-        <version>3.0-schibstedsok-r1</version>
+        <version>3.1.0</version>
       </dependency>
 
       <!-- Reference implementation provided in no.sesat.search.http.dwr.DataModelWrapper.java

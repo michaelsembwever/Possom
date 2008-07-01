@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -22,7 +22,10 @@
 
 package no.sesat.search.http.filters;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.http.urlrewrite.UrlRewriterContainerFactory;
@@ -30,7 +33,7 @@ import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
-import org.tuckey.web.filters.urlrewrite.UrlRewriterContainer;
+import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
 /** Override of tuckey's UrlRewriteFilter that supplies an inputstream to the skins's urlrewrite.xml
  *   instead of the default /WEB-INF/urlrewrite.xml
@@ -56,9 +59,12 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
     // Public --------------------------------------------------------
 
     @Override
-    public UrlRewriterContainer getUrlRewriterContainer(final ServletRequest request){
+    protected UrlRewriter getUrlRewriter(
+            final ServletRequest request,
+            final ServletResponse response,
+            final FilterChain chain){
 
-        UrlRewriterContainer result = null;
+        UrlRewriter result = null;
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
             final Site site = (Site) httpRequest.getAttribute(Site.NAME_KEY);
@@ -74,14 +80,13 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
                         public Site getSite() {
                             return site;
                         }
+                        public ServletContext getServletContext(){
+                            return httpRequest.getSession().getServletContext();
+                        }
             });
 
-            result = factory.getUrlRewriterContainer();
+            result = factory.getUrlRewriter();
 
-            if(!result.isLoaded()){
-                result.init(getFilterConfig());
-                result.loadConf();
-            }
         }
         return result;
     }
