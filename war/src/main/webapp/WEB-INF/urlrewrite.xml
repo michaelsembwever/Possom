@@ -50,4 +50,7 @@
       - /tradedoubler/(.*)
       -->
     <rule><from>^/([^/\?]*)(?:\?(.*))?$</from><to>/search/?q=$1&amp;$2</to></rule>
+
+    <!-- legacy -->
+    <rule><from>(.*)&amp;output=(.*)</from><to type="permanent-redirect">$1&amp;layout=$2</to></rule>
 </urlrewrite>
