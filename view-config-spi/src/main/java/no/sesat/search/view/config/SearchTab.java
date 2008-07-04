@@ -224,10 +224,22 @@ public final class SearchTab implements Serializable{
 
     /**
      * Getter for property rssResultName.
+     * If it is an (comma seperated) array return the first element.
      * @return Value of property rssResultName.
      */
     public String getRssResultName() {
-        return rssResultName;
+        return rssResultName.contains(",")
+                ? rssResultName.split(",")[0]
+                : rssResultName;
+    }
+
+    /**
+     * Getter for property rssResultName.
+     * Returns the whole array, indicated the list of commands to run.
+     * @return Value of property rssResultName.
+     */
+    public String[] getRssCommands() {
+        return rssResultName.split(",");
     }
 
     /**

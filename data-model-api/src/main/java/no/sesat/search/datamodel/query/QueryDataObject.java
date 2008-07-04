@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import no.sesat.search.datamodel.access.AccessDisallow;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.query.Query;
 
-/** The QueryDataObject is the datamodel's container around the user inputted query string 
+/** The QueryDataObject is the datamodel's container around the user inputted query string
  * and the same query parsed into a Query tree.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
@@ -39,20 +39,20 @@ import no.sesat.search.query.Query;
 public interface QueryDataObject extends StringDataObject{
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @AccessDisallow(REQUEST_CONSTRUCTION)
     Query getQuery();
 
     /**
-     * 
-     * @param query 
+     *
+     * @param query
      */
     @AccessAllow(RUNNING_QUERY_CONSTRUCTION)
     void setQuery(Query query);
 
-    @AccessAllow({SEARCH_COMMAND_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING})
+    @AccessAllow({SEARCH_COMMAND_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_HANDLING})
     String getString();
 
 }

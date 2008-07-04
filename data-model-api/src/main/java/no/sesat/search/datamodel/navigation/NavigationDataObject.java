@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ public interface NavigationDataObject {
      * @param key
      * @param value
      */
-    @AccessAllow({DATA_MODEL_CONSTRUCTION, RUNNING_QUERY_RESULT_HANDLING})
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, RUNNING_QUERY_HANDLING})
     void setNavigation(String key, NavigationItem value);
 
 //    /**

@@ -36,10 +36,12 @@
       <module>result</module>
       <module>result-handler-config</module>
       <module>search-command-config</module>
+      <module>run-handler-config</module>
       <module>view-config</module>
       <module>query-transform-control</module>
       <module>result-handler-control</module>
       <module>search-command-control</module>
+      <module>run-handler-control</module>
       <module>view-control</module>
       <module>velocity-directives</module>
       <module>sesam.com</module>

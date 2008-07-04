@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -275,7 +275,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         continue;
                     }
                     final Element childElement = (Element) childNode;
-                    
+
                     if(SEARCH_CONFIGURATION_FACTORY.supported(childElement.getTagName(), context)){
 
                         // commands
@@ -384,7 +384,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         RunHandlerConfigFactory() {}
 
         @Override
-        protected Class<RunHandlerConfig> findClass(final String xmlName, final Context context) 
+        protected Class<RunHandlerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
@@ -398,7 +398,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         protected final RunHandlerConfig parseRunHandlerConfiguration(final Context context, final Element e) {
-            return construct(e, context);
+            return construct(e, context).readRunHandler(e);
         };
     }
 
@@ -406,7 +406,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         RunTransformerConfigFactory() {}
 
         @Override
-        protected Class<RunTransformerConfig> findClass(final String xmlName, final Context context) 
+        protected Class<RunTransformerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
@@ -420,7 +420,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         protected final RunTransformerConfig parseRunTransformerConfiguration(final Context context, final Element e) {
-            return construct(e, context);
+            return construct(e, context).readRunTransformer(e);
         };
     }
 
