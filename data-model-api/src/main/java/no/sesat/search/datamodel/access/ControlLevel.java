@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -51,9 +51,9 @@ public enum ControlLevel {
      */
     SEARCH_COMMAND_EXECUTION,
     /**
-     * The state while RunningQuery result handlers are being processed.
+     * The state while RunningQuery run handlers are being processed.
      */
-    RUNNING_QUERY_RESULT_HANDLING, // TODO rename to RUNNING_QUERY_HANDLING
+    RUNNING_QUERY_HANDLING,
     /**
      * The state while jsps and velocity templates are being executed.
      */
@@ -80,8 +80,8 @@ public enum ControlLevel {
 //            case SEARCH_COMMAND_EXECUTION:
 //                return SEARCH_COMMAND_RESULT_HANDLING;
 //            case SEARCH_COMMAND_RESULT_HANDLING:
-//                return RUNNING_QUERY_RESULT_HANDLING;
-//            case RUNNING_QUERY_RESULT_HANDLING:
+//                return RUNNING_QUERY_HANDLING;
+//            case RUNNING_QUERY_HANDLING:
 //                return VIEW_CONSTRUCTION;
 //            case VIEW_CONSTRUCTION:
 //                // a new request

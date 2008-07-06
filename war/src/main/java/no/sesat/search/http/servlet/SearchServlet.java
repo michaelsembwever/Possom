@@ -226,7 +226,7 @@ public final class SearchServlet extends  HttpServlet {
 
         }finally{
 
-            // DataModel's ControlLevel will be REQUEST_CONSTRUCTION or RUNNING_QUERY_RESULT_HANDLING
+            // DataModel's ControlLevel will be REQUEST_CONSTRUCTION or RUNNING_QUERY_HANDLING
             //  Increment it onwards to VIEW_CONSTRUCTION.
             dmFactory.assignControlLevel(datamodel, ControlLevel.VIEW_CONSTRUCTION);
         }

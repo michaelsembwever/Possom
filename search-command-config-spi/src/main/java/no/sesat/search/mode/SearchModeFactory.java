@@ -397,7 +397,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         protected final RunHandlerConfig parseRunHandlerConfiguration(final Context context, final Element e) {
-            return construct(e, context);
+            return construct(e, context).readRunHandler(e);
         };
     }
 
@@ -419,7 +419,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         protected final RunTransformerConfig parseRunTransformerConfiguration(final Context context, final Element e) {
-            return construct(e, context);
+            return construct(e, context).readRunTransformer(e);
         };
     }
 

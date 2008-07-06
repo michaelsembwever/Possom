@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted Søk AS
+ * Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -55,6 +55,7 @@ public final class RunHandlerFactory {
 
     /**
      *
+     * @param context
      * @param config
      * @return
      */

@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -157,7 +157,7 @@ public interface DataModel extends Serializable{
      * @param key the search (commandName) to get SearchDataObject for
      * @return the SearchDataObject
      */
-    @AccessAllow({SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_RESULT_HANDLING, VIEW_CONSTRUCTION})
+    @AccessAllow({SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_HANDLING, VIEW_CONSTRUCTION})
     SearchDataObject getSearch(final String key);
 
     /** Set a search command's finished results.
@@ -168,7 +168,7 @@ public interface DataModel extends Serializable{
      * @param key
      * @param value
      */
-    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, SEARCH_COMMAND_EXECUTION})
+    @AccessAllow({DATA_MODEL_CONSTRUCTION, REQUEST_CONSTRUCTION, SEARCH_COMMAND_EXECUTION, RUNNING_QUERY_HANDLING})
     void setSearch(final String key, final SearchDataObject value);
 
     // NavigationDataObject ------------------------------------------------------------

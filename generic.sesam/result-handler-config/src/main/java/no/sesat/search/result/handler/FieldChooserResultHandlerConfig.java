@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-/**
+/** Copies the first found value in the list of from fields into the target field.
  *
  * @version <tt>$Id$</tt>
  */

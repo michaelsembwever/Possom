@@ -20,6 +20,7 @@ package no.sesat.search.run;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -305,7 +306,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
             //  Increment it onwards to RUNNING_QUERY_RESULT_HANDLING.
-            dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_RESULT_HANDLING);
+            dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_HANDLING);
 
             if( !allCancelled ){
 
@@ -406,8 +407,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 applicable |= explicitCommand.equalsIgnoreCase(conf.getId());
             }
 
-            // check output is rss, only run the command that will produce the rss output. only disable applicable.
-            applicable &= !isRss() || context.getSearchTab().getRssResultName().equals(conf.getId());
+            // check output is rss, only run the command(s) that will produce the rss output.
+            applicable &= !isRss()
+                    || Arrays.asList(context.getSearchTab().getRssCommands()).contains(conf.getId().intern());
 
             // check for alwaysRun or for a possible enrichment (since its scoring will be the final indicator)
             applicable &= conf.isAlwaysRun() ||
@@ -514,6 +516,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                             final String entryName
                                     = ((SearchCommand)entry.getValue()).getSearchConfiguration().getId();
+
                             if(waitForStr.equalsIgnoreCase(entryName)){
 
                                 waitFor.put(
@@ -615,6 +618,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         for (final RunHandlerConfig rhc : rhcList) {
             final RunHandler rh = RunHandlerFactory.getController(handlerContext, rhc);
+
+            LOG.debug("executing " + rh);
             rh.handleRunningQuery(handlerContext);
         }
     }
