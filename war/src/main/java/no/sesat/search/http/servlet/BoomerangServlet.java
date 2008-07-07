@@ -155,13 +155,10 @@ public final class BoomerangServlet extends HttpServlet {
                         ? ((StringDataObject) params.get(key)).getXmlEscaped()
                         : StringEscapeUtils.escapeXml((String) params.get(key));
 
-                // it's critical for the logparser that we write valid xml
                 final String keyEscaped = StringEscapeUtils.escapeXml(URLDecoder.decode(key, "UTF-8"));
-                if (!keyEscaped.contains("%")) {
-                    bob.append('<' + keyEscaped + '>' + value + "</" + keyEscaped + '>');
-                }else{
-                    bob.append("<doubled-url-encoded-tag-ignored-here/>");
-                }
+
+                bob.append("<parameter key=\"" + keyEscaped + "\" value=\"" + value + "\"/>");
+
             }catch (UnsupportedEncodingException ex) {
                 LOG.error("Failed to kangerooGrub " + key, ex);
             }
