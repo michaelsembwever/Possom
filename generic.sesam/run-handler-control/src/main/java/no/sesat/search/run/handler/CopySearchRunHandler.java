@@ -62,7 +62,7 @@ public final class CopySearchRunHandler implements RunHandler{
 
 
     public CopySearchRunHandler(final RunHandlerConfig rhc) {
-    	config =  (CopySearchRunHandlerConfig) rhc;
+        config =  (CopySearchRunHandlerConfig) rhc;
     }
 
 
@@ -74,6 +74,8 @@ public final class CopySearchRunHandler implements RunHandler{
 
         final SearchDataObject from = datamodel.getSearch(config.getFrom());
 
+        if(null != from){
+
 
         final SearchDataObject searchDO = factory.instantiate(
                 SearchDataObject.class,
@@ -83,6 +85,13 @@ public final class CopySearchRunHandler implements RunHandler{
                 new DataObject.Property("results", from.getResults()));
 
         datamodel.setSearch(config.getTo(), searchDO);
+
+        }else{
+
+            LOG.error("from attribute in <copy-search from=\"someCommandName\" to=\"someCommandName\" "
+                    + "is not an existing search command");
+        }
+
     }
 
     private DataModelFactory getDataModelFactory(final Context cxt){
