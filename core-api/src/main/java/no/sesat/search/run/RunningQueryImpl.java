@@ -163,10 +163,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             return queryStr;
                         }
                     },
+                    new BaseContext(){
+                        public String getUniqueId(){
+                            return datamodel.getParameters().getUniqueId();
+                        }
+                    },
                     siteCxt);
 
-        // This will among other things perform the initial fast search
-        // for textual analysis.
         engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
         // queryStr parser
@@ -197,7 +200,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         datamodel.setQuery(queryDO);
         datamodel.setNavigation(navDO);
 
-        rules = AnalysisRuleFactory.instanceOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context, siteCxt));
+        rules = AnalysisRuleFactory.instanceOf(ContextWrapper.wrap(
+                AnalysisRuleFactory.Context.class,
+                context,
+                siteCxt,
+                new BaseContext(){
+                    public String getUniqueId(){
+                        return datamodel.getParameters().getUniqueId();
+                    }
+            }));
 
     }
 

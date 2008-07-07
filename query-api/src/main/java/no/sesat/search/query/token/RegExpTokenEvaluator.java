@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  * <b>Immutable</b>
  *
  *
- * @version $Revision$
+ * @version $Id$
  */
 public final class RegExpTokenEvaluator implements TokenEvaluator {
 
@@ -43,6 +43,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      * @param expressions
      *            the patterns to use. Elements of collection must be
      *            {@link Pattern}.
+     * @param queryDependant
      */
     public RegExpTokenEvaluator(final Collection<Pattern> expressions, final boolean queryDependant) {
         this.expressions.addAll(expressions);

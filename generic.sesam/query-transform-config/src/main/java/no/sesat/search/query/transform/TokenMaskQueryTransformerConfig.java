@@ -13,7 +13,6 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
  */
 package no.sesat.search.query.transform;
 
@@ -22,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
 import no.sesat.search.query.token.TokenPredicate;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.query.transform.AbstractQueryTransformerConfig.Controller;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -81,7 +81,7 @@ public final class TokenMaskQueryTransformerConfig extends AbstractQueryTransfor
                 final Collection<TokenPredicate> cp = new ArrayList(DEFAULT_PREDICATES);
                 for (String tp : prefixes) {
                     try{
-                        cp.add(TokenPredicate.Static.getTokenPredicate(tp));
+                        cp.add(TokenPredicateUtility.getTokenPredicate(tp));
                     }catch(IllegalArgumentException iae){
                         LOG.error(ERR_PREFIX_NOT_FOUND + tp, iae);
                     }

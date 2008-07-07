@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ import java.util.Map;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Query;
+import no.sesat.search.query.token.EvaluationRuntimeException;
 import no.sesat.search.query.token.TokenEvaluationEngineContext;
 import no.sesat.search.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
@@ -35,7 +36,7 @@ import org.apache.log4j.Logger;
  * {@link Predicate} instances.
  *
  *
- * @version $Revision$
+ * @version $Id$
  */
 public final class AnalysisRule {
 
@@ -76,9 +77,7 @@ public final class AnalysisRule {
      *
      * @param query
      *            the query to apply the rule to.
-     * @param engine
-     *            the {@link no.sesat.search.query.token.TokenEvaluationEngineImpl} used as input to the
-     *            predicates.
+     * @param context
      * @return the score of this rule when applied to query.
      */
     public int evaluate(final Query query, final Context context) {
@@ -117,7 +116,7 @@ public final class AnalysisRule {
                         }
                     }
 
-                }catch(TokenPredicate.EvaluationException ie){
+                }catch(EvaluationRuntimeException ie){
                     // make sure to mention in the analysis logs that the scoring is corrupt.
                     scorer.error(predicateScore);
                 }
@@ -138,7 +137,7 @@ public final class AnalysisRule {
         return scorer.getScore();
     }
 
-    /** TODO comment me. **/
+    /** Names to use for predicates. **/
     void setPredicateNameMap(final Map<Predicate,String> predicateNames) {
         this.predicateNames = predicateNames;
     }

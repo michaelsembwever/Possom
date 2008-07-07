@@ -35,31 +35,31 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** Responsible for loading and serving all the Regular Expression Token Evaluators.
- * These regular expression patterns come from the configuration file SearchConstants.REGEXP_EVALUATOR_XMLFILE.
+/** Responsible for loading and serving the JEP Expression Token Evaluators.
+ * Which TokenPredicates it is applicable to is defined in JEP_EVALUATOR_XMLFILE configuration file.
  *
- * RegExpEvaluator's are re-used across queries so to cache the compiled patterns.
+ *  <b>Immutable</b> (although hidden lazy static-initialisation exists).
  *
  * @version <tt>$Id$</tt>
  */
-public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
+public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
 
-    private static final Logger LOG = Logger.getLogger(RegExpEvaluatorFactory.class);
+    private static final Logger LOG = Logger.getLogger(JepEvaluatorFactory.class);
+
+
+    /** The name of the file where regular expressions for each TokenPredicate will be configured. **/
+    public static final String JEP_EVALUATOR_XMLFILE = "JepEvaluators.xml";
 
     private static final String ERR_DOC_BUILDER_CREATION
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
 
-    /** General properties to all regular expressions configured. **/
-    static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-    /** The name of the file where regular expressions for each TokenPredicate will be configured. **/
-    public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";
-
     private volatile boolean init = false;
 
-    private final Map<TokenPredicate,RegExpTokenEvaluator> regExpEvaluators
-            = new HashMap<TokenPredicate,RegExpTokenEvaluator>();
+    /** JepTokenEvaluator's to use against the "*" query. Notes which tokens we're applicable to. **/
+    private final Map<TokenPredicate,JepTokenEvaluator> jepEvaluators
+            = new HashMap<TokenPredicate,JepTokenEvaluator>();
 
-    public RegExpEvaluatorFactory(final Context cxt)
+    public JepEvaluatorFactory(final Context cxt)
             throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
@@ -70,24 +70,21 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
         }catch(ParserConfigurationException pce){
             throw new SiteKeyedFactoryInstantiationException(ERR_DOC_BUILDER_CREATION, pce);
         }
+
     }
 
-    /** Loads the resource SearchConstants.REGEXP_EVALUATOR_XMLFILE containing all regular expression patterns
-     *   for all the RegExpTokenEvaluators we will be using.
-     */
     private void init() throws ParserConfigurationException {
 
         if (!init) {
-            synchronized(regExpEvaluators){
-
+            synchronized(jepEvaluators){
                 final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setValidating(false);
                 final DocumentBuilder builder = factory.newDocumentBuilder();
-                final DocumentLoader loader
-                        = getContext().newDocumentLoader(getContext(), REGEXP_EVALUATOR_XMLFILE, builder);
+
+                final DocumentLoader loader = getContext().newDocumentLoader(getContext(), JEP_EVALUATOR_XMLFILE, builder);
 
                 loader.abut();
-                LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
+                LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " started");
                 final Document doc = loader.getDocument();
 
                 assert null != doc : "No document loaded for " + getContext().getSite().getName();
@@ -115,29 +112,12 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
                         final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
                         LOG.info(" ->evaluator@query-dependant: " + queryDep);
 
-                        final Collection<Pattern> compiled = new ArrayList<Pattern>();
-
-                        final NodeList patterns = evaluator.getElementsByTagName("pattern");
-                        for (int j = 0; j < patterns.getLength(); ++j) {
-                            final Element pattern = (Element) patterns.item(j);
-
-                            final String expression = pattern.getFirstChild().getNodeValue();
-                            LOG.info(" --->pattern: " + expression);
-
-                            // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
-                            final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
-                            final String suffix = expression.endsWith("$") ? "" : "(\\:|$|\\s)";
-                            // compile pattern
-                            final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
-                            compiled.add(p);
-                        }
-
-                        final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-                        regExpEvaluators.put(token, regExpTokenEvaluator);
+                        final JepTokenEvaluator jepTokenEvaluator = new JepTokenEvaluator("*", queryDep);
+                        jepEvaluators.put(token, jepTokenEvaluator);
 
                     }
                 }
-                LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
+                LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " finished");
                 init = true;
             }
         }
@@ -145,7 +125,7 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
-        TokenEvaluator result = regExpEvaluators.get(token);
+        TokenEvaluator result = jepEvaluators.get(token);
         if(result == null && null != getContext().getSite().getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
@@ -161,9 +141,11 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
         if(null == result || TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR == result){
             // if we cannot find an evaulator, then always fail evaluation.
             //  Rather than encourage a NullPointerException
-            result = TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR;
+            return TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR;
         }
-        return result;
+        return "*".equals(getContext().getQueryString())
+                ? result
+                : new JepTokenEvaluator(getContext().getQueryString(), result.isQueryDependant(token));
     }
 
 }

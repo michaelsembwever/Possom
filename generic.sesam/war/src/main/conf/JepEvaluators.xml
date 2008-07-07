@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--DOCTYPE evaluators SYSTEM "http://sesam.no/dtds/JepEvaluators.dtd"-->
+<!--
+    Document   : JepEvaluators.xml
+    Version    : $Id: RegularExpressionEvaluators.xml 3698 2006-11-14 13:46:56Z ssmiweve $
+    Description:
+        Purpose of the document follows.
+-->
+
+<evaluators>
+    
+    <evaluator token="MATH" query-dependant="false"/>
+    
+</evaluators>

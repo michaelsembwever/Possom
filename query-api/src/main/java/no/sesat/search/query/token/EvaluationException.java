@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,14 +18,16 @@
  */
 package no.sesat.search.query.token;
 
-/** Something went wrong querying the fast list.
- * The VeryFastTokenEvaluator wont work because of this failure.
- * TokenPredicates (because of their associated known and possible predicates) cannot be wealy cached.
+/** Something went wrong evaluating the token.
+ *
+ * Because of this
+ * TokenPredicates (because of their associated known and possible predicates) cannot be weakly cached
+ * and so should be marked stale.
  *
  *
  * @version <tt>$Id$</tt>
  */
-public final class VeryFastListQueryException extends Exception {
+public final class EvaluationException extends Exception {
 
     /**
      * Create a new VeryFastListQueryException.
@@ -33,7 +35,7 @@ public final class VeryFastListQueryException extends Exception {
      * @param s detailed message
      * @param e underlying exception
      */
-    public VeryFastListQueryException(final String s, final Exception e) {
+    public EvaluationException(final String s, final Exception e) {
         super(s, e);
     }
 }

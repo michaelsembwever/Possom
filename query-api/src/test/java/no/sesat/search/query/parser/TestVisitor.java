@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -91,6 +91,9 @@ public final class TestVisitor extends SiteTestCase {
 
                     public Site getSite()  {
                         return getTestingSite();
+                    }
+                    public String getUniqueId() {
+                        return "";
                     }
                 });
 
@@ -316,7 +319,7 @@ public final class TestVisitor extends SiteTestCase {
             "(test \"Massey Ferguson 165 (A 4.212)-2\" ((((Massey Ferguson) 165) A) 42122 (4.212 2)) (((Massey (Ferguson 165)) A) 42122 (4.212 2)) ((Massey (Ferguson (165 A))) 42122 (4.212 2)) (Massey (Ferguson (165 (A 42122 (4.212 2))))))");
 
     }
-    
+
     /** See SKER4723 **/
     @Test
     public void testEarlyBirdFieldSeparator(){
@@ -325,18 +328,18 @@ public final class TestVisitor extends SiteTestCase {
             ": «Always There»",
             "92221689 OR 92221689",
             "(Always There)");
-          
+
           basicQueryParserWithTestVisitorImpl(
             ":http://www.nordealiv.no/bedriftsdialog",
             "92221689 OR 92221689",
             "http://www.nordealiv.no/bedriftsdialog");
-          
+
           basicQueryParserWithTestVisitorImpl(
             "://www.bodo.se/djur/haest_fjording.htm",
             "92221689 OR 92221689",
             "((www.bodo.se djur) haest_fjording.htm) (www.bodo.se (djur haest_fjording.htm))");
     }
-        
+
     private void basicQueryParserWithTestVisitorImpl(
             final String queryInput,
             final String visitorResult,

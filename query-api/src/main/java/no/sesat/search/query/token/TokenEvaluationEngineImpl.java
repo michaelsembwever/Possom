@@ -19,15 +19,13 @@ package no.sesat.search.query.token;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
-import no.sesat.search.query.token.TokenPredicate.EvaluationException;
 import no.sesat.search.site.Site;
 import org.apache.log4j.Logger;
 
@@ -35,7 +33,7 @@ import org.apache.log4j.Logger;
  * TokenEvaluateFactory provides knowledge about which implementation of
  * {@link TokenEvaluator} that can handle a particular token.
  *
- * This class is not synchronised (Except for the evaluateTerm method).
+ * This class is not synchronised (Except for the evaluateTerm, evaluateClause, and evaluateQuery methods).
  * Manual synhronisation must be taken when calling operate or setter methods from inside SearchCommand classes.
  *
  *
@@ -48,9 +46,6 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private static final Logger LOG = Logger.getLogger(TokenEvaluationEngineImpl.class);
-    private static final String ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR = "Failed to construct the fast evaluator";
-    private static final String ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED =
-            "Interrupted waiting for FastEvaluatorCreator. Evaluation on this query will fail.";
     private static final String ERR_TOKENTYPE_WIHOUT_IMPL = "Token type not known or implemented. ";
     private static final String DEBUG_POOL_COUNT = "Pool size: ";
     private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS
@@ -60,9 +55,6 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     // Attributes -----------------------------------------------------
 
     private final Context context;
-    private final Future fastEvaluatorCreator;
-    private TokenEvaluator fastEvaluator;
-    private final JepTokenEvaluator jedEvaluator;
     private State state;
     private volatile Thread owningThread = Thread.currentThread();
 
@@ -71,7 +63,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     /**
      * Create a new TokenEvaluationEngine.
      *
-     * @param cxt
+     * @param cxt context to work within.
      */
     public TokenEvaluationEngineImpl(final Context cxt) {
 
@@ -82,27 +74,36 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         }
 
         context = cxt;
-        fastEvaluatorCreator = EXECUTOR.submit(new FastEvaluatorCreator());
-
-        jedEvaluator = new JepTokenEvaluator(context.getQueryString());
     }
 
+    // Public -----------------------------------------------------
 
-    public TokenEvaluator getEvaluator(final TokenPredicate token) throws VeryFastListQueryException {
+    public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
-        // TODO clean up when implementing SEARCH-3540. can be configured through annotations.
-        if(TokenPredicate.Type.FAST == token.getType()){
-            return getFastEvaluator();
+        for(EvaluatorType type : EvaluatorType.getInstances()){
 
-        }else if(TokenPredicate.Type.REGEX == token.getType()){
-            return RegExpEvaluatorFactory.instanceOf(
-                        ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class,context)).getEvaluator(token);
+            final String factoryName = type.getEvaluatorFactoryClassName();
 
-        }else if(TokenPredicate.Type.JEP == token.getType()){
-            return jedEvaluator;
+            final AbstractEvaluatorFactory factory = AbstractEvaluatorFactory.instanceOf(
+                    ContextWrapper.wrap(
+                    AbstractEvaluatorFactory.Context.class,
+                    context,
+                    new BaseContext() {
+                        public String getEvaluatorFactoryClassName() {
+                            return factoryName;
+                        }
+                    }
+            ));
 
+            if(factory.isResponsibleFor(token)){
+                LOG.trace("Evaluator for " + token + " found by " + factoryName);
+                return factory.getEvaluator(token);
+            }
         }
-        throw new IllegalArgumentException(ERR_TOKENTYPE_WIHOUT_IMPL + token);
+
+        // no evaluator has been defined for this predicate. it must always be false then.
+        return ALWAYS_FALSE_EVALUATOR;
+        //throw new IllegalArgumentException(ERR_TOKENTYPE_WIHOUT_IMPL + token);
     }
 
     public String getQueryString() {
@@ -164,10 +165,10 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
             }
 
-        }catch(VeryFastListQueryException ie){
+        }catch(EvaluationException ie){
             // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
             //  so we must sneak the VeryFastListQueryException through as a run-time exception.
-            throw new EvaluationException(ie);
+            throw new EvaluationRuntimeException(ie);
         }
 
         throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
@@ -206,39 +207,5 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     }
 
     // inner classes -----------------------------------------------------
-
-    private final class FastEvaluatorCreator implements Runnable{
-        public void run() {
-
-            try {
-
-                fastEvaluator = new VeryFastTokenEvaluator(
-                        ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
-
-            } catch (VeryFastListQueryException ex) {
-                LOG.error(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR);
-            }
-        }
-
-    }
-
-    private TokenEvaluator getFastEvaluator() throws VeryFastListQueryException {
-
-        try {
-            fastEvaluatorCreator.get();
-
-        } catch (InterruptedException ex) {
-            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
-            throw new VeryFastListQueryException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
-        } catch (ExecutionException ex) {
-            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
-            throw new VeryFastListQueryException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
-        }
-        if( null == fastEvaluator ){
-            throw new VeryFastListQueryException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, new NullPointerException());
-        }
-
-        return fastEvaluator;
-    }
 
 }

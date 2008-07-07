@@ -22,7 +22,6 @@
 
 package no.sesat.search.query.parser;
 
-import java.lang.ref.Reference;
 import java.util.Collections;
 import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
@@ -31,7 +30,9 @@ import no.sesat.search.query.Visitor;
 import no.sesat.search.query.token.TokenEvaluator;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
-import no.sesat.search.query.token.VeryFastListQueryException;
+import no.sesat.search.query.token.EvaluationException;
+import no.sesat.search.query.token.EvaluationRuntimeException;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import org.apache.log4j.Logger;
 
 
@@ -73,6 +74,7 @@ public abstract class AbstractClause implements Clause {
 
     /**
      * See if there is an identical and immutable Clause already in use in the JVM.
+     * @param <T>
      * @param key the <B>unique</B> (for this AbstractClause subtype) key for the Clause we are looking for.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      * @return the AbstractClause in use already, matching the key. <B>May be <CODE>null</CODE></B>.
@@ -88,6 +90,7 @@ public abstract class AbstractClause implements Clause {
 
     /**
      * Note there is an identical and immutable Clause ready to use in the JVM.
+     * @param <T>
      * @param key the <B>unique</B> (for this AbstractClause subtype) key
      *   for the Clause we are about to add to the mappings.
      * @param clause the Clause we are about to add to the mappings.
@@ -117,41 +120,53 @@ public abstract class AbstractClause implements Clause {
 
         boolean success = true;
 
+
+        for (TokenPredicate token : TokenPredicateUtility.getTokenPredicates()) {
+
+            success &= findPredicate(engine, token, success);
+            success &= findPredicate(engine, token.exactPeer(), success);
+        }
+
+        return success;
+    }
+
+    private static final boolean findPredicate(
+            final TokenEvaluationEngine engine,
+            final TokenPredicate token,
+            final boolean pastSuccess){
+
+        boolean success = pastSuccess;
+
         final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
         final Set<TokenPredicate> possiblePredicates = engine.getState().getPossiblePredicates();
         final String currTerm = engine.getState().getTerm();
 
+        // check it hasn't already been added
+        if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){
 
-        for (TokenPredicate token : TokenPredicate.Static.getTokenPredicates()) {
-
-            // check it hasn't already been added
-            if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){
-
-                try{
-                    if (token.evaluate(engine)) {
-                        final TokenEvaluator evaluator = engine.getEvaluator(token);
-                        if (evaluator.isQueryDependant(token)) {
-                            possiblePredicates.add(token);
-                            LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
-                        }  else  {
-                            knownPredicates.add(token);
-                            LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
-                        }
+            try{
+                if (token.evaluate(engine)) {
+                    final TokenEvaluator evaluator = engine.getEvaluator(token);
+                    if (evaluator.isQueryDependant(token)) {
+                        possiblePredicates.add(token);
+                        LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
+                    }  else  {
+                        knownPredicates.add(token);
+                        LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
                     }
-                }catch(VeryFastListQueryException ie){
-                    if(success){
-                        success = false;
-                        LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
-                    }
-                }catch(TokenPredicate.EvaluationException ee){
-                    if(success){
-                        success = false;
-                        LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
-                    }
+                }
+            }catch(EvaluationException ie){
+                if(success){
+                    success = false;
+                    LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
+                }
+            }catch(EvaluationRuntimeException ee){
+                if(success){
+                    success = false;
+                    LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
                 }
             }
         }
-
         return success;
     }
 

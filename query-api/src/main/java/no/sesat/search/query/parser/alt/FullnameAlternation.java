@@ -34,6 +34,7 @@ import no.sesat.search.query.XorClause.Hint;
 import no.sesat.search.query.finder.Counter;
 import no.sesat.search.query.finder.PredicateFinder;
 import no.sesat.search.query.parser.alt.AbstractAlternation;
+import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
@@ -70,7 +71,7 @@ public final class FullnameAlternation extends AbstractAlternation {
 
         final Set<Clause> fullnames = finder.findClauses(
                 clause,
-                TokenPredicate.Categories.FULLNAME,
+                Categories.FULLNAME,
                 context.getTokenEvaluationEngine());
 
         Clause result = clause;
@@ -100,7 +101,7 @@ public final class FullnameAlternation extends AbstractAlternation {
 
                 Clause surname = finder.findFirstClause(
                         rightLeaningFullname,
-                        TokenPredicate.Categories.LASTNAME,
+                        Categories.LASTNAME,
                         context.getTokenEvaluationEngine());
 //                for(Clause lastname : lastnames){
 //                    if( null != surname ){

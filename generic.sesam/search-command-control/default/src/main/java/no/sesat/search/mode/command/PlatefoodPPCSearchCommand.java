@@ -29,7 +29,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import no.sesat.search.mode.config.PlatefoodPpcCommandConfig;
-import no.sesat.search.query.token.TokenPredicate;
+import no.sesat.search.query.token.Categories;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.PlatefoodSearchResult;
@@ -91,9 +92,9 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
             = (PlatefoodPpcCommandConfig) context.getSearchConfiguration();
 
         // TODO smelling of non-sesat business logic here. AND presentation logic. move out.
-        top = rq.getEngine().evaluateQuery(TokenPredicate.Categories.LOAN_TRIGGER, rq.getQuery());
-        top |= rq.getEngine().evaluateQuery(TokenPredicate.Categories.SUDOKU_TRIGGER, rq.getQuery());
-        top &= rq.getEngine().evaluateQuery(TokenPredicate.Static.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
+        top = rq.getEngine().evaluateQuery(Categories.LOAN_TRIGGER, rq.getQuery());
+        top |= rq.getEngine().evaluateQuery(Categories.SUDOKU_TRIGGER, rq.getQuery());
+        top &= rq.getEngine().evaluateQuery(TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
 
         try {
             final Document doc = getXmlResult();

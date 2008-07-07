@@ -10,7 +10,7 @@
         Purpose of the document follows.
 -->
 
-<rules>
+<rules evaluators="FAST,REGEX,JEP">
 
 
     <!-- Global predicates -->
@@ -67,8 +67,8 @@
     </predicate>
     <predicate id="exactFirstOrLast">
         <any>
-            <predicate id="EXACT_FIRST"/>
-            <predicate id="EXACT_LAST"/>
+            <predicate id="EXACT_FIRSTNAME"/>
+            <predicate id="EXACT_LASTNAME"/>
         </any>
     </predicate>
     <predicate id="firstAndLastName">
@@ -104,7 +104,7 @@
     <predicate id="firstAndLastName-exactWiki-notCompany">
         <all>
             <predicate id="firstAndLastName"/>
-            <predicate id="EXACT_WIKI"/>
+            <predicate id="EXACT_WIKIPEDIA"/>
             <predicate>
                 <any>
                     <predicate><not><predicate id="COMPANYSUFFIX"/></not></predicate>
@@ -119,7 +119,7 @@
             <predicate>
                 <none>
                     <predicate id="TNS"/>
-                    <predicate id="EXACT_WIKI"/>
+                    <predicate id="EXACT_WIKIPEDIA"/>
                     <predicate id="geo"/>
                     <predicate id="COMPANY_KEYWORD"/>
                     <predicate id="CATEGORY"/>
@@ -184,7 +184,7 @@
     
     <predicate id="exactWiki-notCompanyUnlessFullname">
         <all>
-            <predicate id="EXACT_WIKI"/>
+            <predicate id="EXACT_WIKIPEDIA"/>
             <predicate>
                 <any>
                     <predicate>
@@ -278,7 +278,6 @@
         </predicate>
 
         <!-- Scoring postives -->
-        <score predicate="EXACT_TOP3">2000</score>
         <score predicate="CATALOGUE_MAGIC">1000</score>
         <score predicate="YELLOW_MAGIC">1000</score>
         <score predicate="phoneOrOrgNr">500</score>
@@ -298,7 +297,7 @@
         <score predicate="cataloguePrefixAndFirstOrLastNotCompany">-500</score>
         <score predicate="dropPredicates">-500</score>
         <score predicate="geoExactNotCompany">-500</score>
-        <score predicate="EXACT_FIRST">-500</score>
+        <score predicate="EXACT_FIRSTNAME">-500</score>
         <score predicate="firstOrLastAndGeoNotCompany">-1000</score>
     </rule>
     
@@ -363,7 +362,6 @@
         <score predicate="dropPredicates">-500</score>
         <score predicate="EXACT_CLASSIFIED_MAGIC">-500</score>
         <score predicate="geoExact">-600</score>
-        <score predicate="EXACT_TOP3">-1000</score>
         <score predicate="EXACT_PPCTOPLIST">-1000</score>
         <score predicate="DISEASE">-1000</score>
         <score predicate="FOOD">-1000</score>
@@ -377,7 +375,7 @@
         <!-- Scoring -->
         <score predicate="WIKIPEDIA_MAGIC">1000</score>
         <score predicate="wikiAndWikiPrefix">400</score>
-        <score predicate="EXACT_WIKI">300</score>
+        <score predicate="EXACT_WIKIPEDIA">300</score>
         <score predicate="anyMagic">-500</score>
         <score predicate="dropPredicates">-500</score>
         <score predicate="wikiAndCompany">-800</score>
@@ -553,7 +551,6 @@
         
         <!-- Scoring negatives -->
         <score predicate="geo">-30</score>
-        <score predicate="EXACT_TOP3">-30</score>
         <score predicate="dropPredicates">-250</score>
         <score predicate="dropMagics">-500</score>
         <score predicate="EXACT_CLASSIFIED_MAGIC">-500</score>

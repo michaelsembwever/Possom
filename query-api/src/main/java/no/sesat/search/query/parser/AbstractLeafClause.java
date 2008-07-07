@@ -51,6 +51,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
      *
      * Where this is true subclasses are free to use this helper method.
      *
+     * @param <T> specific type of AbstractLeafClause
      * @param clauseClass the exact subclass of AbstracLeafClause that we are about to create (or find already in use).
      * @param term the term the clause we are about to create (or find) will have.
      * @param field the field the clause we are about to create (or find) will have.
@@ -133,6 +134,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     /**
      * Create clause with the given term, known and possible predicates.
      * @param term the term (query string) for this clause.
+     * @param field
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */
@@ -160,8 +162,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
         return field;
     }
 
-    /** {@inheritDoc}
-     */
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + getTerm() + "," + getField() + "]";
      }

@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,24 +13,18 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
  */
 package no.sesat.search.query.transform;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.DoubleOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.PhraseClause;
-import no.sesat.search.query.token.RegExpEvaluatorFactory;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.query.transform.TokenMaskQueryTransformerConfig.Mask;
@@ -58,7 +52,6 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
     private Set<TokenPredicate> insidePredicates = new HashSet<TokenPredicate>();
     private StringBuilder predicateBuilder = new StringBuilder();
     private Map<LeafClause,String> leaves = new HashMap<LeafClause,String>();
-    private RegExpEvaluatorFactory regExpFactory = null;
 
     private static final String ERR_PREFIX_NOT_FOUND = "No such TokenPredicate ";
 
@@ -182,18 +175,4 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
 
         return transform;
     }
-
-    /** TODO comment me. **/
-    public void setContext(final QueryTransformer.Context cxt) {
-
-        super.setContext(cxt);
-
-        final RegExpEvaluatorFactory.Context regExpEvalFactory = ContextWrapper.wrap(
-                RegExpEvaluatorFactory.Context.class, cxt);
-
-        regExpFactory = RegExpEvaluatorFactory.instanceOf(regExpEvalFactory);
-    }
-
-
-
 }

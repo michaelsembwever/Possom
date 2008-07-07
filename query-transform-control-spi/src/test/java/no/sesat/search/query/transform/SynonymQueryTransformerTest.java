@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,9 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
- */
-/*
+ *
  * SynonymQueryTransformerTest.java
  *
  * Created on April 5, 2006, 9:32 P
@@ -38,6 +36,7 @@ import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractReflectionVisitor;
 import no.sesat.search.query.parser.ParseException;
+import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenEvaluationEngineTestContext;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenEvaluationEngineImpl;
@@ -81,13 +80,13 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         final Query query = parseQuery(tef);
 
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
-                TokenPredicate.Categories.STOCKMARKETTICKERS.exactPeer().name(), tefCxt, tef);
+                Categories.STOCKMARKETTICKERS.exactPeer().name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
         final String result = builder.getQueryString();
 
         LOG.debug("testOneWordExact builder gave " + result);
-        if( query.getFirstLeafClause().getPossiblePredicates().contains(TokenPredicate.Categories.STOCKMARKETTICKERS.exactPeer())){
+        if( query.getFirstLeafClause().getPossiblePredicates().contains(Categories.STOCKMARKETTICKERS.exactPeer())){
             assertEquals("(sch schibsted)", result);
         }else{
             assertEquals("sch", result);
@@ -107,13 +106,13 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
-                TokenPredicate.Categories.STOCKMARKETTICKERS.name(), tefCxt, tef);
+                Categories.STOCKMARKETTICKERS.name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
         final String result = builder.getQueryString();
 
         LOG.debug("testOneWord builder gave " + result);
-        if( query.getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.Categories.STOCKMARKETTICKERS)){
+        if( query.getFirstLeafClause().getKnownPredicates().contains(Categories.STOCKMARKETTICKERS)){
             assertEquals("(sch schibsted)", result);
         }else{
             assertEquals("sch", result);
@@ -133,13 +132,13 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
-                TokenPredicate.Categories.STOCKMARKETTICKERS.name(), tefCxt, tef);
+                Categories.STOCKMARKETTICKERS.name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
         final String result = builder.getQueryString();
 
         LOG.debug("testTwoWords builder gave " + result);
-        if( query.getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.Categories.STOCKMARKETTICKERS)){
+        if( query.getFirstLeafClause().getKnownPredicates().contains(Categories.STOCKMARKETTICKERS)){
             assertEquals("(oslo oslo areal) (sch schibsted) schibsted", result);
         }else{
             assertEquals("oslo sch schibsted", result);
@@ -160,7 +159,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
-                TokenPredicate.Categories.STOCKMARKETTICKERS.exactPeer().name(), tefCxt, tef);
+                Categories.STOCKMARKETTICKERS.exactPeer().name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
 

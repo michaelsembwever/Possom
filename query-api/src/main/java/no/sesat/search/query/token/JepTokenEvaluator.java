@@ -22,11 +22,13 @@
 
 package no.sesat.search.query.token;
 
-import org.apache.log4j.Logger;
 import org.nfunk.jep.JEP;
 import org.nfunk.jep.type.Complex;
 
-/**
+/** Evaluates whether a term or query forms a mathimatical expression.
+ *
+ *   <b>Immutable</b>
+ *
  * @version $Id$
  *
  */
@@ -34,12 +36,13 @@ public final class JepTokenEvaluator implements TokenEvaluator {
 
     // Constants -----------------------------------------------------
 
-    private static final Logger LOG = Logger.getLogger(JepTokenEvaluator.class);
-    private static final String DEBUG_NOT_INTEGER = "Was not an integer ";
+    //private static final Logger LOG = Logger.getLogger(JepTokenEvaluator.class);
 
     // Attributes ----------------------------------------------------
 
+    private String query = null;
     private final Complex result;
+    private final boolean queryDependant;
 
     // Static --------------------------------------------------------
 
@@ -47,36 +50,47 @@ public final class JepTokenEvaluator implements TokenEvaluator {
 
     /**
      * Creates a new instance of JepTokenEvaluator and evaluate the query.
+     * @param query the query evaluation is occuring against.
+     * @param queryDependant create a complex for every term or just the query? performance consideration.
      */
-    public JepTokenEvaluator(final String query) {
-        if (query.matches("[0-9.]+")) {
-            result = null; // If the query is just a number don't evaluate it.
-        }
-        else {
+    public JepTokenEvaluator(final String query, final boolean queryDependant) {
+
+        // avoid evaulation on just a number
+        result = query.matches("[0-9.]+")
+                ? null
+                : getComplex(query);
+
+        this.query = query;
+        this.queryDependant = queryDependant;
+
+    }
+
+    // Public --------------------------------------------------------
+
+    public Complex getComplex(final String expression) {
+
+        if(null != query && !expression.equals(query)){
+
             final JEP parser = new JEP();
 
             parser.addStandardConstants();
             parser.addStandardFunctions();
             parser.addComplex();
-    //        parser.setImplicitMul(true);
+            //parser.setImplicitMul(true);
 
-            parser.parseExpression(query);
+            parser.parseExpression(expression);
 
-            result = parser.getComplexValue();
+            return parser.getComplexValue();
+
+        }else{
+            return result;
         }
-    }
-
-
-    // Public --------------------------------------------------------
-
-    public Complex getComplex() {
-        return result;
     }
 
     // TokenEvaluator implementation ----------------------------------------------
 
     /**
-     * Returns true if any of the query satifies a JED expression.
+     * Returns true if the query (or term) satifies a JED expression.
      *
      * @param token
      *            not used by this implementation.
@@ -89,11 +103,14 @@ public final class JepTokenEvaluator implements TokenEvaluator {
      * @return true if any of the patterns matches.
      */
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
-        return result != null;
+
+        return null != query
+                ? null != getComplex(query)
+                : isQueryDependant(token) ? null != getComplex(term) : false;
     }
 
-    public boolean isQueryDependant(TokenPredicate predicate) {
-        return true;
+    public boolean isQueryDependant(final TokenPredicate predicate) {
+        return queryDependant;
     }
 
     // Y overrides ---------------------------------------------------

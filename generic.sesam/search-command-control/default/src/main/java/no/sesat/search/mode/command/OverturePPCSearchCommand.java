@@ -26,6 +26,7 @@ import no.sesat.search.mode.config.OverturePpcCommandConfig;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.token.TokenPredicate;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.OvertureSearchResult;
@@ -75,7 +76,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         // could have prevented exact matching in the previous evaluation.
         final ReconstructedQuery rq = createQuery(getTransformedQuery());
 
-        top = rq.getEngine().evaluateQuery(TokenPredicate.Static.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
+        top = rq.getEngine().evaluateQuery(TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
 
         try {
             final Document doc = getXmlResult();

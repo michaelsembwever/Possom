@@ -37,15 +37,12 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.site.config.SiteConfiguration;
-import no.sesat.search.site.config.DocumentContext;
 import no.sesat.search.site.config.DocumentLoader;
-import no.sesat.search.site.config.PropertiesContext;
 
 import no.sesat.search.http.HTTPClient;
-import no.sesat.search.query.QueryStringContext;
+import no.sesat.search.query.token.AbstractEvaluatorFactory.Context;
 import static no.sesat.search.query.parser.AbstractQueryParser.SKIP_REGEX;
 import static no.sesat.search.query.parser.AbstractQueryParser.OPERATOR_REGEX;
 import no.sesat.search.site.Site;
@@ -70,9 +67,6 @@ import org.xml.sax.SAXException;
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
-    /** The context required by this class. **/
-    public interface Context extends BaseContext, QueryStringContext, DocumentContext, PropertiesContext, SiteContext{
-    }
 
     // Constants -----------------------------------------------------
 
@@ -87,17 +81,20 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final String TOKEN_PORT_PROPERTY = "tokenevaluator.port";
     private static final String LIST_PREFIX = "FastQT_";
     private static final String LIST_SUFFIX = "QM";
-    private static final String EXACT_PREFIX = "exact_";
+    // use the lowercase version of TokenPredicate.EXACT_PREFIX
+    private static final String EXACT_PREFIX = TokenPredicate.EXACT_PREFIX.toLowerCase();
     private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
+    // todo move deserialisation & this map to FastQueryMatchingEvaluatorFactory
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String[]>>();
     private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();
 
     private static final GeneralCacheAdministrator CACHE_QUERY = new GeneralCacheAdministrator();
     private static final int REFRESH_PERIOD = 60;
-    private static final int CACHE_QUERY_CAPACITY = 100; // smaller than usual as each entry can contain up to 600 values!
+    // smaller than usual as each entry can contain up to 600 values!
+    private static final int CACHE_QUERY_CAPACITY = 100;
 
 
     // Attributes ----------------------------------------------------
@@ -118,7 +115,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      * Search fast and initialize analysis result.
      * @param cxt
      */
-    VeryFastTokenEvaluator(final Context cxt) throws VeryFastListQueryException{
+    VeryFastTokenEvaluator(final Context cxt) throws EvaluationException{
 
         // pre-condition check
 
@@ -234,6 +231,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
 
+    public boolean isResponsibleFor(final TokenPredicate predicate){
+
+        return null != getListNames(predicate);
+    }
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
@@ -244,12 +246,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         try {
             initImpl(context);
+
         } catch (ParserConfigurationException ex) {
             LOG.error(ERR_FAILED_INITIALISATION, ex);
         }
     }
 
-    private static void initImpl(final Context cxt) throws ParserConfigurationException  {
+    static void initImpl(final Context cxt) throws ParserConfigurationException  {
 
         final Site site = cxt.getSite();
         final Site parent = site.getParent();
@@ -267,7 +270,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         if(parentUninitialised){
             initImpl(ContextWrapper.wrap(
-                    Context.class,
+                    AbstractEvaluatorFactory.Context.class,
                     new SiteContext(){
                         public Site getSite(){
                             return parent;
@@ -294,9 +297,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
                 final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
                 final Document doc = loader.getDocument();
-                final Element root = doc.getDocumentElement();
 
-                if( null != root ){
+                if(null != doc && null != doc.getDocumentElement()){
+
+                    final Element root = doc.getDocumentElement();
                     final NodeList lists = root.getElementsByTagName("list");
                     for (int i = 0; i < lists.getLength(); ++i) {
 
@@ -307,13 +311,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
                         TokenPredicate token;
                         try{
-                            token = TokenPredicate.Static.getTokenPredicate(tokenName);
+                            token = TokenPredicateUtility.getTokenPredicate(tokenName);
 
                         }catch(IllegalArgumentException iae){
                             LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
-                            token = TokenPredicate.Static.createAnonymousTokenPredicate(
-                                    tokenName,
-                                    TokenPredicate.Type.FAST);
+                            token = TokenPredicateUtility.createAnonymousTokenPredicate(tokenName);
                         }
 
                         final String[] listNameArr = list.getAttribute("list-name").split(",");
@@ -345,7 +347,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      * @param query
      */
     @SuppressWarnings("unchecked")
-    private Map<String, List<TokenMatch>> queryFast(final String query) throws VeryFastListQueryException{
+    private Map<String, List<TokenMatch>> queryFast(final String query) throws EvaluationException{
 
         LOG.trace("queryFast( " + query + " )");
         Map<String, List<TokenMatch>> result = null;
@@ -414,11 +416,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 } catch (IOException e1) {
                     LOG.error(ERR_QUERY_FAILED + url, e1);
                     result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new VeryFastListQueryException(ERR_QUERY_FAILED + url, e1);
+                    throw new EvaluationException(ERR_QUERY_FAILED + url, e1);
                 } catch (SAXException e1) {
                     LOG.error(ERR_PARSE_FAILED + url, e1);
                     result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new VeryFastListQueryException(ERR_PARSE_FAILED + url, e1);
+                    throw new EvaluationException(ERR_PARSE_FAILED + url, e1);
                 }finally{
                     if(!updatedCache){
                         CACHE_QUERY.cancelUpdate(query);

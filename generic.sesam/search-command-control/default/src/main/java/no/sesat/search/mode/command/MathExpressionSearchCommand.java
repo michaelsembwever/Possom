@@ -18,12 +18,12 @@
 package no.sesat.search.mode.command;
 
 import no.sesat.search.query.token.JepTokenEvaluator;
-import no.sesat.search.query.token.TokenPredicate;
-import no.sesat.search.query.token.VeryFastListQueryException;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import org.apache.log4j.Logger;
 import java.text.NumberFormat;
+import no.sesat.search.query.token.Categories;
+import no.sesat.search.query.token.EvaluationException;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import org.nfunk.jep.type.Complex;
@@ -39,7 +39,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
     private static final String ERR_INTERRUPTED = "Interrupted";
     private static final double ZERO_THREASHOLD = 0.00000001D;
 
-    /**
+    /** Default Constructor.
      * @param cxt         The context to work within.
      */
     public MathExpressionSearchCommand(final Context cxt) {
@@ -47,8 +47,6 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
         super(cxt);
     }
 
-
-    /** {@inherit} **/
     public ResultList<? extends ResultItem> execute() {
 
 
@@ -58,8 +56,8 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
         try{
             final Complex result = ((JepTokenEvaluator)getEngine()
-                    .getEvaluator(TokenPredicate.Categories.MATHPREDICATE))
-                    .getComplex();
+                    .getEvaluator(Categories.MATHPREDICATE))
+                    .getComplex(getQuery().getQueryString());
 
             if (result != null) {
                 String s = null;
@@ -87,7 +85,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
                 searchResult.addResult(item);
             }
 
-        }catch(VeryFastListQueryException ie){
+        }catch(EvaluationException ie){
             LOG.warn(ERR_INTERRUPTED);
         }
         return searchResult;

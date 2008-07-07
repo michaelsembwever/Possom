@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ import no.sesat.search.query.Query;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.finder.ParentFinder;
 import no.sesat.search.query.parser.AbstractQuery;
+import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.result.BasicNavigationItem;
 import no.sesat.search.result.BasicResultItem;
@@ -152,7 +153,7 @@ public class DataModelSerializeTest {
         searchResults.setHitCount(SEARCH_HIT_COUNT);
 
         final Set<TokenPredicate> tokenPredicateSet = new HashSet<TokenPredicate>();
-        tokenPredicateSet.add(TokenPredicate.Categories.FOOD);
+        tokenPredicateSet.add(Categories.FOOD);
 
         final Clause root = ClauseFactory.createClause(QUERY_STRING, tokenPredicateSet);
         /* new Clause() {

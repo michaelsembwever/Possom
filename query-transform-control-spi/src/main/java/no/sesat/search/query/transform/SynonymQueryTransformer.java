@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,8 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- */
-/*
+ *
  * SynonymQueryTransformer.java
  *
  * Created on April 5, 2006, 8:05 PM
@@ -40,7 +39,9 @@ import no.sesat.search.query.DoubleOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.OperationClause;
 import no.sesat.search.query.Query;
+import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import org.apache.log4j.Logger;
 
 /**
@@ -84,8 +85,8 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
     private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
             Arrays.asList(
-                (TokenPredicate)TokenPredicate.Categories.STOCKMARKETFIRMS,
-                (TokenPredicate)TokenPredicate.Categories.STOCKMARKETTICKERS
+                (TokenPredicate)Categories.STOCKMARKETFIRMS,
+                (TokenPredicate)Categories.STOCKMARKETTICKERS
             ));
 
     /** Synonym expansion are only performed for clauses matching the predicates
@@ -218,7 +219,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             if (customPredicates == null && predicateNames != null && predicateNames.size() > 0) {
                 final Collection<TokenPredicate> cp = new ArrayList<TokenPredicate>();
                 for (String tp : predicateNames) {
-                    cp.add(TokenPredicate.Static.getTokenPredicate(tp));
+                    cp.add(TokenPredicateUtility.getTokenPredicate(tp));
                 }
                 customPredicates = Collections.unmodifiableCollection(cp);
             }

@@ -72,6 +72,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import no.sesat.search.datamodel.access.DataModelAccessException;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.view.navigation.NavigationConfig.Nav;
 
 /** The base abstraction for Search Commands providing a large framework for commands to run against.
@@ -799,9 +800,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         public String getQueryString() {
                             return queryString;
                         }
-
                         public Site getSite() {
                             return datamodel.getSite().getSite();
+                        }
+                        public String getUniqueId(){
+                            return datamodel.getParameters().getUniqueId();
                         }
                     }
             );
@@ -852,7 +855,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 final TokenEvaluationEngine engine = getEngine();
                 for (String fieldFilter : fieldFilters.keySet()) {
                     try {
-                        final TokenPredicate tp = TokenPredicate.Static.getTokenPredicate(fieldFilter);
+                        final TokenPredicate tp = TokenPredicateUtility.getTokenPredicate(fieldFilter);
                         // if the field is the token then mask the field and include the term.
                         // XXX why are we checking the known and possible predicates?
                         boolean result = clause.getKnownPredicates().contains(tp);

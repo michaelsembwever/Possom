@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -78,10 +78,25 @@ public abstract class AbstractResourceLoader
         }
     }
 
+    // Constants --------------------------------------------------------
+
+    private static final String ERR_MUST_USE_PROPS_INITIALISER = "Must use properties initialiser to use this method!";
+    private static final String ERR_MUST_USE_XSTREAM_INITIALISER = "Must use xstream initialiser to use this method!";
+    private static final String ERR_MUST_USE_BYTECODE_INITIALISER = "Must use bytecode initialiser to use this method";
+    private static final String ERR_ONE_USE_ONLY = "This AbstractResourceLoader instance already in use!";
+    private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
+    private static final String ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD = "Interrupted waiting for resource to load";
+    private static final String ERR_NOT_INITIALISED = "This AbstractResourceLoader has not been initialised. Nothing to wait for!";
+    private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
+    private static final String FATAL_RESOURCE_NOT_LOADED = "Resource not found ";
+    private static final String WARN_PARENT_SITE = "Parent site is: ";
+
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private static final Logger LOG = Logger.getLogger(AbstractResourceLoader.class);
     private static final String DEBUG_POOL_COUNT = "Pool size: ";
+
+    // Attributes ----------------------------------------------------
 
     private final SiteContext context;
     private String resource;
@@ -101,16 +116,7 @@ public abstract class AbstractResourceLoader
     /** Name of jar to load classes from **/
     protected String jarFileName;
 
-    private static final String ERR_MUST_USE_PROPS_INITIALISER = "Must use properties initialiser to use this method!";
-    private static final String ERR_MUST_USE_XSTREAM_INITIALISER = "Must use xstream initialiser to use this method!";
-    private static final String ERR_MUST_USE_BYTECODE_INITIALISER = "Must use bytecode initialiser to use this method";
-    private static final String ERR_ONE_USE_ONLY = "This AbstractResourceLoader instance already in use!";
-    private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
-    private static final String ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD = "Interrupted waiting for resource to load";
-    private static final String ERR_NOT_INITIALISED = "This AbstractResourceLoader has not been initialised. Nothing to wait for!";
-    private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
-    private static final String FATAL_RESOURCE_NOT_LOADED = "Resource not found ";
-    private static final String WARN_PARENT_SITE = "Parent site is: ";
+    // Constructors --------------------------------------------------
 
     /** Illegal Constructor. Must use AbstractResourceLoader(SiteContext). */
     private AbstractResourceLoader() {
@@ -124,28 +130,10 @@ public abstract class AbstractResourceLoader
         context = cxt;
     }
 
+    // Public --------------------------------------------------------
+
     public abstract boolean urlExists(URL url);
 
-    protected abstract URL getResource(final Site site);
-
-    protected abstract InputStream getInputStreamFor(final URL resource);
-
-    /** Get the SiteContext.
-     *@return the SiteContext.
-     **/
-    protected SiteContext getContext() {
-        return context;
-    }
-
-    /** Get the resource name/path this class is responsible for retrieving.
-     *@return the resource name/path.
-     **/
-    protected String getResource() {
-        return resource;
-    }
-
-    /** {@inheritDoc}
-     */
     public Properties getProperties() {
         if (props == null) {
             throw new IllegalStateException(ERR_MUST_USE_PROPS_INITIALISER);
@@ -153,8 +141,6 @@ public abstract class AbstractResourceLoader
         return props;
     }
 
-    /** {@inheritDoc}
-     */
     public Document getDocument() {
         if (builder == null) {
             throw new IllegalStateException(ERR_MUST_USE_XSTREAM_INITIALISER);
@@ -170,8 +156,6 @@ public abstract class AbstractResourceLoader
         return bytecode;
     }
 
-    /** {@inheritDoc}
-     */
     public void init(final String resource, final Properties props) {
 
         resourceType = Resource.PROPERTIES;
@@ -180,9 +164,6 @@ public abstract class AbstractResourceLoader
         postInit();
     }
 
-
-    /** {@inheritDoc}
-     */
     public void init(final String resource, final DocumentBuilder builder) {
 
         resourceType = Resource.DOM_DOCUMENT;
@@ -191,8 +172,6 @@ public abstract class AbstractResourceLoader
         postInit();
     }
 
-    /** {@inheritDoc}
-     */
     public void initBytecodeLoader(String className, String jarFileName) {
         resourceType = Resource.BYTECODE;
         this.jarFileName = jarFileName;
@@ -200,44 +179,6 @@ public abstract class AbstractResourceLoader
         postInit();
     }
 
-
-
-    private void preInit(final String resource){
-
-        if (future != null && !future.isDone()) {
-            throw new IllegalStateException(ERR_ONE_USE_ONLY);
-        }
-
-        if (resourceType == Resource.BYTECODE) {
-            // Convert package structure to path.
-            if(!resource.endsWith(".jsp")){
-                this.resource = resource.replace(".", "/") + ".class";
-            }else{
-                this.resource = resource;
-            }
-
-            if (jarFileName != null) {
-                // Construct the path portion of a JarUrl.
-                this.resource = jarFileName + "!/" + this.resource;
-            }
-
-        } else {
-            this.resource = resource;
-        }
-    }
-
-    private void postInit(){
-
-        future = EXECUTOR.submit(this);
-
-        if(LOG.isTraceEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
-            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
-            LOG.trace(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
-        }
-    }
-
-    /** {@inheritDoc}
-     */
     public void abut() {
 
         if (future == null) {
@@ -258,8 +199,6 @@ public abstract class AbstractResourceLoader
         }
     }
 
-    /** {@inheritDoc}
-     */
     public void run() {
 
         // Inheriting from Site & UniqueId from parent thread is meaningless in a thread pool.
@@ -311,6 +250,67 @@ public abstract class AbstractResourceLoader
         }
     }
 
+    // Protected -----------------------------------------------------
+
+    protected abstract URL getResource(final Site site);
+
+    protected abstract InputStream getInputStreamFor(final URL resource);
+
+    /** Get the SiteContext.
+     *@return the SiteContext.
+     **/
+    protected SiteContext getContext() {
+        return context;
+    }
+
+    /** Get the resource name/path this class is responsible for retrieving.
+     *@return the resource name/path.
+     **/
+    protected String getResource() {
+        return resource;
+    }
+
+    protected String readResourceDebug(final URL url){
+
+        return "Read Configuration from " + resource;
+    }
+
+    // Private -------------------------------------------------------
+
+    private void preInit(final String resource){
+
+        if (future != null && !future.isDone()) {
+            throw new IllegalStateException(ERR_ONE_USE_ONLY);
+        }
+
+        if (resourceType == Resource.BYTECODE) {
+            // Convert package structure to path.
+            if(!resource.endsWith(".jsp")){
+                this.resource = resource.replace(".", "/") + ".class";
+            }else{
+                this.resource = resource;
+            }
+
+            if (jarFileName != null) {
+                // Construct the path portion of a JarUrl.
+                this.resource = jarFileName + "!/" + this.resource;
+            }
+
+        } else {
+            this.resource = resource;
+        }
+    }
+
+    private void postInit(){
+
+        future = EXECUTOR.submit(this);
+
+        if(LOG.isTraceEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
+            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
+            LOG.trace(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+        }
+    }
+
     private boolean loadEmptyResource(final URL url) {
 
         LOG.debug("Loading empty resource for " + resource);
@@ -332,7 +332,6 @@ public abstract class AbstractResourceLoader
 
         return true;
     }
-
 
     private boolean loadResource(final URL url) {
 
@@ -408,8 +407,4 @@ public abstract class AbstractResourceLoader
         return success;
     }
 
-    protected String readResourceDebug(final URL url){
-
-        return "Read Configuration from " + resource;
-    }
 }

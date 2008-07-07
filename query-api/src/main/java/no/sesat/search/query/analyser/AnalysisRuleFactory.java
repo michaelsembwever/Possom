@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -37,6 +37,10 @@ import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import no.sesat.search.query.QueryStringContext;
+import no.sesat.search.query.token.AbstractEvaluatorFactory;
+import no.sesat.search.query.token.EvaluatorType;
+import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.ResourceContext;
 import no.sesat.search.site.config.UrlResourceLoader;
@@ -64,6 +68,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      * The context the AnalysisRuleFactory must work against. *
      */
     public interface Context extends BaseContext, ResourceContext, SiteContext {
+        String getUniqueId();
     }
 
     private static final Logger LOG = Logger.getLogger(AnalysisRuleFactory.class);
@@ -134,6 +139,37 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             final Map<String, Predicate> inheritedPredicates = getInheritedPredicates();
 
             if( null != root) {
+
+                // initialise anonymous predicate
+                final String evaluatorTypes = root.getAttribute("evaluators");
+                if(null != evaluatorTypes && 0 < evaluatorTypes.length()){
+                    for(String evaluator : evaluatorTypes.split(",")){
+
+                        final EvaluatorType type = EvaluatorType.instanceOf(evaluator);
+
+                        final String factoryName = type.getEvaluatorFactoryClassName();
+
+                        AbstractEvaluatorFactory.instanceOf(
+                                ContextWrapper.wrap(
+                                AbstractEvaluatorFactory.Context.class,
+                                context,
+                                new BaseContext() {
+                                    public String getEvaluatorFactoryClassName() {
+                                        return factoryName;
+                                    }
+                                    public String getUniqueId(){
+                                        return context.getUniqueId();
+                                    }
+                                },
+                                new QueryStringContext() {
+                                public String getQueryString() {
+                                    return "*";
+                                }
+                            }
+                        ));
+                    }
+                }
+
                 readPredicates(root, globalPredicates, inheritedPredicates);
 
                 // ruleList
@@ -268,8 +304,16 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         } else if (parentPredicateMap.containsKey(name)) {
             result = parentPredicateMap.get(name);
         } else {
-            // second check TokenPredicate enumerations.
-            result = TokenPredicate.Static.getTokenPredicate(name);
+            // second check TokenPredicate's Categories, anonymous predicates, and exact peers.
+            if(name.startsWith(TokenPredicate.EXACT_PREFIX)){
+
+                result = TokenPredicateUtility
+                        .getTokenPredicate(name.replaceFirst(TokenPredicate.EXACT_PREFIX, ""))
+                        .exactPeer();
+            }else{
+
+                result = TokenPredicateUtility.getTokenPredicate(name);
+            }
 
 
         }
@@ -388,7 +432,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         AnalysisRule rule = null;
         try{
             rulesLock.readLock().lock();
-            rule = (AnalysisRule) rules.get(ruleName);
+            rule = rules.get(ruleName);
         }finally{
             rulesLock.readLock().unlock();
         }
@@ -447,7 +491,6 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         return instance;
     }
 
-    /** TODO comment me. **/
     public boolean remove(final Site site){
 
         try{

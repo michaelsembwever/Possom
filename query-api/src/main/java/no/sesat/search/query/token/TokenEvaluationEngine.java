@@ -44,6 +44,11 @@ import no.sesat.search.site.SiteContext;
 public interface TokenEvaluationEngine {
 
     interface Context extends BaseContext, QueryStringContext, ResourceContext, SiteContext{
+        /** A uniqueId for the request.
+         * Is not mission critical, ie can be left leave blank.
+         * @return the uniqueId
+         */
+        String getUniqueId();
     }
 
     /**
@@ -100,18 +105,18 @@ public interface TokenEvaluationEngine {
      *
      * @param token
      * @return
-     * @throws no.sesat.search.query.token.VeryFastListQueryException TODO remove this throws
+     * @throws EvaluationException if something goes wrong constructing or finding an appropriate evaluator.
      */
-    TokenEvaluator getEvaluator(TokenPredicate token) throws VeryFastListQueryException;
+    TokenEvaluator getEvaluator(TokenPredicate token) throws EvaluationException;
 
     /**
-     *
+     * The query string we're evaluating. May be null if we're only evaluating a term.
      *
      * @return
      */
     String getQueryString();
 
-     /**
+     /** The site the evaluation's request is against
       *
       * @return
       */

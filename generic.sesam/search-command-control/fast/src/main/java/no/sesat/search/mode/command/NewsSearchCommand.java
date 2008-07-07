@@ -27,7 +27,7 @@ import java.util.GregorianCalendar;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.token.TokenPredicate;
+import no.sesat.search.query.token.Categories;
 
 /**
  *
@@ -50,10 +50,6 @@ public class NewsSearchCommand extends FastSearchCommand {
 
     private StringBuilder filterBuilder = null;
 
-    /**
-     *
-     * @param clause The clause to examine.
-     */
     @Override
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
         switch(clause.getHint()){
@@ -218,8 +214,8 @@ public class NewsSearchCommand extends FastSearchCommand {
         final LeafClause firstLeaf = getQuery().getFirstLeafClause();
 
         return getQuery().getRootClause() == firstLeaf
-          && (firstLeaf.getKnownPredicates().contains(TokenPredicate.Categories.NEWS_MAGIC)
-              || firstLeaf.getPossiblePredicates().contains(TokenPredicate.Categories.NEWS_MAGIC));
+          && (firstLeaf.getKnownPredicates().contains(Categories.NEWS_MAGIC)
+              || firstLeaf.getPossiblePredicates().contains(Categories.NEWS_MAGIC));
     }
 
 }

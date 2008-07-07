@@ -28,10 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.site.Site;
@@ -88,6 +85,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
      *
      * @param siteCxt context telling us which site to use.
      * @param resource the class to load bytecode for.
+     * @param jar
      * @return a bytecode loader for resource.
      */
     public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource, final String jar) {
@@ -97,8 +95,6 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return bcLoader;
     }
 
-    /** {@inheritDoc}
-     */
     protected FileResourceLoader(final SiteContext cxt) {
         super(cxt);
     }

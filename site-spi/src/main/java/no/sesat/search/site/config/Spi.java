@@ -25,6 +25,8 @@ public enum Spi {
     /** */
     SITE("site"),
     /** */
+    QUERY_EVALUATION("query-evaluation"),
+    /** */
     QUERY_TRANSFORM_CONFIG("query-transform-config"),
     /** */
     QUERY_TRANSFORM_CONTROL("query-transform-control", QUERY_TRANSFORM_CONFIG),

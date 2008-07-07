@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ import org.apache.log4j.Logger;
  * This class is not thread-safe.
  *
  * @version $Id$
- *
  */
 public final class Scorer extends AbstractReflectionVisitor {
 
@@ -53,18 +52,24 @@ public final class Scorer extends AbstractReflectionVisitor {
     private static final String INFO_STALE_SCORE = "Scoring failed...";
 
     /** Create the Scorer with the required context.
-     **/
+     *
+     * @param cxt
+     */
     public Scorer(final Context cxt) {
         context = cxt;
     }
 
     /** the scoring result. should not be called before visiting is over.
-     **/
+     *
+     * @return the current score.
+     */
     public int getScore() {
         return score;
     }
 
-    /** TODO comment me. **/
+    /** A positive match on the PredicateScore increases the score. *
+     * @param predicateScore
+     */
     public void addScore(final PredicateScore predicateScore) {
 
         final Predicate predicate = predicateScore.getPredicate();
@@ -78,7 +83,9 @@ public final class Scorer extends AbstractReflectionVisitor {
         score += predicateScore.getScore();
     }
 
-    /** TODO comment me. **/
+    /** A negative match on the PredicateScore decreases the score. *
+     * @param predicateScore
+     */
     public void minusScore(final PredicateScore predicateScore) {
 
         final Predicate predicate = predicateScore.getPredicate();
@@ -92,7 +99,9 @@ public final class Scorer extends AbstractReflectionVisitor {
         score -= predicateScore.getScore();
     }
 
-    /** TODO comment me. **/
+    /** An error occurred looking for a match against the PredicateScore. *
+     * @param predicateScore
+     */
     public void error(final PredicateScore predicateScore) {
 
         final Predicate predicate = predicateScore.getPredicate();

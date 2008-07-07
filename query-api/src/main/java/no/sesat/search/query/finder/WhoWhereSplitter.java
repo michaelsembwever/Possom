@@ -37,6 +37,7 @@ import no.sesat.search.query.OperationClause;
 import no.sesat.search.query.QueryContext;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
 
 /** Essentially a QueryTransformer, the similarity is also evident in the context required.
@@ -60,9 +61,9 @@ import no.sesat.search.query.token.TokenPredicate;
  *  the case when both components are blank.<br/>
  *
  * <br/>
- * The usefulness of this class is heavy dependant on the fast lists:
+ * The usefulness of this class is heavy dependant on the TokenPredicates:
  *  FULLNAME, COMPANYNAME, COMPANY_KEYWORD, FIRSTNAME, LASTNAME, GEOGLOBAL, and GEOLOCAL;
- * being kept uptodate.<br/>
+ * being kept available and uptodate.<br/>
  *
  *
  *
@@ -156,32 +157,32 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         final List<OperationClause> validGeoParents = new ArrayList<OperationClause>(parents);
         validGeoParents.removeAll(invalidatedPlaces);
 
-        boolean geo = clause.getKnownPredicates().contains(TokenPredicate.Categories.GEOLOCAL)
-                || clause.getKnownPredicates().contains(TokenPredicate.Categories.GEOGLOBAL)
-                || ParentFinder.insideOf(validGeoParents, TokenPredicate.Categories.GEOLOCAL)
-                || ParentFinder.insideOf(validGeoParents, TokenPredicate.Categories.GEOGLOBAL);
+        boolean geo = clause.getKnownPredicates().contains(Categories.GEOLOCAL)
+                || clause.getKnownPredicates().contains(Categories.GEOGLOBAL)
+                || ParentFinder.insideOf(validGeoParents, Categories.GEOLOCAL)
+                || ParentFinder.insideOf(validGeoParents, Categories.GEOGLOBAL);
 
         boolean onlyGeo = geo && clause.getField() == null;
 
         // check if any possible parents of this clause match the fullname predicate.
         final boolean insideFullname = context.getApplications().contains(Application.WHITE)
-                && ParentFinder.insideOf(parents, TokenPredicate.Categories.FULLNAME);
+                && ParentFinder.insideOf(parents, Categories.FULLNAME);
 
         boolean isNameOrNumber = context.getApplications().contains(Application.WHITE)
-                && clause.getKnownPredicates().contains(TokenPredicate.Categories.FIRSTNAME);
+                && clause.getKnownPredicates().contains(Categories.FIRSTNAME);
 
         isNameOrNumber |= context.getApplications().contains(Application.WHITE)
-                && clause.getKnownPredicates().contains(TokenPredicate.Categories.LASTNAME);
+                && clause.getKnownPredicates().contains(Categories.LASTNAME);
 
-        isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.Categories.PHONENUMBER);
+        isNameOrNumber |= clause.getKnownPredicates().contains(Categories.PHONENUMBER);
 
         // check if the clause or any possible parents of this clause match the company predicate.
         boolean isOrInsideCompany = context.getApplications().contains(Application.YELLOW);
         isOrInsideCompany &=
-                clause.getKnownPredicates().contains(TokenPredicate.Categories.COMPANYENRICHMENT)
-                || clause.getKnownPredicates().contains(TokenPredicate.Categories.COMPANY_KEYWORD)
-                || ParentFinder.insideOf(parents, TokenPredicate.Categories.COMPANYENRICHMENT)
-                || ParentFinder.insideOf(parents, TokenPredicate.Categories.COMPANY_KEYWORD);
+                clause.getKnownPredicates().contains(Categories.COMPANYENRICHMENT)
+                || clause.getKnownPredicates().contains(Categories.COMPANY_KEYWORD)
+                || ParentFinder.insideOf(parents, Categories.COMPANYENRICHMENT)
+                || ParentFinder.insideOf(parents, Categories.COMPANY_KEYWORD);
 
         if(hasCompany || hasFullname){
 
@@ -210,8 +211,8 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                 // invalidate any parent geo term since part of it has now been used in the who field
                 for(OperationClause parent : parents){
 
-                    if(parent.getKnownPredicates().contains(TokenPredicate.Categories.GEOLOCAL)
-                            || parent.getKnownPredicates().contains(TokenPredicate.Categories.GEOGLOBAL)){
+                    if(parent.getKnownPredicates().contains(Categories.GEOLOCAL)
+                            || parent.getKnownPredicates().contains(Categories.GEOGLOBAL)){
 
                         invalidatedPlaces.add(parent);
                     }
@@ -272,7 +273,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                 break;
 
             case PHONE_NUMBER_ON_LEFT:
-                if( !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.Categories.PHONENUMBER) ){
+                if( !clause.getFirstClause().getKnownPredicates().contains(Categories.PHONENUMBER) ){
                     clause.getSecondClause().accept(this);
                 }
                 // intentionally fall through to default!
@@ -296,12 +297,12 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             final boolean insideFullname = context.getApplications().contains(Application.WHITE)
                     && ParentFinder.insideOf(context.getQuery().getParentFinder().getAncestors(
                         context.getQuery().getRootClause(), clause),
-                        TokenPredicate.Categories.FULLNAME);
+                        Categories.FULLNAME);
 
             if(!insideFullname){
                 boolean company = context.getApplications().contains(Application.YELLOW);
-                company &= predicates.contains(TokenPredicate.Categories.COMPANYENRICHMENT)
-                        || predicates.contains(TokenPredicate.Categories.COMPANY_KEYWORD);
+                company &= predicates.contains(Categories.COMPANYENRICHMENT)
+                        || predicates.contains(Categories.COMPANY_KEYWORD);
 
                 multipleCompany = hasCompany && company;
                 hasCompany |= company;
@@ -329,24 +330,24 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                     = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
 
             final boolean insideFullname = context.getApplications().contains(Application.WHITE)
-                    && ParentFinder.insideOf(parents, TokenPredicate.Categories.FULLNAME);
+                    && ParentFinder.insideOf(parents, Categories.FULLNAME);
 
             boolean insideCompany = context.getApplications().contains(Application.YELLOW);
-            insideCompany &= ParentFinder.insideOf(parents, TokenPredicate.Categories.COMPANYENRICHMENT)
-                    || ParentFinder.insideOf(parents, TokenPredicate.Categories.COMPANY_KEYWORD);
+            insideCompany &= ParentFinder.insideOf(parents, Categories.COMPANYENRICHMENT)
+                    || ParentFinder.insideOf(parents, Categories.COMPANY_KEYWORD);
 
             if(!insideFullname && !insideCompany){
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();
 
                 boolean fullname = context.getApplications().contains(Application.WHITE)
-                        && predicates.contains(TokenPredicate.Categories.FULLNAME);
+                        && predicates.contains(Categories.FULLNAME);
 
                 multipleFullname = fullname && hasFullname;
                 hasFullname |= fullname;
 
                 hasCompany |= !fullname && context.getApplications().contains(Application.YELLOW)
-                    && (predicates.contains(TokenPredicate.Categories.COMPANYENRICHMENT)
-                        || predicates.contains(TokenPredicate.Categories.COMPANY_KEYWORD));
+                    && (predicates.contains(Categories.COMPANYENRICHMENT)
+                        || predicates.contains(Categories.COMPANY_KEYWORD));
 
                 if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                     clause.getFirstClause().accept(this);
