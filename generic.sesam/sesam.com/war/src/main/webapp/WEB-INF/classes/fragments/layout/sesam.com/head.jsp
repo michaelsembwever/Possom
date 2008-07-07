@@ -51,7 +51,7 @@
 <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
 
 <!-- OpenSearch -->
-<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&#38;c=${tab.key}&#38;output=opensearch"/>
+<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&#38;#38;c=${tab.key}&#38;#38;layout=opensearch"/>
 
 <!-- JavaScript -->
 <c:set var="js_link"><search:findResource url="/javascript/common.js"/></c:set>
