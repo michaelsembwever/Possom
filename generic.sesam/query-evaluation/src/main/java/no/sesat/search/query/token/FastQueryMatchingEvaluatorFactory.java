@@ -66,22 +66,24 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
             throw new SiteKeyedFactoryInstantiationException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
         }
 
-        fastEvaluatorCreator = EXECUTOR.submit(new FastEvaluatorCreator());
+        fastEvaluatorCreator = EXECUTOR.submit(new FastEvaluatorCreator(cxt));
     }
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException{
 
+        final Context cxt = getContext();
+
         TokenEvaluator result = isResponsibleFor(token) ? getFastEvaluator() : null;
-        if(result == null && null != getContext().getSite().getParent()){
+        if(result == null && null != cxt.getSite().getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){
-                            return getContext().getSite().getParent();
+                            return cxt.getSite().getParent();
                         }
                     },
-                    getContext()
+                    cxt
                 )).getEvaluator(token);
         }
         if(null == result || TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR == result){
@@ -130,12 +132,20 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
     // inner classes -----------------------------------------------------
 
     private final class FastEvaluatorCreator implements Runnable{
+
+        private final Context context;
+
+        private FastEvaluatorCreator(final Context cxt) {
+
+            this.context = cxt;
+        }
+
         public void run() {
 
-            MDC.put("UNIQUE_ID", getContext().getUniqueId());
+            MDC.put("UNIQUE_ID", context.getUniqueId());
             try {
 
-                fastEvaluator = new VeryFastTokenEvaluator(getContext());
+                fastEvaluator = new VeryFastTokenEvaluator(context);
 
             } catch (EvaluationException ex) {
                 LOG.error(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR);

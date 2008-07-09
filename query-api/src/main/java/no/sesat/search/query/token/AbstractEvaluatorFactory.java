@@ -133,6 +133,22 @@ public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
         return instance;
     }
 
+    /** custom implementation of SiteKeyedFactory.remove that cleans
+     * all factory implementations belonging to a site. *
+     * @param site
+     * @return
+     */
+    public static boolean removeAll(final Site site) {
+
+        try {
+            INSTANCES_LOCK.writeLock().lock();
+            return null != INSTANCES.remove(site);
+        }
+        finally {
+            INSTANCES_LOCK.writeLock().unlock();
+        }
+    }
+
     // Constructors --------------------------------------------------
 
     /**
@@ -180,9 +196,11 @@ public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
 
     public boolean remove(final Site site) {
 
+        final String clsName = context.getEvaluatorFactoryClassName();
+
         try {
             INSTANCES_LOCK.writeLock().lock();
-            return null != INSTANCES.remove(site);
+            return null != INSTANCES.get(site).remove(clsName);
         }
         finally {
             INSTANCES_LOCK.writeLock().unlock();

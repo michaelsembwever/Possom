@@ -165,6 +165,11 @@
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
+            <artifactId>generic.sesam-query-evaluation</artifactId>
+            <version>${sesat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
             <version>${sesat.version}</version>
         </dependency>

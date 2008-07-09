@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ public class FactoryReloadsTest extends SiteTestCase {
         FactoryReloads.performReloads(genericContext(), ReloadArg.SEARCH_TAB_FACTORY);
         FactoryReloads.performReloads(genericContext(), ReloadArg.SEARCH_MODE_FACTORY);
         FactoryReloads.performReloads(genericContext(), ReloadArg.ANALYSIS_RULES_FACTORY);
-        FactoryReloads.performReloads(genericContext(), ReloadArg.REG_EXP_EVALUATOR_FACTORY);
+        FactoryReloads.performReloads(genericContext(), ReloadArg.EVALUATOR_FACTORY);
         // skip "velocity" because VelocityEngineFactory harcodes to URLVelocityTemplateLoader
 
     }

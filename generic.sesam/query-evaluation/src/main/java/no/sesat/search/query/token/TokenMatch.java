@@ -34,6 +34,9 @@ final class TokenMatch{
 
     // Constants -----------------------------------------------------
 
+    /** General properties to regular expressions configured. **/
+    private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
     private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
@@ -100,7 +103,7 @@ final class TokenMatch{
         this.match = match;
         this.value = value;
         // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
-        matcher = Pattern.compile("(^|\\s)" + match + "($|\\s)", RegExpEvaluatorFactory.REG_EXP_OPTIONS);
+        matcher = Pattern.compile("(^|\\s)" + match + "($|\\s)", REG_EXP_OPTIONS);
     }
 
     // Public --------------------------------------------------------

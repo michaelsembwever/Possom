@@ -86,6 +86,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
+    /** General properties to regular expressions configured. **/
+    private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+
     // todo move deserialisation & this map to FastQueryMatchingEvaluatorFactory
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String[]>>();
@@ -441,7 +444,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             final Map<String, List<TokenMatch>> result) {
 
         final String expr = "\\b" + match + "\\b";
-        final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
+        final Pattern pattern = Pattern.compile(expr, REG_EXP_OPTIONS);
         final String qNew = query.replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
         final Matcher m = pattern.matcher(
                 // remove words made solely of characters that the parser considers whitespace

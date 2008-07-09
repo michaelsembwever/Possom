@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.query.analyser.AnalysisRuleFactory;
-import no.sesat.search.query.token.RegExpEvaluatorFactory;
+import no.sesat.search.query.token.AbstractEvaluatorFactory;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
@@ -53,7 +53,7 @@ public final class FactoryReloads {
         SEARCH_TAB_FACTORY,
         SEARCH_MODE_FACTORY,
         ANALYSIS_RULES_FACTORY,
-        REG_EXP_EVALUATOR_FACTORY,
+        EVALUATOR_FACTORY,
         VELOCITY_ENGINE_FACTORY
     }
 
@@ -104,10 +104,18 @@ public final class FactoryReloads {
                 performReload(site, AnalysisRuleFactory.instanceOf(
                         ContextWrapper.wrap(AnalysisRuleFactory.Context.class, genericCxt)));
 
-            case REG_EXP_EVALUATOR_FACTORY:
+            case EVALUATOR_FACTORY:
 
-                performReload(site, RegExpEvaluatorFactory.instanceOf(
-                        ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class, genericCxt)));
+                int cleaned = 0;
+                for(Locale l : Locale.getAvailableLocales()){
+                    final Site s = Site.valueOf(null, site.getName(), l);
+                    if(null != s && AbstractEvaluatorFactory.removeAll(s)){
+                        ++cleaned;
+                    }
+                }
+
+                LOG.warn(cleaned + WARN_CLEANED_1 + "AbstractEvaluatorFactory" + WARN_CLEANED_2 + site);
+
                 if(ReloadArg.ALL != reload){ break;}
 
             case VELOCITY_ENGINE_FACTORY:
@@ -137,7 +145,7 @@ public final class FactoryReloads {
         int cleaned = 0;
         for(Locale l : Locale.getAvailableLocales()){
             final Site s = Site.valueOf(null, site.getName(), l);
-            if(null != s && factory.remove(site)){
+            if(null != s && factory.remove(s)){
                 ++cleaned;
             }
         }

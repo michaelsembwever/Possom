@@ -23,11 +23,8 @@ import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
@@ -125,17 +122,19 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
+        final Context cxt = getContext();
+
         TokenEvaluator result = jepEvaluators.get(token);
-        if(result == null && null != getContext().getSite().getParent()){
+        if(result == null && null != cxt.getSite().getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){
-                            return getContext().getSite().getParent();
+                            return cxt.getSite().getParent();
                         }
                     },
-                    getContext()
+                    cxt
                 )).getEvaluator(token);
         }
         if(null == result || TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR == result){

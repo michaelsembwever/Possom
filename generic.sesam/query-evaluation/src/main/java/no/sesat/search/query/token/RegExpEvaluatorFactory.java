@@ -50,7 +50,7 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
 
     /** General properties to all regular expressions configured. **/
-    static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+    private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
     /** The name of the file where regular expressions for each TokenPredicate will be configured. **/
     public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";
 
@@ -145,17 +145,19 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
+        final Context cxt = getContext();
+
         TokenEvaluator result = regExpEvaluators.get(token);
-        if(result == null && null != getContext().getSite().getParent()){
+        if(result == null && null != cxt.getSite().getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){
-                            return getContext().getSite().getParent();
+                            return cxt.getSite().getParent();
                         }
                     },
-                    getContext()
+                    cxt
                 )).getEvaluator(token);
         }
         if(null == result || TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR == result){
