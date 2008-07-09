@@ -91,7 +91,7 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  *                                                                                                          <br/><br/>
  *
  * <b>TODO</b> There is work planned to separate and encapsulate alot of this functionality into individual classes.
- *                   https://jira.sesam.no/jira/browse/SEARCH-2149                                            <br/><br/>
+ *                   http://sesat.no/scarab/issues/id/SKER2149                                            <br/><br/>
  *
  *
  *

@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,9 +13,7 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
- */
-/*
+ *
  * SynonymQueryTransformer.java
  *
  * Created on April 5, 2006, 8:05 PM
@@ -27,7 +25,7 @@ package no.sesat.search.query.transform;
 import no.sesat.search.query.transform.AbstractQueryTransformerConfig.Controller;
 
 /** XXX This will get largely rewritten when alternation rotation comes into play.
- * https://jira.sesam.no/jira/browse/SEARCH-863
+ * http://sesat.no/scarab/issues/id/SKER863
  *
  *
  * @version $Id: SynonymQueryTransformerConfig.java 4655 2007-03-27 08:15:08Z ssmiweve $

@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ import no.sesat.search.query.finder.Counter;
 import no.sesat.search.query.finder.ForestFinder;
 import org.apache.log4j.Logger;
 
-/** <b><a href="https://jira.sesam.no/jira/browse/SEARCH-439">SEARCH-439 - Rotation Alternation</a></b>
+/** <b><a href="http://sesat.no/scarab/issues/id/SKER439">SKER-439 - Rotation Alternation</a></b>
  *
  * <p>Rotates like-joined DoubleOperatorClauses (forests).
  * Tree rotation on the Query clause heirarchy is expensive,
@@ -108,8 +108,8 @@ import org.apache.log4j.Logger;
  *              can be applicable to.
  * <li> {@link no.sesat.search.query.transform.SynonymQueryTransformer SynonymQueryTransformer}.
  *          Has not yet been fully rewritten to utilise the rotations.
- *          <a href="https://jira.sesam.no/jira/browse/SEARCH-863"
- *                  >SEARCH-863 - Rewrite SynonymQueryTransformer to use RotationAlternation</a><br/>
+ *          <a href="http://sesat.no/scarab/issues/id/SKER863"
+ *                  >SKER863 - Rewrite SynonymQueryTransformer to use RotationAlternation</a><br/>
  *          But it does already use the ParentFinder visitor utility to check if a given clause is inside a given
  *          tokenPredicate.
  * </li>

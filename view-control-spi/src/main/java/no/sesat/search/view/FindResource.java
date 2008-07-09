@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.UrlResourceLoader;
 import org.apache.log4j.Logger;
 
-/** https://jira.sesam.no/jira/browse/SEARCH-3452
+/** http://sesat.no/scarab/issues/id/SKER3452
  * Move 302 resource redirects to internal resource directives
  *
  *

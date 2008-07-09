@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  * Downloads JSP files from skins into sesat to be compiled and used locally.
  * This makes it look like jsps from the other skin web applications actually are bundled into sesat. <br/><br/>
  *
- * Implementation issue: <a href="https://jira.sesam.no/jira/browse/SEARCH-4290">Design and code with JSPs in skins</a>
+ * Implementation issue: <a href="http://sesat.no/scarab/issues/id/SKER4290">Design and code with JSPs in skins</a>
  *
  * <br/><br/>
  *
@@ -129,7 +129,7 @@ public final class SiteJspLoaderFilter implements Filter {
             jspUri = (String) request.getAttribute(INC_SERVLET_PATH);
             if (jspUri != null) {
                 /*
-		 * Requested JSP has been target of
+                 * Requested JSP has been target of
                  * RequestDispatcher.include(). Its path is assembled from the
                  * relevant javax.servlet.include.* request attributes
                  */
