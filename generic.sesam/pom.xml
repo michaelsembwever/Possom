@@ -32,6 +32,7 @@
 
     <modules>
       <module>war</module>
+      <module>query-evaluation</module>
       <module>query-transform-config</module>
       <module>result</module>
       <module>result-handler-config</module>
