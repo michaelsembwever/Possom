@@ -26,6 +26,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import no.sesat.Interpreter;
 import no.sesat.Interpreter.Context;
@@ -73,16 +77,29 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     /**
      * Method implementing Visitor interface. Uses reflection to find the method with name VISIT_METHOD_IMPL with the
      * closest match to the clause subclass.
+     *
+     * We cache the methods used by the visitor in a WeakHashMap. This is done in a WeakHashMap since the skins can
+     * be reloaded, and then we would have had a memory leak.
+     *
+     * To access the cache we lock using a readlock, and when we need to write we will lock with a write lock.
+     *
+     * Inside the cache we have another HashMap, this one a thread safe version, holding the methods.
+     *
      * @param clause the clause we're visiting.
      */
-    private static WeakHashMap <Class<? extends Visitor>, HashMap<Class<? extends Clause>, Method>> cache =
-        new WeakHashMap<Class<? extends Visitor>,HashMap<Class<? extends Clause>, Method>>();
-
+    private static WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>> cache =
+        new WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>>();
+    private static ReadWriteLock cacheLock = new ReentrantReadWriteLock();
+    private static Lock cacheReadLock = cacheLock.readLock();
     public void visit(final Clause clause) {
-        HashMap<Class<? extends Clause>, Method> map = cache.get(getClass());
+        cacheReadLock.lock();
+        ConcurrentHashMap<Class<? extends Clause>, Method> map = cache.get(getClass());
+        cacheReadLock.unlock();
         if (map == null) {
-            map = new HashMap<Class<? extends Clause>, Method>();
+            map = new ConcurrentHashMap<Class<? extends Clause>, Method>();
+            cacheLock.writeLock().lock();
             cache.put(getClass(), map);
+            cacheLock.writeLock().unlock();
         }
         Method method = map.get(clause.getClass());
         if (method == null) {
