@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -24,6 +24,12 @@ package no.sesat.search.query.parser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.WeakHashMap;
+
+import no.sesat.Interpreter;
+import no.sesat.Interpreter.Context;
+import no.sesat.search.query.Clause;
 import no.sesat.search.query.Visitor;
 import org.apache.log4j.Logger;
 
@@ -69,8 +75,22 @@ public abstract class AbstractReflectionVisitor implements Visitor {
      * closest match to the clause subclass.
      * @param clause the clause we're visiting.
      */
-    public void visit(final Object clause) {
-        final Method method = getMethod(clause.getClass());
+    private static WeakHashMap <Class<? extends Visitor>, HashMap<Class<? extends Clause>, Method>> cache =
+        new WeakHashMap<Class<? extends Visitor>,HashMap<Class<? extends Clause>, Method>>();
+
+    public void visit(final Clause clause) {
+        HashMap<Class<? extends Clause>, Method> map = cache.get(getClass());
+        if (map == null) {
+            map = new HashMap<Class<? extends Clause>, Method>();
+            cache.put(getClass(), map);
+        }
+        Method method = map.get(clause.getClass());
+        if (method == null) {
+            method = getMethod(clause.getClass());
+            map.put(clause.getClass(), method);
+        }
+        assert method.equals(getMethod(clause.getClass()));
+
         try {
             method.setAccessible(true);
             method.invoke(this, new Object[] {clause});
@@ -106,10 +126,6 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     }
 
     private Method getMethod(final Class clauseClass) {
-
-        // XXX This is one of the applications performance hotspots.
-        //  It could be benefit to keep a weak reference map to remember what method to use.
-
         Method method = null;
 
         LOG.trace("getMethod(" + clauseClass.getName() + ")");
@@ -205,4 +221,27 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         }
     }
 
+    /**
+     * Add some debug function to the interpreter.
+     */
+    static {
+        Interpreter.addFunction("visitor-methods", new Interpreter.Function() {
+            public String execute(Context ctx) {
+                String res = "";
+                for (Class<? extends Visitor> cv : cache.keySet()) {
+                    res += cv.getName() + "\n";
+                    for (Class<? extends Clause> cc : cache.get(cv).keySet()) {
+                        res += "    " + cc.getName() + " - " + cache.get(cv).get(cc).toGenericString() + "\n";
+                    }
+                }
+                res += "Total: " + cache.size();
+                return res;
+            }
+
+            public String describe() {
+                return "Print out the methods in the cach used by the visitors.";
+            }
+
+        });
+    }
 }
