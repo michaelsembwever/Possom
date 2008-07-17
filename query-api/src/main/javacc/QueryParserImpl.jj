@@ -262,6 +262,8 @@ Clause orOperation() :{
 }{
     ("("(clause = hiddenOrOperation())")") { try{return clause;}finally{exitMethod();} }
     |
+    ("("(clause = orOperation())")") { try{return clause;}finally{exitMethod();} }
+    |
     ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
 }
@@ -294,7 +296,7 @@ Clause hiddenOrOperation() :{
     ((left = leafPrecedence())(right = hiddenOrOperation()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
-    ((left = strongJoinPrecedence())(right = looseJoinPrecedence()))
+    ((left = looseJoinPrecedence())(right = looseJoinPrecedence()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
     // Not really an OR clause. Just () wrapped around something else. Therefore ignore the ()'s
