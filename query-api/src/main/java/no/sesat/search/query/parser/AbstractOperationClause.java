@@ -62,7 +62,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      * @return Either a clause already in use that matches this term and field, or a newly created cluase for this term and field.
      */
-    public static <T extends AbstractOperationClause> T createClause(
+    public static synchronized <T extends AbstractOperationClause> T createClause(
             final Class<T> clauseClass,
             final String term,
             final Clause left,

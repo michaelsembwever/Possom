@@ -61,7 +61,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
      * @return Either a clause already in use that matches this term and field,
      *   or a newly created cluase for this term and field.
      */
-    public static <T extends AbstractLeafClause> T createClause(
+    public synchronized static <T extends AbstractLeafClause> T createClause(
             final Class<T> clauseClass,
             final String term,
             final String field,
