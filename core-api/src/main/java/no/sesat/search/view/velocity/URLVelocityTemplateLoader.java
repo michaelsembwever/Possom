@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (20072008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,6 +27,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import no.sesat.Interpreter;
+
 import org.apache.log4j.Logger;
 
 import org.apache.velocity.exception.ResourceNotFoundException;
@@ -47,35 +50,40 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
 
-	private static final String DIV_TAG = "div";
-	private static final String STYLE_ATTRIB = "style";
-	private static final String STYLE_BORDER = "margin:3px;border:1px solid #C0C0C0";
-	private static final String STYLE_HEADING="text-decoration:underline;font-size:10px";
-	private static final String ONMOUSEOVER = "this.style.border='1px solid #C0C0C0';this.style.margin='4px'";
-	private static final String ONMOUSEOUT = "this.style.border='none'";
+    private static final String DIV_TAG = "div";
+    private static final String STYLE_ATTRIB = "style";
+    private static final String STYLE_BORDER = "margin:3px;border:1px solid #C0C0C0";
+    private static final String STYLE_HEADING="text-decoration:underline;font-size:10px";
+    private static final String ONMOUSEOVER = "this.style.border='1px solid #C0C0C0';this.style.margin='4px'";
+    private static final String ONMOUSEOUT = "this.style.border='none'";
 
-	/**
-	 * getResourceStream() loads resource from url. Then add border around the
-	 * template so its easy to see wich templates are loaded.
-	 * @throws org.apache.velocity.exception.ResourceNotFoundException
+    private static final String VELOCITY_DEBUG = "VELOCITY_DEBUG";
+    private static final String VELOCITY_DEBUG_ON = "VELOCITY_DEBUG_ON";
+    private static final String VELOCITY_DEBUG_STYLE = "VELOCITY_DEBUG_STYLE";
+    private static final String VELOCITY_DEVELOP_BASEDIR = "VELOCITY_DEVELOP_BASEDIR";
+
+    /**
+     * getResourceStream() loads resource from url. Then add border around the
+     * template so its easy to see wich templates are loaded.
+     * @throws org.apache.velocity.exception.ResourceNotFoundException
      */
-	@Override
-	public InputStream getResourceStream(final String url) throws ResourceNotFoundException {
+    @Override
+    public InputStream getResourceStream(final String url) throws ResourceNotFoundException {
 
         // Enable/disable velocity debug
-		final boolean velocityDebug = Boolean.getBoolean("VELOCITY_DEBUG");
+        final boolean velocityDebug = Boolean.getBoolean(VELOCITY_DEBUG);
         // Activate debug (Show borders/debuginfo)
-		final boolean velocityDebugOn = Boolean.getBoolean("VELOCITY_DEBUG_ON");
+        final boolean velocityDebugOn = Boolean.getBoolean(VELOCITY_DEBUG_ON);
         // Onmouseover style
-		final boolean styleOnmouseover ="onmouseover".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+        final boolean styleOnmouseover ="onmouseover".equals(System.getProperty(VELOCITY_DEBUG_STYLE));
         // Silent style
-		final boolean styleSilent ="silent".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+        final boolean styleSilent ="silent".equals(System.getProperty(VELOCITY_DEBUG_STYLE));
         // Indicates if we found file local.(Can be edited)
-		boolean foundLocal = false;
+        boolean foundLocal = false;
 
-		if(velocityDebug) {
+        if(velocityDebug) {
 
-            final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");
+            final String templatesDir = System.getProperty(VELOCITY_DEVELOP_BASEDIR);
 
             // Get the file equivalece of the URL by removing the host as well as the web application context path.
             final String filePath = url.replaceAll("http://(.*?)/[^/]+/", "/").replace("localhost/", "");
@@ -133,8 +141,8 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
                 return stream;
             }
         }
-		return super.getResourceStream(url);
-	}
+        return super.getResourceStream(url);
+    }
 
     /**
      * Read template utf8.
@@ -159,16 +167,16 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
     }
 
     /**
-	 * Create file object
-	 */
-	private File getFile(final String templatesDir, final String filePath) {
+     * Create file object
+     */
+    private File getFile(final String templatesDir, final String filePath) {
 
         File result = null;
 
-		if(null == templatesDir) {
+        if(null == templatesDir) {
             result = new File("null" + filePath);
 
-		}else{
+        }else{
             for(String p : templatesDir.split(",")) {
 
                 final File file = new File(p + filePath);
@@ -179,28 +187,28 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             }
         }
 
-		return null == result ? new File(filePath) : result;
-	}
+        return null == result ? new File(filePath) : result;
+    }
 
-	/*
-	 * Get stream from file of or url.
-	 */
-	private InputStream getStream(final File file) {
+    /*
+     * Get stream from file of or url.
+     */
+    private InputStream getStream(final File file) {
 
-		if (file.exists()) {
+        if (file.exists()) {
 
-			try {
-				FileInputStream fileStream = new FileInputStream(file);
+            try {
+                FileInputStream fileStream = new FileInputStream(file);
                 return fileStream;
 
             } catch (FileNotFoundException ignore) {
-				throw new IllegalStateException("File exist but filenotfoundexception thrown: " + ignore);
-			}
+                throw new IllegalStateException("File exist but filenotfoundexception thrown: " + ignore);
+            }
 
-		} else {
-			throw new IllegalArgumentException("File does not exist");
-		}
-	}
+        } else {
+            throw new IllegalArgumentException("File does not exist");
+        }
+    }
 
     // -- Write the document to the writer
     private void internalWriteDocument(final Document d, final Writer w) {
@@ -234,5 +242,41 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Add some debug function to the interpreter.
+     */
+    static {
+        Interpreter.addFunction("velocity-debug", new Interpreter.Function() {
+            public String execute(Interpreter.Context ctx) {
+                if (ctx.length() == 1) {
+                    System.setProperty(VELOCITY_DEBUG_ON, ctx.getArgument(0));
+                    String style = ctx.getKeywordArgument("style");
+                    if (style != null) {
+                        if (style.toUpperCase().startsWith("ON")) {
+                            System.setProperty(VELOCITY_DEBUG_STYLE, "onmouseover");
+                        }
+                        else if (style.toUpperCase().startsWith("SI")) {
+                            System.setProperty(VELOCITY_DEBUG_STYLE, "silent");
+                        }
+                        else {
+                            System.setProperty(VELOCITY_DEBUG_STYLE, "default");
+                        }
+                    }
+                }
+                String res = VELOCITY_DEBUG + " = " + Boolean.parseBoolean(System.getProperty(VELOCITY_DEBUG)) + " (must be set before starting up)\n";
+                res += VELOCITY_DEBUG_ON + " = " + Boolean.parseBoolean(System.getProperty(VELOCITY_DEBUG_ON)) + "\n";
+                res += VELOCITY_DEBUG_STYLE + " = " + System.getProperty(VELOCITY_DEBUG_STYLE) + "\n";
+                res += VELOCITY_DEVELOP_BASEDIR + " = " + System.getProperty(VELOCITY_DEVELOP_BASEDIR) + "\n";
+
+                return res;
+            }
+
+            @Override
+            protected String describe() {
+                return "Change or view velocity debug options. 'velocity-debug [true|false] [style=silent|onmouseover|default]'";
+            }
+        });
     }
 }
