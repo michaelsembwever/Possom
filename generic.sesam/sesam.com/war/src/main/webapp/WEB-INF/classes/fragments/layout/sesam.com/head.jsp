@@ -39,7 +39,7 @@
 </c:forEach>
 <c:forEach var="w" items="${tab.ancestry}">
     <c:set var="w_link"><search:findResource url="/css/tab/${w.id}.css"/></c:set>
-    <c:if test="${not empty w_link}">
+    <c:if test="${not empty w_link and w_link ne 'null'}">
         <link rel="stylesheet" type="text/css" href="${w_link}" media="screen"/>
     </c:if>
 </c:forEach>
