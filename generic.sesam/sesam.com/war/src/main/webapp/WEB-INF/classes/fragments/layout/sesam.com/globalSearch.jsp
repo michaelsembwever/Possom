@@ -18,43 +18,43 @@
  *   GNU Affero General Public License for more details.
  *
  *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses />.
  *
     Document   : globalSearch
     Created on : 7/03/2008, 10:27:24
     Author     : mick
     Version    : $Id$
 -->
-    <c:set var="commandName" value="globalSearch"/>
+    <c:set var="commandName" value="globalSearch" />
     <c:choose>
         <c:when test="${DataModel.searches[commandName].results.hitCount gt 0}">
 
             <div id="resultlist">
                 <div id="resultHits">
-                    <c:set var="msg_international_icon_alt"><search:text key="international_icon_alt"/></c:set>
-                    <img src="/images/international_icon.png" width="16" height="16" alt="${msg_international_icon_alt}"/>
+                    <c:set var="msg_international_icon_alt"><search:text key="international_icon_alt" /></c:set>
+                    <img src="/images/international_icon.png" width="16" height="16" alt="${msg_international_icon_alt}" />
                     <span>
                         <search:text key="international_search_results"
                             arg0="${DataModel.navigation.navigations.offset.fields.currentPageFromCount}"
                             arg1="${DataModel.navigation.navigations.offset.fields.currentPageToCount}"
                             arg2="${DataModel.searches[commandName].results.hitCount}"
-                            arg3="${DataModel.query.xmlEscaped}"/>
+                            arg3="${DataModel.query.xmlEscaped}" />
                     </span>
                 </div>
 
                 <c:forEach items="${DataModel.searches[commandName].results.results}" var="item" varStatus="loop">
-                    <c:set var="i" value="${loop.count}"/>
-                    <c:set var="pos" value="${DataModel.navigation.navigations.offset.fields.currentPageFromCount + i}"/>
+                    <c:set var="i" value="${loop.count}" />
+                    <c:set var="pos" value="${DataModel.navigation.navigations.offset.fields.currentPageFromCount + i}" />
 
                     <p id="p${i}">
-                        <img class="search_big_url_icon" src="http://${item.fields.site}/favicon.ico" width="16" height="16"/>
+                        <img class="search_big_url_icon" src="http://${item.fields.site}/favicon.ico" width="16" height="16" alt="favicon" />
                         <jsp:text><![CDATA[&nbsp;]]></jsp:text>
-                        <c:set var="item_href"><search:boomerang url="${item.fields.clickurl}" param="category:results;pos:${pos}"/></c:set>
+                        <c:set var="item_href"><search:boomerang url="${item.fields.clickurl}" param="category:results;pos:${pos}" /></c:set>
                         <a href="${item_href}" class="search_big_url">${item.fields.title}</a>
-                        <br/>
+                        <br />
 
                         <c:if test="${not empty item.fields.fileformat}">
-                            <span class="timestamp"><search:text key="fileformat_${item.fields.fileformat}"/></span>
+                            <span class="timestamp" ><search:text key="fileformat_${item.fields.fileformat}" /></span>
                         </c:if>
                         <c:if test="${not empty item.fields.body}">
                             <span class="search_summary">${item.fields.body}</span>
@@ -66,16 +66,21 @@
                             <!-- More hits from -->
                             <c:if test="${empty $DataModel.parameters.values.moreHits}">
                               -
-                                <c:set var="moreHits_href"><![CDATA[<search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[commandName].query.utf8UrlEncoded}+site%3A${item.fields.site}&amp;moreHits=true" param="category:results;pos:${pos}"/>]]></c:set>
-                                <a href="${moreHits_href}" class="more_hits_link"><search:text key="moreHitsFrom"/></a>
+                                <c:set var="moreHits_href"><search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[commandName].query.utf8UrlEncoded}+site%3A${item.fields.site}&amp;moreHits=true" param="category:results;pos:${pos}" /></c:set>
+                                <jsp:element name="a">
+                                  <jsp:attribute name="href"><c:out value="${moreHits_href}" escapeXml="true"/></jsp:attribute>
+                                  <jsp:attribute name="class">more_hits_link</jsp:attribute>
+                                  <jsp:body><search:text key="moreHitsFrom" /></jsp:body>
+                                </jsp:element>
+
                             </c:if>
 
                             <!-- To website's front page -->
-                            <c:set var="site" value="http://${item.fields.site}"/>
+                            <c:set var="site" value="http://${item.fields.site}" />
                             <c:if test="${site ne item.fields.url}">
                               -
-                                <c:set var="goTopDomain_href"><search:boomerang url="http://${item.fields.site}/" param="category:navigation;subcategory:site;pos:${pos}"/></c:set>
-                                <a href="${goTopDomain_href}" class="search_big_url"><search:text key="goTopDomain"/></a>
+                                <c:set var="goTopDomain_href"><search:boomerang url="http://${item.fields.site}/" param="category:navigation;subcategory:site;pos:${pos}" /></c:set>
+                                <a href="${goTopDomain_href}" class="search_big_url"><search:text key="goTopDomain" /></a>
                             </c:if>
                         </span>
                     </p>
@@ -85,7 +90,7 @@
 
         </c:when>
         <c:otherwise>
-            <search:include include="no-hits" />
+            <search:include include="no-hits"  />
         </c:otherwise>
     </c:choose>
 
