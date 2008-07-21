@@ -66,7 +66,7 @@
                             <!-- More hits from -->
                             <c:if test="${empty $DataModel.parameters.values.moreHits}">
                               -
-                                <c:set var="moreHits_href"><search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[commandName].query.utf8UrlEncoded}+site%3A${item.fields.site}&amp;moreHits=true" param="category:results;pos:${pos}"/></c:set>
+                                <c:set var="moreHits_href"><![CDATA[<search:boomerang url="/search/?c=${tab.key}&amp;q=${DataModel.searches[commandName].query.utf8UrlEncoded}+site%3A${item.fields.site}&amp;moreHits=true" param="category:results;pos:${pos}"/>]]></c:set>
                                 <a href="${moreHits_href}" class="more_hits_link"><search:text key="moreHitsFrom"/></a>
                             </c:if>
 
