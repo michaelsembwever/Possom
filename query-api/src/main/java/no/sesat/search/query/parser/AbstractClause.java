@@ -95,13 +95,23 @@ public abstract class AbstractClause implements Clause {
      *   for the Clause we are about to add to the mappings.
      * @param clause the Clause we are about to add to the mappings.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
+     * @return If the weakCache contained an clause for the key, then this is returned. Otherwise
+     * the clasue entered as a parameter is returned.
      */
-    protected static final <T extends AbstractClause> void addClauseInUse(
+    protected static final <T extends AbstractClause> T addClauseInUse(
             final String key,
             final T clause,
             final ReferenceMap<String,T> weakCache) {
-
-        weakCache.put(key, clause);
+        synchronized(weakCache) {
+            T tmp = weakCache.get(key);
+            if(tmp == null) {
+                weakCache.put(key, clause);
+                return clause;
+            }
+            else {
+                return tmp;
+            }
+        }
     }
 
     /**
