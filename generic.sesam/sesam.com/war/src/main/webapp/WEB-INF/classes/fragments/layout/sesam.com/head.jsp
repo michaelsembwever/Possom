@@ -28,39 +28,39 @@
 
 <!-- Rss -->
 <c:set var="msg_rss_link"><search:text key="rss_link"/></c:set>
-<link rel="alternate" type="application/rss+xml" title="${msg_rss_link}" href=""/>
+<link rel="alternate" type="application/rss+xml" title="${msg_rss_link}" href=""><![CDATA[&nbsp;]]></link>
 
 <!-- Css -->
 <c:forEach var="ww" items="${tab.css}">
     <c:set var="ww_link"><search:findResource url="/css/tab/${ww.id}.css"/></c:set>
     <c:if test="${not empty ww_link}">
-        <link rel="stylesheet" type="text/css" href="${ww_link}" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="${ww_link}" media="screen"><![CDATA[&nbsp;]]></link>
     </c:if>
 </c:forEach>
 <c:forEach var="w" items="${tab.ancestry}">
     <c:set var="w_link"><search:findResource url="/css/tab/${w.id}.css"/></c:set>
     <c:if test="${not empty w_link and w_link ne 'null'}">
-        <link rel="stylesheet" type="text/css" href="${w_link}" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="${w_link}" media="screen"><![CDATA[&nbsp;]]></link>
     </c:if>
 </c:forEach>
 <c:set var="w_link"><search:findResource url="/css/print.css"/></c:set>
 <link rel="stylesheet" type="text/css" href="${w_link}" media="print"/>
 
 <!-- Page Icons -->
-<link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
-<link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
+<link rel="icon" href="/images/favicon.gif" type="image/x-icon" ><![CDATA[&nbsp;]]></link>
+<link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" ><![CDATA[&nbsp;]]></link>
 
 <!-- OpenSearch -->
-<jsp:text><![CDATA[<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&amp;c=${tab.key}&amp;output=opensearch"/>]]></jsp:text>
+<jsp:text><![CDATA[<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&amp;c=${tab.key}&amp;output=opensearch">&nbsp;</link>]]></jsp:text>
 
 <!-- JavaScript -->
 <c:set var="js_link"><search:findResource url="/javascript/common.js"/></c:set>
-<script type='text/javascript' src="${js_link}"></script>
+<script type='text/javascript' src="${js_link}"><![CDATA[&nbsp;]]></script>
 
 <c:forEach var="js" items="${tab.javascript}">
     <c:set var="js_link"><search:findResource url="/javascript/${js}.js"/></c:set>
     <c:if test="${not empty js_link}">
-        <script type='text/javascript' src="${js_link}"></script>
+        <script type='text/javascript' src="${js_link}"><![CDATA[&nbsp;]]></script>
     </c:if>
 </c:forEach>
 

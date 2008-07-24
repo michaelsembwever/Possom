@@ -47,7 +47,7 @@
                     <c:set var="pos" value="${DataModel.navigation.navigations.offset.fields.currentPageFromCount + i}" />
 
                     <p id="p${i}">
-                        <img class="search_big_url_icon" src="http://${item.fields.site}/favicon.ico" width="16" height="16" alt="favicon" />
+                        <img class="search_big_url_icon" src="http://${item.fields.site}/favicon.ico" width="16" height="16" alt="" />
                         <jsp:text><![CDATA[&nbsp;]]></jsp:text>
                         <c:set var="item_href"><search:boomerang url="${item.fields.clickurl}" param="category:results;pos:${pos}" /></c:set>
                         <a href="${item_href}" class="search_big_url">${item.fields.title}</a>
