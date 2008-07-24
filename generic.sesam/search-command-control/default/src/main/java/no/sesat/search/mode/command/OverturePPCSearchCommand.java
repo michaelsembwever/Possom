@@ -117,6 +117,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @return Returns the request url used for the ppc ads.
      */
     protected String createRequestURL() {
+
         final OverturePpcCommandConfig ppcConfig
                 = (OverturePpcCommandConfig) context.getSearchConfiguration();
 
@@ -129,10 +130,15 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                 url.append("&type=" + ppcConfig.getType());
             }
 
+            final String serveUrl = "http://" + datamodel.getSite().getSite().getName() + "/search/";
+
             url.append("&Keywords=");
             url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
             url.append("&maxCount=");
             url.append(getResultsToReturn());
+            url.append("&serveUrl=");
+            url.append(URLEncoder.encode(serveUrl.toString(), "UTF-8"));
+
             url.append("&" + getAffilDataParameter());
 
         }  catch (UnsupportedEncodingException e) {
