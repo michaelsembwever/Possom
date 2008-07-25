@@ -90,26 +90,30 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     private static WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>> cache =
         new WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>>();
     private static ReadWriteLock cacheLock = new ReentrantReadWriteLock();
-    private static Lock cacheReadLock = cacheLock.readLock();
     public void visit(final Clause clause) {
-        cacheReadLock.lock();
         ConcurrentHashMap<Class<? extends Clause>, Method> map = cache.get(getClass());
-        cacheReadLock.unlock();
         if (map == null) {
-            map = new ConcurrentHashMap<Class<? extends Clause>, Method>();
-            cacheLock.writeLock().lock();
-            cache.put(getClass(), map);
-            cacheLock.writeLock().unlock();
+            try{
+                cacheLock.writeLock().lock();
+                map = cache.get(getClass());
+                if (map == null) {
+                    map = new ConcurrentHashMap<Class<? extends Clause>, Method>();
+                    cache.put(getClass(), map);
+                }
+            }
+            finally {
+                cacheLock.writeLock().unlock();
+            }
         }
+
         Method method = map.get(clause.getClass());
         if (method == null) {
             method = getMethod(clause.getClass());
+            method.setAccessible(true);
             map.put(clause.getClass(), method);
         }
         assert method.equals(getMethod(clause.getClass()));
-
         try {
-            method.setAccessible(true);
             method.invoke(this, new Object[] {clause});
 
         } catch (IllegalArgumentException ex) {
@@ -127,9 +131,6 @@ public abstract class AbstractReflectionVisitor implements Visitor {
 
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
-
-        }  finally  {
-            method.setAccessible(false);
         }
     }
 
