@@ -24,7 +24,6 @@ package no.sesat.search.query.parser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -90,11 +89,22 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     private static WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>> cache =
         new WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>>();
     private static ReadWriteLock cacheLock = new ReentrantReadWriteLock();
+    private static Lock readLock = cacheLock.readLock();
+    private static Lock writeLock = cacheLock.writeLock();
+
     public void visit(final Clause clause) {
-        ConcurrentHashMap<Class<? extends Clause>, Method> map = cache.get(getClass());
+        ConcurrentHashMap<Class<? extends Clause>, Method> map;
+        try {
+            readLock.lock();
+            map = cache.get(getClass());
+        }
+        finally {
+            readLock.unlock();
+        }
+
         if (map == null) {
-            try{
-                cacheLock.writeLock().lock();
+            try {
+                writeLock.lock();
                 map = cache.get(getClass());
                 if (map == null) {
                     map = new ConcurrentHashMap<Class<? extends Clause>, Method>();
@@ -102,7 +112,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 }
             }
             finally {
-                cacheLock.writeLock().unlock();
+                writeLock.unlock();
             }
         }
 
