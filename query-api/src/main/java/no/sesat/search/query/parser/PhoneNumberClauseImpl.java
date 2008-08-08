@@ -72,7 +72,7 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
         if(weakCache == null){
 
             weakCache = new ReferenceMap<String,PhoneNumberClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<PhoneNumberClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

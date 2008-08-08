@@ -71,7 +71,7 @@ public final class PhraseClauseImpl extends AbstractLeafClause implements Phrase
         if( weakCache == null ){
 
             weakCache = new ReferenceMap<String,PhraseClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<PhraseClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

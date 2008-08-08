@@ -86,7 +86,7 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
             if( weakCache == null ){
 
                 weakCache = new ReferenceMap<String,NotClauseImpl>(
-                        ReferenceMap.Type.WEAK,
+                        DFAULT_REFERENCE_MAP_TYPE,
                         new ConcurrentHashMap<String,Reference<NotClauseImpl>>(
                             WEAK_CACHE_INITIAL_CAPACITY,
                             WEAK_CACHE_LOAD_FACTOR,

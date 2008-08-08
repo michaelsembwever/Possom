@@ -97,7 +97,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
             if(weakCache == null){
 
                 weakCache = new ReferenceMap<String,OrClauseImpl>(
-                        ReferenceMap.Type.WEAK,
+                        DFAULT_REFERENCE_MAP_TYPE,
                         new ConcurrentHashMap<String,Reference<OrClauseImpl>>(
                             WEAK_CACHE_INITIAL_CAPACITY,
                             WEAK_CACHE_LOAD_FACTOR,

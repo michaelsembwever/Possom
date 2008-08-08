@@ -75,7 +75,7 @@ public final class NumberGroupClauseImpl extends AbstractLeafClause implements N
         if(weakCache == null){
 
             weakCache = new ReferenceMap<String,NumberGroupClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<NumberGroupClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

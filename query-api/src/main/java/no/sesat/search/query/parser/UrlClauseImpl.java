@@ -73,7 +73,7 @@ public final class UrlClauseImpl extends AbstractLeafClause implements UrlClause
         if( weakCache == null ){
 
             weakCache = new ReferenceMap<String,UrlClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<UrlClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

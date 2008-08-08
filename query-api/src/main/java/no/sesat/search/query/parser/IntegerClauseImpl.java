@@ -72,7 +72,7 @@ public final class IntegerClauseImpl extends AbstractLeafClause implements Integ
         if(weakCache == null){
 
             weakCache = new ReferenceMap<String,IntegerClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<IntegerClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

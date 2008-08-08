@@ -97,7 +97,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
             if(weakCache == null){
 
                 weakCache = new ReferenceMap<String,AndClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<AndClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

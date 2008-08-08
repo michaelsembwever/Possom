@@ -73,7 +73,7 @@ public final class EmailClauseImpl extends AbstractLeafClause implements EmailCl
         if( weakCache == null ){
 
             weakCache = new ReferenceMap<String,EmailClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<EmailClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

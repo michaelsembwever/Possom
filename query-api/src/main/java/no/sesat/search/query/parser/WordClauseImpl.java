@@ -72,7 +72,7 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
         if(weakCache == null ){
 
             weakCache = new ReferenceMap<String,WordClauseImpl>(
-                    ReferenceMap.Type.WEAK,
+                    DFAULT_REFERENCE_MAP_TYPE,
                     new ConcurrentHashMap<String,Reference<WordClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,

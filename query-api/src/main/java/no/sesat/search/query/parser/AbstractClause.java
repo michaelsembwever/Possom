@@ -70,7 +70,7 @@ public abstract class AbstractClause implements Clause {
     private final Set<TokenPredicate> knownPredicates;
     private final Set<TokenPredicate> possiblePredicates;
 
-
+    public static final ReferenceMap.Type DFAULT_REFERENCE_MAP_TYPE = ReferenceMap.Type.WEAK;
 
     /**
      * See if there is an identical and immutable Clause already in use in the JVM.

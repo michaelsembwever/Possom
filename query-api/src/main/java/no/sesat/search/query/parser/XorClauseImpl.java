@@ -107,7 +107,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
             if( weakCache == null ){
 
                 weakCache = new ReferenceMap<String,XorClauseImpl>(
-                        ReferenceMap.Type.WEAK,
+                        DFAULT_REFERENCE_MAP_TYPE,
                         new ConcurrentHashMap<String,Reference<XorClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
                         WEAK_CACHE_LOAD_FACTOR,
