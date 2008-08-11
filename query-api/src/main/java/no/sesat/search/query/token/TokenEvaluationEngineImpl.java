@@ -82,21 +82,15 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
         for(EvaluatorType type : EvaluatorType.getInstances()){
 
-            final String factoryName = type.getEvaluatorFactoryClassName();
-
             final AbstractEvaluatorFactory factory = AbstractEvaluatorFactory.instanceOf(
                     ContextWrapper.wrap(
                     AbstractEvaluatorFactory.Context.class,
                     context,
-                    new BaseContext() {
-                        public String getEvaluatorFactoryClassName() {
-                            return factoryName;
-                        }
-                    }
+                    type
             ));
 
             if(factory.isResponsibleFor(token)){
-                LOG.trace("Evaluator for " + token + " found by " + factoryName);
+                LOG.trace("Evaluator for " + token + " found by " + type.getEvaluatorFactoryClassName());
                 return factory.getEvaluator(token);
             }
         }

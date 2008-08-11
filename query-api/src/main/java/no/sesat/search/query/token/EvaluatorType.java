@@ -22,12 +22,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.commons.ioc.BaseContext;
 
 /**
  * The types of TokenPredicates that exist.
  * @version $Id$
  */
-public final class EvaluatorType implements Serializable {
+public final class EvaluatorType implements BaseContext, Serializable {
 
     private static final Map<String,EvaluatorType> INSTANCES = new HashMap<String,EvaluatorType>();
 
