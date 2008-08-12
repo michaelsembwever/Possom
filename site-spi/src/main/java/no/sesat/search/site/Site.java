@@ -35,7 +35,6 @@ import org.apache.log4j.Level;
 
 import no.sesat.Interpreter;
 import no.sesat.Interpreter.Function;
-import no.sesat.search.site.config.ResourceLoadException;
 import org.apache.log4j.Logger;
 
 /** A Site object identifies a Skin + Locale pairing.
@@ -116,6 +115,8 @@ public final class Site implements Serializable {
     */
     private final Site parent;
 
+    private transient final SiteContext siteContext;
+
     /** No-argument constructor for deserialization. */
     private Site() {
         siteName = null;
@@ -123,6 +124,13 @@ public final class Site implements Serializable {
         locale = Locale.getDefault();
         uniqueName = null;
         parent = null;
+
+        final Site thisSite = this;
+        siteContext = new SiteContext() {
+            public Site getSite() {
+                return thisSite;
+            }
+        };
     }
 
     /** Creates a new instance of Site.
@@ -130,8 +138,6 @@ public final class Site implements Serializable {
      * @throws IllegalArgumentException when there exists no skin matching the theSiteName argument.
      */
     private Site(final Context cxt, final String theSiteName, final Locale theLocale) {
-
-
         try{
             INSTANCES_LOCK.writeLock().lock();
 
@@ -147,13 +153,11 @@ public final class Site implements Serializable {
             uniqueName = getUniqueName(siteName, locale);
 
             final Site thisSite = this;
-
-            final SiteContext siteContext = new SiteContext() {
+            siteContext = new SiteContext() {
                 public Site getSite() {
                     return thisSite;
                 }
             };
-
 
             final String parentSiteName;
             if(null != cxt){
@@ -201,6 +205,14 @@ public final class Site implements Serializable {
         }
     }
 
+    /**
+     * Get a SiteContext for this site.
+     *
+     * @return SiteContext for this site.
+     */
+    public SiteContext getSiteContext() {
+        return siteContext;
+    }
 
     /** the parent to this site.
      * @return site null if we are the DEFAULT site.

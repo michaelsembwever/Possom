@@ -121,7 +121,6 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
     }
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
-
         final Context cxt = getContext();
 
         TokenEvaluator result = jepEvaluators.get(token);
@@ -129,11 +128,7 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    new SiteContext(){
-                        public Site getSite(){
-                            return cxt.getSite().getParent();
-                        }
-                    },
+                    cxt.getSite().getParent().getSiteContext(),
                     cxt
                 )).getEvaluator(token);
         }

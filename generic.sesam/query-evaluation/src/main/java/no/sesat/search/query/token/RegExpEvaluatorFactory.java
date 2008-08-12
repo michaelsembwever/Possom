@@ -63,7 +63,6 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
             throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
-
         try{
             init();
 
@@ -152,11 +151,7 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    new SiteContext(){
-                        public Site getSite(){
-                            return cxt.getSite().getParent();
-                        }
-                    },
+                    cxt.getSite().getParent().getSiteContext(),
                     cxt
                 )).getEvaluator(token);
         }

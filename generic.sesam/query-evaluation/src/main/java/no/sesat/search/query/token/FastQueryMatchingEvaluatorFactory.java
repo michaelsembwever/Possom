@@ -78,11 +78,7 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    new SiteContext(){
-                        public Site getSite(){
-                            return cxt.getSite().getParent();
-                        }
-                    },
+                    cxt.getSite().getParent().getSiteContext(),
                     cxt
                 )).getEvaluator(token);
         }
