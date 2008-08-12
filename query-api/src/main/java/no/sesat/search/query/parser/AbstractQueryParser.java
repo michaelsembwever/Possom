@@ -38,9 +38,7 @@ import no.sesat.search.query.finder.ParentFinder;
 import no.sesat.search.query.parser.alt.Alternation;
 import no.sesat.search.query.parser.alt.RotationAlternation;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import sun.java2d.SunGraphicsEnvironment.T1Filter;
 
 /** Abstract helper for implementing a QueryParser
  * Provides default implementation to get the query object.
