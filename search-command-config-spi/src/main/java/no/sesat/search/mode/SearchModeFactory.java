@@ -537,7 +537,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final SearchConfiguration inherit,
                 final SearchModeFactory.Context context) {
 
-            final SearchConfiguration sc = construct(element, context);
+            SearchConfiguration sc = construct(element, context);
 
             assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass())
                     : "Can only inherit from same or superclass configuration. "
@@ -545,7 +545,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     + " trying to inherit from " + inherit.getId() + '(' + inherit.getClass().getSimpleName() + ')';
 
             if ("old".equals(System.getenv("SearchModeFactory"))) {
-                sc.readSearchConfiguration(element, inherit, context);
+                sc = sc.readSearchConfiguration(element, inherit, context);
             }
             else {
                 sc.readSearchConfiguration(element, inherit);
