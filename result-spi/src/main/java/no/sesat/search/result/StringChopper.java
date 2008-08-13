@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
  * You should have received a copy of the SESAT License along with this program.
@@ -43,7 +43,7 @@ public final class StringChopper {
 
     private static final String DEBUG_CHOPSUEY = "Chopped it up to ";
 
-    private static final Pattern openTag = Pattern.compile("<[^<]+>");
+    private static final Pattern openTag = Pattern.compile("<[^\\?!][^<]+>");
     private static final Pattern closeTag = Pattern.compile("</[^<]+>");
     private static final Pattern singleTag = Pattern.compile("<[^<]+/>");
 
