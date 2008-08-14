@@ -196,11 +196,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             // not found in this site's modes.xml. look in parent's site.
             final SearchModeFactory factory = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    new SiteContext() {
-                        public Site getSite() {
-                            return context.getSite().getParent();
-                        }
-                    },
+                    context.getSite().getParent().getSiteContext(),
                     context
             ));
             mode = factory.getMode(id);
