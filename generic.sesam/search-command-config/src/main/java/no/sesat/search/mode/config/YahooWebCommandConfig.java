@@ -201,9 +201,8 @@ public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
     }
 
     @Override
-    protected void readSearchConfigurationAfter(final Element element, final SearchConfiguration inherit) {
-        super.readSearchConfigurationAfter(element, inherit);
+    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+        super.readSearchConfiguration(element, inherit);
         setPartnerId(getAppid());
     }
-
 }

@@ -301,23 +301,22 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
         fieldFilters.clear();
     }
 
-    protected void readSearchConfigurationBefore(Element element, SearchConfiguration inherit) {
+    @Override
+    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         if(null!=inherit){
             fieldFilters.putAll(inherit.getFieldFilterMap());
         }
         if(null!=inherit){
             resultFields.putAll(inherit.getResultFieldMap());
         }
-        super.readSearchConfigurationBefore(element, inherit);
-    }
 
-    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
+        super.readSearchConfiguration(element, inherit);
+
         if (element.hasAttribute("field-filters")) {
             if (element.getAttribute("field-filters").length() == 0) {
                clearFieldFilters();
             }
         }
-        super.readSearchConfigurationAfter(element, inherit);
     }
 
     /** {@inherit}

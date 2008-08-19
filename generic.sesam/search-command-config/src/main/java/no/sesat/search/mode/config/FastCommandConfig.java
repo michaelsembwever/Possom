@@ -594,11 +594,11 @@ public class FastCommandConfig extends CommandConfig {
         return this;
     }
 
-    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
-        super.readSearchConfigurationAfter(element, inherit);
-        final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig
-                ? (FastCommandConfig) inherit
-                : null;
+    @Override
+    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+        super.readSearchConfiguration(element, inherit);
+
+        final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig ? (FastCommandConfig) inherit : null;
         if (getQueryServerUrl() == null || "".equals(getQueryServerUrl())) {
             LOG.debug("queryServerURL is empty for " + getId());
         }

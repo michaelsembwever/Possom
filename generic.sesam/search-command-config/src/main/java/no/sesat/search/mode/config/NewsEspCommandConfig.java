@@ -312,13 +312,13 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         return this;
     }
 
-    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
+    @Override
+    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+        super.readSearchConfiguration(element, inherit);
         // maxAge is of the format 10h (for 10 hours).
         if (maxAge != null) {
             ageSymbol = maxAge.charAt(maxAge.length() - 1);
             maxAgeAmount = Integer.parseInt(maxAge.substring(0, maxAge.length() - 1));
         }
-
-        super.readSearchConfigurationAfter(element, inherit);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

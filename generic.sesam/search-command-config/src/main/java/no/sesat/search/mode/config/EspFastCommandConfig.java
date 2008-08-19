@@ -290,10 +290,10 @@ public class EspFastCommandConfig extends FastCommandConfig {
         return this;
     }
 
-    protected void readSearchConfigurationAfter(Element element, SearchConfiguration inherit) {
-        super.readSearchConfigurationAfter(element, inherit);
-        final EspFastCommandConfig efscInherit = inherit instanceof EspFastCommandConfig
-                ? (EspFastCommandConfig) inherit
+    @Override
+    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+        super.readSearchConfiguration(element, inherit);
+        final EspFastCommandConfig efscInherit = inherit instanceof EspFastCommandConfig ? (EspFastCommandConfig) inherit
                 : null;
 
         if (efscInherit != null && efscInherit.getNavigators() != null) {

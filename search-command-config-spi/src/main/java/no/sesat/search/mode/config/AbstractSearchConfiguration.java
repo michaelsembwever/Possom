@@ -36,32 +36,6 @@ public abstract class AbstractSearchConfiguration {
     private static final String[] setters = {"set", "add"};
 
     /**
-     * This method will be called before settings from the modes.xml files will
-     * be applied. Default implementation is empty.
-     *
-     * @param element
-     *            The xml element where the attribues are found.
-     * @param inherit
-     *            The configuration that we inherit from.
-     */
-    protected void readSearchConfigurationBefore(final Element element, final SearchConfiguration inherit) {
-
-    }
-
-    /**
-     * This method will be called after settings from the modes.xml files will
-     * be applied. Default implementation is empty.
-     *
-     * @param element
-     *            The xml element where the attribues are found.
-     * @param inherit
-     *            The configuration that we inherit from.
-     */
-    protected void readSearchConfigurationAfter(final Element element, final SearchConfiguration inherit) {
-
-    }
-
-    /**
      * This method will apply the attributes found in element.
      *
      * @param element
@@ -69,8 +43,7 @@ public abstract class AbstractSearchConfiguration {
      * @param inherit
      *            The configuration that we inherit from.
      */
-    public final void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
-        readSearchConfigurationBefore(element, inherit);
+    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         Set<String> methods = getMethodNames(setters);
 
         NamedNodeMap attribs = element.getAttributes();
@@ -102,7 +75,6 @@ public abstract class AbstractSearchConfiguration {
                 }
             }
         }
-        readSearchConfigurationAfter(element, inherit);
     }
 
     private static boolean startsWith(String string, String[] prefixes) {
