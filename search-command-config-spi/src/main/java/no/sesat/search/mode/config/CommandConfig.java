@@ -49,7 +49,7 @@ import org.w3c.dom.NodeList;
  *
  * @version <tt>$Id$</tt>
  */
-public class CommandConfig extends AbstractSearchConfiguration implements SearchConfiguration {
+public class CommandConfig implements SearchConfiguration, ModesSearchConfiguration {
 
     // Constants -----------------------------------------------------
 
@@ -301,7 +301,6 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
         fieldFilters.clear();
     }
 
-    @Override
     public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         if(null!=inherit){
             fieldFilters.putAll(inherit.getFieldFilterMap());
@@ -310,7 +309,7 @@ public class CommandConfig extends AbstractSearchConfiguration implements Search
             resultFields.putAll(inherit.getResultFieldMap());
         }
 
-        super.readSearchConfiguration(element, inherit);
+        ModesSearchConfigurationDeserializer.readSearchConfiguration(this, element, inherit);
 
         if (element.hasAttribute("field-filters")) {
             if (element.getAttribute("field-filters").length() == 0) {

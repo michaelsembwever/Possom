@@ -1,24 +1,10 @@
-/* Copyright (2008-2008) Schibsted Søk AS
- * This file is part of SESAT.
- *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   SESAT is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
- *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package no.sesat.search.mode.config;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import no.sesat.Interpreter;
 import no.sesat.Interpreter.Context;
@@ -28,23 +14,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public abstract class AbstractSearchConfiguration {
-    private static final Logger LOG = Logger.getLogger(AbstractSearchConfiguration.class);
-    private final static Map<Class, Map<String, MethodWrapper>> ClassMethodMap = new HashMap<Class, Map<String, MethodWrapper>>();
+public class ModesSearchConfigurationDeserializer {
+
+    private static final Logger LOG = Logger.getLogger(ModesSearchConfigurationDeserializer.class);
+    private final static Map<Class<ModesSearchConfiguration>, Map<String, MethodWrapper>> ClassMethodMap = new HashMap<Class<ModesSearchConfiguration>, Map<String, MethodWrapper>>();
 
     private static final String[] getters = {"get", "is"};
     private static final String[] setters = {"set", "add"};
 
-    /**
-     * This method will apply the attributes found in element.
-     *
-     * @param element
-     *            The xml element where the attribues are found.
-     * @param inherit
-     *            The configuration that we inherit from.
-     */
-    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
-        Set<String> methods = getMethodNames(setters);
+    public static void readSearchConfiguration(final ModesSearchConfiguration config, final Element element, final SearchConfiguration inherit) {
+        Set<String> methods = getMethodNames(config.getClass(), setters);
 
         NamedNodeMap attribs = element.getAttributes();
         for (int i = 0; i < attribs.getLength(); i++) {
@@ -61,7 +40,7 @@ public abstract class AbstractSearchConfiguration {
                         ++j;
                     }
                 }
-                setAttribute(beanName.toString(), attrib.getNodeValue());
+                setAttribute(config, beanName.toString(), attrib.getNodeValue());
                 methods.remove(beanName.toString());
             }
         }
@@ -71,7 +50,7 @@ public abstract class AbstractSearchConfiguration {
             for (String method : methods) {
                 Object value = getAttribute(inherit, method);
                 if (value != null) {
-                    setAttribute(method, value);
+                    setAttribute(config, method, value);
                 }
             }
         }
@@ -95,7 +74,7 @@ public abstract class AbstractSearchConfiguration {
     private static Map<String, MethodWrapper> getMethodMap(Class klass) {
         if (ClassMethodMap.containsKey(klass)) {
             return ClassMethodMap.get(klass);
-        } else if (klass == null || klass == AbstractSearchConfiguration.class) {
+        } else if (klass == null) {
             return null;
         }
 
@@ -107,7 +86,7 @@ public abstract class AbstractSearchConfiguration {
             Method method = methods[i];
             String name = method.getName();
             if (startsWith(name, setters)) {
-                Class[] paramTypes = method.getParameterTypes();
+                Class<?>[] paramTypes = method.getParameterTypes();
                 if (paramTypes.length == 1) {
                     MethodWrapper.Type type = MethodWrapper.getType(paramTypes[0]);
                     if (type == MethodWrapper.Type.Unsupported) {
@@ -137,6 +116,7 @@ public abstract class AbstractSearchConfiguration {
             }
         }
         getMethodMap(klass.getSuperclass());
+
         return methodMap;
     }
 
@@ -145,9 +125,8 @@ public abstract class AbstractSearchConfiguration {
      *
      * @return Set with all method wrappers found for this class.
      */
-    private Set<String> getMethodNames(String[] prefix) {
+    private static Set<String> getMethodNames(Class klass, String[] prefix) {
         Set<String> result = new HashSet<String>();
-        Class klass = getClass();
         Map<String, MethodWrapper> map = getMethodMap(klass);
         while (map != null) {
             for (String key : map.keySet()) {
@@ -164,16 +143,15 @@ public abstract class AbstractSearchConfiguration {
         return result;
     }
 
-    private void setAttribute(final String name, final Object value) {
-        Class klass = getClass();
-        MethodWrapper method = getMethodWrapper(klass, name, setters);
+    private static void setAttribute(ModesSearchConfiguration config, final String name, final Object value) {
+        MethodWrapper method = getMethodWrapper(config.getClass(), name, setters);
 
         if (method != null) {
-            if (!method.setValue(this, value)) {
-                LOG.error("Setting value on " + getClass().getSimpleName() + " " + name + "==" + value + " failed.");
+            if (!method.setValue(config, value)) {
+                LOG.error("Setting value on " + config.getClass().getSimpleName() + " " + name + "==" + value + " failed.");
             }
         } else {
-            LOG.error("Setting value on " + getClass().getSimpleName() + " " + name + "==" + value
+            LOG.error("Setting value on " + config.getClass().getSimpleName() + " " + name + "==" + value
                     + " failed because method was not found.");
         }
 
@@ -202,7 +180,7 @@ public abstract class AbstractSearchConfiguration {
 
     public String toString() {
         String res = getClass().getSimpleName() + " ";
-        Set<String> methods = getMethodNames(getters);
+        Set<String> methods = getMethodNames(getClass(), getters);
         for (String s : methods) {
             res += s + "==";
             Object o = getAttribute(this, s);
