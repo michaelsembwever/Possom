@@ -400,8 +400,13 @@ public class CommandConfig implements SearchConfiguration, ModesSearchConfigurat
             return navigators;
         }
 
+    @Override
+    public String toString() {
+        return ModesSearchConfigurationDeserializer.toString(this);
+    }
 
     // Inner classes -------------------------------------------------
+
 
     /**
      *

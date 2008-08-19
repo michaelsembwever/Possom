@@ -196,12 +196,12 @@ public class ModesSearchConfigurationDeserializer {
         return null;
     }
 
-    public String toString() {
-        String res = getClass().getSimpleName() + " ";
-        Set<String> methods = getMethodNames(getClass(), getters);
+    public static String toString(ModesSearchConfiguration config) {
+        String res = config.getClass().getSimpleName() + " ";
+        Set<String> methods = getMethodNames(config.getClass(), getters);
         for (String s : methods) {
             res += s + "==";
-            Object o = getAttribute(this, s);
+            Object o = getAttribute(config, s);
             if (o instanceof String[]) {
                 res += "[";
                 for (String a : (String[]) o) {
