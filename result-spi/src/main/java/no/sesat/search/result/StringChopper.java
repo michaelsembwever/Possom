@@ -43,7 +43,7 @@ public final class StringChopper {
 
     private static final String DEBUG_CHOPSUEY = "Chopped it up to ";
 
-    private static final Pattern openTag = Pattern.compile("<[^<]+>");
+    private static final Pattern openTag = Pattern.compile("<[^?!][^<]*>");
     private static final Pattern closeTag = Pattern.compile("</[^<]+>");
     private static final Pattern singleTag = Pattern.compile("<[^<]+/>");
 
