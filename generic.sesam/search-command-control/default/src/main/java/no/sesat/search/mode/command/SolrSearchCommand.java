@@ -19,10 +19,12 @@ package no.sesat.search.mode.command;
 
 import java.net.MalformedURLException;
 import java.util.Map;
+import no.sesat.search.mode.config.SolrSearchConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
+import no.sesat.search.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -33,7 +35,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
 /** Searching against a Solr index using the Solrj client.
- *
+ * see http://wiki.apache.org/solr/Solrj
  *
  * @version $Id$
  */
@@ -55,7 +57,11 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
         super(cxt);
         try {
-            server = new CommonsHttpSolrServer("http://sch-solr-test01.dev.osl.basefarm.net:8080/solr");
+
+            // "http://sch-solr-test01.dev.osl.basefarm.net:8080/solr"
+            final String serverUrl = ((SolrSearchConfig)cxt.getSearchConfiguration()).getServerUrl();
+            final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
+            server = new CommonsHttpSolrServer(siteConf.getProperty(serverUrl));
 
         } catch (MalformedURLException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -72,7 +78,8 @@ public class SolrSearchCommand extends AbstractSearchCommand{
             final SolrQuery query = new SolrQuery()
                     .setQuery(getTransformedQuery())
                     .setStart(getOffset())
-                    .setRows(getSearchConfiguration().getResultsToReturn());
+                    .setRows(getSearchConfiguration().getResultsToReturn())
+                    .setFields(getSearchConfiguration().getResultFieldMap().values().toArray(new String[]{}));
 
             // query
             final QueryResponse response = server.query(query);
