@@ -37,6 +37,9 @@ import org.apache.solr.common.SolrDocumentList;
 /** Searching against a Solr index using the Solrj client.
  * see http://wiki.apache.org/solr/Solrj
  *
+ * The query syntax could be improved
+ *  see http://lucene.apache.org/java/docs/queryparsersyntax.html
+ *
  * @version $Id$
  */
 public class SolrSearchCommand extends AbstractSearchCommand{
