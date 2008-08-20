@@ -113,6 +113,18 @@
             <version>3.3</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>3.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene.solr</groupId>
+            <artifactId>solrj</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+        
         <!-- testin -->
         <dependency>
             <groupId>sesat</groupId>
