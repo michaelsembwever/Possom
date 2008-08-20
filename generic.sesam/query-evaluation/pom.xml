@@ -33,5 +33,9 @@
             <artifactId>sesat-site-spi</artifactId>
             <version>${sesat.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.lucene.solr</groupId>
+            <artifactId>solrj</artifactId>
+        </dependency>
     </dependencies>
 </project>

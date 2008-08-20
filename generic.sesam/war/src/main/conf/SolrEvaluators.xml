@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fast-evaluators SYSTEM "http://sesam.no/dtds/VeryFastEvaluators.dtd">
+<!--
+    Document   : VeryFastEvaluators.xml
+    Created on : June 9, 2006, 1:26 PM
+    Author     : mick
+    Description:
+        Purpose of the document follows.
+-->
+
+<fast-evaluators>
+    <list token="ENGLISHWORDS" list-name="common_english"/>
+ </fast-evaluators>
