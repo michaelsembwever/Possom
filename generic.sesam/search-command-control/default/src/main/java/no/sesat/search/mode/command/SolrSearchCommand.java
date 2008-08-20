@@ -58,7 +58,6 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         super(cxt);
         try {
 
-            // "http://sch-solr-test01.dev.osl.basefarm.net:8080/solr"
             final String serverUrl = ((SolrSearchConfig)cxt.getSearchConfiguration()).getServerUrl();
             final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
             server = new CommonsHttpSolrServer(siteConf.getProperty(serverUrl));
@@ -81,9 +80,13 @@ public class SolrSearchCommand extends AbstractSearchCommand{
                     .setRows(getSearchConfiguration().getResultsToReturn())
                     .setFields(getSearchConfiguration().getResultFieldMap().values().toArray(new String[]{}));
 
+            DUMP.info(query.toString());
+
             // query
             final QueryResponse response = server.query(query);
             final SolrDocumentList docs = response.getResults();
+
+            searchResult.setHitCount((int)docs.getNumFound());
 
             // iterate through docs
             for(SolrDocument doc : docs){
