@@ -22,6 +22,7 @@ import no.sesat.Interpreter;
 import no.sesat.search.run.transform.RunTransformerConfig;
 import no.sesat.search.site.config.AbstractConfigFactory;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.search.mode.config.CommandConfig;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.query.transform.QueryTransformerConfig;
 import no.sesat.search.result.handler.ResultHandlerConfig;
@@ -419,7 +420,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         };
     }
 
-    private static final class SearchCommandFactory extends AbstractConfigFactory<SearchConfiguration> {
+    private static final class SearchCommandFactory extends AbstractConfigFactory<CommandConfig> {
 
         SearchCommandFactory() {}
 
@@ -533,7 +534,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final SearchConfiguration inherit,
                 final SearchModeFactory.Context context) {
 
-            SearchConfiguration sc = construct(element, context);
+            CommandConfig sc = construct(element, context);
 
             assert null == inherit || inherit.getClass().isAssignableFrom(sc.getClass())
                     : "Can only inherit from same or superclass configuration. "
@@ -550,7 +551,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return sc;
         }
 
-        protected Class<SearchConfiguration> findClass(final String xmlName, final Context context)
+        protected Class<CommandConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
@@ -558,7 +559,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             LOG.debug("findClass (SearchConfiguration) " + className);
 
             final String classNameFQ = "no.sesat.search.mode.config."+ className+ "Config";
-            final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
+            final Class<CommandConfig> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
 
             LOG.debug("Found class " + clazz.getName());
             return clazz;

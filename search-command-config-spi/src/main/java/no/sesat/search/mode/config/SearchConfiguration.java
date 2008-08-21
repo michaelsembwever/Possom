@@ -146,13 +146,24 @@ public interface SearchConfiguration extends Serializable {
     boolean isAsynchronous();
 
     /**
-     * Apply the attributes found in element to 'this'. If some attributes are not found
-     * in element then try to fetch them from inherit and set them on 'this'.
+     * Interface for SearchConfigurations that uses W3cDomDeserialiser.
      *
-     * @param element
-     * @param inherit
      */
-    void readSearchConfiguration(Element element, SearchConfiguration inherit);
+    public interface ModesW3cDomDeserialiser extends SearchConfiguration{
+        /**
+         * Apply the attributes found in element to 'this'. If some attributes are not found
+         * in element then try to fetch them from inherit and set them on 'this'.
+         *
+         * @param element
+         * @param inherit
+         *
+         * @return The newly read configuration (Done to keep the chaining pattern)
+         */
+        SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit);
+    }
 
+    // TODO: remove
     SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context);
 }
+
+

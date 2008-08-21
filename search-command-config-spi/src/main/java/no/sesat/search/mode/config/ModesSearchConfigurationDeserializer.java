@@ -35,12 +35,12 @@ import org.w3c.dom.Node;
 public class ModesSearchConfigurationDeserializer {
 
     private static final Logger LOG = Logger.getLogger(ModesSearchConfigurationDeserializer.class);
-    private final static Map<Class<ModesSearchConfiguration>, Map<String, MethodWrapper>> ClassMethodMap = new HashMap<Class<ModesSearchConfiguration>, Map<String, MethodWrapper>>();
+    private final static Map<Class<SearchConfiguration.ModesW3cDomDeserialiser>, Map<String, MethodWrapper>> ClassMethodMap = new HashMap<Class<SearchConfiguration.ModesW3cDomDeserialiser>, Map<String, MethodWrapper>>();
 
     private static final String[] getters = {"get", "is"};
     private static final String[] setters = {"set", "add"};
 
-    public static void readSearchConfiguration(final ModesSearchConfiguration config, final Element element, final SearchConfiguration inherit) {
+    public static void readSearchConfiguration(final SearchConfiguration.ModesW3cDomDeserialiser config, final Element element, final SearchConfiguration inherit) {
         Set<String> methods = getMethodNames(config.getClass(), setters);
 
         NamedNodeMap attribs = element.getAttributes();
@@ -161,7 +161,7 @@ public class ModesSearchConfigurationDeserializer {
         return result;
     }
 
-    private static void setAttribute(ModesSearchConfiguration config, final String name, final Object value) {
+    private static void setAttribute(SearchConfiguration.ModesW3cDomDeserialiser config, final String name, final Object value) {
         MethodWrapper method = getMethodWrapper(config.getClass(), name, setters);
 
         if (method != null) {
@@ -196,7 +196,7 @@ public class ModesSearchConfigurationDeserializer {
         return null;
     }
 
-    public static String toString(ModesSearchConfiguration config) {
+    public static String toString(SearchConfiguration.ModesW3cDomDeserialiser config) {
         String res = config.getClass().getSimpleName() + " ";
         Set<String> methods = getMethodNames(config.getClass(), getters);
         for (String s : methods) {

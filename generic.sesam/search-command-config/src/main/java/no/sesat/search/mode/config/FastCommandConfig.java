@@ -595,7 +595,7 @@ public class FastCommandConfig extends CommandConfig {
     }
 
     @Override
-    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         super.readSearchConfiguration(element, inherit);
 
         final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig ? (FastCommandConfig) inherit : null;
@@ -616,5 +616,6 @@ public class FastCommandConfig extends CommandConfig {
                 addNavigator(navigator, navigator.getId());
             }
         }
+        return this;
     }
 }

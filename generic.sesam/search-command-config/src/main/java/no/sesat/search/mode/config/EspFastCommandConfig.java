@@ -291,7 +291,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
     }
 
     @Override
-    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         super.readSearchConfiguration(element, inherit);
         final EspFastCommandConfig efscInherit = inherit instanceof EspFastCommandConfig ? (EspFastCommandConfig) inherit
                 : null;
@@ -309,5 +309,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
                 addNavigator(navigator, navigator.getId());
             }
         }
+
+        return this;
     }
 }

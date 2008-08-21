@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import no.sesat.search.mode.SearchModeFactory.Context;
-import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.result.Navigator;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
@@ -49,7 +48,7 @@ import org.w3c.dom.NodeList;
  *
  * @version <tt>$Id$</tt>
  */
-public class CommandConfig implements SearchConfiguration, ModesSearchConfiguration {
+public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialiser {
 
     // Constants -----------------------------------------------------
 
@@ -301,7 +300,7 @@ public class CommandConfig implements SearchConfiguration, ModesSearchConfigurat
         fieldFilters.clear();
     }
 
-    public void readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         if(null!=inherit){
             fieldFilters.putAll(inherit.getFieldFilterMap());
         }
@@ -316,6 +315,8 @@ public class CommandConfig implements SearchConfiguration, ModesSearchConfigurat
                clearFieldFilters();
             }
         }
+
+        return this;
     }
 
     /** {@inherit}
