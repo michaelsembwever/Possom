@@ -121,7 +121,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
             } catch (ParserConfigurationException ex) {
                 LOG.error(ERR_DOC_BUILDER_CREATION,ex);
             }
-            instance.addInterpreterFunctions();
         }
         return instance;
     }
@@ -604,20 +603,31 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         }
     }
 
-    private void addInterpreterFunctions() {
+    static {
         Interpreter.addFunction("tabs", new Interpreter.Function() {
             public String execute(Interpreter.Context ctx) {
                 String res = "";
-                for (String s : tabsByKey.keySet()) {
-                    res += "View: " + s + "\n";
-                    res += tabsByKey.get(s).toString();
-                    res += "\n";
+                try{
+                    INSTANCES_LOCK.readLock().lock();
+                    for(Site site : INSTANCES.keySet()) {
+                        res += "Site: " + site.getName() + "\n";
+                        SearchTabFactory factory = INSTANCES.get(site);
+                        for (String s : factory.tabsByKey.keySet()) {
+                            res += "    View: " + s + "\n";
+                            res += "          " + factory.tabsByKey.get(s).toString();
+                            res += "\n";
+                        }
+                        res += "\n";
+                    }
+
+                }finally{
+                    INSTANCES_LOCK.readLock().unlock();
                 }
                 return res;
-
             }
+
             public String describe() {
-                return "Print out the tabs in tabsByKey.";
+                return "Print out the tabs in tabsByKey for each site.";
             }
         });
     }
