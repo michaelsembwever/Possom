@@ -19,7 +19,7 @@ package no.sesat.search.mode.command;
 
 import java.net.MalformedURLException;
 import java.util.Map;
-import no.sesat.search.mode.config.SolrSearchConfig;
+import no.sesat.search.mode.config.SolrCommandConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.ResultItem;
@@ -61,7 +61,7 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         super(cxt);
         try {
 
-            final String serverUrl = ((SolrSearchConfig)cxt.getSearchConfiguration()).getServerUrl();
+            final String serverUrl = ((SolrCommandConfig)cxt.getSearchConfiguration()).getServerUrl();
             final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
             server = new CommonsHttpSolrServer(siteConf.getProperty(serverUrl));
 

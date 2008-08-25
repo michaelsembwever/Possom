@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 @Controller("SolrSearchCommand")
-public class SolrSearchConfig extends CommandConfig {
+public class SolrCommandConfig extends CommandConfig {
 
 
     // Constants -----------------------------------------------------
@@ -70,7 +70,7 @@ public class SolrSearchConfig extends CommandConfig {
     }
 
     @Override
-    public SolrSearchConfig readSearchConfiguration(
+    public SolrCommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit,
             final Context context) {
