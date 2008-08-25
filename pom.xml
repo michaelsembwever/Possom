@@ -251,6 +251,44 @@
             </build>
         </profile>
         <profile>
+            <id>interpreter-aspectj</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>aspectj-maven-plugin</artifactId>
+                        <configuration>
+                            <complianceLevel>1.5</complianceLevel>
+                            <encoding>UTF-8</encoding>
+                            <showWeaveInfo>true</showWeaveInfo>
+                            <aspectLibraries>
+                                <aspectLibrary>
+                                    <groupId>sesat</groupId>
+                                    <artifactId>commons-interpreter-aspectj</artifactId>
+                                </aspectLibrary>
+                            </aspectLibraries>
+                            <verbose>true</verbose>
+                            <showWeaveInfo>true</showWeaveInfo>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>           
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>sesat</groupId>
+                    <artifactId>commons-interpreter-aspectj</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>alpha</id>
             <activation />
             <properties>
@@ -578,7 +616,7 @@
             <artifactId>commons-interpreter</artifactId>
             <version>2.0</version>
         </dependency>
-    </dependencies>
+   </dependencies>
     <reporting>
         <plugins>
             <plugin>
