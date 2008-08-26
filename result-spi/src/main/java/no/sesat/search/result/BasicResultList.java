@@ -30,10 +30,10 @@ import org.apache.log4j.Logger;
 
 /**
  * A simple implementation of a search result.
- * Is not multi-thread safe. 
+ * Is not multi-thread safe.
  * All fields (of all types) handled by superclass BasicSearchResultItem.
  *
- * @param T the type of ResultItem the ResultList contains.
+ * @param <T> the type of ResultItem the ResultList contains.
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
@@ -42,46 +42,61 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
     private static final Logger LOG = Logger.getLogger(BasicResultList.class);
 
     private int hitCount = -1;
-    
+
     private final List<T> results = new ArrayList<T>();
-    
-    private final Map<String,List<WeightedSuggestion>> spellingSuggestions 
+
+    private final Map<String,List<WeightedSuggestion>> spellingSuggestions
             = new HashMap<String,List<WeightedSuggestion>>();
-    
+
     private final List<Suggestion> querySuggestions = new ArrayList<Suggestion>();
 
-    private final List<WeightedSuggestion> relevantQueries = new ArrayList<WeightedSuggestion>(); 
-    
+    private final List<WeightedSuggestion> relevantQueries = new ArrayList<WeightedSuggestion>();
+
     /** Plain constructor.
-     * 
+     *
      */
     public BasicResultList(){}
-    
+
     protected BasicResultList(final String title, final String url, final int hitCount){
         super(title, url);
         this.hitCount = hitCount;
     }
-    
-    /** Copy constructor. 
+
+    /** Copy constructor.
      * Does not copy results, spellingSuggestions, querySuggestions, or relevantQueries.
      *
-     * ** @param copy 
+     * @param copy
      */
     public BasicResultList(final ResultItem copy){
         super(copy);
     }
 
-    /** {@inheritDoc} **/
+    /** Copy constructor.
+     * Does not copy results.
+     *
+     * @param copy
+     */
+    public BasicResultList(final ResultList<ResultItem> copy){
+        super(copy);
+
+
+        hitCount = copy.getHitCount();
+        for(WeightedSuggestion ws : copy.getSpellingSuggestions()){
+            // careful here. we're calling a possibly overridden method.
+            addSpellingSuggestion(ws);
+        }
+        querySuggestions.addAll(copy.getQuerySuggestions());
+        relevantQueries.addAll(copy.getRelevantQueries());
+    }
+
     public void setHitCount(final int docCount) {
         this.hitCount = docCount;
     }
 
-    /** {@inheritDoc} **/
     public int getHitCount() {
         return hitCount;
     }
 
-    /** {@inheritDoc} **/
     public void addResult(final T item) {
         results.add(item);
     }
@@ -89,15 +104,15 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
     public void addResults(List<? extends T> items){
         results.addAll(items);
     }
-    
+
     public void replaceResult(final T original, final T theNew){
-        
+
         if(original != theNew){
             // if the instances vary then replace
             results.set(results.indexOf(original), theNew);
         }
     }
-    
+
     public void removeResult(final T item){
         results.remove(item);
     }
@@ -110,9 +125,8 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
         Collections.sort(results, comparator);
     }
 
-    /** {@inheritDoc} **/
     public void addSpellingSuggestion(final WeightedSuggestion suggestion) {
-        
+
         if (spellingSuggestions.containsKey(suggestion.getOriginal())) {
             final List<WeightedSuggestion> exising = spellingSuggestions.get(suggestion.getOriginal());
             exising.add(suggestion);
@@ -129,14 +143,14 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
 
     /** {@inheritDoc} **/
     public List<WeightedSuggestion> getSpellingSuggestions() {
-        
+
         final List<WeightedSuggestion> result = new ArrayList<WeightedSuggestion>();
         for(List<WeightedSuggestion> v : spellingSuggestions.values()){
             result.addAll(v);
         }
         return result;
     }
-    
+
     /** {@inheritDoc} **/
     public Map<String,List<WeightedSuggestion>> getSpellingSuggestionsMap() {
         return spellingSuggestions;
@@ -152,11 +166,11 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
         querySuggestions.add(query);
     }
 
-    /** {@inheritDoc} **/          
+    /** {@inheritDoc} **/
     public List<T> getResults() {
         return Collections.unmodifiableList(results);
     }
-    
+
     /** JavaBean compatability for JSPs. **/
     public int getResultsSize(){
         return results.size();
@@ -165,28 +179,28 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
     /** {@inheritDoc} **/
     @Override
     public BasicResultList<T> addField(final String field, final String value) {
-        
+
         super.addField(field, value);
         return this;
     }
 
     @Override
     public BasicResultList<T> addObjectField(final String field, final Serializable value) {
-        
+
         super.addObjectField(field, value);
         return this;
-    }    
+    }
 
     @Override
     public BasicResultList<T> addToMultivaluedField(final String field, final String value) {
-        
+
         super.addToMultivaluedField(field, value);
         return this;
     }
-    
+
     /**
-     * 
-     * @param query 
+     *
+     * @param query
      */
     public void addRelevantQuery(final WeightedSuggestion query) {
         relevantQueries.add(query);
@@ -198,7 +212,7 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
      * @return the relevantQueries.
      */
     public List<WeightedSuggestion> getRelevantQueries() {
-        
+
         Collections.sort(relevantQueries);
         return Collections.unmodifiableList(relevantQueries);
     }
