@@ -293,7 +293,7 @@ public final class UserFilter implements Filter {
 
             } catch (final NamingException ne) {
                 // acceptable for sesat not to have to have a user service backend
-                LOG.warn(ne.getMessage(), ne);
+                LOG.debug(ne.getMessage(), ne);
             }
         }
         return null;
