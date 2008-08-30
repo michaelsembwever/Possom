@@ -23,6 +23,7 @@ import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
+import org.apache.log4j.Logger;
 
 
 
@@ -38,7 +39,7 @@ public final class FederatorRunHandler implements RunHandler{
 
 
     public FederatorRunHandler(final RunHandlerConfig rhc) {
-    	config = (FederatorRunHandlerConfig) rhc;
+        config = (FederatorRunHandlerConfig) rhc;
     }
 
 
@@ -71,6 +72,7 @@ public final class FederatorRunHandler implements RunHandler{
         }
     }
 
+    // does nothing if insertPosition is greater (or equal to) size of results
     private void insertResult(
             final ResultItem result,
             final ResultList<ResultItem> results,
@@ -78,16 +80,23 @@ public final class FederatorRunHandler implements RunHandler{
 
         final List<ResultItem> original = results.getResults();
 
-        // duplicate the last result
-        results.addResult(original.get(original.size()-1));
 
-        // now shuffle back everything between insertPosition and the last result
-        for(int i = results.getResults().size()-2; i > insertPosition; --i){
-            results.replaceResult(original.get(i), original.get(i-1));
+        if( insertPosition < original.size() ){
+
+            // duplicate the last result
+            results.addResult(original.get(original.size()-1));
+
+            // now shuffle back everything between insertPosition and the last result
+            for(int i = results.getResults().size()-2; i > insertPosition; --i){
+                // double check i exists in original list.
+                if( i < original.size() ){
+                    results.replaceResult(original.get(i), original.get(i-1));
+                }
+            }
+
+            // now add the new result in
+            results.replaceResult(original.get(insertPosition), result);
         }
-
-        // now add the new result in
-        results.replaceResult(original.get(insertPosition), result);
 
     }
 }
