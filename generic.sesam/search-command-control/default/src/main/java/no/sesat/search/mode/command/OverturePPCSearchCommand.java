@@ -130,7 +130,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                 url.append("&type=" + ppcConfig.getType());
             }
 
-            final String serveUrl = "http://" + datamodel.getSite().getSite().getName() + "/search/";
+            final String serveUrl = "http://" + datamodel.getSite().getSite().getName() + "search/";
 
             url.append("&Keywords=");
             url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
