@@ -530,6 +530,7 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.1</version>
+                <scope>provided</scope> <!-- required to be put into container's lib directory -->
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -540,6 +541,7 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.14</version>
+                <scope>provided</scope> <!-- required to be put into container's lib directory -->
             </dependency>
             <dependency>
                 <groupId>opensymphony</groupId>
@@ -554,7 +556,7 @@
             <dependency>
                 <groupId>schibstedsok</groupId>
                 <artifactId>newsadmin-services</artifactId>
-                <version>1.4</version>
+                <version>1.5-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
@@ -570,6 +572,27 @@
                 <type>jar</type>
                 <classifier>jdk15</classifier>
             </dependency>
+            <!-- old duplicate jboss ejb3 client libraries that get sucked in transitively -->
+            <dependency>
+              <groupId>jboss-client</groupId>
+              <artifactId>jboss-ejb3</artifactId>
+              <version>4.0.5</version>
+              <scope>provided</scope>
+            </dependency>
+            <dependency>
+              <groupId>jboss-client</groupId>
+              <artifactId>jboss-ejb3x</artifactId>
+              <version>4.0.5</version>
+              <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+              <groupId>jboss-client</groupId>
+              <artifactId>jboss-annotations-ejb3</artifactId>
+              <version>4.0.5</version>
+              <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>
