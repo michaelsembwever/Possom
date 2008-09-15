@@ -32,6 +32,9 @@ public final class EvaluatorType implements BaseContext, Serializable {
 
     private static final Map<String,EvaluatorType> INSTANCES = new HashMap<String,EvaluatorType>();
 
+    public static final EvaluatorType SOLR
+            = new EvaluatorType("SOLR", "no.sesat.search.query.token.SolrEvaluatorFactory");
+
     public static final EvaluatorType FAST
             = new EvaluatorType("FAST", "no.sesat.search.query.token.FastQueryMatchingEvaluatorFactory");
 

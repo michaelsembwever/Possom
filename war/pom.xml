@@ -230,7 +230,10 @@
         <type>jar</type>
         <version>3.1.0</version>
       </dependency>
-
+        <dependency>
+            <groupId>org.apache.lucene.solr</groupId>
+            <artifactId>solrj</artifactId>
+        </dependency>
       <!-- Reference implementation provided in no.sesat.search.http.dwr.DataModelWrapper.java
       <dependency>
         <groupId>dwr</groupId>

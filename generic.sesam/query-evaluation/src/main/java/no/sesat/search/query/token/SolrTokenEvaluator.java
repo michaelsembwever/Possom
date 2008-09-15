@@ -211,7 +211,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
                     // set up query
                     final SolrQuery solrQuery = new SolrQuery()
-                            .setQuery(token)
+                            .setQuery("list_entry_shingle:\"" + token + "\"")
                             .setRows(Integer.MAX_VALUE);
 
                     DUMP.info(solrQuery.toString());
@@ -224,14 +224,14 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                     // iterate through docs
                     for(SolrDocument doc : docs){
 
-                        final String name = (String) doc.getFieldValue("manu");
+                        final String name = (String) doc.getFieldValue("list_name");
                         final String exactname = EXACT_PREFIX + name;
 
                         // remove words made solely of characters that the parser considers whitespace
-                        final String hit = ((String) doc.getFieldValue("name"))
+                        final String hit = ((String) doc.getFieldValue("list_entry"))
                                 .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
 
-                        final String synonym = (String) doc.getFieldValue("synonym");
+                        final String synonym = (String) doc.getFieldValue("list_entry_synonym");
 
                         if(factory.usesListName(name, exactname)){
 

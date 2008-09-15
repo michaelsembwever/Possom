@@ -129,12 +129,17 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         final String host = props.getProperty(TOKEN_HOST_PROPERTY);
         final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
 
-        httpClient = HTTPClient.instance(host, port);
+        if(0 < port){
+            httpClient = HTTPClient.instance(host, port);
 
-        init();
+            init();
 
-        // Remove whitespace (except space itself) and operator characters.
-        analysisResult = queryFast(cleanString(context.getQueryString()));
+            // Remove whitespace (except space itself) and operator characters.
+            analysisResult = queryFast(cleanString(context.getQueryString()));
+        }else{
+            httpClient = null;
+            analysisResult = Collections.emptyMap();
+        }
     }
 
     // Public --------------------------------------------------------

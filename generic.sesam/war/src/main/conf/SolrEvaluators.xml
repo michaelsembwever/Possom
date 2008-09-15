@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE fast-evaluators SYSTEM "http://sesam.no/dtds/VeryFastEvaluators.dtd">
+<!--DOCTYPE solr-evaluators SYSTEM "http://sesam.no/dtds/SolrEvaluators.dtd"-->
 <!--
     Document   : VeryFastEvaluators.xml
     Created on : June 9, 2006, 1:26 PM
@@ -8,6 +8,6 @@
         Purpose of the document follows.
 -->
 
-<fast-evaluators>
+<solr-evaluators>
     <list token="ENGLISHWORDS" list-name="common_english"/>
- </fast-evaluators>
+ </solr-evaluators>

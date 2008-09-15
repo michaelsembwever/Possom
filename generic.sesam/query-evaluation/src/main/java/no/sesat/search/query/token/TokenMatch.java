@@ -56,7 +56,7 @@ final class TokenMatch{
      *
      * @param token
      * @param match
-     * @param value
+     * @param value any synonym for the match. may be null
      * @return
      */
     public static TokenMatch instanceOf(
@@ -84,7 +84,9 @@ final class TokenMatch{
         int result = 17;
         result = 37*result + token.hashCode();
         result = 37*result + match.hashCode();
-        result = 37*result + value.hashCode();
+        if(null != value){
+            result = 37*result + value.hashCode();
+        }
         return result;
     }
 
@@ -139,7 +141,7 @@ final class TokenMatch{
     /**
      * Get the Fast value.
      *
-     * @return the value.
+     * @return the value. may be null.
      */
     public String getValue() {
         return value;

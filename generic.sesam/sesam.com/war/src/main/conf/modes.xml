@@ -65,7 +65,10 @@
     
     <mode id="international" inherit="default-mode">
         <!--yahoo-idp-command id="globalSearch" inherit="default-yahoo-i18n-command"/-->
-        <yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/>
+        <!--yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/-->
+        <solr-command id="globalSearch" inherit="default-command"
+                           result-fields="list_name AS title,list_entry AS body"
+                           server-url="solr.serverUrl"/>
     </mode>
     
 </modes>

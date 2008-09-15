@@ -10,7 +10,7 @@
         Purpose of the document follows.
 -->
 
-<rules evaluators="FAST,REGEX,JEP">
+<rules evaluators="SOLR,FAST,REGEX,JEP">
 
 
     <!-- Global predicates -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE fast-evaluators SYSTEM "http://sesam.no/dtds/SolrEvaluators.dtd">
+<!DOCTYPE fast-evaluators SYSTEM "http://sesam.no/dtds/VeryFastEvaluators.dtd">
 
-<solr-evaluators>
-    <list token="ENGLISHWORDS" list-name="common_english"/>
-</solr-evaluators>
+<fast-evaluators>
+    <!--list token="ENGLISHWORDS" list-name="common_english"/-->
+</fast-evaluators>
