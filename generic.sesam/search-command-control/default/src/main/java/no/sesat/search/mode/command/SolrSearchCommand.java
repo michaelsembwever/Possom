@@ -81,7 +81,7 @@ public class SolrSearchCommand extends AbstractSearchCommand{
                     .setQuery(getTransformedQuery())
                     .setStart(getOffset())
                     .setRows(getSearchConfiguration().getResultsToReturn())
-                    .setFields(getSearchConfiguration().getResultFieldMap().values().toArray(new String[]{}));
+                    .setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
 
             DUMP.info(query.toString());
 
