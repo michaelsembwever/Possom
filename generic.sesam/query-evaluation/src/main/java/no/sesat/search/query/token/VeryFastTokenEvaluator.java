@@ -89,6 +89,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     /** General properties to regular expressions configured. **/
     private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 
+    // TODO this will leak when sites are redeploy without Sesat being restarted.
     // todo move deserialisation & this map to FastQueryMatchingEvaluatorFactory
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String[]>>();

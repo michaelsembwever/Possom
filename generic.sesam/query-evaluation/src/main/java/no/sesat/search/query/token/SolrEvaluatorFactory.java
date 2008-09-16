@@ -69,6 +69,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
     private SolrTokenEvaluator solrEvaluator;
     private SolrServer server;
 
+    // TODO this will leak when sites are redeploy without Sesat being restarted.
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String[]>>();
     private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();

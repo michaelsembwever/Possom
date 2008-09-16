@@ -25,6 +25,7 @@ import no.sesat.search.site.SiteContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
@@ -50,11 +51,11 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
     private static final String ERR_DOC_BUILDER_CREATION
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
 
-    private volatile boolean init = false;
-
+    // TODO this will leak when sites are redeploy without Sesat being restarted.
     /** JepTokenEvaluator's to use against the "*" query. Notes which tokens we're applicable to. **/
-    private final Map<TokenPredicate,JepTokenEvaluator> jepEvaluators
-            = new HashMap<TokenPredicate,JepTokenEvaluator>();
+    private static final Map<Site,Map<TokenPredicate,JepTokenEvaluator>> EVALUATORS
+            = new HashMap<Site,Map<TokenPredicate,JepTokenEvaluator>>();
+    private static final ReentrantReadWriteLock EVALUATORS_LOCK = new ReentrantReadWriteLock();
 
     public JepEvaluatorFactory(final Context cxt)
             throws SiteKeyedFactoryInstantiationException {
@@ -62,7 +63,7 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
         super(cxt);
 
         try{
-            init();
+            init(cxt);
 
         }catch(ParserConfigurationException pce){
             throw new SiteKeyedFactoryInstantiationException(ERR_DOC_BUILDER_CREATION, pce);
@@ -70,21 +71,49 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
 
     }
 
-    private void init() throws ParserConfigurationException {
+    private static void init(final Context cxt) throws ParserConfigurationException {
 
-        if (!init) {
-            synchronized(jepEvaluators){
+        final Site site = cxt.getSite();
+        final Site parent = site.getParent();
+        final boolean parentUninitialised;
+
+        try{
+            EVALUATORS_LOCK.readLock().lock();
+
+            // initialise the parent site's configuration
+            parentUninitialised = (null != parent && null == EVALUATORS.get(parent));
+
+        }finally{
+            EVALUATORS_LOCK.readLock().unlock();
+        }
+
+        if(parentUninitialised){
+            init(ContextWrapper.wrap(
+                    AbstractEvaluatorFactory.Context.class,
+                    parent.getSiteContext(),
+                    cxt
+                ));
+        }
+
+        try{
+            EVALUATORS_LOCK.writeLock().lock();
+
+            if(null == EVALUATORS.get(site)){
+
+                // create map entry for this site
+                EVALUATORS.put(site, new HashMap<TokenPredicate,JepTokenEvaluator>());
+
                 final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setValidating(false);
                 final DocumentBuilder builder = factory.newDocumentBuilder();
 
-                final DocumentLoader loader = getContext().newDocumentLoader(getContext(), JEP_EVALUATOR_XMLFILE, builder);
+                final DocumentLoader loader = cxt.newDocumentLoader(cxt, JEP_EVALUATOR_XMLFILE, builder);
 
                 loader.abut();
                 LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " started");
                 final Document doc = loader.getDocument();
 
-                assert null != doc : "No document loaded for " + getContext().getSite().getName();
+                assert null != doc : "No document loaded for " + site.getName();
 
                 final Element root = doc.getDocumentElement();
                 if(null != root){
@@ -110,21 +139,32 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
                         LOG.info(" ->evaluator@query-dependant: " + queryDep);
 
                         final JepTokenEvaluator jepTokenEvaluator = new JepTokenEvaluator("*", queryDep);
-                        jepEvaluators.put(token, jepTokenEvaluator);
+                        EVALUATORS.get(site).put(token, jepTokenEvaluator);
 
                     }
                 }
                 LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " finished");
-                init = true;
             }
+        }finally{
+            EVALUATORS_LOCK.writeLock().unlock();
         }
     }
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
+
+        TokenEvaluator result;
         final Context cxt = getContext();
 
-        TokenEvaluator result = jepEvaluators.get(token);
-        if(result == null && null != cxt.getSite().getParent()){
+        try{
+            EVALUATORS_LOCK.readLock().lock();
+
+            result = EVALUATORS.get(cxt.getSite()).get(token);
+
+        }finally{
+            EVALUATORS_LOCK.readLock().unlock();
+        }
+
+        if(null == result && null != cxt.getSite().getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
@@ -140,6 +180,7 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
         return "*".equals(getContext().getQueryString())
                 ? result
                 : new JepTokenEvaluator(getContext().getQueryString(), result.isQueryDependant(token));
+
     }
 
 }

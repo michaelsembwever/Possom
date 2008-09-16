@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  * SKER3540
  * @version $Id$
  */
-public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
+public abstract class AbstractEvaluatorFactory{
 
     /**
      * The context the RegExpEvaluatorFactory must work against.
@@ -62,11 +62,6 @@ public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
 
     // Constants -----------------------------------------------------
 
-    private static final Map<Site,Map<String,AbstractEvaluatorFactory>> INSTANCES
-            = new HashMap<Site,Map<String,AbstractEvaluatorFactory>>();
-
-    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-
     private static final Logger LOG = Logger.getLogger(AbstractEvaluatorFactory.class);
     private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
 
@@ -83,69 +78,38 @@ public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
      */
     public static final AbstractEvaluatorFactory instanceOf(final Context cxt) {
 
-        final Site site = cxt.getSite();
         final String clsName = cxt.getEvaluatorFactoryClassName();
 
-        checkSiteMapExists(site);
-
-        AbstractEvaluatorFactory instance;
-        try {
-            INSTANCES_LOCK.readLock().lock();
-
-            instance = INSTANCES.get(site).get(clsName);
-
-        }finally {
-            INSTANCES_LOCK.readLock().unlock();
-        }
-        if (null == instance) {
-
-            try {
-                INSTANCES_LOCK.writeLock().lock();
-
-                final SiteClassLoaderFactory f = SiteClassLoaderFactory.instanceOf(createClassLoadingContext(cxt));
-
-                final Class clazz = f.getClassLoader().loadClass(clsName);
-
-                @SuppressWarnings("unchecked")
-                final Constructor<? extends AbstractEvaluatorFactory> s = clazz.getConstructor(Context.class);
-
-                instance = s.newInstance(cxt);
-                INSTANCES.get(site).put(clsName, instance);
-
-            }catch (InstantiationException ex) {
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }catch (IllegalAccessException ex) {
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }catch (IllegalArgumentException ex) {
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }catch (InvocationTargetException ex) {
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }catch (NoSuchMethodException ex) {
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }catch (SecurityException ex) {
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }catch(ClassNotFoundException ex){
-                throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
-            }finally{
-                INSTANCES_LOCK.writeLock().unlock();
-            }
-        }
-        return instance;
-    }
-
-    /** custom implementation of SiteKeyedFactory.remove that cleans
-     * all factory implementations belonging to a site. *
-     * @param site
-     * @return
-     */
-    public static boolean removeAll(final Site site) {
+        // We cannot cache the EvaluatorFactory instances so easily because each depends on the QueryString.
+        //  the cache would then need to be keyed on Site->FactoryClassName->QueryString
+        //  Effective and safe caching becomes difficult when each QueryString has such a short lifespan.
+        // It is more effective than to let each EvaluatorFactory provide it's own QueryString caching.
 
         try {
-            INSTANCES_LOCK.writeLock().lock();
-            return null != INSTANCES.remove(site);
-        }
-        finally {
-            INSTANCES_LOCK.writeLock().unlock();
+
+            final SiteClassLoaderFactory f = SiteClassLoaderFactory.instanceOf(createClassLoadingContext(cxt));
+
+            final Class clazz = f.getClassLoader().loadClass(clsName);
+
+            @SuppressWarnings("unchecked")
+            final Constructor<? extends AbstractEvaluatorFactory> s = clazz.getConstructor(Context.class);
+
+            return s.newInstance(cxt);
+
+        }catch (InstantiationException ex) {
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
+        }catch (IllegalAccessException ex) {
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
+        }catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
+        }catch (InvocationTargetException ex) {
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
+        }catch (NoSuchMethodException ex) {
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
+        }catch (SecurityException ex) {
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
+        }catch(ClassNotFoundException ex){
+            throw new IllegalArgumentException("Unable to construct AbstractEvaluatorFactory: " + clsName, ex);
         }
     }
 
@@ -194,18 +158,6 @@ public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
      */
     public abstract TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException;
 
-    public boolean remove(final Site site) {
-
-        final String clsName = context.getEvaluatorFactoryClassName();
-
-        try {
-            INSTANCES_LOCK.writeLock().lock();
-            return null != INSTANCES.get(site).remove(clsName);
-        }
-        finally {
-            INSTANCES_LOCK.writeLock().unlock();
-        }
-    }
 
     // Z implementation ----------------------------------------------
 
@@ -240,30 +192,6 @@ public abstract class AbstractEvaluatorFactory implements SiteKeyedFactory {
                 return Spi.QUERY_EVALUATION;
             }
         };
-    }
-
-    private static void checkSiteMapExists(final Site site){
-
-        final Map<String,AbstractEvaluatorFactory> factories;
-        try {
-            INSTANCES_LOCK.readLock().lock();
-
-            factories = INSTANCES.get(site);
-
-        }finally {
-            INSTANCES_LOCK.readLock().unlock();
-        }
-        if(null == factories){
-            try {
-                INSTANCES_LOCK.writeLock().lock();
-
-                INSTANCES.put(site, new HashMap<String,AbstractEvaluatorFactory>());
-
-            }finally{
-                INSTANCES_LOCK.writeLock().unlock();
-            }
-        }
-
     }
 
     // Inner classes -------------------------------------------------

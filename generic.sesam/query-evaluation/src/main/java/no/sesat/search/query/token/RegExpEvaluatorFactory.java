@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
@@ -54,17 +55,17 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
     /** The name of the file where regular expressions for each TokenPredicate will be configured. **/
     public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";
 
-    private volatile boolean init = false;
-
-    private final Map<TokenPredicate,RegExpTokenEvaluator> regExpEvaluators
-            = new HashMap<TokenPredicate,RegExpTokenEvaluator>();
+    // TODO this will leak when sites are redeploy without Sesat being restarted.
+    private static final Map<Site,Map<TokenPredicate,RegExpTokenEvaluator>> EVALUATORS
+            = new HashMap<Site,Map<TokenPredicate,RegExpTokenEvaluator>>();
+    private static final ReentrantReadWriteLock EVALUATORS_LOCK = new ReentrantReadWriteLock();
 
     public RegExpEvaluatorFactory(final Context cxt)
             throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
         try{
-            init();
+            init(cxt);
 
         }catch(ParserConfigurationException pce){
             throw new SiteKeyedFactoryInstantiationException(ERR_DOC_BUILDER_CREATION, pce);
@@ -74,22 +75,49 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
     /** Loads the resource SearchConstants.REGEXP_EVALUATOR_XMLFILE containing all regular expression patterns
      *   for all the RegExpTokenEvaluators we will be using.
      */
-    private void init() throws ParserConfigurationException {
+    private static void init(final Context cxt) throws ParserConfigurationException {
 
-        if (!init) {
-            synchronized(regExpEvaluators){
+        final Site site = cxt.getSite();
+        final Site parent = site.getParent();
+        final boolean parentUninitialised;
+
+        try{
+            EVALUATORS_LOCK.readLock().lock();
+
+            // initialise the parent site's configuration
+            parentUninitialised = (null != parent && null == EVALUATORS.get(parent));
+
+        }finally{
+            EVALUATORS_LOCK.readLock().unlock();
+        }
+
+        if(parentUninitialised){
+            init(ContextWrapper.wrap(
+                    AbstractEvaluatorFactory.Context.class,
+                    parent.getSiteContext(),
+                    cxt
+                ));
+        }
+
+        try{
+            EVALUATORS_LOCK.writeLock().lock();
+
+            if(null == EVALUATORS.get(site)){
+                // create map entry for this site
+                EVALUATORS.put(site, new HashMap<TokenPredicate,RegExpTokenEvaluator>());
+
 
                 final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setValidating(false);
                 final DocumentBuilder builder = factory.newDocumentBuilder();
                 final DocumentLoader loader
-                        = getContext().newDocumentLoader(getContext(), REGEXP_EVALUATOR_XMLFILE, builder);
+                        = cxt.newDocumentLoader(cxt, REGEXP_EVALUATOR_XMLFILE, builder);
 
                 loader.abut();
                 LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
                 final Document doc = loader.getDocument();
 
-                assert null != doc : "No document loaded for " + getContext().getSite().getName();
+                assert null != doc : "No document loaded for " + site.getName();
 
                 final Element root = doc.getDocumentElement();
                 if(null != root){
@@ -132,21 +160,32 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
                         }
 
                         final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-                        regExpEvaluators.put(token, regExpTokenEvaluator);
+                        EVALUATORS.get(site).put(token, regExpTokenEvaluator);
 
                     }
                 }
                 LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
-                init = true;
             }
+
+        }finally{
+            EVALUATORS_LOCK.writeLock().unlock();
         }
     }
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
+        TokenEvaluator result;
         final Context cxt = getContext();
 
-        TokenEvaluator result = regExpEvaluators.get(token);
+        try{
+            EVALUATORS_LOCK.readLock().lock();
+
+            result = EVALUATORS.get(cxt.getSite()).get(token);
+
+        }finally{
+            EVALUATORS_LOCK.readLock().unlock();
+        }
+
         if(result == null && null != cxt.getSite().getParent()){
 
             result = instanceOf(ContextWrapper.wrap(

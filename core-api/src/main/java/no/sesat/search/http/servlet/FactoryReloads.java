@@ -29,7 +29,6 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.query.analyser.AnalysisRuleFactory;
-import no.sesat.search.query.token.AbstractEvaluatorFactory;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
@@ -53,7 +52,6 @@ public final class FactoryReloads {
         SEARCH_TAB_FACTORY,
         SEARCH_MODE_FACTORY,
         ANALYSIS_RULES_FACTORY,
-        EVALUATOR_FACTORY,
         VELOCITY_ENGINE_FACTORY
     }
 
@@ -103,20 +101,6 @@ public final class FactoryReloads {
 
                 performReload(site, AnalysisRuleFactory.instanceOf(
                         ContextWrapper.wrap(AnalysisRuleFactory.Context.class, genericCxt)));
-
-            case EVALUATOR_FACTORY:
-
-                int cleaned = 0;
-                for(Locale l : Locale.getAvailableLocales()){
-                    final Site s = Site.valueOf(null, site.getName(), l);
-                    if(null != s && AbstractEvaluatorFactory.removeAll(s)){
-                        ++cleaned;
-                    }
-                }
-
-                LOG.warn(cleaned + WARN_CLEANED_1 + "AbstractEvaluatorFactory" + WARN_CLEANED_2 + site);
-
-                if(ReloadArg.ALL != reload){ break;}
 
             case VELOCITY_ENGINE_FACTORY:
 

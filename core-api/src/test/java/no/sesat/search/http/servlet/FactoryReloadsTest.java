@@ -26,7 +26,6 @@ package no.sesat.search.http.servlet;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.http.servlet.FactoryReloads.ReloadArg;
-import no.sesat.search.site.SiteTestCase;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.config.FileResourceLoader;
 import no.sesat.search.site.config.PropertiesLoader;
@@ -58,7 +57,6 @@ public class FactoryReloadsTest extends SiteTestCase {
         FactoryReloads.performReloads(genericContext(), ReloadArg.SEARCH_TAB_FACTORY);
         FactoryReloads.performReloads(genericContext(), ReloadArg.SEARCH_MODE_FACTORY);
         FactoryReloads.performReloads(genericContext(), ReloadArg.ANALYSIS_RULES_FACTORY);
-        FactoryReloads.performReloads(genericContext(), ReloadArg.EVALUATOR_FACTORY);
         // skip "velocity" because VelocityEngineFactory harcodes to URLVelocityTemplateLoader
 
     }
