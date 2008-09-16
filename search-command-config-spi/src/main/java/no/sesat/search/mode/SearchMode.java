@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -80,6 +80,7 @@ public final class SearchMode implements Serializable {
     private Collection<SearchConfiguration> searchConfigurations;
     private SearchMode parentSearchMode;
     private boolean queryAnalysisEnabled = false;
+    private boolean autoBroadening = true;
     private String parentMode;
     private String id;
     private List<RunHandlerConfig> runHandlers;
@@ -106,6 +107,7 @@ public final class SearchMode implements Serializable {
             parentMode = inherit.parentMode;
             queryAnalysisEnabled = inherit.queryAnalysisEnabled;
             searchCommandExecutor = inherit.searchCommandExecutor;
+            autoBroadening = inherit.autoBroadening;
         }
     }
 
@@ -162,6 +164,26 @@ public final class SearchMode implements Serializable {
      */
     public SearchMode getParentSearchMode() {
         return parentSearchMode;
+    }
+
+    /**
+     * Get the autoBroadening.
+     * Automatic broadening results in any query returning zero hits across all commands will be wrapped in
+     *  parenthesis () and re-executed. This changes any DefaultOperatorClauses to OrClauses.
+     *
+     * @return the autoBroadening.
+     */
+    public boolean isAutoBroadening() {
+        return autoBroadening;
+    }
+
+    /**
+     * Set the autoBroadening.
+     *
+     * @param autoBroadening The autoBroadening to set.
+     */
+    public void setAutoBroadening(boolean autoBroadening) {
+        this.autoBroadening = autoBroadening;
     }
 
     /**
