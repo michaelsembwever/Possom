@@ -541,7 +541,6 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.14</version>
-                <scope>provided</scope> <!-- required to be put into container's lib directory -->
             </dependency>
             <dependency>
                 <groupId>opensymphony</groupId>
