@@ -556,7 +556,8 @@
             <dependency>
                 <groupId>schibstedsok</groupId>
                 <artifactId>newsadmin-services</artifactId>
-                <version>1.5-SNAPSHOT</version>
+                <version>1.5</version>
+                <type>ejb-client</type>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>

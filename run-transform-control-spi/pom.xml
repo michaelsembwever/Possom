@@ -64,10 +64,12 @@
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
-	<dependency>
-             <groupId>schibstedsok</groupId>
-             <artifactId>newsadmin-services</artifactId>
-	</dependency>
+		<dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>newsadmin-services</artifactId>
+            <type>ejb-client</type>
+		</dependency>
+		
         <!-- Testing -->
         <dependency>
             <groupId>sesat</groupId>

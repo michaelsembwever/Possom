@@ -200,6 +200,7 @@
             <groupId>axis</groupId>
             <artifactId>axis-saaj</artifactId>
         </dependency>
+        
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jbossall-client</artifactId>
@@ -207,11 +208,16 @@
         <version>4.0.5</version>
       </dependency>
 
+      <!-- 
+        Need to use the same version as on server cause of this bug:
+        https://jira.jboss.org/jira/browse/EJBTHREE-749
+      -->
       <dependency>
         <groupId>org.jboss</groupId>
-        <artifactId>jboss-ejb3-client</artifactId>
+        <!-- artifactId>jboss-ejb3-client</artifactId -->
+        <artifactId>jboss-ejb3</artifactId>
         <type>jar</type>
-        <version>RC9</version>
+        <version>4.0.5</version>
       </dependency>
 
       <dependency>
