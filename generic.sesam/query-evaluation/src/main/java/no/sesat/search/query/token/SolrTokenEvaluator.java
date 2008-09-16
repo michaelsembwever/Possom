@@ -207,7 +207,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                 String url = null;
 
                 try {
-                    final String token = URLEncoder.encode(query.replaceAll("\"", ""), "utf-8");
+                    final String token = query.replaceAll("\"", "");
 
                     // set up query
                     final SolrQuery solrQuery = new SolrQuery()
@@ -251,15 +251,6 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                 } catch (SolrServerException ex) {
                     LOG.error(ex.getMessage(), ex);
                     throw new EvaluationException(ERR_QUERY_FAILED + url, ex);
-
-                } catch (UnsupportedEncodingException ignore) {
-                    LOG.warn(ERR_FAILED_TO_ENCODE + query);
-                    result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-
-                } catch (IOException e1) {
-                    LOG.error(ERR_QUERY_FAILED + url, e1);
-                    result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new EvaluationException(ERR_QUERY_FAILED + url, e1);
 
                 }finally{
                     if(!updatedCache){
