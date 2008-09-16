@@ -62,8 +62,8 @@
     </mode>
     
     <mode id="international" inherit="default-mode">
-        <!--yahoo-idp-command id="globalSearch" inherit="default-yahoo-i18n-command"/-->
-        <yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/>
+        <yahoo-idp-command id="globalSearch" inherit="default-yahoo-idp-command"/>
+        <!--yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/-->
     </mode>
     
 </modes>
