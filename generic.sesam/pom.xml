@@ -186,7 +186,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>localhost</tokenevaluator.host>
                 <tokenevaluator.port>15400</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://localhost:16000/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://localhost:16000/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>localhost:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -235,7 +235,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -280,7 +280,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -330,7 +330,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -375,7 +375,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -420,7 +420,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -468,7 +468,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
