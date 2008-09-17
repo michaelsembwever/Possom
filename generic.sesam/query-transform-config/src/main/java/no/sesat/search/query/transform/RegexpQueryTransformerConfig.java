@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,6 +25,13 @@ import org.w3c.dom.Element;
 
 /**
  * Configuration bean for RegexpQueryTransformer.
+ *
+ * A transformer to apply a regular expression to each term.
+ *
+ * If the regular expression has a capturing group,
+ * it is only that group that is replacement,
+ * not the match to the whole regular expression.
+ * <b>It is therefore critical to use non-capturing groups for |?+* operations in the expressions.</b>
  *
  * @version $Id$
  *

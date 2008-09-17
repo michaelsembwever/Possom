@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
      */
     public void visitImpl(final LeafClause clause) {
 
-        final String term = (String) getTransformedTerms().get(clause);
+        final String term = getTransformedTerms().get(clause);
         if(null != term && term.length()>0){
             if(regExPattern == null){
                 regExPattern = Pattern.compile(config.getRegexp());
