@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -32,10 +32,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 /**
- * A transformer to prefix the terms in a query.
- *
- * @version $Id$
- *
+ * @see TermPrefixQueryTransformerConfig
  *
  */
 public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
@@ -44,9 +41,9 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
 
     private final TermPrefixQueryTransformerConfig config;
 
-    /**
+    /** Default constructor for QueryTransformers.
      *
-     * @param config
+     * @param config matching configuration class
      */
     public TermPrefixQueryTransformer(final QueryTransformerConfig config){
         this.config = (TermPrefixQueryTransformerConfig)config;
