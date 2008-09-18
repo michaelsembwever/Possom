@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 package no.sesat.search.query.transform;
 
-import no.schibstedsok.newsadmin.service.NewsCaseFacadeInterface;
+import no.schibstedsok.newsadmin.service.NewsCaseFacade;
 import no.sesat.search.query.Clause;
 import org.apache.log4j.Logger;
 
@@ -138,12 +138,12 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         /**
          * @return
          */
-        public NewsCaseFacadeInterface lookupDataService() {
+        public NewsCaseFacade lookupDataService() {
             InitialContext ic = null;
             try {
                 String serviceJndi = properties.getProperty(NEWSADMIN_JNDINAME);
                 ic = new InitialContext(properties);
-                return (NewsCaseFacadeInterface) ic.lookup(serviceJndi);
+                return (NewsCaseFacade) ic.lookup(serviceJndi);
             } catch (NamingException e) {
                 LOG.error("Could not lookup remote EJB.", e);
             } finally {
@@ -166,7 +166,7 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         public String getQuery(String newsCaseName, String queryType, int aggrId) {
             try {
                 LOG.debug("Looking up query for: " + newsCaseName);
-                final NewsCaseFacadeInterface newsCaseFacade = lookupDataService();
+                final NewsCaseFacade newsCaseFacade = lookupDataService();
                 if (newsCaseFacade != null) {
                     String newsQuery = newsCaseFacade.searchForQuery(newsCaseName, queryType, aggrId);
                     if (newsQuery != null) {

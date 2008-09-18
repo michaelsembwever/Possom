@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  * Is not multi-thread safe.
  * All fields (of all types) handled by superclass BasicSearchResultItem.
  *
- * @param T the type of ResultItem the ResultList contains.
+ * @param <T> the type of ResultItem the ResultList contains.
  *
  * @version <tt>$Id$</tt>
  */
@@ -65,23 +65,38 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
     /** Copy constructor.
      * Does not copy results, spellingSuggestions, querySuggestions, or relevantQueries.
      *
-     * ** @param copy
+     * @param copy
      */
     public BasicResultList(final ResultItem copy){
         super(copy);
     }
 
-    /** {@inheritDoc} **/
+    /** Copy constructor.
+     * Does not copy results.
+     *
+     * @param copy
+     */
+    public BasicResultList(final ResultList<ResultItem> copy){
+        super(copy);
+
+
+        hitCount = copy.getHitCount();
+        for(WeightedSuggestion ws : copy.getSpellingSuggestions()){
+            // careful here. we're calling a possibly overridden method.
+            addSpellingSuggestion(ws);
+        }
+        querySuggestions.addAll(copy.getQuerySuggestions());
+        relevantQueries.addAll(copy.getRelevantQueries());
+    }
+
     public void setHitCount(final int docCount) {
         this.hitCount = docCount;
     }
 
-    /** {@inheritDoc} **/
     public int getHitCount() {
         return hitCount;
     }
 
-    /** {@inheritDoc} **/
     public void addResult(final T item) {
         results.add(item);
     }
@@ -110,7 +125,6 @@ public class BasicResultList<T extends ResultItem> extends BasicResultItem imple
         Collections.sort(results, comparator);
     }
 
-    /** {@inheritDoc} **/
     public void addSpellingSuggestion(final WeightedSuggestion suggestion) {
 
         if (spellingSuggestions.containsKey(suggestion.getOriginal())) {

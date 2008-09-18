@@ -249,6 +249,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         inherit != null ? inherit.getExecutor() : SearchMode.SearchCommandExecutorConfig.SEQUENTIAL));
 
                 fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
+                fillBeanProperty(mode, inherit, "autoBroadening", ParseType.Boolean, modeE, "true");
 
                 mode.setRunTransformers(getRunTransformers(modeE, inherit));
                 mode.setRunHandlers(getRunHandlers(modeE, inherit));

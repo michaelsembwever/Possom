@@ -26,6 +26,10 @@ import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
+import no.sesat.search.result.BasicResultItem;
+import no.sesat.search.result.BasicResultList;
+import no.sesat.search.result.ResultItem;
+import no.sesat.search.result.ResultList;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
@@ -34,6 +38,12 @@ import org.apache.log4j.Logger;
 
 /**
  * Copy a SearchDataObject (with a new name).
+ *
+ * The results is an instance of BasicResultList<BasicResultItem> with
+ *  the list re-constructed with BasicResultList's copy constructor, and
+ *   each item re-constructed with BasicResultItem's copy constructor.
+ * Be warned as particular functionality belonging to an implementation of ResultList or ResultItem
+ *  other than BasicResultList and BasicResultItem may be lost.
  *
  * @version $Id$
  *
@@ -75,16 +85,19 @@ public final class CopySearchRunHandler implements RunHandler{
         final SearchDataObject from = datamodel.getSearch(config.getFrom());
 
         if(null != from){
+            final ResultList<ResultItem> resultList = new BasicResultList<ResultItem>(from.getResults());
+            for(ResultItem item : from.getResults().getResults()){
+                resultList.addResult(new BasicResultItem(item));
+            }
 
+            final SearchDataObject searchDO = factory.instantiate(
+                    SearchDataObject.class,
+                    datamodel,
+                    new DataObject.Property("configuration", from.getConfiguration()),
+                    new DataObject.Property("query", from.getQuery()),
+                    new DataObject.Property("results", resultList));
 
-        final SearchDataObject searchDO = factory.instantiate(
-                SearchDataObject.class,
-                datamodel,
-                new DataObject.Property("configuration", from.getConfiguration()),
-                new DataObject.Property("query", from.getQuery()),
-                new DataObject.Property("results", from.getResults()));
-
-        datamodel.setSearch(config.getTo(), searchDO);
+            datamodel.setSearch(config.getTo(), searchDO);
 
         }else{
 

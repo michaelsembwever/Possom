@@ -295,6 +295,7 @@
                 <sesam.site.generic>generic.alpha.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/alpha.test.sesam.no</serverDeployLocation>
+                <tag.on.deploy>false</tag.on.deploy>
             </properties>
             <build>
                 <plugins>
@@ -313,6 +314,7 @@
                 <sesam.site.generic>generic.nuclei.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/nuclei.test.sesam.no</serverDeployLocation>
+                <tag.on.deploy>false</tag.on.deploy>
             </properties>
             <build>
                 <plugins>
@@ -331,6 +333,7 @@
                 <sesam.site.generic>generic.beta.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/beta.test.sesam.no</serverDeployLocation>
+                <tag.on.deploy>false</tag.on.deploy>
             </properties>
             <build>
                 <plugins>
@@ -348,6 +351,7 @@
             <properties>
                 <sesam.site.generic>generic.electron.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
+                <tag.on.deploy>false</tag.on.deploy>
                 <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/electron.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
@@ -562,6 +566,7 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.1</version>
+                <scope>provided</scope> <!-- required to be put into container's lib directory -->
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -581,7 +586,8 @@
             <dependency>
                 <groupId>schibstedsok</groupId>
                 <artifactId>newsadmin-services</artifactId>
-                <version>1.4</version>
+                <version>1.5</version>
+                <type>ejb-client</type>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
@@ -602,6 +608,27 @@
                 <artifactId>solrj</artifactId>
                 <version>1.3-SNAPSHOT</version>
             </dependency>
+            <!-- old duplicate jboss ejb3 client libraries that get sucked in transitively -->
+            <dependency>
+              <groupId>jboss-client</groupId>
+              <artifactId>jboss-ejb3</artifactId>
+              <version>4.0.5</version>
+              <scope>provided</scope>
+            </dependency>
+            <dependency>
+              <groupId>jboss-client</groupId>
+              <artifactId>jboss-ejb3x</artifactId>
+              <version>4.0.5</version>
+              <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+              <groupId>jboss-client</groupId>
+              <artifactId>jboss-annotations-ejb3</artifactId>
+              <version>4.0.5</version>
+              <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>

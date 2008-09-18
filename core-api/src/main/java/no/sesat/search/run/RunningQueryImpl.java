@@ -667,7 +667,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         final String queryStr = datamodel.getQuery().getString();
 
         if (!queryStr.startsWith("(") && !queryStr.endsWith(")")
-                && datamodel.getQuery().getQuery().getTermCount() > 1) {
+                && datamodel.getQuery().getQuery().getTermCount() > 1
+                && context.getSearchMode().isAutoBroadening()) {
 
             // DataModel's ControlLevel will be RUNNING_QUERY_CONSTRUCTION
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
