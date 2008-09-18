@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Arrays;
-import org.apache.commons.lang.StringUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.Token;
 import org.apache.velocity.runtime.parser.node.Node;
 
 /**
@@ -56,23 +56,14 @@ public final class BoldWordDirective extends Directive {
 
     private static final String NAME = "boldWord";
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return NAME;
     }
 
-   /**
-     * {@inheritDoc}
-     */
     public int getType() {
         return LINE;
     }
 
-   /**
-     * {@inheritDoc}
-     */
     public boolean render(
                 final InternalContextAdapter context,
                 final Writer writer,
@@ -84,25 +75,24 @@ public final class BoldWordDirective extends Directive {
         if (argCount != 1) {
 
             String text = node.jjtGetChild(0).value(context).toString();
-            String uquery = node.jjtGetChild(1).value(context).toString();
+            final String uquery = node.jjtGetChild(1).value(context).toString();
             String query = org.apache.commons.lang.StringEscapeUtils.unescapeHtml(uquery);
+
             if(text == null) {
                 writer.write("");
                 return true;
             }
-            query = query.replaceAll("\"", "");
-            query = query.replaceAll("'", "");
-            String replace = "";
-            String replaceUp = "";
-            List list = Arrays.asList(query.split("[\\p{Punct}\\p{Space}]+"));
+            query = query.replaceAll("\"", "").replaceAll("'", "");
+
+            final List list = Arrays.asList(query.split("[\\p{Punct}\\p{Space}]+"));
 
             for (int i=0;i<list.size();i++) {
                 if (!list.get(i).toString().toLowerCase().equals("og") && !list.get(i).toString().toLowerCase().equals("i")) {
-                    replace = " <b>" + list.get(i) + "</b>";
-                    replaceUp = " <b>" + StringUtils.capitalize(list.get(i).toString()) + "</b>";
-                    text = text.replaceAll("(\\s|^)" + list.get(i).toString() + "(?![a-z])", replace);
-                    text = text.replaceAll("(\\s|^)" + StringUtils.capitalize(list.get(i).toString()) + "(?![a-z])", replaceUp);
-                    //text = text.replaceAll("(?i)" + list.get(i), rep);
+
+                    final String regexPattern = "(\\s|^)("+list.get(i).toString()+")(?![a-z])";
+                    final Pattern p = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE);
+                    final Matcher m = p.matcher(text);
+                    text = m.replaceAll(" <b>$2</b>");
                 }
             }
             writer.write(text);
