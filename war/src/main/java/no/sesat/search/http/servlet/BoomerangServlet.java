@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -60,6 +61,8 @@ public final class BoomerangServlet extends HttpServlet {
     private static final Logger ACCESS = Logger.getLogger("no.sesat.Access");
 
     private static final String CEREMONIAL = "/boomerang/";
+
+    private static final Pattern ROBOTS = Pattern.compile("(Googlebot|Slurp|Crawler|Bot)", Pattern.CASE_INSENSITIVE);
 
     @Override
     public void destroy() {  }
@@ -117,8 +120,9 @@ public final class BoomerangServlet extends HttpServlet {
                 kangerooGrub(entrails);
 
                 LOG.debug("Ceremonial boomerang to " + destination.toString());
-                if(req.getHeader("User-agent").matches("(Googlebot|Slurp|Yahoo\\! Slurp)")){
-                    // crawlers like permanent redirects. and we're not interested in their clicks so ok to cache.
+
+                if(ROBOTS.matcher(req.getHeader("User-agent")).find()){
+                    // robots like permanent redirects. and we're not interested in their clicks so ok to cache.
                     res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
                     res.setHeader("Location", destination.toString());
                     res.setHeader("Connection", "close");
