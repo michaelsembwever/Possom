@@ -51,6 +51,15 @@ public final class FindResource {
 
     // Static --------------------------------------------------------
 
+    /** Find the real location, in URL format, of the resource for the given site.
+     *
+     * Cannot be used in tests as is hardcoded to work with the UrlResourceLoader.
+     *
+     * @param site the site
+     * @param resource the resource
+     * @return a string in URL format where the resource can be found, or null if not found.
+     * @throws IOException exception when pinging to find real location
+     */
     public static String find(final Site site, final String resource) throws IOException{
 
         // This URL does not belong to search-portal
