@@ -16,12 +16,15 @@
  */
 
 package no.sesat.search.query.token;
+import java.lang.ref.Reference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.QueryStringContext;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
@@ -69,6 +72,18 @@ public abstract class AbstractEvaluatorFactory{
 
     private final Context context;
 
+
+
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 16;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
+
+    /**
+     * Unsynchronized are there are no 'changing values', just existance or not of the Constructor in the system.
+     */
+    private static final Map<Site,ReferenceMap<String,Constructor<? extends AbstractEvaluatorFactory>>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,ReferenceMap<String,Constructor<? extends AbstractEvaluatorFactory>>>();
+
     // Static --------------------------------------------------------
 
     /** find the appropriate factory subclass to use given the context.
@@ -76,23 +91,44 @@ public abstract class AbstractEvaluatorFactory{
      * @param cxt supplied context.
      * @return the appropriate factory subclass.
      */
+    @SuppressWarnings("unchecked")
     public static final AbstractEvaluatorFactory instanceOf(final Context cxt) {
 
+        final Site site = cxt.getSite();
         final String clsName = cxt.getEvaluatorFactoryClassName();
+
+        ReferenceMap<String,Constructor<? extends AbstractEvaluatorFactory>> weakCache = WEAK_CACHE.get(site);
+        if(null == weakCache){
+
+            weakCache = new ReferenceMap<String,Constructor<? extends AbstractEvaluatorFactory>>(
+                    ReferenceMap.Type.WEAK,
+                    new ConcurrentHashMap<String,Reference<Constructor<? extends AbstractEvaluatorFactory>>>(
+                        WEAK_CACHE_INITIAL_CAPACITY,
+                        WEAK_CACHE_LOAD_FACTOR,
+                        WEAK_CACHE_CONCURRENCY_LEVEL));
+
+            WEAK_CACHE.put(site, weakCache);
+        }
+        Constructor<? extends AbstractEvaluatorFactory> s = weakCache.get(clsName);
 
         // We cannot cache the EvaluatorFactory instances so easily because each depends on the QueryString.
         //  the cache would then need to be keyed on Site->FactoryClassName->QueryString
         //  Effective and safe caching becomes difficult when each QueryString has such a short lifespan.
         // It is more effective than to let each EvaluatorFactory provide it's own QueryString caching.
 
+        // Note: The TokenEvaluationEnginImpl instance does contain a weak cache
+        // since the instance is based on a Site and QueryString combination.
+
         try {
 
-            final SiteClassLoaderFactory f = SiteClassLoaderFactory.instanceOf(createClassLoadingContext(cxt));
+            if(null == s){
+                final SiteClassLoaderFactory f = SiteClassLoaderFactory.instanceOf(createClassLoadingContext(cxt));
 
-            final Class clazz = f.getClassLoader().loadClass(clsName);
+                final Class clazz = f.getClassLoader().loadClass(clsName);
 
-            @SuppressWarnings("unchecked")
-            final Constructor<? extends AbstractEvaluatorFactory> s = clazz.getConstructor(Context.class);
+                s = clazz.getConstructor(Context.class);
+                weakCache.put(clsName, s);
+            }
 
             return s.newInstance(cxt);
 

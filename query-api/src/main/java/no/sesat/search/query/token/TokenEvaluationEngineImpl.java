@@ -18,10 +18,13 @@
 package no.sesat.search.query.token;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Clause;
@@ -58,6 +61,14 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private State state;
     private volatile Thread owningThread = Thread.currentThread();
 
+
+    private final transient Map<TokenPredicate,TokenEvaluator> evaluatorCache
+            = new HashMap<TokenPredicate,TokenEvaluator>();
+
+    /** threading lock to the cache maps since they are not synchronised,
+     * and it's overkill to make them Hashtables. **/
+    private final transient ReentrantReadWriteLock evaluatorCacheGate = new ReentrantReadWriteLock();
+
     // Constructors -----------------------------------------------------
 
     /**
@@ -80,24 +91,50 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
-        for(EvaluatorType type : EvaluatorType.getInstances()){
+        TokenEvaluator result = null;
 
-            final AbstractEvaluatorFactory factory = AbstractEvaluatorFactory.instanceOf(
-                    ContextWrapper.wrap(
-                    AbstractEvaluatorFactory.Context.class,
-                    context,
-                    type
-            ));
+        try{
+            evaluatorCacheGate.readLock().lock();
 
-            if(factory.isResponsibleFor(token)){
-                LOG.trace("Evaluator for " + token + " found by " + type.getEvaluatorFactoryClassName());
-                return factory.getEvaluator(token);
-            }
+            result = evaluatorCache.get(token);
+
+        }finally{
+            evaluatorCacheGate.readLock().unlock();
         }
 
-        // no evaluator has been defined for this predicate. it must always be false then.
-        return ALWAYS_FALSE_EVALUATOR;
-        //throw new IllegalArgumentException(ERR_TOKENTYPE_WIHOUT_IMPL + token);
+        if(null == result){
+
+            try{
+                evaluatorCacheGate.writeLock().lock();
+
+
+                for(EvaluatorType type : EvaluatorType.getInstances()){
+
+                    final AbstractEvaluatorFactory factory = AbstractEvaluatorFactory.instanceOf(
+                            ContextWrapper.wrap(
+                            AbstractEvaluatorFactory.Context.class,
+                            context,
+                            type
+                    ));
+
+                    if(factory.isResponsibleFor(token)){
+                        LOG.trace("Evaluator for " + token + " found by " + type.getEvaluatorFactoryClassName());
+                        result = factory.getEvaluator(token);
+                        break;
+                    }
+                }
+
+                if(null == result){
+                    // no evaluator has been defined for this predicate. it must always be false then.
+                    result = ALWAYS_FALSE_EVALUATOR;
+                }
+                evaluatorCache.put(token, result);
+
+            }finally{
+                evaluatorCacheGate.writeLock().unlock();
+            }
+        }
+        return result;
     }
 
     public String getQueryString() {
