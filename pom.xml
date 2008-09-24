@@ -172,7 +172,7 @@
                         <suiteXmlFiles>
                             <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                         </suiteXmlFiles>
-                        <forkedProcessTimeoutInSeconds>600</forkedProcessTimeoutInSeconds>
+                        <!--forkedProcessTimeoutInSeconds>600</forkedProcessTimeoutInSeconds-->
                     </configuration>
                 </plugin>
                 <plugin>
@@ -215,8 +215,8 @@
         <version.quote>The acquisition of wealth is no longer the driving force in our lives. </version.quote>
         <!-- We must hardcode the version to sesat artifacts so child skins can themselves be a different version. -->
         <!-- We cannot use ${pom.version} as it is interpretted as the current's pom's version not this pom's version.-->
-	<!-- maven-release-plugin will not update this version: it must be manually updated after any version bump. -->
-	<sesat.version>2.18-SNAPSHOT</sesat.version>
+        <!-- maven-release-plugin will not update this version: it must be manually updated after any version bump. -->
+        <sesat.version>2.18-SNAPSHOT</sesat.version>
     </properties>
 
     <profiles>

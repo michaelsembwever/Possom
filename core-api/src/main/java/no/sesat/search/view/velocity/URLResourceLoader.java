@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -30,9 +30,7 @@ import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.commons.collections.ExtendedProperties;
 
-/** XXX This source file needs to be published to the internet as it is open-source code.
- *
- *
+/**
  * This is a simple URL-based loader.
  * ORIGINAL FROM http://svn.apache.org/repos/asf/jakarta/velocity/engine/trunk/whiteboard/geir/URLResourceLoader.java
  *
@@ -84,6 +82,12 @@ public class URLResourceLoader extends ResourceLoader {
 
     // Constructors --------------------------------------------------
 
+
+    public URLResourceLoader(){}
+
+    public URLResourceLoader(final Site site){
+        this.site= site;
+    }
 
     // Public --------------------------------------------------------
 

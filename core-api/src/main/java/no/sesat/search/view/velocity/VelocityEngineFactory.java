@@ -22,6 +22,7 @@
 
 package no.sesat.search.view.velocity;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -47,6 +48,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.Spi;
 import no.sesat.search.site.config.UrlResourceLoader;
 
+import no.sesat.search.view.FindResource;
 import no.sesat.search.view.navigation.NavigationHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -312,10 +314,15 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty("userdirective", directives.toString());
                 engine.setProperty(
                         "velocimacro.library",
+                        // sesat provides VM_sesat_library.vm -- should not be overridden
                         site.getTemplateDir() + "/VM_sesat_library.vm,"
-                        + site.getTemplateDir() + "/VM_global_library.vm,"
-                        + site.getTemplateDir() + "/VM_site_library.vm,"
-                        + site.getTemplateDir() + "/VM_map_library.vm"); //XXX not happy with this. it isn't SESAT.
+                        // VM_global_library is optional library a skin can provide (and/or override)
+                        + (isResourceAvailable(site, site.getTemplateDir() + "/VM_global_library.vm")
+                        ? site.getTemplateDir() + "/VM_global_library.vm," : "")
+                        // VM_site_library is secondary optional library a skin can provide (and/or override)
+                        + (isResourceAvailable(site, site.getTemplateDir() + "/VM_site_library.vm")
+                        ? site.getTemplateDir() + "/VM_site_library.vm," : "")
+                        );
 
                 final SiteClassLoaderFactory.Context classContext = ContextWrapper.wrap(
                         SiteClassLoaderFactory.Context.class,
@@ -361,11 +368,24 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         }
     }
 
-        // Package protected ---------------------------------------------
+    // Package protected ---------------------------------------------
 
-        // Protected -----------------------------------------------------
+    // Protected -----------------------------------------------------
 
-        // Private -------------------------------------------------------
+    // Private -------------------------------------------------------
+
+    private boolean isResourceAvailable(final Site site, final String resource){
+
+        try {
+            final URLResourceLoader loader = new URLResourceLoader(site);
+            loader.getResourceStream(resource).close();
+            return true;
+
+        } catch (Exception ex) {
+            LOG.error("Resource not available: " + resource, ex);
+            return false;
+        }
+    }
 
 
     // Inner classes -------------------------------------------------
