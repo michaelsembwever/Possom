@@ -124,12 +124,14 @@ public abstract class AbstractQueryParser implements QueryParser {
      * @return the Query object, ready to use.
      */
     public Query getQuery(){
-        if( query == null ){
-            final String q = context.getQueryString();
 
-            if( context == null ){
+        if( query == null ){
+
+            if( null == context ){
                 throw new IllegalStateException(ERR_EMPTY_CONTEXT);
             }
+
+            final String q = context.getQueryString();
 
             final ParentFinder parentFinder = new ParentFinder();
             try{
