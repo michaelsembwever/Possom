@@ -171,16 +171,18 @@ public class FileResourceLoader extends AbstractResourceLoader {
                         || (File.separatorChar + "generic.sesam" + File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)
                         || (File.separatorChar + "sesat-kernel" + File.separatorChar + "generic.sesam" + File.separatorChar + "war" + File.separatorChar).equals(basedirNormalised)){
 
-                    throw new IllegalStateException("At root of filesystem!" +
-                            "+ Current requirement of tests is that sesat-kernel is checked out, and named such," +
-                            " in any parent folder from here. I've searched all the way to the root of the filesystem");
+                    LOG.warn("At root of filesystem! looking for " + directory + resource
+                            + " Current requirement of tests is that sesat-kernel is checked out, and named such,"
+                            + " in any parent folder from here."
+                            + " I've searched all the way to the root of the filesystem");
+                    return null;
                 }
 
                 if(basedirNormalised.endsWith(project)
                         || basedirNormalised.endsWith(project + "war" + File.separatorChar)){
 
-                    LOG.debug("looking in " + basedir + directory);
-                    final File f = new File(basedir + directory + resource);
+                    LOG.debug("looking in " + basedirNormalised + directory);
+                    final File f = new File(basedirNormalised + directory + resource);
                     if(f.exists() || forceUrl){
                         return f.toURI().normalize().toURL();
                     }
@@ -243,13 +245,12 @@ public class FileResourceLoader extends AbstractResourceLoader {
             // the latter is only for development purposes when dtds have't been published to production yet
             if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
 
-                final String suffix = "sesat-kernel" + File.separatorChar
-                    + "war" + File.separatorChar
+                final String suffix = "war" + File.separatorChar
                     + "src" + File.separatorChar
                     + "main" + File.separatorChar
                     + "webapp" + File.separatorChar
-                    + "dtds" + File.separatorChar +
-                    systemId.substring(systemId.lastIndexOf('/'));
+                    + "dtds"
+                    + systemId.substring(systemId.lastIndexOf('/'));
 
                 String basedir = System.getProperty("basedir") + File.separatorChar;
 
@@ -257,8 +258,20 @@ public class FileResourceLoader extends AbstractResourceLoader {
 
                 while(true){
 
-                    LOG.debug("looking in " + basedir + suffix);
-                    final File f = new File(basedir + suffix);
+                    final String basedirNormalised = new File(basedir).toURI().normalize().toString()
+                        .replaceFirst("file:", "")
+                        .replace('/', File.separatorChar);
+
+                    if("/".equals(basedirNormalised)){
+
+                        throw new IllegalStateException("At root of filesystem! looking for " + suffix
+                                + " . Current requirement of tests is that sesat-kernel is checked out, and named such,"
+                                + " in any parent folder from here."
+                                + "I've searched all the way to the root of the filesystem");
+                    }
+
+                    LOG.debug("looking in " + basedirNormalised + suffix);
+                    final File f = new File(basedirNormalised + suffix);
                     if(f.exists()){
                         try{
                             return new InputSource(new FileInputStream(f));
