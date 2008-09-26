@@ -8,13 +8,13 @@ providing different
 Application Programming Interfaces (APIs) and Service Provider Interfaces (SPIs)}}.
 
     All requests to the sesam cluster (any sesam search frontend) go first to the search engine. The 
-{{{sesat-war/apidocs/no/sesat/search/http/filters/SiteLocatorFilter.html}
+{{{apidocs/no/sesat/search/http/filters/SiteLocatorFilter.html}
 SiteLocatorFilter}} intercepts the request, determines the correct skin, from the host-headers domain, loading into an 
 Site object, and then either, for client or server resources sends a redirect to the corresponding skin, or forwards
 the request onto one of the kernel's 
-{{{sesat-war/apidocs/no/sesat/search/http/servlet/package-summary.html}servlets}}.
+{{{apidocs/no/sesat/search/http/servlet/package-summary.html}servlets}}.
     For a thousand foot view of the kernel architecture see the javadoc package description for	
-{{{sesat-core-api/apidocs/no/sesat/search/package-summary.html}no.sesat.search}}
+{{{apidocs/no/sesat/search/package-summary.html}no.sesat.search}}
 
     For information on checking out the code and building read
 {{{http://sesat.no/development-guidelines.html}Sesat's Development Guidelines}}
@@ -40,7 +40,7 @@ implementation classes.
 
     Server-side configuration files are generally inheritable through the skin's heirarchy. The exact inheritence
 implementation depends of the filetype. See 
-{{{sesat-site-spi/apidocs/no/sesat/search/site/config/UrlResourceLoader.html}
+{{{apidocs/no/sesat/search/site/config/UrlResourceLoader.html}
 AbstractResourceLoader}} for more details.
 
     For information on creating new skins (aka SFC), and general skin operations, read
