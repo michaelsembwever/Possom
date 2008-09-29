@@ -677,18 +677,48 @@
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <charset>UTF-8</charset>
-                    <docencoding>UTF-8</docencoding>
-                    <source>1.6</source>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <links>
-                        <link>http://java.sun.com/javase/6/docs/api/</link>
-                        <link>http://java.sun.com/javaee/5/docs/api/</link>
-                        <link>http://logging.apache.org/log4j/docs/api/</link>
-                    </links>
-                </configuration>
+                <reportSets>
+                  <reportSet>
+                    <id>html</id>
+                    <configuration>
+                        <aggregate>true</aggregate>
+                        <charset>UTF-8</charset>
+                        <docencoding>UTF-8</docencoding>
+                        <source>1.6</source>
+                        <docfilessubdirs>true</docfilessubdirs>
+                    </configuration>
+                    <reports>
+                      <report>javadoc</report>
+                    </reports>
+                  </reportSet>
+                  <reportSet>
+                    <id>doccheck</id>
+                    <configuration>
+                      <doclet>com.sun.tools.doclets.doccheck.DocCheck</doclet>
+                      <docletArtifact>
+                        <groupId>com.sun.tools.doclets</groupId>
+                        <artifactId>doccheck</artifactId>
+                        <version>1.2b2</version>
+                      </docletArtifact>
+                        <aggregate>true</aggregate>
+                        <charset>UTF-8</charset>
+                        <docencoding>UTF-8</docencoding>
+                        <source>1.6</source>
+                        <docfilessubdirs>true</docfilessubdirs>
+                      <additionalparam>
+                        -d ${project.build.directory}/site/doccheck -evident 3 -skipPkg no.sesat.search.query.parser
+                      </additionalparam>
+                      <!-- Other dir than apidocs -->
+                      <destDir>doccheck</destDir>
+                      <!-- For the project-reports page-->
+                      <name>DocCheck</name>
+                      <description>DocCheck documentation.</description>
+                    </configuration>
+                    <reports>
+                      <report>javadoc</report>
+                    </reports>
+                  </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
