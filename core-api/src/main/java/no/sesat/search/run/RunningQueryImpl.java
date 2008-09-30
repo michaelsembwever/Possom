@@ -148,7 +148,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         LOG.trace("RunningQuery(cxt," + query + ')');
 
-        final String queryStr = trimDuplicateSpaces(query);
+        final String queryStr = truncate(trimDuplicateSpaces(query));
 
         final SiteContext siteCxt = new SiteContext(){
             public Site getSite() {
@@ -428,6 +428,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     // Private -------------------------------------------------------
+
+    /** Truncates string to an acceptable length. **/
+    private String truncate(final String query){
+
+        // generic.sesam defines a default value of 256
+        final int length = Integer.parseInt(
+                context.getDataModel().getSite().getSiteConfiguration().getProperty("sesat.query.characterLimit"));
+
+        return length < query.length()
+                ? query.substring(0, length)
+                : query;
+    }
 
     private boolean useEnrichment(
             final EnrichmentHint eHint,
