@@ -143,7 +143,9 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                 // initialise anonymous predicate
                 final String evaluatorTypes = root.getAttribute("evaluators");
                 if(null != evaluatorTypes && 0 < evaluatorTypes.length()){
-                    for(String factoryName : evaluatorTypes.split(",")){
+                    for(String name : evaluatorTypes.split(",")){
+
+                        final String factoryName = name;
 
                         AbstractEvaluatorFactory.instanceOf(
                                 ContextWrapper.wrap(
