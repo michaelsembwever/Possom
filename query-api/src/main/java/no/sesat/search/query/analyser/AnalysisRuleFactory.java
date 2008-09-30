@@ -143,11 +143,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                 // initialise anonymous predicate
                 final String evaluatorTypes = root.getAttribute("evaluators");
                 if(null != evaluatorTypes && 0 < evaluatorTypes.length()){
-                    for(String evaluator : evaluatorTypes.split(",")){
-
-                        final EvaluatorType type = EvaluatorType.instanceOf(evaluator);
-
-                        final String factoryName = type.getEvaluatorFactoryClassName();
+                    for(String factoryName : evaluatorTypes.split(",")){
 
                         AbstractEvaluatorFactory.instanceOf(
                                 ContextWrapper.wrap(
@@ -162,10 +158,10 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                                     }
                                 },
                                 new QueryStringContext() {
-                                public String getQueryString() {
-                                    return "*";
+                                    public String getQueryString() {
+                                        return "*";
+                                    }
                                 }
-                            }
                         ));
                     }
                 }

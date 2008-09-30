@@ -10,7 +10,7 @@
         Purpose of the document follows.
 -->
 
-<rules evaluators="SOLR,FAST,REGEX,JEP">
+<rules evaluators="no.sesat.search.query.token.SolrEvaluatorFactory,no.sesat.search.query.token.FastQueryMatchingEvaluatorFactory,no.sesat.search.query.token.RegExpEvaluatorFactory,no.sesat.search.query.token.JepEvaluatorFactory">
 
 
     <!-- Global predicates -->
