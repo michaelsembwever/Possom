@@ -24,7 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.commons.ioc.BaseContext;
 
-/**
+/** @deprecated An automatic approach is required, similar to how AnalysisRuleFactory warms up EvaluatorFactories.
+ *
  * The types of TokenPredicates that exist.
  * @version $Id$
  */
