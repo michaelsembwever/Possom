@@ -28,4 +28,22 @@
     <div id="builtWithSesat"><search:text key="builtWithSesat"/></div>
     <div id="resultsFromYahoo"><search:text key="resultsFromYahoo"/></div>
 </div>
+
+<!-- This is to collect statistics against http://sesam.com -->
+<jsp:text><![CDATA[
+    <script type='text/javascript' src='/javascript/tmv11.js'></script>
+    <script type="text/javascript">
+        <!--
+        var tmsec = new Array(3);
+        tmsec[0]="tmsec=sesam";
+        tmsec[1]="tmsec=sesamsok";
+        tmsec[2]="tmsec=sesamsok";
+        getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
+        //-->
+    </script>
+    <noscript><div>
+        <img src="http://statistik-gallup.net/V11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok&amp;tmsec=sesamsok" alt="" />
+    </div></noscript>
+]]></jsp:text>
+
 </jsp:root>
