@@ -57,19 +57,19 @@ public enum Categories implements TokenPredicate {
      * @todo rename to CHAIN_STORE
      */
     COMPANY_CHAIN,
-    /**
+    /** prioritised category of COMPANYNAME
      * @deprecated a prioritised category of COMPANYNAME is business logic
      */
     COMPANYENRICHMENT,
-    /**
+    /** a prioritised category of COMPANYBRANCH
      * @deprecated a prioritised category of COMPANYBRANCH is business logic
      */
     COMPANY_KEYWORD,
-    /**
+    /** a prioritised category of COMPANYBRANCH
      * @deprecated a prioritised category of COMPANYBRANCH is business logic
      */
     COMPANY_KEYWORD_RESERVED,
-    /**
+    /** a prioritised category of COMPANYNAME
      * @deprecated a prioritised category of COMPANYNAME is business logic
      */
     BIGCOMPANY,
@@ -78,7 +78,7 @@ public enum Categories implements TokenPredicate {
      */
     DISEASE,
     /**
-     * @{@link http://en.wikipedia.org/wiki/Category:English_language}
+     * {@link http://en.wikipedia.org/wiki/Category:English_language}
      */
     ENGLISHWORDS,
     /**
@@ -119,7 +119,8 @@ public enum Categories implements TokenPredicate {
      */
     GEO_ZIPCODE,
     /**
-     * @deprecated  ambiguous. what is a postal place? somewhere that can receive post?
+     * @deprecated  ambiguous. what is a postal place?
+     * somewhere that can receive post?
      */
     GEO_POSTALPLACE,
     /**
@@ -128,11 +129,11 @@ public enum Categories implements TokenPredicate {
      */
     FIRSTNAME,
     /**
-     * @{link http://en.wikipedia.org/wiki/Category:Food_and_drink}
+     * {@link http://en.wikipedia.org/wiki/Category:Food_and_drink}
      */
     FOOD,
     /**
-     * @{link http://en.wikipedia.org/wiki/Category:Names}
+     * {@link http://en.wikipedia.org/wiki/Category:Names}
      * @todo rename to NAME
      */
     FULLNAME,
@@ -164,14 +165,16 @@ public enum Categories implements TokenPredicate {
      */
     NEWSCASE,
     /**
-     * @deprecated will be removed before sesat-3.0
+     * @deprecated will be removed
+     * before sesat-3.0
      */
     NOPICTURE,
     /**
-     * @deprecated will be removed before sesat-3.0. what words to show a visual image of is business logic.
+     * @deprecated will be removed before sesat-3.0.
+     * what words to show a visual image of is business logic.
      */
     PICTURE,
-    /**
+    /**  a Prioritised Company
      * @deprecated the definition of a Prioritised Company is business logic.
      */
     PRIOCOMPANYNAME,
@@ -186,7 +189,7 @@ public enum Categories implements TokenPredicate {
      */
     PRODUCT_CAR,
     /**
-     *
+     * Products typically for children.
      */
     PRODUCT_CHILDREN,
     /**
@@ -244,12 +247,12 @@ public enum Categories implements TokenPredicate {
      */
     PRODUCT_MUSIC,
     /**
-     * @{link http://en.wikipedia.org/wiki/Category:Shoes}
+     * {@link http://en.wikipedia.org/wiki/Category:Shoes}
      * @todo rename to SHOE
      */
     PRODUCT_SHOE,
     /**
-     * @{@link http://en.wikipedia.org/wiki/Category:Sports}
+     * {@link http://en.wikipedia.org/wiki/Category:Sports}
      * @todo rename to SPORT
      */
     PRODUCT_SPORT,
@@ -265,6 +268,7 @@ public enum Categories implements TokenPredicate {
     PRODUCT_WEAPON,
     /**
      * @deprecated specific to finn.no
+     * will be removed before sesat-3.0
      */
     PRODUCT_TORGET,
     /**
@@ -292,7 +296,8 @@ public enum Categories implements TokenPredicate {
      */
     STYLE,
     /**
-     * @deprecated will be remove before sesat-3.0. a list of locally popular commercial websites is business related.
+     * @deprecated will be remove before sesat-3.0.
+     * a list of locally popular commercial websites is business related.
      */
     TNS,
     /**
@@ -329,145 +334,179 @@ public enum Categories implements TokenPredicate {
      */
     PUBLIC_SERVICE_BROADCASTING,
     /**
-     * @deprecated will be removed before sesat-3.0. what words to show a visual image of is business logic.
+     * @deprecated will be removed before sesat-3.0.
+     * what words to show a visual image of is business logic.
      */
     IMAGES,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     BOOK_MAGIC,
     /**
      *
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     CATALOGUE_MAGIC,
     /**
      *
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     CLASSIFIED_MAGIC,
     /**
      *
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     CULTURE_MAGIC,
     /**
      *
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     MOVIE_MAGIC,
     /**
      *
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     NEWS_MAGIC,
     /**
      *
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     OCEAN_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     PICTURE_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     VIDEO_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     RECEIPE_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     SKIINFO_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     STOCK_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     TV_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     WEATHER_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     WEBTV_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     WHITE_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     WIKIPEDIA_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     YELLOW_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     MAP_MAGIC,
     /**
-     * @deprecated not a category, but a keyword used as a portal into another search mode
+     * @deprecated not a category,
+     * but a keyword used as a portal into another search mode
      */
     BLOG_MAGIC,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     CATALOGUE_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     CLASSIFIED_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     LOAN_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     NEWS_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     OCEAN_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     PICTURE_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     VIDEO_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     SKIINFO_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     SUDOKU_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     TV_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     WEATHER_TRIGGER,
     /**
-     * @deprecated not a category, but keywords used as a portal into another search mode
+     * @deprecated not a category,
+     * but keywords used as a portal into another search mode
      */
     WIKIPEDIA_TRIGGER,
     /**
-     * @deprecated inappropriate method to determine if the "site:" field has been applied to a term.
+     * @deprecated inappropriate method to determine
+     * if the "site:" field has been applied to a term.
      */
     SITEPREFIX,
     /** While not exactly matching the "Types of Companies" category
@@ -488,7 +527,8 @@ public enum Categories implements TokenPredicate {
      */
     PHONENUMBER,
     /**
-     * @deprecated will be removed before sesat-3.0
+     * @deprecated will be removed
+     * before sesat-3.0
      */
     ONLYSKIINFO,
     /**
