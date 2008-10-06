@@ -36,10 +36,10 @@ import org.apache.velocity.runtime.parser.node.Node;
  *
  *  Example:
  *    #favicon("/images/favicon.gif")
- *    <link href="/genericno.localhost//images/1223283733372/favicon.gif" rel="icon" type="image/gif" />
+ *    <link href="/genericno.localhost//images/1223283733372/favicon.gif" rel="shortcut icon" type="image/gif" />
  *
- *    #favicon("/images/favicon.gif" 'type="image/gif" rel="shortcut icon"')
- *    <link href="/genericno.localhost//images/1223284107022/favicon.gif" type="image/gif" rel="shortcut icon"/>
+ *    #favicon("/images/favicon.png" 'type="image/png" rel="icon"')
+ *    <link href="/genericno.localhost//images/1223284107022/favicon.gif" type="image/png" rel="icon"/>
  *
  */
 public final class FaviconDirective extends AbstractDirective {
@@ -72,7 +72,7 @@ public final class FaviconDirective extends AbstractDirective {
         final String resolvedPath = FindResource.find(getDataModel(context).getSite().getSite(), getArgument(context, node, 0));
 
         if (argCount == 1) {
-            writer.write("<link href=\"" + resolvedPath + "\" rel=\"icon\" type=\"image/gif\" />");
+            writer.write("<link href=\"" + resolvedPath + "\" rel=\"shortcut icon\" type=\"image/gif\" />");
         }
         if (argCount == 2) {
             writer.write("<link href=\"" + resolvedPath + "\" " + getArgument(context, node, 1) + "/>");
