@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -95,6 +95,16 @@ public final class NavigationHelper {
         return dm.getNavigation().getNavigation("reset_" + navId).getUrl();
     }
 
+    /** Checks if navigation is "oslo".
+     *
+     * @deprecated {@link http://sesat.no/scarab/issues/id/SKER5009} A general solution is required here
+     *  that everybody can benefit from.
+     *  Or documentation of how to avoid this in the index.
+     *
+     * @param dm datamodel
+     * @param nav navigation to check
+     * @return true if title == "oslo"
+     */
     private static boolean isOslo(DataModel dm, NavigationConfig.Nav nav) {
         return dm.getNavigation().getNavigation(nav.getId()).getResults().get(0).getTitle().equalsIgnoreCase("oslo");
     }
