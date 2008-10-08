@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -38,17 +38,20 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
 
+    /**
+     * The key name used to identify an instance of SiteConfiguration.
+     */
     public static final String NAME_KEY = "SiteConfiguration";
     /**
-     *
+     * The property key to the site's default locale to use.
      */
     public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
     /**
-     *
+     * The property key where publishing content ("/pub/") is imported from. Related to SiteLocatorFilter.PUBLISH_DIR
      */
     public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
     /**
-     *
+     * The property key for the host serving the publishing content, use as host-header in importing requests.
      */
     public static final String PUBLISH_PHYSICAL_HOST = "publishing.system.physicalHost";
     private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
@@ -58,9 +61,20 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
      */
     public static final String IS_SITESEARCH_KEY = "site.issitesearch";
 
+    /**
+     * The Property key for the default tab/vertical for the site.
+     */
     public static final String DEFAULTTAB_KEY = "site.defaultTab";
 
+    /**
+     * The property key for the allow list of ipaddresses.
+     * If not empty the client ipaddress must exist in the list to be able to use the skin.
+     */
     public static final String ALLOW_LIST = "site.allow";
+    /**
+     * The property key for the disallow list of ipaddresses.
+     * The client ipaddress must not exist in the list to be able to use the skin.
+     */
     public static final String DISALLOW_LIST = "site.disallow";
 
     public interface Context extends BaseContext, PropertiesContext, SiteContext {}
@@ -101,15 +115,18 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     }
 
     /**
-     *
+     * Get all the properties. A defensive copy of the map is returned.
+     * @return defensive copy of the map is returned.
      */
     public Properties getProperties() {
 
-        return properties;
+        return new Properties(properties);
     }
 
     /**
-     *
+     * Get a property
+     * @param key the property key
+     * @return the property value (or null if key doesn't exist in properties map)
      */
     public String getProperty(final String key) {
 
@@ -122,6 +139,8 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
     /**
      * Find the correct instance handling this Site.
      * We need to use a Context instead of the Site directly so we can handle different styles of loading resources.
+     * @param cxt the context which defines which SiteConfiguration is applicable
+     * @return the applicable SiteConfiguration
      */
     public static SiteConfiguration instanceOf(final Context cxt) {
 
@@ -147,6 +166,8 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
      * Utility wrapper to the instanceOf(Context).
      * <b>Makes the presumption we will be using the UrlResourceLoader to load the resource.</b>
      * <b>Therefore can only be used within a running container, eg tomcat.</b>
+     * @param site the site that the SiteConfiguration is applicable to
+     * @return the applicable SiteConfiguration.
      */
     public static SiteConfiguration instanceOf(final Site site) {
 
@@ -171,9 +192,6 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
         return stc;
     }
 
-    /**
-     *
-     */
     public boolean remove(final Site site) {
 
         try {
@@ -184,6 +202,12 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
         }
     }
 
+    /** Does the site belonging to this SiteConfiguration support the provided locale.
+     * The default site "generic.sesam" supports all locales.
+     * Otherwise the list of locales found in SITE_LOCALE_SUPPORTED is checked.
+     * @param locale the locale to check
+     * @return true if the locale is supported.
+     */
     public boolean isSiteLocaleSupported(final Locale locale) {
 
         if (Site.DEFAULT.getName().equals(site.getName())) {
