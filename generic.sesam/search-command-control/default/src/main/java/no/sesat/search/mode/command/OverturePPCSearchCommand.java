@@ -49,7 +49,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String OVERTURE_PPC_ELEMENT = "Listing";
     // Old school sitesearches
-    private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_impl2";
+    private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_imp2";
 
     private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
 
