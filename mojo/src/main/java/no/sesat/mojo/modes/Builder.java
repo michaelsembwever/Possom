@@ -167,10 +167,12 @@ public final class Builder {
         modes.attributes.add(new ConfigAttribute("template-prefix"));
 
         final ConfigElement mode = new ConfigElement("mode");
+        // TODO replace with introspection
         mode.attributes.add(new ConfigAttribute("id"));
         mode.attributes.add(new ConfigAttribute("inherit"));
         mode.attributes.add(new ConfigAttribute("analysis"));
         mode.attributes.add(new ConfigAttribute("executor"));
+        mode.attributes.add(new ConfigAttribute("auto-broadenings"));
 
         mode.addChildren(commands);
         modes.addChild(mode);
@@ -183,6 +185,7 @@ public final class Builder {
 
         final ConfigElement navigators = new ConfigElement("navigators");
         final ConfigElement navigator = new ConfigElement("navigator");
+        // TODO replace with introspection
         navigator.attributes.add(new ConfigAttribute("id", null, true));
         navigator.attributes.add(new ConfigAttribute("name", null, true));
         navigator.attributes.add(new ConfigAttribute("field", null, true));
