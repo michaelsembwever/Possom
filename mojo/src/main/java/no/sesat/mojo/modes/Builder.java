@@ -172,7 +172,7 @@ public final class Builder {
         mode.attributes.add(new ConfigAttribute("inherit"));
         mode.attributes.add(new ConfigAttribute("analysis"));
         mode.attributes.add(new ConfigAttribute("executor"));
-        mode.attributes.add(new ConfigAttribute("auto-broadenings"));
+        mode.attributes.add(new ConfigAttribute("auto-broadening"));
 
         mode.addChildren(commands);
         modes.addChild(mode);
