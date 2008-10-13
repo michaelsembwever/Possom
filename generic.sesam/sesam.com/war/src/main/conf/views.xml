@@ -28,7 +28,7 @@
     <tab id="default-sesam-com" inherit="default"/>
     <!-- The one vertical we have. -->
     <tab id="international" inherit="default-sesam-com"
-            key="g" 
+            key="g"
             mode="international" 
             page-size="10"
             rss-result-name="globalSearch">

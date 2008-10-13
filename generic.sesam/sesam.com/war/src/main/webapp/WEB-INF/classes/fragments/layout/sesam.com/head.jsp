@@ -63,5 +63,48 @@
         <script type='text/javascript' src="${js_link}"><![CDATA[&nbsp;]]></script>
     </c:if>
 </c:forEach>
+<!-- MediaWiki Suggest definitions -->
+<script type='text/javascript'><jsp:text><![CDATA[
+var wgMWSuggestTemplate = "/search/?q={searchTerms}&c=suggest";
+var wgMWSuggestMessages = ["with suggestions", "no suggestions"]; // todo move into messages.properties
+// these pairs of inputs/forms will be autoloaded at startup
+var os_autoload_inputs = new Array('inputBox','inputBox');
+var os_autoload_forms = new Array('sf','sf-bottom');
 
+// search_box_id -> Results object
+var os_map = {};
+// cached data, url -> json_text
+var os_cache = {};
+// global variables for suggest_keypress
+var os_cur_keypressed = 0;
+var os_last_keypress = 0;
+var os_keypressed_count = 0;
+// type: Timer
+var os_timer = null;
+// tie mousedown/up events
+var os_mouse_pressed = false;
+var os_mouse_num = -1;
+// if true, the last change was made by mouse (and not keyboard)
+var os_mouse_moved = false;
+// delay between keypress and suggestion (in ms)
+var os_search_timeout = 250;
+// if we stopped the service
+var os_is_stopped = false;
+// max lines to show in suggest table
+var os_max_lines_per_suggest = 7;
+// number of steps to animate expansion/contraction of container width
+var os_animation_steps = 6;
+// num of pixels of smallest step
+var os_animation_min_step = 2;
+// delay between steps (in ms)
+var os_animation_delay = 30;
+// max width of container in percent of normal size (1 == 100%)
+var os_container_max_width = 2;
+// currently active animation timer
+var os_animation_timer = null;
+]]></jsp:text></script>
+<c:set var="mwsuggestjs_link"><search:findResource url="/javascript/external/mwsuggest.js"/></c:set>
+<script type='text/javascript' src="${mwsuggestjs_link}"><![CDATA[&nbsp;]]></script>
+<c:set var="mwsuggestcss_link"><search:findResource url="/css/external/mwsuggest.css"/></c:set>
+<link rel="stylesheet" type="text/css" href="${mwsuggestcss_link}" media="screen"><![CDATA[&nbsp;]]></link>
 </jsp:root>

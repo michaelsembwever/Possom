@@ -28,10 +28,14 @@
 <c:set var="img_logo"><search:findResource url="/images/logo.png"/></c:set>
 <a href="${link_logo}"><img src="${img_logo}" id="logo" alt="${msg_logo_alt}" /></a>
 <c:set var="link_action"><search:boomerang url="/search/" param="category:search;subcategory:top"/></c:set>
-<form name="sf" id="sf" action="${link_action}">
-    <c:set var="img_inputButton"><search:findResource url="/images/search_button.png"/></c:set>
-    <input type="text" id="inputBox" name="q" size="60" value="${DataModel.query.xmlEscaped}" tabindex="1" />
-    <input type="image" id="inputButton" src="${img_inputButton}" tabindex="2" />
-    <div class="clearEl"><jsp:text><![CDATA[&nbsp;]]></jsp:text></div>
-</form>
+<div>
+    <form name="sf" id="sf" action="${link_action}">
+        <c:set var="img_inputButton"><search:findResource url="/images/search_button.png"/></c:set>
+        <div>
+            <input type="text" id="inputBox" name="q" size="60" value="${DataModel.query.xmlEscaped}" tabindex="1" />
+            <input type="image" id="inputButton" src="${img_inputButton}" tabindex="2" />
+        </div>
+        <div class="clearEl"><jsp:text><![CDATA[&nbsp;]]></jsp:text></div>
+    </form>
+</div>
 </jsp:root>

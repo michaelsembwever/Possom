@@ -43,4 +43,10 @@ prority attribute of the navigation hints -->
         </layout>
         <layout id="opensearch" main="opensearchDecorator.jsp"/>
     </tab>
+
+    <!-- Common views -->
+
+    <tab id="solrSuggestions" key="suggest" mode="solrSuggestions">
+        <layout main="/fragments/layout/generic.sesam/solrSuggestions.jsp" content-type="text/plain"/>
+    </tab>
 </views>
