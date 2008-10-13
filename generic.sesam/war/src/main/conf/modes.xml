@@ -270,7 +270,7 @@ Copyright (2006-2007) Schibsted Søk AS
         <!-- Note the default-solr.1 default value in generic.sesam will not work outside of schibsted søk. -->
         <solr-command id="solrSuggestions"
                 result-fields="list_name,list_entry"
-                results-to-return="9"
+                results-to-return="99"
                 server-url="queryServer.solr.1"
                 inherit="default-command">
             <query-transformers>

@@ -91,7 +91,7 @@ var os_search_timeout = 250;
 // if we stopped the service
 var os_is_stopped = false;
 // max lines to show in suggest table
-var os_max_lines_per_suggest = 7;
+var os_max_lines_per_suggest = 99;
 // number of steps to animate expansion/contraction of container width
 var os_animation_steps = 6;
 // num of pixels of smallest step
