@@ -68,8 +68,8 @@
 var wgMWSuggestTemplate = "/search/?q={searchTerms}&c=suggest";
 var wgMWSuggestMessages = ["with suggestions", "no suggestions"]; // todo move into messages.properties
 // these pairs of inputs/forms will be autoloaded at startup
-var os_autoload_inputs = new Array('inputBox','inputBox');
-var os_autoload_forms = new Array('sf','sf-bottom');
+var os_autoload_inputs = new Array('inputBox');//,'inputBox');
+var os_autoload_forms = new Array('sf');//,'sf-bottom');
 
 // search_box_id -> Results object
 var os_map = {};

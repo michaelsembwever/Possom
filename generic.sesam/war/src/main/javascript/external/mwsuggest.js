@@ -7,6 +7,7 @@
  *  - removed function os_getNamespaces(r)
  *  - removed references to wgDBname
  *  - removed os_createToggle stuff from os_MWSuggestInit() || os_initHandlers(..)
+ *  - added "os_map[name] == null" test to os_initHandlers(..)
  *
  * The results format is unmodified, eg a query on "Open" gives
  * ["Open",["Open","Open (album)","Open (Album)","Open (application)","Open (band)","Open (Blues Image album)","Open (Cowboy Junkies album)","Open (Gotthard album)","Open (magazine)","Open (mathematics)"]]
@@ -783,17 +784,17 @@ function os_hookEvent(element, hookName, hookFunct) {
 
 /** Init Result objects and event handlers */
 function os_initHandlers(name, formname, element){
-	var r = new os_Results(name, formname);	
-	// event handler
-	os_hookEvent(element, "keyup", function(event) { os_eventKeyup(event); });
-	os_hookEvent(element, "keydown", function(event) { os_eventKeydown(event); });
-	os_hookEvent(element, "keypress", function(event) { os_eventKeypress(event); });
-	os_hookEvent(element, "blur", function(event) { os_eventBlur(event); });
-	os_hookEvent(element, "focus", function(event) { os_eventFocus(event); });
-	element.setAttribute("autocomplete","off");
-	// stopping handler
-	os_hookEvent(document.getElementById(formname), "submit", function(event){ return os_eventOnsubmit(event); });
-	os_map[name] = r; 	
+    var r = new os_Results(name, formname);
+    // event handler
+    os_hookEvent(element, "keyup", function(event) { os_eventKeyup(event); });
+    os_hookEvent(element, "keydown", function(event) { os_eventKeydown(event); });
+    os_hookEvent(element, "keypress", function(event) { os_eventKeypress(event); });
+    os_hookEvent(element, "blur", function(event) { os_eventBlur(event); });
+    os_hookEvent(element, "focus", function(event) { os_eventFocus(event); });
+    element.setAttribute("autocomplete","off");
+    // stopping handler
+    os_hookEvent(document.getElementById(formname), "submit", function(event){ return os_eventOnsubmit(event); });
+    os_map[name] = r;
 }
 
 /** Return the span element that contains the toggle link */
