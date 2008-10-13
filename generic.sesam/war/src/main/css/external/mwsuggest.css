@@ -37,6 +37,7 @@ td.os-suggest-result, td.os-suggest-result-hl {
 	color: black;
 	color: WindowText;
 	padding: 2px;
+    text-align: left;
 }
 td.os-suggest-result-hl,
 td.os-suggest-result-hl-webkit {

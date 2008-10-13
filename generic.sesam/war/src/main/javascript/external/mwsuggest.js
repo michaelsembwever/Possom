@@ -7,7 +7,6 @@
  *  - removed function os_getNamespaces(r)
  *  - removed references to wgDBname
  *  - removed os_createToggle stuff from os_MWSuggestInit() || os_initHandlers(..)
- *  - added "os_map[name] == null" test to os_initHandlers(..)
  *
  * The results format is unmodified, eg a query on "Open" gives
  * ["Open",["Open","Open (album)","Open (Album)","Open (application)","Open (band)","Open (Blues Image album)","Open (Cowboy Junkies album)","Open (Gotthard album)","Open (magazine)","Open (mathematics)"]]
