@@ -159,7 +159,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://localhost:15100</newsQueryServerURL>
                 <queryServerURL.4>http://localhost:15500</queryServerURL.4>
-
+                <queryServer.solr.1>http://localhost:16000/solr/</queryServer.solr.1>
                 <espBlogQueryServer>localhost:15101</espBlogQueryServer>
                 <espScanpixQueryServer>localhost:15101</espScanpixQueryServer>
 
@@ -210,7 +210,7 @@
                 <!-- QR Server for relevant queries -->
                 <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-
+                <queryServer.solr.1>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -255,7 +255,7 @@
                 <!-- QR Server for relevant queries -->
                 <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-
+                <queryServer.solr.1>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -297,7 +297,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-
+                <queryServer.solr.1>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</queryServer.solr.1>
                 <!--espBlogQueryServer>sch-fast-admin-e01.osl.basefarm.net:15100</espBlogQueryServer-->
                 <!--espBlogQueryServer>http://sch-fast-admin-e01.osl.basefarm.net:15100</espBlogQueryServer-->
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
@@ -350,7 +350,7 @@
                 <!-- QR Server for relevant queries -->
                 <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-
+                <queryServer.solr.1>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -392,7 +392,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-
+                <queryServer.solr.1>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -439,7 +439,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-
+                <queryServer.solr.1>http://sch-solr-test01.dev.osl.basefarm.net:8080/solr/</queryServer.solr.1>
 
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
