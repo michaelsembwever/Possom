@@ -90,12 +90,12 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
                 ? front
                 : layout.getMain();
 
-        include = include.startsWith("/")
-                ? include
-                : PAGES_DIRECTORY + include;
-
         try{
             if(null != include){
+
+                include = include.startsWith("/")
+                        ? include
+                        : PAGES_DIRECTORY + include;
 
                 final Map<String,Object> map = new HashMap<String,Object>();
                 map.put("layout", layout);

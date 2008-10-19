@@ -24,6 +24,7 @@ import no.sesat.search.site.SiteKeyedFactory;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -116,11 +117,15 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
 
     /**
      * Get all the properties. A defensive copy of the map is returned.
+     * Uses clone() as Collections.unmodifableMap(properties) gives an awkward to use Map<Object,Object>
+     * So is a relatively expensive method to use.
+     *
      * @return defensive copy of the map is returned.
      */
     public Properties getProperties() {
 
-        return new Properties(properties);
+        // new Properties(properties) does not work.
+        return (Properties) properties.clone();
     }
 
     /**
