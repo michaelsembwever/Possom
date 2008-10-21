@@ -179,20 +179,18 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         LOG.trace(tabsByName);
 
         SearchTab tab = getTabImpl(id);
-        if(null == tab && null != context.getSite().getParent()){
+        Site site = context.getSite().getParent();
+        while(null == tab && null != site){
             // not found in this site's views.xml. look in parent's site.
             final SearchTabFactory factory = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    new SiteContext(){
-                        public Site getSite(){
-                            return context.getSite().getParent();
-                        }
-                    },
+                    site.getSiteContext(),
                     context
                 ));
             tab = factory.getTabByName(id);
-
-        }else{
+            site = site.getParent();
+        }
+        if(null != tab){
             LOG.trace("found tab for " + id + " against SearchTabFactory for " + context.getSite());
         }
 
@@ -210,20 +208,18 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         LOG.trace("getTabByKey(" + key + ')');
 
         SearchTab tab = getTabByKeyImpl(key);
-        if(null == tab && null != context.getSite().getParent()){
+        Site site = context.getSite().getParent();
+        while(null == tab && null != site){
             // not found in this site's views.xml. look in parent's site.
             final SearchTabFactory factory = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    new SiteContext(){
-                        public Site getSite(){
-                            return context.getSite().getParent();
-                        }
-                    },
+                    site.getSiteContext(),
                     context
                 ));
             tab = factory.getTabByKeyImpl(key);
-
-        }else{
+            site = site.getParent();
+        }
+        if(null != tab){
             LOG.trace("found tab for " + key + " against SearchTabFactory for " + context.getSite());
         }
 
