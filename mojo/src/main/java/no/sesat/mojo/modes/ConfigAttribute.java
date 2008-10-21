@@ -1,3 +1,20 @@
+/*
+ * Copyright (2008) Schibsted Søk AS
+ * This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package no.sesat.mojo.modes;
 
 import com.sun.javadoc.MethodDoc;
@@ -5,39 +22,24 @@ import com.sun.javadoc.MethodDoc;
 /**
  * Data representing an attribute.
  *
+ * @version $Id$
  */
-public class ConfigAttribute extends ConfigAbstract {
+public class ConfigAttribute extends AbstractConfig {
 
-    protected String type = "CDATA";
-    protected boolean required = false;
+    private String type = "CDATA";
+    private boolean required = false;
+
+    public ConfigAttribute(final String name) {
+        super(name);
+    }
 
     /**
      * @param method Construct this attribute from a Javadoc element.
      */
     public ConfigAttribute(final MethodDoc method) {
-        doc = parseDoc(method);
+        super(Builder.toXmlName(method.name()).substring(4) ,parseDoc(method));
 
-        name = Builder.toXmlName(method.name()).substring(4);
         type = "CDATA"; // method.parameters()[0].toString();
-    }
-
-    /**
-     * @param name
-     *            Name of this attribute.
-     */
-    protected ConfigAttribute(final String name) {
-        this.name = name;
-    }
-
-    /**
-     * @param name
-     *            Name of this attribute.
-     * @param doc
-     *            Doc for this attribute.
-     */
-    protected ConfigAttribute(final String name, final String doc) {
-        this.name = name;
-        this.doc = doc;
     }
 
     /**
@@ -49,12 +51,20 @@ public class ConfigAttribute extends ConfigAbstract {
      *            if this is required attribute or not
      */
     protected ConfigAttribute(final String name, final String doc, final boolean required) {
-        this.name = name;
-        this.doc = doc;
+        super(name, doc);
         this.required = required;
     }
 
-    private String parseDoc(final MethodDoc method) {
+    public String getType(){
+        return type;
+    }
+
+    public boolean isRequired(){
+        return required;
+    }
+
+    private static String parseDoc(final MethodDoc method) {
+
         if (method == null) {
             return null;
         }

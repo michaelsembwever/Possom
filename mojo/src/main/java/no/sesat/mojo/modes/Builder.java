@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Vector;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
@@ -35,6 +34,8 @@ import com.sun.tools.javadoc.JavadocTool;
 import com.sun.tools.javadoc.Messager;
 import com.sun.tools.javadoc.ModifierFilter;
 import com.sun.tools.javadoc.RootDocImpl;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Builder to build a structure that mirrors the structure that should be used
@@ -111,13 +112,13 @@ public final class Builder {
      */
     public static boolean start(final RootDoc root) {
         final ConfigElement defaultConvert = new ConfigElement("default-convert");
-        defaultConvert.attributes.add(new ConfigAttribute("name"));
-        defaultConvert.attributes.add(new ConfigAttribute("prefix"));
-        defaultConvert.attributes.add(new ConfigAttribute("postfix"));
+        defaultConvert.getAttributes().add(new ConfigAttribute("name"));
+        defaultConvert.getAttributes().add(new ConfigAttribute("prefix"));
+        defaultConvert.getAttributes().add(new ConfigAttribute("postfix"));
 
-        final Vector<ConfigElement> commands = new Vector<ConfigElement>();
-        final Vector<ConfigElement> resultHandlers = new Vector<ConfigElement>();
-        final Vector<ConfigElement> queryTransformers = new Vector<ConfigElement>();
+        final List<ConfigElement> commands = new ArrayList<ConfigElement>();
+        final List<ConfigElement> resultHandlers = new ArrayList<ConfigElement>();
+        final List<ConfigElement> queryTransformers = new ArrayList<ConfigElement>();
         {
             final ClassDoc[] classes = root.classes();
             for (int i = 0; i < classes.length; i++) {
@@ -138,7 +139,7 @@ public final class Builder {
                                 return toXmlName(name.substring(0, name.lastIndexOf("ResultHandlerConfig")));
                             }
                         });
-                        if (!element.name.isEmpty()) {
+                        if (!element.getName().isEmpty()) {
                             resultHandlers.add(element);
                         }
                     } else if (name.endsWith("QueryTransformer") || (name.endsWith("QueryTransformerConfig"))) {
@@ -154,7 +155,7 @@ public final class Builder {
 
                         queryTransformers.add(element);
                     } else {
-                        System.out.println("Lost: " + element.name); // (authorized)
+                        System.out.println("Lost: " + element.getName()); // (authorized)
                         System.out.println(                          // (authorized)
                                 " non-abstract classes are expected to have one of the following suffixes: "
                                 + "CommandConfig, ResultHandlerConfig, QueryTransformer, or QueryTransformerConfig");
@@ -164,15 +165,15 @@ public final class Builder {
         }
 
         final ConfigElement modes = new ConfigElement("modes");
-        modes.attributes.add(new ConfigAttribute("template-prefix"));
+        modes.getAttributes().add(new ConfigAttribute("template-prefix"));
 
         final ConfigElement mode = new ConfigElement("mode");
         // TODO replace with introspection
-        mode.attributes.add(new ConfigAttribute("id"));
-        mode.attributes.add(new ConfigAttribute("inherit"));
-        mode.attributes.add(new ConfigAttribute("analysis"));
-        mode.attributes.add(new ConfigAttribute("executor"));
-        mode.attributes.add(new ConfigAttribute("auto-broadening"));
+        mode.getAttributes().add(new ConfigAttribute("id"));
+        mode.getAttributes().add(new ConfigAttribute("inherit"));
+        mode.getAttributes().add(new ConfigAttribute("analysis"));
+        mode.getAttributes().add(new ConfigAttribute("executor"));
+        mode.getAttributes().add(new ConfigAttribute("auto-broadening"));
 
         mode.addChildren(commands);
         modes.addChild(mode);
@@ -186,12 +187,12 @@ public final class Builder {
         final ConfigElement navigators = new ConfigElement("navigators");
         final ConfigElement navigator = new ConfigElement("navigator");
         // TODO replace with introspection
-        navigator.attributes.add(new ConfigAttribute("id", null, true));
-        navigator.attributes.add(new ConfigAttribute("name", null, true));
-        navigator.attributes.add(new ConfigAttribute("field", null, true));
-        navigator.attributes.add(new ConfigAttribute("display-name", null, true));
-        navigator.attributes.add(new ConfigAttribute("sort", null, false));
-        navigator.attributes.add(new ConfigAttribute("boundary-match"));
+        navigator.getAttributes().add(new ConfigAttribute("id", null, true));
+        navigator.getAttributes().add(new ConfigAttribute("name", null, true));
+        navigator.getAttributes().add(new ConfigAttribute("field", null, true));
+        navigator.getAttributes().add(new ConfigAttribute("display-name", null, true));
+        navigator.getAttributes().add(new ConfigAttribute("sort", null, false));
+        navigator.getAttributes().add(new ConfigAttribute("boundary-match"));
 
         // allow recursive nesting of navigator.
         navigator.addChild(navigator);

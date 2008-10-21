@@ -1,3 +1,20 @@
+/*
+ * Copyright (2008) Schibsted Søk AS
+ * This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package no.sesat.mojo.modes;
 
 import java.util.Iterator;
@@ -29,44 +46,44 @@ public class GenerateDTD extends GenerateSchemaFile {
      */
     @Override
     public void runImpl() {
-        println("<?xml version='1.0' encoding='UTF-8'?>\n");
-        println("<!-- " + id + " -->");
+        writeln("<?xml version='1.0' encoding='UTF-8'?>\n");
+        writeln("<!-- " + id + " -->");
         generate(root);
     }
 
     private void generate(final ConfigElement element) {
-        if (written.add(element.name)) {
+        if (written.add(element.getName())) {
 
             if (element.hasDoc()) {
-                println("<!-- " + element.doc + " -->");
+                writeln("<!-- " + element.getDoc() + " -->");
             }
 
-            print("<!ELEMENT " + element.name);
-            if (element.children.isEmpty()) {
-                print(" EMPTY");
+            write("<!ELEMENT " + element.getName());
+            if (element.getChildren().isEmpty()) {
+                write(" EMPTY");
             } else {
-                print(" (");
-                for (int i = 0; i < element.children.size(); i++) {
+                write(" (");
+                for (int i = 0; i < element.getChildren().size(); i++) {
                     if (i > 0) {
-                        print("|");
+                        write("|");
                     }
-                    print(element.children.get(i).name);
+                    write(element.getChildren().get(i).getName());
                 }
-                print(")*");
+                write(")*");
             }
-            println(">");
+            writeln(">");
 
-            generate(element.attributes);
-            printlnI("<!ATTLIST " + element.name + " ");
-            for (final Iterator<ConfigAttribute> iterator = element.attributes.iterator(); iterator.hasNext();) {
+            generate(element.getAttributes());
+            writelnI("<!ATTLIST " + element.getName() + " ");
+            for (final Iterator<ConfigAttribute> iterator = element.getAttributes().iterator(); iterator.hasNext();) {
                 final ConfigAttribute attrib = iterator.next();
-                print(attrib.name + " ");
+                write(attrib.getName() + " ");
                 generate(attrib);
             }
-            printlnU(">");
+            writelnU(">");
 
-            for (ConfigElement child : element.children) {
-                if (!written.contains(child.name)) {
+            for (ConfigElement child : element.getChildren()) {
+                if (!written.contains(child.getName())) {
                     generate(child);
                 }
             }
@@ -74,19 +91,19 @@ public class GenerateDTD extends GenerateSchemaFile {
     }
 
     private void generate(final ConfigAttribute attrib) {
-        println(attrib.type + " " + (attrib.required ? "#REQUIRED" : "#IMPLIED"));
+        writeln(attrib.getType() + " " + (attrib.isRequired() ? "#REQUIRED" : "#IMPLIED"));
     }
 
     private void generate(final List<ConfigAttribute> attributes) {
-        println("<!--");
+        writeln("<!--");
         for (final Iterator<ConfigAttribute> iterator = attributes.iterator(); iterator.hasNext();) {
             final ConfigAttribute attrib = iterator.next();
-            print("   @attr " + attrib.name);
+            write("   @attr " + attrib.getName());
             if (attrib.hasDoc()) {
-                print(" " + attrib.doc);
+                write(" " + attrib.getDoc());
             }
-            println("");
+            writeln("");
         }
-        println("-->");
+        writeln("-->");
     }
 }

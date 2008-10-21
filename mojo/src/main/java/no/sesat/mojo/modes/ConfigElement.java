@@ -1,42 +1,60 @@
+/*
+ * Copyright (2008) Schibsted Søk AS
+ * This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package no.sesat.mojo.modes;
 
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
+import java.util.ArrayList;
 
 /**
  * Represent a class/xml element.
  *
+ * @version $Id$
  */
-public class ConfigElement extends ConfigAbstract {
+public class ConfigElement extends AbstractConfig {
 
-    protected final List<ConfigAttribute> attributes = new Vector<ConfigAttribute>();
+    private final List<ConfigAttribute> attributes = new ArrayList<ConfigAttribute>();
     private final Set<String> attribNames = new TreeSet<String>();
-    protected final int id;
+    private final int id;
     private static int idCounter = 0;
 
-    protected List<ConfigElement> children = new Vector<ConfigElement>();
+    private List<ConfigElement> children = new ArrayList<ConfigElement>();
 
-    /**
-     * @param name Name of this element.
-     */
     public ConfigElement(final String name) {
+        super(name);
         id = ++idCounter;
-        this.name = name;
+    }
+
+    public ConfigElement(final String name, final String doc) {
+        super(name, doc);
+        id = ++idCounter;
     }
 
     /**
      * @param klass Class that this element should be based on.
      */
     public ConfigElement(final ClassDoc klass) {
-        this(klass.name());
-
-        doc = klass.commentText();
+        this(klass.name(), klass.commentText());
 
         // some fake attributes
         attributes.add(new ConfigAttribute("inherit"));
@@ -44,11 +62,31 @@ public class ConfigElement extends ConfigAbstract {
         build(klass);
     }
 
+    public String getIdentifyingName(){
+        return getName() + id;
+    }
+
+    /**
+     * The live (original) and mutable list of attributes.
+     * @return
+     */
+    public List<ConfigAttribute> getAttributes(){
+        return attributes;
+    }
+
+    /**
+     * The live (original) and mutable list of children.
+     * @return
+     */
+    public List<ConfigElement> getChildren(){
+        return children;
+    }
+
     /**
      * @param filter filter used to modify the name
      */
     public void applyNameFilter(final NameFilter filter) {
-        name = filter.filter(name);
+        setName(filter.filter(getName()));
     }
 
     /**

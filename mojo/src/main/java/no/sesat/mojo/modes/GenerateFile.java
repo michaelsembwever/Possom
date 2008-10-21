@@ -1,3 +1,20 @@
+/*
+ * Copyright (2008) Schibsted Søk AS
+ * This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package no.sesat.mojo.modes;
 
 import java.io.File;
@@ -56,21 +73,21 @@ public abstract class GenerateFile {
      * @param string
      *            String that will be printed
      */
-    protected void printlnI(final String string) {
-        println(string);
+    protected void writelnI(final String string) {
+        writeln(string);
         depth++;
     }
 
     /**
-     * Decrease indention level by one, and print text to file with a newline
+     * Decrease indention level by one, and write text to file with a newline
      * appended.
      *
      * @param string
      *            String that will be printed
      */
-    protected void printlnU(final String string) {
+    protected void writelnU(final String string) {
         depth--;
-        println(string);
+        writeln(string);
     }
 
     /**
@@ -79,7 +96,7 @@ public abstract class GenerateFile {
      * @param string
      *            String that will be printed
      */
-    protected void print(final String string) {
+    protected void write(final String string) {
         if (indent) {
             for (int i = 1; i <= depth; i++) {
                 stream.print("    ");
@@ -95,8 +112,8 @@ public abstract class GenerateFile {
      * @param string
      *            String that will be printed
      */
-    protected void println(final String string) {
-        print(string + "\n");
+    protected void writeln(final String string) {
+        write(string + "\n");
         indent = true;
     }
 

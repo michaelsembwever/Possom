@@ -1,3 +1,20 @@
+/*
+ * Copyright (2008) Schibsted Søk AS
+ * This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package no.sesat.mojo.modes;
 
 import java.util.Iterator;
@@ -27,52 +44,52 @@ public class GenerateXSD extends GenerateSchemaFile {
      */
     @Override
     protected void runImpl() {
-        println("<?xml version='1.0'?>");
-        println("<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema' id='" + id + "'>");
+        writeln("<?xml version='1.0'?>");
+        writeln("<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema' id='" + id + "'>");
         indent();
-        println("<xsd:element name='" + root.name + "' type='" + root.name + "'/>");
+        writeln("<xsd:element name='" + root.getName() + "' type='" + root.getIdentifyingName() + "'/>");
         generate(root);
         unindent();
-        print("</xsd:schema>");
+        write("</xsd:schema>");
     }
 
     private void generate(final ConfigElement element) {
-        if (written.add(element.name)) {
-            printlnI("<xsd:complexType name='" + element.name + "'>");
+        if (written.add(element.getIdentifyingName())) {
+            writelnI("<xsd:complexType name='" + element.getIdentifyingName() + "'>");
             if (element.hasDoc()) {
-                printlnI("<xsd:annotation>");
-                printlnI("<xsd:documentation>");
-                println("<![CDATA[" + element.doc + "]]>)");
-                printlnU("</xsd:documentation>");
-                printlnU("</xsd:annotation>");
+                writelnI("<xsd:annotation>");
+                writelnI("<xsd:documentation>");
+                writeln("<![CDATA[" + element.getDoc() + "]]>)");
+                writelnU("</xsd:documentation>");
+                writelnU("</xsd:annotation>");
             }
 
-            printlnI("<xsd:choice  minOccurs='0' maxOccurs='unbounded'>");
-            for (int i = 0; i < element.children.size(); i++) {
-                final ConfigElement child = element.children.get(i);
-                println("<xsd:element name='" + child.name + "' type='" + child.name + "'/>");
+            writelnI("<xsd:choice  minOccurs='0' maxOccurs='unbounded'>");
+            for (int i = 0; i < element.getChildren().size(); i++) {
+                final ConfigElement child = element.getChildren().get(i);
+                writeln("<xsd:element name='" + child.getName() + "' type='" + child.getIdentifyingName() + "'/>");
             }
-            printlnU("</xsd:choice>");
+            writelnU("</xsd:choice>");
 
-            for (final Iterator<ConfigAttribute> iterator = element.attributes.iterator(); iterator.hasNext();) {
+            for (final Iterator<ConfigAttribute> iterator = element.getAttributes().iterator(); iterator.hasNext();) {
                 final ConfigAttribute attrib = iterator.next();
                 if (attrib.hasDoc()) {
-                    printlnI("<xsd:attribute name='" + attrib.name + "'>");
-                    printlnI("<xsd:annotation>");
-                    printlnI("<xsd:documentation>");
-                    println("<![CDATA[" + attrib.doc + "]]>)");
-                    printlnU("</xsd:documentation>");
-                    printlnU("</xsd:annotation>");
-                    printlnU("</xsd:attribute>");
+                    writelnI("<xsd:attribute name='" + attrib.getName() + "'>");
+                    writelnI("<xsd:annotation>");
+                    writelnI("<xsd:documentation>");
+                    writeln("<![CDATA[" + attrib.getDoc() + "]]>)");
+                    writelnU("</xsd:documentation>");
+                    writelnU("</xsd:annotation>");
+                    writelnU("</xsd:attribute>");
                 } else {
-                    println("<xsd:attribute name='" + attrib.name + "'/>");
+                    writeln("<xsd:attribute name='" + attrib.getName() + "'/>");
                 }
             }
-            printlnU("</xsd:complexType>");
+            writelnU("</xsd:complexType>");
 
         }
-        for (ConfigElement child : element.children) {
-            if (!written.contains(child.name)) {
+        for (ConfigElement child : element.getChildren()) {
+            if (!written.contains(child.getIdentifyingName())) {
                 generate(child);
             }
         }
