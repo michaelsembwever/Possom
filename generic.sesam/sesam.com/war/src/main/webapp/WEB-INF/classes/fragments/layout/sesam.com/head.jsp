@@ -66,7 +66,7 @@
 <!-- MediaWiki Suggest definitions -->
 <script type='text/javascript'><jsp:text><![CDATA[
 var wgMWSuggestTemplate = "/search/?q={searchTerms}&c=suggest";
-var wgMWSuggestMessages = ["with suggestions", "no suggestions"]; // todo move into messages.properties
+var wgMWSuggestMessages = ["]]></jsp:text><search:text key="mwsuggest_with_suggestions"/><jsp:text><![CDATA[", "]]></jsp:text><search:text key="mwsuggest_no_suggestions"/><jsp:text><![CDATA["];
 // these pairs of inputs/forms will be autoloaded at startup
 var os_autoload_inputs = new Array('inputBox');//,'inputBox');
 var os_autoload_forms = new Array('sf');//,'sf-bottom');
