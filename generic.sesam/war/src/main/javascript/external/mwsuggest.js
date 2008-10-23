@@ -296,7 +296,7 @@ function os_fitContainer(r){
 	if(h < (2 * inc) && r.resultCount > 1) // min: two results
 		h = 2 * inc;	
 	if((h/inc) > os_max_lines_per_suggest )
-		h = inc * os_max_lines_per_suggest;
+		h = inc * os_max_lines_per_suggest + 30; // sesat change
 	if(h < r.containerTotal){
 		c.style.height = h +"px";
 		r.containerCount = parseInt(Math.round(h/inc));
