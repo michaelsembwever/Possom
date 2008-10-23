@@ -7,6 +7,7 @@
  *  - removed function os_getNamespaces(r)
  *  - removed references to wgDBname
  *  - removed os_createToggle stuff from os_MWSuggestInit() || os_initHandlers(..)
+ *  - attach toggle to results div
  *
  * The results format is unmodified, eg a query on "Open" gives
  * ["Open",["Open","Open (album)","Open (Album)","Open (application)","Open (band)","Open (Blues Image album)","Open (Cowboy Junkies album)","Open (Gotthard album)","Open (magazine)","Open (mathematics)"]]
@@ -412,6 +413,7 @@ function os_updateResults(r, query, text, cacheKey){
 			os_fitContainer(r);
 			os_trimResultText(r);				
 			os_showResults(r);
+            attachSuggestionToggle(document.getElementById("mwsuggest_results_div")); // sesat change
 		} catch(e){
 			// bad response from server or such
 			os_hideResults(r);			
@@ -425,6 +427,11 @@ function os_createResultTable(r, results){
 	var c = document.getElementById(r.container);
 	var width = c.offsetWidth - os_operaWidthFix(c.offsetWidth);	
 	var html = "<table class=\"os-suggest-results\" id=\""+r.resultTable+"\" style=\"width: "+width+"px;\">";
+
+    /** CUSTOM SESAM DESIGN -- SEARCH-4933**/ // sesat change
+    html = "<div id=\"mwsuggest_results_div\"><img src=\"/images/purpleStar.png\"/> Søkeforslag </div>" + html // sesat change
+    /** end-of CUSTOM SESAM DESIGN **/ // sesat change
+
 	r.results = new Array();
 	r.resultCount = results.length;
 	for(i=0;i<results.length;i++){
@@ -857,30 +864,28 @@ function os_MWSuggestInit() {
 	}	
 }
 
-function sesat_initSuggestionToggles(){
+function attachSuggestionToggle(element){
     name = "inputBox";
     formname = "sf";
-    element = document.getElementById("sf");
 
 	var r = new os_Results(name, formname);	
-	// toggle link
-	if(document.getElementById(r.toggle) == null){
+	// toggle link // sesat change
+	//if(document.getElementById(r.toggle) == null){
 		// TODO figure out a way for this to work in all browsers
 
         // default: place below search box to the right
         var t = os_createToggle(r,"os-suggest-toggle-def");
-        var top = element.offsetTop + element.offsetHeight;
-        var left = element.offsetLeft + element.offsetWidth;
+        var top = element.offsetTop ;//+ element.offsetHeight; // sesat change
+        var left = element.offsetLeft + (element.offsetWidth/2);
         //t.style.position = "absolute";
         t.style.top = top + "px";
         t.style.left = left + "px";
-        element.parentNode.appendChild(t);
+        element/*.parentNode*/.appendChild(t); // sesat change
         // only now width gets calculated, shift right
         left -= t.offsetWidth;
         t.style.left = left + "px";
-        t.style.visibility = "visible";
-	}
+       // t.style.visibility = "visible"; // sesat change
+	//}
 }
 
 os_hookEvent(window, "load", os_MWSuggestInit);
-os_hookEvent(window, "load", sesat_initSuggestionToggles);
