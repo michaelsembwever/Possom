@@ -44,6 +44,8 @@ public class SolrCommandConfig extends CommandConfig {
      */
     private String serverUrl = "";
 
+    private String querySuffix = "";
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -69,6 +71,18 @@ public class SolrCommandConfig extends CommandConfig {
         this.serverUrl = serverUrl;
     }
 
+    public String getQuerySuffix(){
+        return querySuffix;
+    }
+
+    /** A string to append to every query. Used as an additional filter.
+     *
+     * @param querySuffix
+     */
+    public void setQuerySuffix(final String querySuffix){
+        this.querySuffix = querySuffix;
+    }
+
     @Override
     public SolrCommandConfig readSearchConfiguration(
             final Element element,
@@ -78,6 +92,7 @@ public class SolrCommandConfig extends CommandConfig {
         super.readSearchConfiguration(element, inherit, context);
 
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "serverUrl", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "querySuffix", ParseType.String, element, "");
 
         return this;
     }

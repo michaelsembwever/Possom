@@ -19,6 +19,7 @@ package no.sesat.search.mode.command;
 
 import java.net.MalformedURLException;
 import java.util.Map;
+import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.config.SolrCommandConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
@@ -70,6 +71,8 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         }
     }
 
+    // Public --------------------------------------------------------
+
     @Override
     public ResultList<ResultItem> execute() {
 
@@ -103,11 +106,15 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         return searchResult;
     }
 
-    // Public --------------------------------------------------------
+    @Override
+    public String getTransformedQuery() {
+        return super.getTransformedQuery() + getSearchConfiguration().getQuerySuffix();
+    }
 
-    // Z implementation ----------------------------------------------
-
-    // Y overrides ---------------------------------------------------
+    @Override
+    public SolrCommandConfig getSearchConfiguration() {
+        return (SolrCommandConfig)super.getSearchConfiguration();
+    }
 
     // Package protected ---------------------------------------------
 

@@ -7,7 +7,8 @@
  *  - removed function os_getNamespaces(r)
  *  - removed references to wgDBname
  *  - removed os_createToggle stuff from os_MWSuggestInit() || os_initHandlers(..)
- *  - attach toggle to results div
+ *  - added example function attachSuggestionToggle
+ *  - add resultTableHtmlPrefix & resultTableHtmlsuffix to allow customisations of popup div
  *
  * The results format is unmodified, eg a query on "Open" gives
  * ["Open",["Open","Open (album)","Open (Album)","Open (application)","Open (band)","Open (Blues Image album)","Open (Cowboy Junkies album)","Open (Gotthard album)","Open (magazine)","Open (mathematics)"]]
@@ -108,6 +109,9 @@ var os_animation_delay = 30;
 var os_container_max_width = 2;
 // currently active animation timer
 var os_animation_timer = null;
+
+var resultTableHtmlPrefix = null;
+var resultTableHtmlSuffix = null;
 */
 
 /** Timeout timer class that will fetch the results */ 
@@ -296,7 +300,7 @@ function os_fitContainer(r){
 	if(h < (2 * inc) && r.resultCount > 1) // min: two results
 		h = 2 * inc;	
 	if((h/inc) > os_max_lines_per_suggest )
-		h = inc * os_max_lines_per_suggest + 30; // sesat change
+		h = inc * os_max_lines_per_suggest;
 	if(h < r.containerTotal){
 		c.style.height = h +"px";
 		r.containerCount = parseInt(Math.round(h/inc));
@@ -408,12 +412,11 @@ function os_updateResults(r, query, text, cacheKey){
 			c.innerHTML = os_createResultTable(r,p[1]);
 			// init container table sizes
 			var t = document.getElementById(r.resultTable);		
-			r.containerTotal = t.offsetHeight;	
+			r.containerTotal = t.offsetHeight;
 			r.containerRow = t.offsetHeight / r.resultCount;
 			os_fitContainer(r);
 			os_trimResultText(r);				
 			os_showResults(r);
-            attachSuggestionToggle(document.getElementById("mwsuggest_results_div")); // sesat change
 		} catch(e){
 			// bad response from server or such
 			os_hideResults(r);			
@@ -427,11 +430,7 @@ function os_createResultTable(r, results){
 	var c = document.getElementById(r.container);
 	var width = c.offsetWidth - os_operaWidthFix(c.offsetWidth);	
 	var html = "<table class=\"os-suggest-results\" id=\""+r.resultTable+"\" style=\"width: "+width+"px;\">";
-
-    /** CUSTOM SESAM DESIGN -- SEARCH-4933**/ // sesat change
-    html = "<div id=\"mwsuggest_results_div\"><img src=\"/images/purpleStar.png\"/> Søkeforslag </div>" + html // sesat change
-    /** end-of CUSTOM SESAM DESIGN **/ // sesat change
-
+    if(null != resultTableHtmlPrefix){ html = resultTableHtmlPrefix + html; }  // sesat change
 	r.results = new Array();
 	r.resultCount = results.length;
 	for(i=0;i<results.length;i++){
@@ -440,6 +439,7 @@ function os_createResultTable(r, results){
 		html += "<tr><td class=\"os-suggest-result\" id=\""+r.resultTable+i+"\"><span id=\""+r.resultText+i+"\">"+title+"</span></td></tr>";
 	}
 	html+="</table>"
+    if(null != resultTableHtmlSuffix){ html += resultTableHtmlSuffix; }   // sesat change
 	return html;
 }
 
@@ -737,9 +737,9 @@ function os_eventMouseup(srcId, e){
 		os_hideResults(r);
 		document.getElementById(r.searchform).submit();
 	}
-	os_mouse_pressed = false;
-	// keep the focus on the search field
-	document.getElementById(r.searchbox).focus();
+    os_mouse_pressed = false;
+    // keep the focus on the search field
+    document.getElementById(r.searchbox).focus();
 }
 
 /** Check if x is a valid integer */
@@ -864,28 +864,26 @@ function os_MWSuggestInit() {
 	}	
 }
 
+/** Sesat example addition. Attach toggle to an element. **/
 function attachSuggestionToggle(element){
     name = "inputBox";
     formname = "sf";
 
-	var r = new os_Results(name, formname);	
-	// toggle link // sesat change
-	//if(document.getElementById(r.toggle) == null){
-		// TODO figure out a way for this to work in all browsers
+	var r = new os_Results(name, formname);
 
-        // default: place below search box to the right
-        var t = os_createToggle(r,"os-suggest-toggle-def");
-        var top = element.offsetTop ;//+ element.offsetHeight; // sesat change
-        var left = element.offsetLeft + (element.offsetWidth/2);
-        //t.style.position = "absolute";
-        t.style.top = top + "px";
-        t.style.left = left + "px";
-        element/*.parentNode*/.appendChild(t); // sesat change
-        // only now width gets calculated, shift right
-        left -= t.offsetWidth;
-        t.style.left = left + "px";
-       // t.style.visibility = "visible"; // sesat change
-	//}
+    // TODO figure out a way for this to work in all browsers
+
+    // default: place below search box to the right
+    var t = os_createToggle(r,"os-suggest-toggle-def");
+    var top = element.offsetTop + element.offsetHeight;
+    var left = element.offsetLeft + element.offsetWidth;
+    //t.style.position = "absolute";
+    t.style.top = top + "px";
+    t.style.left = left + "px";
+    element.appendChild(t);
+    // only now width gets calculated, shift right
+    left -= t.offsetWidth;
+    t.style.left = left + "px";
 }
 
 os_hookEvent(window, "load", os_MWSuggestInit);

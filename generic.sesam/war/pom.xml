@@ -690,14 +690,14 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>xml-maven-plugin</artifactId>
-                    <!--executions>
+                    <executions>
                         <execution>
                             <phase>test</phase>
                             <goals>
                                 <goal>validate</goal>
                             </goals>
                         </execution>
-                    </executions-->
+                    </executions>
                     <configuration>
                         <validationSets>
                             <validationSet>

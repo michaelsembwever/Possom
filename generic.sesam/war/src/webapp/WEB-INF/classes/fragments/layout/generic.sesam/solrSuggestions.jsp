@@ -25,7 +25,10 @@
      * Simple way of manually writing out the json array. Alternative would be to use json-taglib.
     -->
     <jsp:text><![CDATA[[]]>"</jsp:text><c:out value="${DataModel.query.utf8UrlEncoded}"/><jsp:text>",</jsp:text>
-    <jsp:text><![CDATA[[]]></jsp:text><c:forEach var="item" items="${DataModel.searches['solrSuggestions'].results.results}">
-        <jsp:text>"</jsp:text><c:out value="${item.fields.list_entry}"/><jsp:text>",</jsp:text>
-    </c:forEach><jsp:text>""<![CDATA[]]]]></jsp:text>
+    <jsp:text><![CDATA[[]]></jsp:text>
+    <c:forEach var="item" varStatus="i" items="${DataModel.searches['solrSuggestions'].results.results}">
+        <jsp:text>"</jsp:text><c:out value="${item.fields.list_entry}"/><jsp:text>"</jsp:text>
+        <c:if test="${! i.last}"><jsp:text>,</jsp:text></c:if>
+    </c:forEach>
+    <jsp:text><![CDATA[]]]]></jsp:text>
 </jsp:root>
