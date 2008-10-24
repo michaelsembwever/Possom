@@ -9,6 +9,7 @@
  *  - removed os_createToggle stuff from os_MWSuggestInit() || os_initHandlers(..)
  *  - added example function attachSuggestionToggle
  *  - add resultTableHtmlPrefix & resultTableHtmlsuffix to allow customisations of popup div
+ *  - introduced os_suggest_result_padding to parallel any css override of td.os-suggest-result{padding}
  *
  * The results format is unmodified, eg a query on "Open" gives
  * ["Open",["Open","Open (album)","Open (Album)","Open (application)","Open (band)","Open (Blues Image album)","Open (Cowboy Junkies album)","Open (Gotthard album)","Open (magazine)","Open (mathematics)"]]
@@ -112,6 +113,7 @@ var os_animation_timer = null;
 
 var resultTableHtmlPrefix = null;
 var resultTableHtmlSuffix = null;
+var os_suggest_result_padding = 4;
 */
 
 /** Timeout timer class that will fetch the results */ 
@@ -324,8 +326,8 @@ function os_trimResultText(r){
 		fix = 20; // give 20px for scrollbar		
 	} else
 		fix = os_operaWidthFix(w);
-	if(fix < 4)
-		fix = 4; // basic padding
+	if(fix < os_suggest_result_padding)
+		fix = os_suggest_result_padding; // should be td.os-suggest-result padding *2 // sesat change
 	maxW += fix;
 	
 	// resize container to fit more data if permitted	

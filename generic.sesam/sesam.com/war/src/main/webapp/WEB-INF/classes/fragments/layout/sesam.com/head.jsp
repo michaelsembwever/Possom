@@ -105,6 +105,7 @@ var os_animation_timer = null;
 
 var resultTableHtmlPrefix = null;
 var resultTableHtmlSuffix = null;
+var os_suggest_result_padding = 4;
 ]]></jsp:text></script>
 <c:set var="mwsuggestjs_link"><search:findResource url="/javascript/external/mwsuggest.js"/></c:set>
 <script type='text/javascript' src="${mwsuggestjs_link}"><![CDATA[&nbsp;]]></script>
