@@ -274,7 +274,15 @@ Copyright (2006-2007) Schibsted Søk AS
                 server-url="queryServer.solr.1"
                 inherit="default-command">
             <query-transformers>
+                <!-- The following works against a Solr configured field of type string named "list_entry". -->
+                <!-- We use String instead of text as the whole query can be treated as a single token. -->
+                <!--  The incoming query must be phrased as well to give the chance to escape the whitespace. -->
                 <term-prefix prefix="list_entry"/>
+                <!-- Strip out the quotes around the phrase -->
+                <regexp regexp="&quot;" replacement=""/>
+                <!-- Escape the whitespace so that solr treats the whole query as one token. -->
+                <regexp regexp=" " replacement="\\ "/>
+                <!-- Suffix the query with a wildcard. Otherwise it wouldn't be a suggestion ;-) -->
                 <regexp regexp="$" replacement="*"/>
             </query-transformers>
         </solr-command>
