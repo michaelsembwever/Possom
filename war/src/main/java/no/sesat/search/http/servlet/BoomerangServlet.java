@@ -75,6 +75,17 @@ public final class BoomerangServlet extends HttpServlet {
         res.setHeader("Pragma", "no-cache"); // for old browsers
         res.setDateHeader("Expires", 0); // to be double-safe
 
+        // entrails is the map of logging information
+        final Map<String,Object> entrails = new HashMap<String,Object>();
+
+        // request attribute to keep
+        entrails.put("referer", req.getHeader("Referer"));
+        entrails.put("method", req.getMethod());
+        entrails.put("ipaddress", req.getRemoteAddr());
+        entrails.put("user-agent", req.getHeader("User-Agent"));
+        entrails.put("user-id", SearchServlet.getCookieValue(req, "SesamID"));
+        entrails.put("user", SearchServlet.getCookieValue(req, "SesamUser"));
+
         if(req.getRequestURI().startsWith(CEREMONIAL)){
 
             // ceremonial boomerang
@@ -93,16 +104,6 @@ public final class BoomerangServlet extends HttpServlet {
                 // the url to return to
                 final String destination = url.substring(
                         url.indexOf("/", url.indexOf(CEREMONIAL) + CEREMONIAL.length() + 1) + 1);
-
-                final Map<String,String> entrails = new HashMap<String,String>();
-
-                // request attribute to keep
-                entrails.put("referer", req.getHeader("Referer"));
-                entrails.put("method", req.getMethod());
-                entrails.put("ipaddress", req.getRemoteAddr());
-                entrails.put("user-agent", req.getHeader("User-Agent"));
-                entrails.put("user-id", SearchServlet.getCookieValue(req, "SesamID"));
-                entrails.put("user", SearchServlet.getCookieValue(req, "SesamUser"));
 
                 // the grub details to add
                 if(0 < grub.length()){
@@ -138,7 +139,8 @@ public final class BoomerangServlet extends HttpServlet {
 
             // hunting boomerang, just grub, and the grub comes as clean parameters.
             final DataModel datamodel = (DataModel) req.getSession().getAttribute(DataModel.KEY);
-            kangerooGrub(datamodel.getParameters().getValues());
+            entrails.putAll(datamodel.getParameters().getValues());
+            kangerooGrub(entrails);
 
         }
 
