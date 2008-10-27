@@ -1,13 +1,12 @@
 /**
  * OpenSearch ajax suggestion engine for MediaWiki
  *
+ * Original from http://en.wikipedia.org/skins-1.5/common/mwsuggest.js
+ *  As few modifications have been made here as possible to benefit from updates to the original.
+ *
  * Modifications:
- *  - for our search form,
- *  - and our suggestion search eg /search/c=suggest&q={searchTerm}
+ *  - suggestion search url is now /search/c=suggest&q={searchTerm}
  *  - removed function os_getNamespaces(r)
- *  - removed references to wgDBname
- *  - removed os_createToggle stuff from os_MWSuggestInit() || os_initHandlers(..)
- *  - added example function attachSuggestionToggle
  *  - add resultTableHtmlPrefix & resultTableHtmlsuffix to allow customisations of popup div
  *  - introduced os_suggest_result_padding to parallel any css override of td.os-suggest-result{padding}
  *
@@ -96,6 +95,9 @@ var os_mouse_num = -1;
 var os_mouse_moved = false;
 // delay between keypress and suggestion (in ms)
 var os_search_timeout = 250;
+// these pairs of inputs/forms will be autoloaded at startup
+var os_autoload_inputs = new Array('searchInput', 'searchInput2', 'powerSearchText', 'searchText');
+var os_autoload_forms = new Array('searchform', 'searchform2', 'powersearch', 'search' );
 // if we stopped the service
 var os_is_stopped = false;
 // max lines to show in suggest table
@@ -326,7 +328,7 @@ function os_trimResultText(r){
 		fix = 20; // give 20px for scrollbar		
 	} else
 		fix = os_operaWidthFix(w);
-	if(fix < os_suggest_result_padding)
+	if(fix < os_suggest_result_padding) // sesat change
 		fix = os_suggest_result_padding; // should be td.os-suggest-result padding *2 // sesat change
 	maxW += fix;
 	
@@ -498,6 +500,13 @@ function os_fetchResults(r, query, timeout){
 	
 	os_is_stopped = false; // make sure we're running
 	
+	/* var cacheKey = wgDBname+":"+query;
+	var cached = os_cache[cacheKey];
+	if(cached != null){
+		os_updateResults(r,wgDBname,query,cached);
+		return;
+	} */
+
 	// cancel any pending fetches
 	if(os_timer != null && os_timer.id != null)
 		clearTimeout(os_timer.id);
@@ -792,17 +801,41 @@ function os_hookEvent(element, hookName, hookFunct) {
 
 /** Init Result objects and event handlers */
 function os_initHandlers(name, formname, element){
-    var r = new os_Results(name, formname);
-    // event handler
-    os_hookEvent(element, "keyup", function(event) { os_eventKeyup(event); });
-    os_hookEvent(element, "keydown", function(event) { os_eventKeydown(event); });
-    os_hookEvent(element, "keypress", function(event) { os_eventKeypress(event); });
-    os_hookEvent(element, "blur", function(event) { os_eventBlur(event); });
-    os_hookEvent(element, "focus", function(event) { os_eventFocus(event); });
-    element.setAttribute("autocomplete","off");
-    // stopping handler
-    os_hookEvent(document.getElementById(formname), "submit", function(event){ return os_eventOnsubmit(event); });
-    os_map[name] = r;
+	var r = new os_Results(name, formname);	
+	// event handler
+	os_hookEvent(element, "keyup", function(event) { os_eventKeyup(event); });
+	os_hookEvent(element, "keydown", function(event) { os_eventKeydown(event); });
+	os_hookEvent(element, "keypress", function(event) { os_eventKeypress(event); });
+	os_hookEvent(element, "blur", function(event) { os_eventBlur(event); });
+	os_hookEvent(element, "focus", function(event) { os_eventFocus(event); });
+	element.setAttribute("autocomplete","off");
+	// stopping handler
+	os_hookEvent(document.getElementById(formname), "submit", function(event){ return os_eventOnsubmit(event); });
+	os_map[name] = r; 	
+	// toggle link
+	if(document.getElementById(r.toggle) == null){
+		// TODO: disable this while we figure out a way for this to work in all browsers
+		/* if(name=='searchInput'){
+			// special case: place above the main search box
+			var t = os_createToggle(r,"os-suggest-toggle");
+			var searchBody = document.getElementById('searchBody');
+			var first = searchBody.parentNode.firstChild.nextSibling.appendChild(t);
+		} else{
+			// default: place below search box to the right
+			var t = os_createToggle(r,"os-suggest-toggle-def");
+			var top = element.offsetTop + element.offsetHeight;
+			var left = element.offsetLeft + element.offsetWidth;
+			t.style.position = "absolute";
+			t.style.top = top + "px";
+			t.style.left = left + "px";
+			element.parentNode.appendChild(t);
+			// only now width gets calculated, shift right
+			left -= t.offsetWidth;
+			t.style.left = left + "px";
+			t.style.visibility = "visible";
+		} */
+}
+
 }
 
 /** Return the span element that contains the toggle link */
@@ -864,28 +897,6 @@ function os_MWSuggestInit() {
 		if(element != null)
 			os_initHandlers(id,form,element);
 	}	
-}
-
-/** Sesat example addition. Attach toggle to an element. **/
-function attachSuggestionToggle(element){
-    name = "inputBox";
-    formname = "sf";
-
-	var r = new os_Results(name, formname);
-
-    // TODO figure out a way for this to work in all browsers
-
-    // default: place below search box to the right
-    var t = os_createToggle(r,"os-suggest-toggle-def");
-    var top = element.offsetTop + element.offsetHeight;
-    var left = element.offsetLeft + element.offsetWidth;
-    //t.style.position = "absolute";
-    t.style.top = top + "px";
-    t.style.left = left + "px";
-    element.appendChild(t);
-    // only now width gets calculated, shift right
-    left -= t.offsetWidth;
-    t.style.left = left + "px";
 }
 
 os_hookEvent(window, "load", os_MWSuggestInit);
