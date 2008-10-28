@@ -38,16 +38,10 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
     private String defaultValue;
     private String recursiveField;
 
-    /**
-     * @param fieldName
-     */
-    public void addField(final String fieldName) {
-        fields.add(fieldName);
-    }
-
     public void addFields(final String[] fieldNames) {
-        for (int i = 0; i < fieldNames.length; i++) {
-            addField(fieldNames[i]);
+
+        for (String fieldName : fieldNames) {
+            fields.add(fieldName);
         }
     }
 
@@ -104,9 +98,7 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
             defaultValue = optAttr;
         }
         final String[] fields = element.getAttribute("fields").split(",");
-        for (String field : fields) {
-            addField(field);
-        }
+        addFields(fields);
 
         return this;
     }
