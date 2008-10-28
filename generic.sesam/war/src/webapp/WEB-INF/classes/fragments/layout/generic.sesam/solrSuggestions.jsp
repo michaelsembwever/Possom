@@ -24,11 +24,16 @@
      * See generic.sesam/war/src/main/javascript/external/mwsuggest.js
      * Simple way of manually writing out the json array. Alternative would be to use json-taglib.
     -->
+    <c:if test="${!empty DataModel.navigation.configuration.navigationMap.offset and !empty DataModel.navigation.configuration.navigationMap.offset.navMap.offset}">
+        <c:set var="pageSize" value="${DataModel.navigation.configuration.navigationMap.offset.navMap.offset.pageSize}"/>
+    </c:if>
     <jsp:text><![CDATA[[]]>"</jsp:text><c:out value="${DataModel.query.utf8UrlEncoded}"/><jsp:text>",</jsp:text>
     <jsp:text><![CDATA[[]]></jsp:text>
     <c:forEach var="item" varStatus="i" items="${DataModel.searches['solrSuggestions'].results.results}">
-        <jsp:text>"</jsp:text><c:out value="${item.fields.list_entry}"/><jsp:text>"</jsp:text>
-        <c:if test="${! i.last}"><jsp:text>,</jsp:text></c:if>
+        <c:if test="${empty pageSize or i.count le pageSize}">
+            <jsp:text>"</jsp:text><c:out value="${item.fields.list_entry}"/><jsp:text>"</jsp:text>
+            <c:if test="${(empty pageSize and !i.last) or (!empty pageSize and i.count lt pageSize)}"><jsp:text>,</jsp:text></c:if>
+        </c:if>
     </c:forEach>
     <jsp:text><![CDATA[]]]]></jsp:text>
 </jsp:root>

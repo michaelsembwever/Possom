@@ -48,5 +48,10 @@ prority attribute of the navigation hints -->
 
     <tab id="solrSuggestions" key="suggest" mode="solrSuggestions">
         <layout main="/fragments/layout/generic.sesam/solrSuggestions.jsp" content-type="text/plain"/>
+        <navigation>
+            <navigation id="offset">
+              <result-paging id="offset" command-name="solrSuggestions" page-size="99" number-of-pages="1" hitcount-source="totalhits"/>
+            </navigation>
+        </navigation> 
     </tab>
 </views>

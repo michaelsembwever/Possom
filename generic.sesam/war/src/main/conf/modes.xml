@@ -287,6 +287,14 @@ Copyright (2006-2007) Schibsted Søk AS
                 <!-- Suffix the query with a wildcard. Otherwise it wouldn't be a suggestion ;-) -->
                 <regexp regexp="$" replacement="*"/>
             </query-transformers>
+            <result-handlers>
+                <!-- remove norwegian company suffixes. this is just an example - adjust for your own country -->
+                <!-- the original field must be kept to avoid the discard-duplicates removing both in the next step -->
+                <field-chooser fields="list_entry" target="list_entry_original"/>
+                <regexp field="list_entry" regexp="(.*) asa?$" target="list_entry"/>
+                <!-- avoid duplicate results -->
+                <discard-duplicates field="list_entry"/>
+            </result-handlers>
         </solr-command>
     </mode>
 
