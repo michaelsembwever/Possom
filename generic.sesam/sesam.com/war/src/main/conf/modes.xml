@@ -72,6 +72,12 @@
                            result-fields="list_name AS title,list_entry AS body"
                            server-url="solr.serverUrl"/-->
     </mode>
-    
+
+    <mode id="solrSuggestions" inherit="solrSuggestions">
+        <solr-command id="solrSuggestions"
+            query-suffix=" AND list_name:common_english"
+            inherit="solrSuggestions"/>
+     </mode>
+
 </modes>
 
