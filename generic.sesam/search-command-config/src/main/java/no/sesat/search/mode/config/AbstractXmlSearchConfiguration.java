@@ -132,24 +132,6 @@ public abstract class AbstractXmlSearchConfiguration extends CommandConfig {
         this.hostHeader = hostHeader;
     }
 
-    @Override
-    public AbstractXmlSearchConfiguration readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "encoding", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "host", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "port", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "hostHeader", ParseType.String, element, "");
-
-        return this;
-    }
-
-
-
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------

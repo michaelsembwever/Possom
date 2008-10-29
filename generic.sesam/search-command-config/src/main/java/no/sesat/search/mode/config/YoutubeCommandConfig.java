@@ -53,16 +53,4 @@ public class YoutubeCommandConfig extends AbstractXmlSearchConfiguration {
     public String getSortBy() {
         return sortBy;
     }
-
-    @Override
-    public YoutubeCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-        super.readSearchConfiguration(element, inherit, context);
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "format", ParseType.String, element, "5");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "racy", ParseType.String, element, "exclude");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortBy", ParseType.String, element, "relevance");
-        return this;
-    }
 }

@@ -151,26 +151,4 @@ public class PictureCommandConfig extends CommandConfig {
     public void setDomainBoost(String domainBoost) {
         this.domainBoost = domainBoost;
     }
-
-    @Override
-    public CommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerHost", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerPort", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "country", ParseType.String, element, "no");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "medium");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "customerId", ParseType.String, element, "558735");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "site", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "domainBoost", ParseType.String, element, "");
-
-        LOG.debug("customerid " + getCustomerId());
-
-        return this;
-    }
-
 }

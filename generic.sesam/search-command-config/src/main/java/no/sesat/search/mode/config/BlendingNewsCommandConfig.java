@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -70,30 +70,4 @@ public final class BlendingNewsCommandConfig extends  NewsCommandConfig {
     public void setFiltersToBlend(final List<String> filtersToBlend) {
         this.filtersToBlend = filtersToBlend;
     }
-
-    @Override
-    public FastCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        // TODO use fillBeanProperty pattern instead
-        final String[] filters = element.getAttribute("filters").split(",");
-
-        final List<String> filterList = new ArrayList<String>();
-
-        for (String filter : filters) {
-            filterList.add(filter.trim());
-        }
-
-        setFiltersToBlend(filterList);
-        setDocumentsPerFilter(Integer.parseInt(element.getAttribute("documentsPerFilter")));
-
-        return this;
-    }
-
-
-
 }

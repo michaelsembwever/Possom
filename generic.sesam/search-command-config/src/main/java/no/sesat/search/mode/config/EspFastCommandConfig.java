@@ -247,54 +247,15 @@ public class EspFastCommandConfig extends FastCommandConfig {
     }
 
     @Override
-    public FastCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
         super.readSearchConfiguration(element, inherit, context);
-
-
-        final EspFastCommandConfig ascInherit = inherit instanceof EspFastCommandConfig
-                ? (EspFastCommandConfig) inherit
+        final EspFastCommandConfig efscInherit = inherit instanceof EspFastCommandConfig ? (EspFastCommandConfig) inherit
                 : null;
 
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "view", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortBy", ParseType.String, element, "default");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "alternativeSortBy", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "collapsingRemoves", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "collapsingEnabled", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "expansionEnabled", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "qtPipeline", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "lemmatize", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServer", ParseType.String, element, "");
 
         if (null != getQueryServer() && getQueryServer().startsWith("http://")) {
             throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + getQueryServer());
         }
-
-        // navigators
-        if (ascInherit != null && ascInherit.getNavigators() != null) {
-
-            navigators.putAll(ascInherit.getNavigators());
-        }
-
-        final NodeList nList = element.getElementsByTagName("navigators");
-        for (int i = 0; i < nList.getLength(); ++i) {
-            final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
-            for (Navigator navigator : navigators) {
-                addNavigator(navigator, navigator.getId());
-            }
-        }
-
-        return this;
-    }
-
-    @Override
-    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
-        super.readSearchConfiguration(element, inherit);
-        final EspFastCommandConfig efscInherit = inherit instanceof EspFastCommandConfig ? (EspFastCommandConfig) inherit
-                : null;
 
         if (efscInherit != null && efscInherit.getNavigators() != null) {
 

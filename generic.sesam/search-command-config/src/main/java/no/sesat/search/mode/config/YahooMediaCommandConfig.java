@@ -96,24 +96,4 @@ public final class YahooMediaCommandConfig extends AbstractYahooSearchConfigurat
     public void setOcr(final String ocr) {
         this.ocr = ocr;
     }
-
-    @Override
-    public AbstractYahooSearchConfiguration readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "catalog", ParseType.String, element,
-                YahooMediaCommandConfig.DEFAULT_CATALOG);
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "ocr", ParseType.String, element,
-                YahooMediaCommandConfig.DEFAULT_OCR);
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "site", ParseType.String, element, "");
-
-        return this;
-    }
-
-
 }

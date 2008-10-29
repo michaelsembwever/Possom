@@ -182,27 +182,8 @@ public class YahooWebCommandConfig extends AbstractYahooSearchConfiguration {
     }
 
     @Override
-    public YahooWebCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
         super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "appid", ParseType.String, element, "YahooDemo");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "format", ParseType.String, element, "any");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "adult_ok", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "similar_ok", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "language", ParseType.String, element, "en");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "country", ParseType.String, element, null);
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "site", ParseType.String, element, null);
-
-        return this;
-    }
-
-    @Override
-    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
-        super.readSearchConfiguration(element, inherit);
         setPartnerId(getAppid());
         return this;
     }

@@ -267,54 +267,8 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     }
 
     @Override
-    public FastCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
         super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "mediumPrefix", ParseType.String, element, "medium");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "defaultMedium", ParseType.String, element, "webnewsarticle");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "mediumParameter", ParseType.String, element, "medium");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "nestedResultsField", ParseType.String, element, "entries");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "collapsingMaxFetch", ParseType.Int, element, "10");
-
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "sortField", ParseType.String, element, "publishedtime");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "defaultSort", ParseType.String, element, "descending");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "userSortParameter", ParseType.String, element, "sort");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "relevanceSortField", ParseType.String, element, "freshnessprofile");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "relevanceSingleTermSortField", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "relevanceMultipleTermSortField", ParseType.String, element, "");
-
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "maxAge", ParseType.String, element, null);
-        AbstractDocumentFactory.fillBeanProperty(
-                this, inherit, "ageField", ParseType.String, element, "publishedtime");
-
-        // maxAge is of the format 10h (for 10 hours).
-        if (maxAge != null) {
-            ageSymbol = maxAge.charAt(maxAge.length() - 1);
-            maxAgeAmount = Integer.parseInt(maxAge.substring(0, maxAge.length() - 1));
-        }
-
-        return this;
-    }
-
-    @Override
-    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
-        super.readSearchConfiguration(element, inherit);
         // maxAge is of the format 10h (for 10 hours).
         if (maxAge != null) {
             ageSymbol = maxAge.charAt(maxAge.length() - 1);

@@ -66,21 +66,6 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractXmlSearch
         partnerId = partner;
     }
 
-    @Override
-    public AbstractYahooSearchConfiguration readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "partnerId", ParseType.String, element, "");
-
-        return this;
-    }
-
-
-
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------

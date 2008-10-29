@@ -154,23 +154,4 @@ public class NewsAggregatorCommandConfig extends ClusteringEspFastCommandConfig 
     public String[] getGeographicFieldArray() {
         return geographicFields.split(",");
     }
-
-    @Override
-    public FastCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "xmlSource", ParseType.String, element, "");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "xmlMainFile", ParseType.String, element, "fp_main_main.xml");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "geographicFields", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "categoryFields", ParseType.String, element, "");
-
-        return this;
-    }
-
-
 }

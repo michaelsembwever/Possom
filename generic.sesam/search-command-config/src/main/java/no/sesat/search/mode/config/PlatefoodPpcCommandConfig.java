@@ -81,21 +81,4 @@ public class PlatefoodPpcCommandConfig extends AbstractYahooSearchConfiguration 
     public void setTop3BackfillBlock(String top3BackfillBlock) {
         this.top3BackfillBlock = top3BackfillBlock;
     }
-
-    @Override
-    public AbstractYahooSearchConfiguration readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "url", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsOnTop", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "top3BackfillBlock", ParseType.String, element, "");
-
-        return this;
-    }
-
-
 }

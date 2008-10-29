@@ -83,22 +83,6 @@ public class SolrCommandConfig extends CommandConfig {
         this.querySuffix = querySuffix;
     }
 
-    @Override
-    public SolrCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "serverUrl", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "querySuffix", ParseType.String, element, "");
-
-        return this;
-    }
-
-
-
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------

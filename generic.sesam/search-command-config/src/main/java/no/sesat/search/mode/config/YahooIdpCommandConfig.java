@@ -240,29 +240,4 @@ public class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
     public void setLanguageMix(String languageMix) {
         this.languageMix = languageMix;
     }
-
-    @Override
-    public AbstractYahooSearchConfiguration readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "database", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "dateRange", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "hideDomain", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "language", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "languageMix", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "region", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "regionMix", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spellState", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "unique", ParseType.String, element, "");
-
-        return this;
-    }
-
-
-
 }

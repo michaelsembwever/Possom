@@ -93,23 +93,4 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
     public void setClusterField(final String clusterField) {
         this.clusterField = clusterField;
     }
-
-
-    @Override
-    public FastCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "clusterIdParameter", ParseType.String, element, "clusterId");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsPerCluster", ParseType.Int, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusterField", ParseType.String, element, "cluster");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusteringDisabled", ParseType.Boolean, element, "false");
-        return this;
-    }
-
-
 }

@@ -523,80 +523,8 @@ public class FastCommandConfig extends CommandConfig {
     }
 
     @Override
-    public FastCommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
         super.readSearchConfiguration(element, inherit, context);
-
-        final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig
-                ? (FastCommandConfig) inherit
-                : null;
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "clustering", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "collapsing", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "expansion", ParseType.Boolean, element, "false");
-
-        // collections
-        if (element.getAttribute("collections").length() > 0) {
-            addCollections(element.getAttribute("collections").split(","));
-        }else if(null != fscInherit){
-            for(String collection : fscInherit.getCollections()) {
-                collections.add(collection);
-            }
-        }
-
-        // search parameters
-        if(null != fscInherit){
-            searchParameters.putAll(fscInherit.getSearchParameterMap());
-        }
-        if (element.getAttribute("search-parameters").length() > 0) {
-            setSearchParameters(element.getAttribute("search-parameters").split(","));
-        }
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "project", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "project", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filtertype", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "ignoreNavigation", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "offensiveScoreLimit", ParseType.Int, element, "-1");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "qtPipeline", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerUrl", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "relevantQueries", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortBy", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "alternativeSortBy", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spamScoreLimit", ParseType.Int, element, "-1");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spellcheck", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spellchecklanguage", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "lemmatise", ParseType.Boolean, element, "false");
-
-        if (getQueryServerUrl() == null || "".equals(getQueryServerUrl())) {
-            LOG.debug("queryServerURL is empty for " + getId());
-        }
-
-        // navigators
-        if (fscInherit != null && fscInherit.getNavigators() != null) {
-
-            navigators.putAll(fscInherit.getNavigators());
-        }
-
-        final NodeList nList = element.getElementsByTagName("navigators");
-
-        for (int i = 0; i < nList.getLength(); ++i) {
-            final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
-            for (Navigator navigator : navigators) {
-                addNavigator(navigator, navigator.getId());
-            }
-
-        }
-
-        return this;
-    }
-
-    @Override
-    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
-        super.readSearchConfiguration(element, inherit);
 
         final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig ? (FastCommandConfig) inherit : null;
         if (getQueryServerUrl() == null || "".equals(getQueryServerUrl())) {

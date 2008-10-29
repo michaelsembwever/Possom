@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -120,33 +120,4 @@ public final class MobileCommandConfig extends CommandConfig {
     public String getFilter() {
         return filter;
     }
-
-    @Override
-    public CommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        // TODO use fillBeanProperty pattern instead
-
-        if(inherit != null && inherit instanceof MobileCommandConfig){
-            final MobileCommandConfig cfg = (MobileCommandConfig) inherit;
-            source = cfg.source;
-            personalizationGroup = cfg.personalizationGroup;
-            telenorPersonalizationGroup = cfg.telenorPersonalizationGroup;
-            sortBy = cfg.sortBy;
-            filter = cfg.filter;
-        }
-        setPersonalizationGroup(element.getAttribute("personalization-group"));
-        setTelenorPersonalizationGroup(element.getAttribute("telenor-personalization-group"));
-        setSortBy(element.getAttribute("sort-by"));
-        setSource(element.getAttribute("source"));
-        setFilter(element.getAttribute("filter"));
-
-        return this;
-    }
-
-
 }

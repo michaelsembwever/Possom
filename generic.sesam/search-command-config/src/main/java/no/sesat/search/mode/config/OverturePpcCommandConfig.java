@@ -73,20 +73,4 @@ public class OverturePpcCommandConfig extends AbstractYahooSearchConfiguration {
     public void setType(final String type) {
         this.type = type;
     }
-
-    @Override
-    public AbstractYahooSearchConfiguration readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context) {
-
-        super.readSearchConfiguration(element, inherit, context);
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "url", ParseType.String, element, "");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "type", ParseType.String, element, "");
-
-        return this;
-    }
-
-
 }
