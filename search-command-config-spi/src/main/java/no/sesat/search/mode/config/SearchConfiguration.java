@@ -150,6 +150,7 @@ public interface SearchConfiguration extends Serializable {
      *
      */
     public interface ModesW3cDomDeserialiser extends SearchConfiguration{
+
         /**
          * Apply the attributes found in element to 'this'. If some attributes are not found
          * in element then try to fetch them from inherit and set them on 'this'.
@@ -159,11 +160,8 @@ public interface SearchConfiguration extends Serializable {
          *
          * @return The newly read configuration (Done to keep the chaining pattern)
          */
-        SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit);
+        SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context);
     }
-
-    // TODO: remove
-    SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context);
 }
 
 

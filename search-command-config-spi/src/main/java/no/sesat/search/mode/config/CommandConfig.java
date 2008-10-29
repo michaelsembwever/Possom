@@ -300,7 +300,7 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         fieldFilters.clear();
     }
 
-    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
+    public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
         if(null!=inherit){
             fieldFilters.putAll(inherit.getFieldFilterMap());
         }
@@ -315,50 +315,6 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
                clearFieldFilters();
             }
         }
-
-        return this;
-    }
-
-    /** {@inherit}
-     */
-    public CommandConfig readSearchConfiguration(
-            final Element element,
-            final SearchConfiguration inherit,
-            final Context context){
-
-        setId(element.getAttribute("id"));
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "alwaysRun", ParseType.Boolean, element, "true");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "runBlank", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "asynchronous", ParseType.Boolean, element, "false");
-
-        // field-filters
-        if(null!=inherit){
-            fieldFilters.putAll(inherit.getFieldFilterMap());
-        }
-        if (element.hasAttribute("field-filters")) {
-            if (element.getAttribute("field-filters").length() > 0) {
-                setFieldFilters(element.getAttribute("field-filters").split(","));
-
-            } else {
-                // If attribute is present and empty, clear the field filters. This creates an option
-                // for child commands to not inherit field filters.
-                clearFieldFilters();
-            }
-        }
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryParameter", ParseType.String, element, "");
-
-        // result-fields
-        if(null!=inherit){
-            resultFields.putAll(inherit.getResultFieldMap());
-        }
-        if (element.getAttribute("result-fields").length() > 0) {
-            addResultFields(element.getAttribute("result-fields").split(","));
-        }
-
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsToReturn", ParseType.Int, element, "-1");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "statisticalName", ParseType.String, element, "");
 
         return this;
     }
