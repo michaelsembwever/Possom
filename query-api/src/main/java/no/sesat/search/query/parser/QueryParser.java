@@ -51,7 +51,7 @@ public interface QueryParser {
 
     /**
      * Duplication of the parser's definition of SKIP. Must be kept uptodate!
-     * It's actually a duplication of the WORD_SEPARATOR (but that is itself a duplication of SKIP.
+     * It's actually a duplication of SKIP.
      */
     char[][] SKIP_CHARACTER_RANGES = {
         {' ', ' '},

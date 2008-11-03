@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.ArrayList;
 import no.sesat.search.query.*;
 
+
 /** This class is NOT synchronized. You must use a separate instance for each query.
  *
  * @version $Id$
@@ -41,12 +42,11 @@ public final class QueryParserImpl extends AbstractQueryParser{
         context = cxt;
         //checks Query String is ok
         String qs = cxt.getQueryString();
-        qs = balance(qs, '(', ')');
-        qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
         qs = fixFloatingHyphon(qs);
+
         token_source.SwitchTo(DEFAULT);
-        //LOG.setLevel(org.apache.log4j.Level.TRACE);
+//        LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
     public QueryParserImpl(final Context cxt, final int lexicalState){
@@ -54,10 +54,9 @@ public final class QueryParserImpl extends AbstractQueryParser{
         context = cxt;
         //checks Query String is ok
         String qs = cxt.getQueryString();
-        qs = balance(qs, '(', ')');
-        qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
         qs = fixFloatingHyphon(qs);
+
         token_source.SwitchTo(lexicalState);
     }
 
@@ -71,8 +70,9 @@ PARSER_END(QueryParserImpl)
  * WARNING!! These ranges are duplicated in QueryParser.java
  *             !! Always update it after any changes here !!
 **/
+
 <*>SKIP : {
-      " " | "!"
+      " " | "!" | "\""
     | < [ "\u0023"-"\u0027" ] >
     | < [ "\u002a"-"\u002c" ] >
     | < [ "\u002e"-"\u002f" ] >
@@ -111,8 +111,7 @@ TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?(<DIGIT>(<PHONE_MIDDLE>)?)
 TOKEN : { <NUMBER_GROUP: ((<DIGIT>)+(" ")+){2,}> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED>
-TOKEN : { <QUOTED_WORD: "\"" (~[])* "\""> }
-
+TOKEN : { <QUOTED_WORD: "\"" (~["\""])+ "\""> }
 
 <*>TOKEN : {
       <AND: ("AND"|"+")>
@@ -127,16 +126,6 @@ TOKEN : { <QUOTED_WORD: "\"" (~[])* "\""> }
     | <#PHONE_SYMBOL: (".")|("-")|("/")>
     | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
     | <#WORD_SYMBOL_MIDDLE: (".")|<HYPON>|("_")|("+")>
-    | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration. see SKIP comment!
-            " ", "!",
-            "\u0023"-"\u0029",
-            "\u003b"-"\u0040",
-            "\u005b"-"\u0060",
-            "\u007b"-"\u00bf",
-            "\u00d7",
-            "\u00f7",
-            "\u2010"-"\u2015"
-        ]>
     | <#HYPON: // Different types of hypons, http://www.cs.tut.fi/~jkorpela/dashes.html
         [
             "-",
@@ -172,27 +161,33 @@ TOKEN : { <QUOTED_WORD: "\"" (~[])* "\""> }
            "\u0ed0"-"\u0ed9",
            "\u1040"-"\u1049"
           ]>
+    | <OPENP: "(">
+    | <CLOSEP: ")">
 }
 
 Clause parse() : {
   Clause clause;
   LOG.info("parsing: "+context.getQueryString());
 }{
-        (clause = rootPrecedence()) {return clause;}
+        (clause = rootPrecedence()) 
+ {
+        LOG.info("parsing of " + context.getQueryString() + " resulted in: " + clause);
+        return clause;
+ }
 }
 
 /** PRECEDENCES **/
 
 Clause rootPrecedence() :{
     Clause clause;
-    enterMethod("rootPrecedence()");
+    enterMethod("rootPrecedence()", token);
 }{
     (clause = noPrecedence()) { try{return clause;}finally{exitMethod();} }
-}
+ }
 
 Clause noPrecedence() :{
     Clause clause;
-    enterMethod("noPrecedence()");
+    enterMethod("noPrecedence()", token);
 }{
     (clause = hiddenDefaultOperation()) { try{return clause;}finally{exitMethod();} }
     |
@@ -203,7 +198,7 @@ Clause noPrecedence() :{
 Clause looseJoinPrecedence() :{
     Clause clause = null;
     Token field = null;
-    enterMethod("looseJoinPrecedence()");
+    enterMethod("looseJoinPrecedence()", token);
 }{
     // Quotes or phrases take higher precedence than an OrOperation created by ()'s
     ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedQuote(field)) {try{return clause;}finally{exitMethod();}}
@@ -217,7 +212,7 @@ Clause looseJoinPrecedence() :{
 
 Clause strongJoinPrecedence() :{
     Clause clause;
-    enterMethod("strongJoinPrecedence()");
+    enterMethod("strongJoinPrecedence()", token);
 }{
     (clause = andOperation()) { try{return clause;}finally{exitMethod();} }
     |
@@ -228,7 +223,7 @@ Clause strongJoinPrecedence() :{
 
 Clause leafPrecedence() :{
     Clause clause;
-    enterMethod("leafPrecedence()");
+    enterMethod("leafPrecedence()", token);
 }{
     (clause = notOperation()) { try{return clause;}finally{exitMethod();} }
     |
@@ -241,7 +236,7 @@ Clause leafPrecedence() :{
 
 DefaultOperatorClause hiddenDefaultOperation() :{
     Clause left,right;
-    enterMethod("hiddenDefaultOperation()");
+    enterMethod("hiddenDefaultOperation()", token);
 }{
     ((left = looseJoinPrecedence())(right = noPrecedence()))
         { try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();} }
@@ -250,7 +245,7 @@ DefaultOperatorClause hiddenDefaultOperation() :{
 
 AndNotClause andNotOperation() :{
     Clause right;
-    enterMethod("andNotOperation()");
+    enterMethod("andNotOperation()", token);
 }{
     (<ANDNOT>(right = noPrecedence())) { try{return context.createAndNotClause(right);}finally{exitMethod();} }
 }
@@ -258,11 +253,11 @@ AndNotClause andNotOperation() :{
 Clause orOperation() :{
     Clause left,right;
     Clause clause;
-    enterMethod("orOperation()");
+    enterMethod("orOperation()", token);
 }{
-    ("("(clause = hiddenOrOperation())")") { try{return clause;}finally{exitMethod();} }
+    ( <OPENP> (clause = hiddenOrOperation()) <CLOSEP>) { try{return clause;}finally{exitMethod();} }
     |
-    ("("(clause = orOperation())")") { try{return clause;}finally{exitMethod();} }
+    ( <OPENP> (clause = orOperation()) <CLOSEP>) { try{return clause;}finally{exitMethod();} }
     |
     ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence()))
         { try{return context.createOrClause(left,right);}finally{exitMethod();} }
@@ -270,7 +265,7 @@ Clause orOperation() :{
 
 AndClause andOperation() :{
     Clause left,right;
-    enterMethod("andOperation()");
+    enterMethod("andOperation()", token);
 }{
     ((left = leafPrecedence())<AND>(right = strongJoinPrecedence()))
         { try{return context.createAndClause(left,right);}finally{exitMethod();} }
@@ -278,7 +273,7 @@ AndClause andOperation() :{
 
 AndClause hiddenAndOperation() :{
     Clause left,right;
-    enterMethod("hiddenAndOperation()");
+    enterMethod("hiddenAndOperation()", token);
 }{
     ((left = leafPrecedence())(right = hiddenAndOperation()))
         { try{return context.createAndClause(left,right);}finally{exitMethod();} }
@@ -289,7 +284,7 @@ AndClause hiddenAndOperation() :{
 
 Clause hiddenOrOperation() :{
     Clause left,right;
-    enterMethod("hiddenOrOperation()");
+    enterMethod("hiddenOrOperation()", token);
 }{
 
     // These are the real hidden or operands
@@ -306,7 +301,7 @@ Clause hiddenOrOperation() :{
 
 NotClause notOperation() :{
     Clause left;
-    enterMethod("notOperation()");
+    enterMethod("notOperation()", token);
 }{
     (<NOT>(left = leaf()))  { try{return context.createNotClause(left);}finally{exitMethod();} }
 }
@@ -317,22 +312,22 @@ NotClause notOperation() :{
 Clause leaf() :{
     Token field = null;
     Clause clause, left, right = null;
-    enterMethod("leaf()");
+    enterMethod("leaf()", token);
 }{
     // A real field
-    ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
+    ((<OPENP>|<CLOSEP>)* (field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
     |
     // An accidential field.
     // XXX This could cause problems as it destroys the construction of a right-leaning forests.
-    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null))
+    ((<OPENP>|<CLOSEP>)* left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null))
         {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
     |
-    ((<FIELD_SUFFIX>)?(clause = fieldedLeaf(null))) {try{return clause;}finally{exitMethod();}}
+    ((<OPENP>|<CLOSEP>)* (<FIELD_SUFFIX>)?(clause = fieldedLeaf(null))) {try{return clause;}finally{exitMethod();}}
 }
 
 
 Clause fieldedLeaf(final Token field) :{
-    enterMethod("fieldedLeaf()");
+    enterMethod("fieldedLeaf()", token);
     Clause clause = null;
 }{
     <PHONE_NUMBER>
@@ -406,8 +401,8 @@ Clause fieldedLeaf(final Token field) :{
         }
 }
 
-XorClause fieldedQuote(final Token field) :{
-    enterMethod("fieldedQuote()");
+Clause fieldedQuote(final Token field) :{
+    enterMethod("fieldedQuote()", token);
 }{
     <QUOTED_WORD>
         {
@@ -421,11 +416,18 @@ XorClause fieldedQuote(final Token field) :{
                                         .replaceAll(SKIP_REGEX, " ")
                                         .replaceAll(OPERATOR_REGEX, " ")
                                         .trim();
-                final QueryParserImpl p = new QueryParserImpl(createContext(term), QUOTED_WORD_DISABLED);
-                final Clause altClause = p.parse();
 
-                // Create a XorClause
-                return context.createXorClause(phClause, altClause, XorClause.Hint.PHRASE_ON_LEFT);
+                try { // if we can parse the content again, then make an xorclause
+                    final QueryParserImpl p = new QueryParserImpl(createContext(term), QUOTED_WORD_DISABLED);
+                    final Clause altClause = p.parse();
+                    return context.createXorClause(phClause, altClause, XorClause.Hint.PHRASE_ON_LEFT);
+
+                }
+                catch (ParseException e) {
+                    LOG.warn("Parsing content of QUOTED_WORD: " + term, e);
+                }
+
+                return phClause;
 
             }finally{exitMethod();}
         }

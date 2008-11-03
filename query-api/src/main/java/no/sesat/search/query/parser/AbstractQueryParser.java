@@ -198,16 +198,25 @@ public abstract class AbstractQueryParser implements QueryParser {
      *
      * @param method the name of the method
      */
-    protected final void enterMethod(final String method){
+    protected final void enterMethod(final String method, final Token token){
         if( LOG.isTraceEnabled() ){
             methodStack.push(method);
+
             final StringBuilder sb = new StringBuilder();
             for( Iterator it = methodStack.iterator(); it.hasNext(); ){
                 final String m = (String)it.next();
                 sb.append("." + m );
             }
+            Token t = token;
+            while (t != null) {
+                sb.append(" " + QueryParserImplConstants.tokenImage[t.kind]);
+                if (token.image != null) {
+                    sb.append("(" + token.image + ")");
+                }
+                t = t.next;
+            }
             LOG.trace(sb.toString());
-        }
+         }
     }
 
     /**

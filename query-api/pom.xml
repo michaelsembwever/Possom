@@ -29,6 +29,7 @@
                 <configuration>
                     <sourceDirectory>${basedir}/src/main/javacc</sourceDirectory>
                     <packageName>no.sesat.search.query.parser</packageName>
+                    <!-- <debugTokenManager>true</debugTokenManager> -->
                 </configuration>
             </plugin>
          </plugins>
