@@ -48,6 +48,43 @@ import org.xml.sax.SAXParseException;
  * This avoids the problem of having to order loading of applications in the container because of static initialisers
  *  using resources from the search-front-config application.
  *
+ * <br/>
+ *
+ * Because the loading is backgrounded it is important to wait until it is finished.
+ * This is done by calling abut()
+ *
+ * <br/><br/>
+ *
+ * Example usecases:<br/>
+ * (1)<pre>
+ * // load custom.properties into props in skin's WEB-INF/classes/
+ * Site site = ...;
+ * PropertiesContext context = ...;
+ * Properties props = new Properties();
+ * PropertiesLoader loader = context.newPropertiesLoader(site.getSiteContext(), "custom.properties", props);
+ * loader.abut();
+ * props.getProperty(...);
+ * <pre/>
+ * (2)<pre>
+ * // create document from my.xml located in skin's WEB-INF/classes/
+ * Site site = ...;
+ * DocumentContext context = ...;
+ * final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+ * factory.setValidating(false);
+ * final DocumentBuilder builder = factory.newDocumentBuilder();
+ * loader = context.newDocumentLoader(site.getSiteContext(), "my.xml", builder);
+ * loader.abut();
+ * Document doc = loader.getDocument();
+ * </pre>
+ * (3)<pre>
+ * // read a class file from a jar file located in skin's WEB-INF/lib/
+ * Site site = ...;
+ * BytecodeContext context = ...;
+ * BytecodeLoader loader= context.newBytecodeLoader(site.getSiteContext(),"Example.class", "Example.jar");
+ * loader.abut()
+ * byte[] bytes = loader.getBytecode();
+ * </pre>
+ *
  * @version $Id$
  *
  */
