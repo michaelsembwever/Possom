@@ -73,8 +73,7 @@ public final class FaviconDirective extends AbstractDirective {
 
         if (argCount == 1) {
             writer.write("<link href=\"" + resolvedPath + "\" rel=\"shortcut icon\" type=\"image/gif\" />");
-        }
-        if (argCount == 2) {
+        } else if (argCount == 2) {
             writer.write("<link href=\"" + resolvedPath + "\" " + getArgument(context, node, 1) + "/>");
         }
         else{
