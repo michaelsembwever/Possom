@@ -366,14 +366,14 @@ public final class DataModelFilter implements Filter {
         return retval;
     }
 
-    /** A safer way to get parameters for the query string.
-     * Handles ISO-8859-1 and UTF-8 URL encodings.
+    /**
+     * This function will try to decode the raw parameter, and see if that matches
+     * how the request.getParameter(..) did the decoding. If this dosn't match then we
+     * fall back to ISO-8859-1 which in most cases will be correct.
      *
      * @param request The servlet request we are processing
      * @param parameter The parameter to retrieve
      * @return The correct decoded parameter
-     *
-     *
      */
     private static String getParameterSafely(final HttpServletRequest request, final String parameter){
 
@@ -391,21 +391,12 @@ public final class DataModelFilter implements Filter {
         }
 
         if (null != value && null != queryStringValue) {
-
             try {
-
-                final String encodedReqValue = URLEncoder.encode(value, "UTF-8")
-                        .replaceAll("[+]", "%20")
-                        .replaceAll("[*]", "%2A");
-
-                queryStringValue = queryStringValue
-                        .replaceAll("[+]", "%20")
-                        .replaceAll("[*]", "%2A");
-
-                if (!queryStringValue.equalsIgnoreCase(encodedReqValue)){
+                final String queryStringValueDecoded = URLDecoder.decode(queryStringValue, "UTF-8");
+                if (!queryStringValueDecoded.equals(value)) {
+                    // We don't think the encoding is utf-8 so go for ISO-8859-1
                     value = URLDecoder.decode(queryStringValue, "ISO-8859-1");
                 }
-
             } catch (UnsupportedEncodingException e) {
                 LOG.trace(e);
             }
