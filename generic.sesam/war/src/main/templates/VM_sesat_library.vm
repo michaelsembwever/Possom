@@ -105,10 +105,12 @@
         #if(!$branch.isChildSelected() && $branch.isSelected() )
             <div class="cellHoldActive">
                 <div class="cellLeft"><span class="subText${branch.depth}">$branch.title</div>
+                <div class="liner"></div>
             </div>
         #else
             <div class="cellHold">
                 <div class="cellLeft"><span class="subText${branch.depth}">#newsSimpleNavigationLink($branch '')</div>
+                <div class="liner"></div>
             </div>
         #end
         #set($top = $branch)
@@ -123,10 +125,12 @@
         #if($branch.isChildSelected())
             <div class="cellHold">
                 <div class="cellLeft">$aImg #newsSimpleNavigationLink($branch '')</div>
+                <div class="liner"></div>
             </div>
         #else
             <div class="cellHoldActive">
                 <div class="cellLeft">$branch.getTitle()</div>
+                <div class="liner"></div>
             </div>
         #end
         #set($top = $branch)
@@ -135,7 +139,7 @@
     #foreach($leaf in $top.results)
         <div class="cellHold">
             <div class="cellLeft">#newsSimpleNavigationLink($leaf '')</div>
+            <div class="liner"></div>
         </div>
-        <div class="liner"></div>
     #end
 #end
