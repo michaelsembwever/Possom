@@ -1008,7 +1008,6 @@
                 <artifactId>jscience</artifactId>
                 <version>3.3</version>
                 <type>jar</type>
-                <classifier>jdk15</classifier>
             </dependency>
             <dependency>
                 <groupId>org.apache.lucene.solr</groupId>
