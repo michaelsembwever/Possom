@@ -29,7 +29,7 @@
     <fileSet>
       <directory>../fast/src/main/java</directory>
       <outputDirectory>../../src/main/java</outputDirectory>
-    </fileSe>
+    </fileSet>
   </fileSets> 
   <!--dependencySets>
     <dependencySet>
