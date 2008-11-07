@@ -14,6 +14,22 @@
       <directory>../fast/target/classes</directory>
       <outputDirectory>../classes</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>../default/target/test-classes</directory>
+      <outputDirectory>../test-classes</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../fast/target/test-classes</directory>
+      <outputDirectory>../test-classes</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../default/src/main/java</directory>
+      <outputDirectory>../../src/main/java</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../fast/src/main/java</directory>
+      <outputDirectory>../../src/main/java</outputDirectory>
+    </fileSe>
   </fileSets> 
   <!--dependencySets>
     <dependencySet>

@@ -1,0 +1,6 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite name="No tests in assembly" verbose="10" parallel="false">
+
+    <!-- No tests in assembly -->
+
+</suite>

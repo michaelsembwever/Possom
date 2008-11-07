@@ -10,5 +10,13 @@
       <directory>../default/target/classes</directory>
       <outputDirectory>../classes</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>../default/target/test-classes</directory>
+      <outputDirectory>../test-classes</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../default/src/main/java</directory>
+      <outputDirectory>../../src/main/java</outputDirectory>
+    </fileSet>
   </fileSets> 
 </assembly>
