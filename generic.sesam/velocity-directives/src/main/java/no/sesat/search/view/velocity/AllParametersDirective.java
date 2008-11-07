@@ -75,7 +75,7 @@ public final class AllParametersDirective extends AbstractDirective {
             // only include url parameters. currently private detail to DataModelFilter.updateDataModelForRequest(..)
             if(getDataModel(cxt).getParameters().getValues().containsKey(key + "-isUrl")){
                 final String value = entry.getValue().getUtf8UrlEncoded();
-                writer.append(key + '=' + value + '&');
+                writer.append(key + '=' + value + '&amp;');
             }
         }
 
