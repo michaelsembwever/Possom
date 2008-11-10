@@ -55,8 +55,8 @@ public final class JepTokenEvaluator implements TokenEvaluator {
      */
     public JepTokenEvaluator(final String query, final boolean queryDependant) {
 
-        // avoid evaulation on just a number
-        result = query.matches("[0-9.]+")
+        // avoid evaulation on just a number, we don't want "2 = 2"
+        result = query.matches("[0-9]+")
                 ? null
                 : getComplex(query);
 
@@ -69,7 +69,7 @@ public final class JepTokenEvaluator implements TokenEvaluator {
 
     public Complex getComplex(final String expression) {
 
-        if(null != query && !expression.equals(query)){
+        if(null == query || !expression.equals(query)){
 
             final JEP parser = new JEP();
 
