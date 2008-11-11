@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
 import no.sesat.search.query.transform.QueryTransformerConfig;
 import no.sesat.search.result.handler.ResultHandlerConfig;
 
@@ -34,8 +36,8 @@ import java.util.Collection;
 import java.util.List;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.result.Navigator;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -71,7 +73,7 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
     private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
 
-    private final Map<String,String> resultFields = new HashMap<String,String>();
+    private final Map<String,String> resultFields = new TreeMap<String,String>();
     private int resultsToReturn = -1;
 
     private String queryParameter = "";
@@ -146,22 +148,15 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
     }
 
     /**
-     * @param resultField
-     *            String seperated with ' AS '.
-     */
-    private final void addResultField(final String resultField) {
-        if (resultField != null && !resultField.equals("")) {
-            addResultField(resultField.trim().split(" AS "));
-        }
-    }
-
-    /**
      * @param resultFields
      *            Result fields to add.
      */
-    public final void addResultFields(final String[] resultFields) {
-        for (String string : resultFields) {
-            addResultField(string);
+    public final void addResultFields(final String[] resultFieldArray) {
+        for (String resultField : resultFieldArray) {
+            if (resultField != null && !resultField.equals("")) {
+                String [] split = resultField.trim().split(" AS ");
+                resultFields.put(split[0].trim(), (split.length >1 ? split[1] : split[0]).trim());
+            }
         }
     }
 
@@ -359,7 +354,12 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
 
     @Override
     public String toString() {
-        return ModesSearchConfigurationDeserializer.toString(this);
+        try {
+            return this.getClass().getSimpleName() + " " + BeanUtils.describe(this).toString();
+        } catch (Exception e) {
+            LOG.warn("Failed to do BeanUtils.describe", e);
+        }
+        return this.getClass().getSimpleName();
     }
 
     // Inner classes -------------------------------------------------

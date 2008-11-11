@@ -116,7 +116,6 @@ public class URLResourceLoader extends ResourceLoader {
             }
 
         }catch( IOException e ){
-            LOG.debug( ERR_RESOURCE_NOT_FOUND + url);
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
     }
@@ -160,7 +159,6 @@ public class URLResourceLoader extends ResourceLoader {
             return findUrlImpl(url, currentSite);
 
         }catch( IOException e ){
-            LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
     }

@@ -63,9 +63,8 @@ public final class SearchModeTest extends DataModelTestCase {
         webCrawl.addCollections(new String[]{"webcrawlno1", "webcrawlno1deep1"});
         webCrawl.addCollections(new String[]{"webcrawlno2"});
 //        webCrawl.addResultHandler(new TextOutputResultHandler());
-        webCrawl.addResultField("url");
-        webCrawl.addResultField("title");
-        webCrawl.addResultField("body");
+        webCrawl.addResultFields(new String[]{"url"});
+        webCrawl.addResultFields(new String[]{"title", "body"});
         webCrawl.setSpellchecklanguage("no");
         webCrawl.setResultsToReturn(10);
 
