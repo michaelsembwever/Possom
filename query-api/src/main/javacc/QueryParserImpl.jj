@@ -315,14 +315,14 @@ Clause leaf() :{
     enterMethod("leaf()", token);
 }{
     // A real field
-    ((<OPENP>|<CLOSEP>)* (field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
+    ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
     |
     // An accidential field.
     // XXX This could cause problems as it destroys the construction of a right-leaning forests.
-    ((<OPENP>|<CLOSEP>)* left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null))
+    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null))
         {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
     |
-    ((<OPENP>|<CLOSEP>)* (<FIELD_SUFFIX>)?(clause = fieldedLeaf(null))) {try{return clause;}finally{exitMethod();}}
+    ((<FIELD_SUFFIX>)?(clause = fieldedLeaf(null))) {try{return clause;}finally{exitMethod();}}
 }
 
 
