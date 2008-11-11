@@ -69,9 +69,9 @@ public final class RegexpQueryTransformerConfig extends AbstractQueryTransformer
         this.regexp = regexp;
     }
 
-    /**
+    /** @see #setRegexp(java.lang.String)
      *
-     * @return
+     * @return the regular expression
      */
     public String getRegexp(){
         return regexp;
@@ -85,9 +85,9 @@ public final class RegexpQueryTransformerConfig extends AbstractQueryTransformer
         this.replacement = replacement;
     }
 
-    /**
+    /** @see #setReplacement(java.lang.String)
      *
-     * @return
+     * @return the replacement string
      */
     public String getReplacement(){
         return replacement;

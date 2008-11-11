@@ -26,6 +26,11 @@ package no.sesat.search.mode.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.search.datamodel.DataModel;
+import no.sesat.search.datamodel.access.ControlLevel;
 import no.sesat.search.mode.SearchCommandFactory;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.executor.SearchCommandExecutorFactory;
@@ -34,6 +39,11 @@ import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.site.config.DocumentLoader;
+import no.sesat.search.site.config.FileResourceLoader;
+import no.sesat.search.site.config.PropertiesLoader;
+import no.sesat.search.view.SearchTabFactory;
+import no.sesat.search.view.config.SearchTab;
 import no.sesat.search.view.navigation.ResultPagingNavigationConfig;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
@@ -57,83 +67,60 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
      * @throws java.lang.Exception
      */
     @Test
-    public void testAllNorskNettsokSearchCommands() throws Exception{
-        executeTestOfQuery("linux", "d");
-    }
+    public void testAllSearchCommands() throws Exception{
 
+        final DataModel datamodel = getDataModel();
 
-    /**
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testAllInternasjonalNettsokSearchCommands() throws Exception{
+        final SiteContext siteCxt = new SiteContext(){
+            public Site getSite() {
+                return datamodel.getSite().getSite();
+            }
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt,
+                    final String resource,
+                    final Properties properties) {
 
-        executeTestOfQuery("linux", "g");
-    }
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+            }
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt,
+                    final String resource,
+                    final DocumentBuilder builder) {
 
-    /**
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testAllWhitepagesSearchCommands() throws Exception{
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className, String jar) {
+                return FileResourceLoader.newBytecodeLoader(context, className, jar);
+            }
 
-        executeTestOfQuery("linux", "w");
-    }
+        };
 
-    /**
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testAllYellowpagesSearchCommands() throws Exception{
+        final SearchTabFactory stFactory = SearchTabFactory.instanceOf(
+            ContextWrapper.wrap(SearchTabFactory.Context.class, siteCxt));
 
-        executeTestOfQuery("linux", "y");
-    }
-
-    /**
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testAllNyheterSearchCommands() throws Exception{
-
-        executeTestOfQuery("linux", "m");
-    }
-
-    /**
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testAllBilderSearchCommands() throws Exception{
-
-        executeTestOfQuery("linux", "p");
-    }
-
-    /**
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testAllTvSearchCommands() throws Exception{
-        executeTestOfQuery("linux", "t");
+        for(SearchTab tab : stFactory.getTabsByName().values()){
+            if(null != tab.getKey()){
+                executeTestOfQuery("linux", tab.getKey());
+            }
+        }
     }
 
     private void executeTestOfQuery(
             final String query,
             final String key) throws SiteKeyedFactoryInstantiationException{
 
+
+
         // proxy it back to the RunningQuery context.
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
 
-        updateAttributes(rqCxt.getDataModel().getJunkYard().getValues(), rqCxt);
-        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
-        rqCxt.getDataModel().getJunkYard().getValues().put("query", rq);
+        getDataModelFactory().assignControlLevel(rqCxt.getDataModel(), ControlLevel.RUNNING_QUERY_CONSTRUCTION);
 
-        final Collection<SearchCommand> commands
-                = new ArrayList<SearchCommand>();
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
+
+        getDataModelFactory().assignControlLevel(rqCxt.getDataModel(), ControlLevel.SEARCH_COMMAND_CONSTRUCTION);
+
+        final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
 
         final SearchCommandFactory.Context commandFactoryContext = new SearchCommandFactory.Context() {
             public Site getSite() {
@@ -149,7 +136,6 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
         for(SearchConfiguration conf : rqCxt.getSearchMode().getSearchConfigurations()){
 
-
             LOG.info(DEBUG_EXECUTE_COMMAND + conf.getId());
 
             final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getId());
@@ -159,35 +145,15 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
             commands.add(cmd);
         }
         try{
+            LOG.info("Invoking all " + commands.size() + " commands in " + rqCxt.getSearchMode());
+
+            getDataModelFactory().assignControlLevel(rqCxt.getDataModel(), ControlLevel.SEARCH_COMMAND_EXECUTION);
 
             SearchCommandExecutorFactory.getController(rqCxt.getSearchMode().getExecutor()).invokeAll(commands);
 
         } catch (InterruptedException ex) {
             throw new AssertionError(ex);
         }
-    }
-
-    /** Matchs the same method in SearchServlet. **/
-    private static Map<String,Object> updateAttributes(
-            final Map<String,Object> map,
-            final RunningQuery.Context rqCxt){
-
-
-        if (map.get(ResultPagingNavigationConfig.OFFSET_KEY) == null
-                || "".equals(map.get(ResultPagingNavigationConfig.OFFSET_KEY))) {
-
-            map.put(ResultPagingNavigationConfig.OFFSET_KEY, "0");
-        }
-
-        map.put("contextPath", "/");
-        //map.set("tradedoubler", new TradeDoubler(request));
-        map.put("no.sesat.Statistics", new StringBuffer());
-
-        //final Properties props = SiteConfiguration.valueOf(
-        //                ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
-        //
-        //map.set("linkpulse", new Linkpulse(rqCxt.getSite(), props));
-        return map;
     }
 
 }

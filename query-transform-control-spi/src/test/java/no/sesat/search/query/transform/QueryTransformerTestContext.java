@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -147,6 +147,10 @@ public final class QueryTransformerTestContext extends SiteTestCase implements Q
     public String getFieldFilter(final LeafClause clause) {
         // TODO. Return some thing as AbstractSearchCommand.getFieldFilter
         return null;
+    }
+
+    public String escape(String word) {
+        return word;
     }
 
 }

@@ -19,11 +19,6 @@ package no.sesat.search.mode.command;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.mode.config.YahooMediaCommandConfig;
-import no.sesat.search.query.AndClause;
-import no.sesat.search.query.OrClause;
-import no.sesat.search.query.NotClause;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.LeafClause;
 import java.util.Map;
 import java.text.MessageFormat;
 import java.net.URLEncoder;
@@ -63,7 +58,6 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String YAHOO_SIZE_PARAM = "dimensions";
     private static final String SIZE_PARAM = "sz";
-    private static final String SITE_FILTER = "site";
     private static final String OCR_PARAM = "ocr";
 
     private static final String FIELD_THUMB_HEIGHT = "thumb_height";
@@ -102,56 +96,62 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
      * Create new yahoo media command.
      *
      * @param cxt Context to execute in.
-     * @param parameters Command parameters to use.
      */
     public YahooMediaSearchCommand(final Context cxt) {
 
         super(cxt);
+
+        setXmlRestful(
+                new AbstractXmlRestful(cxt) {
+                    public String createRequestURL() {
+
+                        String query = YahooMediaSearchCommand.this.getTransformedQuery();
+
+                        final YahooMediaCommandConfig cfg = (YahooMediaCommandConfig) cxt.getSearchConfiguration();
+
+                        if (cfg.getSite().length() > 0) {
+                            query += " +site:" + cfg.getSite();
+                        }
+
+                        try {
+
+                            final String ocr = YahooMediaSearchCommand.this.getSingleParameter(OCR_PARAM) != null
+                                    ? YahooMediaSearchCommand.this.getSingleParameter(OCR_PARAM)
+                                    : cfg.getOcr();
+
+                            String url = MessageFormat.format(
+                                    COMMAND_URL_PATTERN,
+                                    URLEncoder.encode(query, URL_ENCODING),
+                                    YahooMediaSearchCommand.this.getOffset(),
+                                    YahooMediaSearchCommand.this.getPartnerId(),
+                                    cfg.getResultsToReturn(),
+                                    ocr,
+                                    cfg.getCatalog());
+
+                            if (YahooMediaSearchCommand.this.getSingleParameter(SIZE_PARAM) != null
+                                    && !YahooMediaSearchCommand.this.getSingleParameter(SIZE_PARAM).equals("")) {
+
+                                final ImageMapping mapping = ImageMapping.valueOf(
+                                        YahooMediaSearchCommand.this.getSingleParameter(SIZE_PARAM).toUpperCase());
+
+                                if (mapping != null) {
+                                    url += "&" + YAHOO_SIZE_PARAM + "=" + mapping.getSizes();
+                                }
+                            }
+
+                            return url;
+
+                        } catch (final UnsupportedEncodingException e) {
+                            throw new SearchCommandException(ERR_FAILED_CREATING_URL, e);
+                        }
+                    }
+                });
     }
 
-    /** {@inheritDoc} */
-    protected String createRequestURL() {
-
-        String query = getTransformedQuery();
-
-        final YahooMediaCommandConfig cfg = (YahooMediaCommandConfig) context.getSearchConfiguration();
-
-        if (cfg.getSite().length() > 0) {
-            query += " +site:" + cfg.getSite();
-        }
-
+    public ResultList<ResultItem> execute() {
         try {
 
-            final String ocr = getSingleParameter(OCR_PARAM) != null ? getSingleParameter(OCR_PARAM) : cfg.getOcr();
-
-            String url = MessageFormat.format(
-                    COMMAND_URL_PATTERN,
-                    URLEncoder.encode(query, URL_ENCODING),
-                    getOffset(),
-                    getPartnerId(),
-                    cfg.getResultsToReturn(),
-                    ocr,
-                    cfg.getCatalog());
-
-            if (getSingleParameter(SIZE_PARAM) != null && !getSingleParameter(SIZE_PARAM).equals("")) {
-                final ImageMapping mapping = ImageMapping.valueOf(getSingleParameter(SIZE_PARAM).toUpperCase());
-
-                if (mapping != null)
-                    url += "&" + YAHOO_SIZE_PARAM + "=" + mapping.getSizes();
-            }
-
-            return url;
-
-        } catch (final UnsupportedEncodingException e) {
-            throw new SearchCommandException(ERR_FAILED_CREATING_URL, e);
-        }
-    }
-
-    /** {@inheritDoc} */
-    public ResultList<? extends ResultItem> execute() {
-        try {
-
-            final Document doc = getXmlResult();
+            final Document doc = getXmlRestful().getXmlResult();
             final ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
             if (doc != null) {
@@ -169,12 +169,12 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
                     for (int i = 0; i < list.getLength(); ++i) {
                         final Element listing = (Element) list.item(i);
-                        searchResult.addResult(createResultItem(listing));
+                        searchResult.addResult(createItem(listing));
                     }
                 }
             }
 
-            searchResult.addField("generatedQuery", getQueryRepresentation(getQuery()));
+            searchResult.addField("generatedQuery", getQueryRepresentation());
 
             return searchResult;
 
@@ -192,88 +192,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     }
 
 
-    // AbstractReflectionVisitor overrides ----------------------------------------------
-
-    private boolean insideNot = false;
-    private Boolean writeAnd = Boolean.TRUE;
-
-    /** {@inheritDoc} */
-    @Override
-    protected void visitImpl(final LeafClause clause) {
-
-        final String transformedTerm = getTransformedTerm(clause);
-        if (clause.getField() != null && clause.getField().equals(SITE_FILTER)) {
-            appendToQueryRepresentation("+" + clause.getField() + ":");
-            appendToQueryRepresentation(transformedTerm);
-
-        } else if (null == clause.getField() || null == getFieldFilter(clause)) {
-            if (transformedTerm != null && transformedTerm.length() > 0) {
-                if (insideNot) {
-                    appendToQueryRepresentation("-");
-                }  else if (writeAnd != null && writeAnd) {
-                    appendToQueryRepresentation("+");
-                }
-                appendToQueryRepresentation((null == clause.getField()
-                        ? ""
-                        : clause.getField() + "\\:")
-                        + transformedTerm);
-            }
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void visitImpl(final AndClause clause) {
-        final Boolean originalWriteAnd = writeAnd;
-        writeAnd = Boolean.TRUE;
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
-        clause.getSecondClause().accept(this);
-        writeAnd = originalWriteAnd;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected void visitImpl(final OrClause clause) {
-        final Boolean originalWriteAnd = writeAnd;
-        writeAnd = Boolean.FALSE;
-//        appendToQueryRepresentation(" (");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
-        clause.getSecondClause().accept(this);
-//        appendToQueryRepresentation(") ");
-        writeAnd = originalWriteAnd;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected void visitImpl(final NotClause clause) {
-        if (writeAnd == null) {
-            // must start prefixing terms with +
-            writeAnd = Boolean.TRUE;
-        }
-        final boolean originalInsideAndNot = insideNot;
-        insideNot = true;
-        clause.getFirstClause().accept(this);
-        insideNot = originalInsideAndNot;
-
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected void visitImpl(final AndNotClause clause) {
-        if (writeAnd == null) {
-            // must start prefixing terms with +
-            writeAnd = Boolean.TRUE;
-        }
-        final boolean originalInsideAndNot = insideNot;
-        insideNot = true;
-        clause.getFirstClause().accept(this);
-        insideNot = originalInsideAndNot;
-    }
-
-    private ResultItem createResultItem(final Element listing) {
+    protected ResultItem createItem(final Element listing) {
         final BasicResultItem item = new BasicResultItem();
 
         for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFieldMap().entrySet()){

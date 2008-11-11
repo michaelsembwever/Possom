@@ -340,6 +340,13 @@ public final class TestVisitor extends SiteTestCase {
             "((www.bodo.se djur) haest_fjording.htm) (www.bodo.se (djur haest_fjording.htm))");
     }
 
+    public void testNotWithOr(){
+        basicQueryParserWithTestVisitorImpl(
+                "-a (e f) c",
+                "NOT a e OR f c",
+                "(NOT a ((e OR f) c))");
+    }
+
     private void basicQueryParserWithTestVisitorImpl(
             final String queryInput,
             final String visitorResult,

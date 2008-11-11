@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import no.sesat.search.mode.SearchModeFactory.Context;
+import no.sesat.search.mode.config.querybuilder.InfixQueryBuilderConfig;
+import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
+import no.sesat.search.query.transform.DefaultInitialisationQueryTransformerConfig;
 import no.sesat.search.result.Navigator;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -50,7 +53,7 @@ import org.w3c.dom.NodeList;
  *
  * @version <tt>$Id$</tt>
  */
-public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialiser {
+public class CommandConfig implements BaseSearchConfiguration, SearchConfiguration.ModesW3cDomDeserialiser {
 
     // Constants -----------------------------------------------------
 
@@ -70,6 +73,8 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
     // Attributes ----------------------------------------------------
 
     private String name;
+    private QueryBuilderConfig queryBuilder = new InfixQueryBuilderConfig();
+    private QueryTransformerConfig initialQueryTransformer = new DefaultInitialisationQueryTransformerConfig();
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
     private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
 
@@ -109,19 +114,16 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         return Collections.unmodifiableList(queryTransformers);
     }
 
-    /** {@inheritDoc} **/
     public final void addQueryTransformer(final QueryTransformerConfig queryTransformer) {
         if(queryTransformer != null){
             queryTransformers.add(queryTransformer);
         }
     }
 
-    /** {@inheritDoc} **/
     public final List<ResultHandlerConfig> getResultHandlers() {
         return resultHandlers;
     }
 
-    /** {@inheritDoc} **/
     public final void addResultHandler(final ResultHandlerConfig handler) {
         resultHandlers.add(handler);
     }
@@ -142,7 +144,6 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         this.name = id;
     }
 
-    /** {@inheritDoc} **/
     public final void addResultField(final String... fieldName) {
         resultFields.put(fieldName[0].trim(), (fieldName.length >1 ? fieldName[1] : fieldName[0]).trim());
     }
@@ -171,29 +172,23 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         return res;
     }
 
-    /** {@inheritDoc} **/
     public final Map<String,String> getResultFieldMap() {
         return Collections.unmodifiableMap(resultFields);
     }
 
-    /** {@inheritDoc} **/
     public final int getResultsToReturn() {
         return resultsToReturn;
     }
 
-    /** {@inheritDoc} **/
     public final void setResultsToReturn(final int no) {
         this.resultsToReturn = no;
     }
 
-    /** {@inheritDoc} **/
     public String getQueryParameter() {
         return queryParameter;
     }
 
-    /** {@inheritDoc} *
-     * @return
-     */
+
     public boolean isAlwaysRun() {
         return alwaysRun;
     }
@@ -205,9 +200,7 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         alwaysRun = enable;
     }
 
-    /** {@inheritDoc} *
-     * @return
-     */
+
     public boolean isRunBlank() {
         return runBlank;
     }
@@ -226,7 +219,6 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         this.queryParameter = useParameterAsQuery;
     }
 
-    /** {@inheritDoc} **/
     public String getStatisticalName() {
         return statisticalName;
     }
@@ -239,8 +231,6 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
     }
 
 
-    /** {@inheritDoc}
-     */
     public boolean isAsynchronous() {
         return asynchronous;
     }
@@ -295,7 +285,27 @@ public class CommandConfig implements SearchConfiguration.ModesW3cDomDeserialise
         fieldFilters.clear();
     }
 
+    public QueryBuilderConfig getQueryBuilder() {
+        return queryBuilder;
+    }
+
+    public void setQueryBuilder(final QueryBuilderConfig queryBuilderConfig) {
+        this.queryBuilder = queryBuilderConfig;
+    }
+
+    public QueryTransformerConfig getInitialQueryTransformer() {
+        return initialQueryTransformer;
+    }
+
+    public void setInitialQueryTransformer(final QueryTransformerConfig initialQueryTransformer) {
+        this.initialQueryTransformer = initialQueryTransformer;
+    }
+
+    // Protected --------------------------------------------------------
+
+
     public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
+
         if(null!=inherit){
             fieldFilters.putAll(inherit.getFieldFilterMap());
         }

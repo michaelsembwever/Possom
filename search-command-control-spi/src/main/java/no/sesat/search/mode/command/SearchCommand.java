@@ -33,22 +33,37 @@ import no.sesat.search.result.ResultList;
  *
  * @version <tt>$Id$</tt>
  */
-public interface SearchCommand extends Callable<ResultList<? extends ResultItem>> {
+public interface SearchCommand extends Callable<ResultList<ResultItem>> {
 
 
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it
      * creates.
      */
-    public interface Context extends BaseContext, ResourceContext, DataModelContext,
-            SearchConfigurationContext, TokenEvaluationEngineContext {
+    public interface Context extends
+            BaseContext,
+            ResourceContext,
+            DataModelContext,
+            SearchConfigurationContext,
+            TokenEvaluationEngineContext {
     }
 
     /**
      * Returns the configuration associated with this search command.
+     * Typically delegates to the context provided.
      *
      * @return The search configuration.
      */
     SearchConfiguration getSearchConfiguration();
+
+    // --- EXECUTION ---
+
+    /** From Callable interface.
+     *
+     * @{@inheritDoc}
+     *
+     * @return the completed search result list.
+     */
+    ResultList<ResultItem> call();
 
     /** Allows the SearchCommand to clean itself after a long night out when s/he didn't get home in time.
      * @return if cleaning was actually performed
@@ -60,6 +75,7 @@ public interface SearchCommand extends Callable<ResultList<? extends ResultItem>
      * @return true if cancelled.
      */
     boolean isCancelled();
+
 
     /** Can this command provide paginated results.
      *

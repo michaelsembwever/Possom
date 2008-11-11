@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ public final class StockSearchCommand extends AbstractSearchCommand {
         super(cxt);
     }
 
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         final String q = getTransformedQuery();

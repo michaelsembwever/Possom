@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 package no.sesat.search.result.handler;
 
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.mode.config.SearchConfiguration;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.query.QueryContext;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
@@ -56,7 +56,7 @@ public interface ResultHandler {
          *
          * @return
          */
-        SearchConfiguration getSearchConfiguration();
+        BaseSearchConfiguration getSearchConfiguration();
 
         /**
          * Returns the query as it is after the query transformers have been applied to it.

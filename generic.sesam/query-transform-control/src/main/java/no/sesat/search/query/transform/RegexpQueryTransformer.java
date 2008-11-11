@@ -46,7 +46,6 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
     private static final String DEBUG_APPLIED_REGEXP = "Applied regexp to term ";
 
     private Pattern regExPattern;
-    private final ClassLoader cl = RegexpQueryTransformerConfig.class.getClassLoader();
     private final RegexpQueryTransformerConfig config;
 
     /**

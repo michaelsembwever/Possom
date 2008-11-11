@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- - Copyright (2005-2006) Schibsted Søk AS
+ - Copyright (2005-2008) Schibsted Søk AS
  - $Id: project.xml 2296 2006-02-14 17:33:59Z magnuse $
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -59,7 +59,23 @@
                     <artifactId>generic.sesam-search-command-control</artifactId>
                     <version>${sesat.version}</version>
                     <classifier>include-fast</classifier>
-                </dependency>                
+                </dependency>
+                <!-- Additions when testing -->
+                <dependency>
+                    <groupId>fast</groupId>
+                    <artifactId>dsapi</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>fast</groupId>
+                    <artifactId>esp-searchapi</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>fast</groupId>
+                    <artifactId>msearch-client</artifactId>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
         </profile>
         <profile><id>alpha</id>
@@ -228,6 +244,16 @@
             <artifactId>generic.sesam-velocity-directives</artifactId>
             <version>${sesat.version}</version>
         </dependency>
+
+        <!-- Test JARs -->
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>generic.sesam-search-command-control</artifactId>
+            <version>${sesat.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Cobertura test coverage: duplicate of list in sesat-kernel/pom.xml cobertura-maven-plugin's config. -->
         <!--dependency>
             <groupId>cobertura</groupId>

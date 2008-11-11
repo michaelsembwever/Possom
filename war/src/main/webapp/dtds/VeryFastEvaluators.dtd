@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!-- Copyright (2007) Schibsted Søk AS
+<!-- Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -19,8 +19,7 @@
     PUBLIC ID: -//sesam//Analysis//EN
     SYSTEM ID: http://sesam.no/dtds/VeryFastEvaluators.dtd
 
-    Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
-    Version    : $Id: RegularExpressionEvaluators.xml 41 2006-02-07 13:41:30Z magnuse $
+    Version    : $Id$
 
 -->
 

@@ -54,7 +54,7 @@ public class OptionNavigationController
     }
 
     public NavigationItem getNavigationItems(Context context) {
-        final ResultList<? extends ResultItem> searchResult = commandName != null
+        final ResultList<ResultItem> searchResult = commandName != null
                 ? context.getDataModel().getSearch(commandName).getResults()
                 : null;
 
@@ -83,7 +83,7 @@ public class OptionNavigationController
 
     private void removeAllBut(
             final Collection<OptionsNavigationConfig.Option> optionsToKeep,
-            final ResultList<? extends ResultItem> searchResult,
+            final ResultList<ResultItem> searchResult,
             final DataModel dataModel) {
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final List<NavigationItem> toRemove = new ArrayList<NavigationItem>();
@@ -131,7 +131,7 @@ public class OptionNavigationController
 
         for (final OptionsNavigationConfig.Option option : optionsToAdd) {
 
-            final ResultList<? extends ResultItem> searchResult = option.getCommandName() != null
+            final ResultList<ResultItem> searchResult = option.getCommandName() != null
                     ? dataModel.getSearch(option.getCommandName()).getResults()
                     : null;
 
@@ -172,7 +172,7 @@ public class OptionNavigationController
     }
 
     private boolean isOptionDefaultSelected(
-            final ResultList<? extends ResultItem> result,
+            final ResultList<ResultItem> result,
             final OptionsNavigationConfig.Option option) {
 
         final String valueRef = option.getDefaultSelectValueRef();

@@ -42,7 +42,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
         super(cxt);
     }
 
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         LOG.debug("entering execute()");
         final NewsMyNewsCommandConfig config = getSearchConfiguration();
@@ -68,7 +68,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
             }
 
             while (matcher.find() && position < config.getResultsToReturn()) {
-                ResultList<? extends ResultItem> collectedResult;
+                ResultList<ResultItem> collectedResult;
                 String commandName = null;
                 final String type = matcher.group(2);
                 if (type.equals("knippe")) {
@@ -137,7 +137,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
         }
     }
 
-    private void setNextOffset(ResultList<? extends ResultItem> searchResult, int returnedResults) {
+    private void setNextOffset(ResultList<ResultItem> searchResult, int returnedResults) {
         int offset = getOffset();
         if (offset + returnedResults < searchResult.getHitCount()) {
             LOG.debug("Setting next offset to: " + (offset + returnedResults));

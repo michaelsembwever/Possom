@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -47,11 +47,11 @@ public interface SearchCommandExecutor {
      * @return the list of Futures holding the results.
      * @throws InterruptedException
      */
-    Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+    Map<Future<ResultList<ResultItem>>,SearchCommand> invokeAll(
             Collection<SearchCommand> callables) throws InterruptedException;
 
-    Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitForAll(
-            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
+    Map<Future<ResultList<ResultItem>>,SearchCommand> waitForAll(
+            final Map<Future<ResultList<ResultItem>>,SearchCommand> results,
             final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException;
 
 }

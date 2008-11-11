@@ -62,7 +62,7 @@ public class FastNavigationController implements NavigationController {
             return item;
         }
 
-        final ResultList<? extends ResultItem> searchResult = search.getResults();
+        final ResultList<ResultItem> searchResult = search.getResults();
 
         if (searchResult instanceof FastSearchResult) {
 

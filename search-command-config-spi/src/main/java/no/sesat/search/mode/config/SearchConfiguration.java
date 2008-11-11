@@ -16,52 +16,36 @@
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package no.sesat.search.mode.config;
 
 import java.io.Serializable;
-import no.sesat.search.query.transform.QueryTransformerConfig;
-import no.sesat.search.result.handler.ResultHandlerConfig;
-
-import java.util.List;
 import java.util.Map;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import org.w3c.dom.Element;
 
-/** Minimum behavior defined for any SearchConfiguration implementation.
+/**
  *
- *
- * @version <tt>$Id$</tt>
+ * @version $Id$
  */
 public interface SearchConfiguration extends Serializable {
-    /**
-     * Returns a (defensive copy) list of {@link no.sesat.search.query.transform.QueryTransformerConfig} that should be applied to
-     * the query before the query is sent to search indices.
-     *
-     * @return The list of query.
-     */
-    List<QueryTransformerConfig> getQueryTransformers();
 
     /**
-     * Adds a {@link no.sesat.search.query.transform.QueryTransformerConfig} to the list of transformeres.
-     *
-     * @param transformer The query transformer to add.
+     * @param resultField
      */
-    void addQueryTransformer(QueryTransformerConfig transformer);
+    void addResultField(String... resultField);
 
     /**
-     * Returns a (defensive copy) list of {@link no.sesat.search.result.handler.ResultHandlerConfig} that should act on the search
-     * result.
+     * Getter for property fieldFilters.
      *
-     * @return The list of handlers.
+     * @return Value of property fieldFilters.
      */
-    List<ResultHandlerConfig> getResultHandlers();
+    Map<String, String> getFieldFilterMap();
 
     /**
-     * Adds a {@link no.sesat.search.result.handler.ResultHandlerConfig} to the list of handlers.
-     *
-     * @param handler The handler to add.
+     * Remove all fieldFilters.
      */
-    void addResultHandler(ResultHandlerConfig handler);
+    void clearFieldFilters();
 
     /**
      * Returns the name of this configuration.
@@ -73,6 +57,16 @@ public interface SearchConfiguration extends Serializable {
     String getName();
 
     /**
+     * @return
+     */
+    String getQueryParameter();
+
+    /**
+     * @return
+     */
+    Map<String, String> getResultFieldMap();
+
+    /**
      * Returns the number of results to return.
      *
      * @return
@@ -80,27 +74,9 @@ public interface SearchConfiguration extends Serializable {
     int getResultsToReturn();
 
     /**
-     * @return
+     * @return The statistical name.
      */
-    Map<String,String> getResultFieldMap();
-
-    /**
-     * @param resultField
-     */
-    void addResultField(String... resultField);
-
-    /**
-     * Sets the number of results to return. This is typically set to the
-     * page size defined in the view.xml.
-     *
-     * @param numberOfResults
-     */
-    void setResultsToReturn(int numberOfResults);
-
-    /**
-     * @return
-     */
-    public String getQueryParameter();
+    String getStatisticalName();
 
     /**
      * @return true if the command should always run.
@@ -108,42 +84,15 @@ public interface SearchConfiguration extends Serializable {
     boolean isAlwaysRun();
 
     /**
-     * @return true if the command should run when query string is blank.
-     */
-    boolean isRunBlank();
-
-    /**
-     * @return The statistical name.
-     */
-    String getStatisticalName();
-
-    /**
-     * Getter for property fieldFilters.
-     *
-     * @return Value of property fieldFilters.
-     */
-    Map<String, String> getFieldFilterMap();
-
-    /**
-     * Clear all query transformers associated with this configuration.
-     */
-    void clearQueryTransformers();
-
-    /**
-     * Clear all result handlers associated with this configuration.
-     */
-    void clearResultHandlers();
-
-    /**
-     * Removes all field filters associated with this configuration.
-     */
-    void clearFieldFilters();
-
-    /**
      * Is the command used asynchronously, for example by ajax calls.
      * @return
      */
     boolean isAsynchronous();
+
+    /**
+     * @return true if the command should run when query string is blank.
+     */
+    boolean isRunBlank();
 
     /**
      * Interface for SearchConfigurations that uses W3cDomDeserialiser.
@@ -158,7 +107,7 @@ public interface SearchConfiguration extends Serializable {
          * @param element
          * @param inherit
          *
-         * @return The newly read configuration (Done to keep the chaining pattern)
+         * @return The newly read configuration (chaining pattern)
          */
         SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit, Context context);
     }

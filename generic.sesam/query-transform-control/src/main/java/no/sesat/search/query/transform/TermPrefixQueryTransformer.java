@@ -21,11 +21,13 @@ import java.util.Map;
 import no.sesat.search.query.AndClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
+import no.sesat.search.query.EmailClause;
 import no.sesat.search.query.IntegerClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.OperationClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.PhoneNumberClause;
+import no.sesat.search.query.UrlClause;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
@@ -33,7 +35,7 @@ import org.w3c.dom.Element;
 
 /**
  * @see TermPrefixQueryTransformerConfig
- *
+ * @version $Id$
  */
 public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
 
@@ -56,6 +58,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      * @param clause The clause to prefix.
      */
      public void visitImpl(final LeafClause clause) {
+
         if (clause.getField() == null || getContext().getFieldFilter(clause) == null) {
             addPrefix(clause, config.getPrefix());
         }
@@ -119,11 +122,30 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      * @param clause  The clause to prefix.
      */
     public void visitImpl(final PhoneNumberClause clause) {
-        addPrefix(clause, config.getNumberPrefix());
+        addPrefix(clause, config.getPhoneNumberPrefix());
+    }
+
+    /**
+     * Prefix a url clause with the url prefix.
+     *
+     * @param clause  The clause to prefix.
+     */
+    public void visitImpl(final UrlClause clause) {
+        addPrefix(clause, config.getUrlPrefix());
+    }
+
+    /**
+     * Prefix a email clause with the email prefix.
+     *
+     * @param clause  The clause to prefix.
+     */
+    public void visitImpl(final EmailClause clause) {
+        addPrefix(clause, config.getEmailPrefix());
     }
 
     private void addPrefix(final Clause clause, final String prefix) {
-        final String term = (String) getTransformedTerms().get(clause);
+
+        final String term = getTransformedTerms().get(clause);
 
         if (!(term.equals("") || isAlreadyPrefixed(term, prefix))) {
             getTransformedTerms().put(clause, prefix + ':' + term);
@@ -134,7 +156,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
         return term.indexOf(prefix + ':') > -1;
     }
 
-    private Map getTransformedTerms() {
+    private Map<Clause,String> getTransformedTerms() {
         return getContext().getTransformedTerms();
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (2006-2007) Schibsted Søk AS
+Copyright (2006-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ Copyright (2006-2007) Schibsted Søk AS
 -->
 
 <modes template-prefix="default-"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="modes.xsd">
 
 
@@ -35,7 +35,6 @@ Copyright (2006-2007) Schibsted Søk AS
 
         <command id="default-command"
                  field-filters="site,size"
-                 
                  query-parameter=""
                  result-fields=""
                  results-to-return="1"/>
@@ -53,14 +52,42 @@ Copyright (2006-2007) Schibsted Søk AS
                       query-server-url=""
                       sort-by=""
                       spam-score-limit="0"
-                      spellcheck="false"/>
+                      spellcheck="false">
+       
+           <query-builder>
+               <prefix and-prefix="+" or-prefix=" " not-prefix="-" or-grouped="true"/>
+           </query-builder>
+       </fast-command>
+
+       <fast-command id="default-fast4-command-advanced-query"
+                    search-parameters=""
+                    inherit="default-fast-command">
+           <query-builder>
+               <!-- XXX if NOT appears first it must be written #ANDNOT -->
+               <!--       this might warrent a subclass to infix-query-builder -->
+               <infix and-infix="AND" default-infix="AND" or-infix="OR" not-prefix="ANDNOT " or-grouped="true"/>
+           </query-builder>
+       </fast-command>
+
+       <!-- @deprecated use default-fast4-command-advanced-query instead. -->
+       <advanced-fast-command id="default-advanced-fast-command"
+                    search-parameters=""
+                    inherit="default-command">
+           <query-builder>
+               <infix and-infix="AND" default-infix="AND" or-infix="OR" not-prefix="ANDNOT " or-grouped="true"/>
+           </query-builder>
+       </advanced-fast-command>
 
         <static-command id="default-static-command" inherit="default-command"/>
 
-        <esp-fast-command id="default-esp-fast-command" inherit="default-command"/>
+        <esp-fast-command id="default-esp-fast-command" inherit="default-command">
+            
+           <query-builder>
+               <infix and-infix="and" or-infix="or" not-prefix="not " default-infix="and" or-grouped="true" not-grouped="true"/>
+           </query-builder>
+        </esp-fast-command>
 
         <math-command id="default-math-command" inherit="default-command"/>
-
 
         <!-- when overriding this command, remember to adjust partnerid according to this:
              https://dev.schibstedsok.no/confluence/display/TECHDEV/Technology+Documentation+-+Overture+PPC
@@ -73,7 +100,11 @@ Copyright (2006-2007) Schibsted Søk AS
                               port="overturePort"
                               results-to-return="6"
                               url="/d/search/p/schibstedsok/xml/no/?mkt=no&amp;adultFilter=clean"
-                              statistical-name="overture_ads"/>
+                              statistical-name="overture_ads">
+            <query-builder>
+                <infix supports-not="false"/>
+            </query-builder>
+        </overture-ppc-command>
 
         <platefood-ppc-command id="default-platefood-ppc-command" inherit="default-command"
                                encoding="UTF-8"
@@ -84,11 +115,13 @@ Copyright (2006-2007) Schibsted Søk AS
                                url="/publisher/search?"
                                statistical-name="platefood_ads"/>
 
+        <properties-command id="default-properties-command" inherit="default-command"/>
 
         <yahoo-idp-command id="default-yahoo-command" inherit="default-command"
                            encoding="utf-8"
                            field-filters="site AS domain"
                            filter="-porn"
+                           host="yahooIdpHost"
                            port="yahooIdpPort"
                            region-mix=""
                            language-mix=""
@@ -98,29 +131,34 @@ Copyright (2006-2007) Schibsted Søk AS
                            results-to-return="10"
                            spell-state="disabled"
                            unique="doc,host%202">
-
+            <query-builder>
+                <prefix default-prefix="+" and-prefix="+" not-prefix="-"/>
+            </query-builder>
             <result-handlers>
                 <field-chooser target="title" fields="title,url"/>
             </result-handlers>
         </yahoo-idp-command>
         
-        <yahoo-idp-command id="default-yahoo-i18n-command" inherit="default-yahoo-command"
-                           port="yahooIdpPort"/>
+        <yahoo-idp-command id="default-yahoo-i18n-command" inherit="default-yahoo-command"/>
 
         <yahoo-idp-command id="defaultno-yahoo-i18n-command" inherit="default-yahoo-i18n-command"
                            database="www-no"
-                           host="yahooIdpHost"
                            language="albanian,arabic,bulgarian,catalan,chinese-simplified,chinese-traditional,croatian,czech,danish,dutch,english,estonian,finnish,french,german,greek,hebrew,hungarian,icelandic,italian,japanese,korean,latvian,lithuanian,persian,polish,portuguese,romanian,russian,slovak,slovenian,spanish,swedish,thai,turkish,unknown"
                            partner-id="yahooIdpPartnerId"
                            region="centralafrica,northafrica,ar,latinamerica,au,at,be,br,ca,cz,cn,ee,dk,fi,fr,gr,de,hk,hu,is,in,ie,it,jp,kr,lu,my,mx,nl,nz,pl,pt,sg,sv,za,formersovietunion,es,ch,tw,tr,uk,us,yu,nonregional"/>
 
         <yahoo-media-command
                 id="default-yahoo-image-command"
+                field-filters="site"
                 partner-id="yahooMediaPartnerId"
                 statistical-name="yahoo-image"
                 result-fields="turl AS thumb_url, rcur AS page_url, tgeo AS thumb_geometry, geo AS geometry, fsz AS filesize,thumb_width,thumb_height"
                 host="yahooImageServer"
-                port="yahooImageServerPort"/>
+                port="yahooImageServerPort">
+            <query-builder>
+                <prefix default-prefix="+" and-prefix="+" not-prefix="-"/>
+            </query-builder>
+        </yahoo-media-command>
 
         <yahoo-media-command
                 id="default-yahoo-image-count-command"
@@ -139,10 +177,14 @@ Copyright (2006-2007) Schibsted Søk AS
         </yahoo-media-command>
 
         <picture-command id="default-picture-command"
-                         query-server-host="picsearch.host"
-                         query-server-port="picsearch.port"
+                         host="picsearch.host"
+                         port="picsearch.port"
                          result-fields="thumb_url,page_url,thumb_width,thumb_height,height,width,filesize"
-                         inherit="default-command"/>
+                         inherit="default-command">
+           <query-builder>
+               <infix not-prefix="-"/>
+           </query-builder>                      
+       </picture-command>
 
         <picture-command id="default-picture-count-command" results-to-return="1" inherit="default-picture-command"/>
 
@@ -176,6 +218,10 @@ Copyright (2006-2007) Schibsted Søk AS
                         statistical-name="sensis_globalweb"
                         inherit="default-fast-command"/>
 
+        <solr-command id="default-solr-command"
+                server-url="queryServer.solr.1"
+                inherit="default-command"/>
+
         <stock-command id="default-stock-command" inherit="default-command">
             <query-transformers>
                 <token-mask mask="exclude" position="prefix" predicates="STOCK_MAGIC"/>
@@ -194,6 +240,34 @@ Copyright (2006-2007) Schibsted Søk AS
          <!-- TODO rename to more appropriate. only sweden uses it. -->
         <yahoo-idp-command id="default-web-counter-only" results-to-return="0" inherit="default-web-command"/>
 
+        <yahoo-web-command id="default-yahoo-web-command"
+                           appid="YahooDemo"
+                           field-filters="site"
+                           host="yahooWebHost"
+                           language="en"
+                           port="yahooWebPort"
+                           result-fields="Title AS title,Summary AS body,Url AS url,ClickUrl AS clickurl"
+                           results-to-return="10"
+                           inherit="default-command">
+           <query-builder>
+               <infix not-prefix="-" and-infix="" or-infix="OR"/>
+           </query-builder>
+            <result-handlers>
+                <field-chooser target="title" fields="title,url"/>
+                <regexp field="url" target="site" regexp="http://([^/]*)/?"/>
+            </result-handlers>
+        </yahoo-web-command>
+
+        <youtube-command id="default-youtube-command"
+                         inherit="default-command"
+                         results-to-return="20"
+                         format="5"
+                         statistical-name="youtube-command"
+                         racy="exclude"
+                         sort-by="relevance"
+                         host="youtubeHost"
+                         port="youtubePort"/>
+                         
     </mode>
 
     <!-- Magic search mode template -->
@@ -271,8 +345,7 @@ Copyright (2006-2007) Schibsted Søk AS
         <solr-command id="solrSuggestions"
                 result-fields="list_name,list_entry"
                 results-to-return="99"
-                server-url="queryServer.solr.1"
-                inherit="default-command">
+                inherit="default-solr-command">
             <query-transformers>
                 <!-- The following works against a Solr configured field of type string named "list_entry". -->
                 <!-- We use String instead of text as the whole query can be treated as a single token. -->

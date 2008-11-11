@@ -74,7 +74,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
      */
     protected static void addNextOffsetField(
             final int nextOffset,
-            final ResultList<? extends ResultItem> searchResult) {
+            final ResultList<ResultItem> searchResult) {
 
         searchResult.addField(NewsEspSearchCommand.PARAM_NEXT_OFFSET, Integer.toString(nextOffset));
     }
@@ -179,155 +179,39 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         return fastResult;
     }
 
-    private void addMedium(final Clause clause) {
+    @Override
+    protected synchronized String getQueryRepresentation() {
 
-        if (getQuery().getRootClause() == clause) {
-            final NewsEspCommandConfig config = getSearchConfiguration();
-            String medium = (String) datamodel.getJunkYard().getValue(config.getMediumParameter());
-            if (medium == null || medium.length() == 0) {
-                medium = config.getDefaultMedium();
-            }
-            if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium)) {
-                if (getQueryRepresentationLength() > 0) {
-                    insertToQueryRepresentation(0, "and(");
-                    appendToQueryRepresentation(',');
-                    appendToQueryRepresentation(config.getMediumPrefix());
-                    appendToQueryRepresentation(':');
-                    appendToQueryRepresentation("\"" + medium + "\"");
-                    appendToQueryRepresentation(')');
-                    LOG.debug("Added medium");
-                    return;
-                } else if (getQuery().getQueryString() != null && getQuery().getQueryString().trim().equals("*")) {
-                    appendToQueryRepresentation(config.getMediumPrefix());
-                    appendToQueryRepresentation(':');
-                    appendToQueryRepresentation("\"" + medium + "\"");
-                    LOG.debug("Added medium");
-                    return;
-                }
-            }
-            LOG.debug("Did not add medium on rootclause: medium=" + medium
-                    + ", queryLength=" + getQueryRepresentationLength());
+        String result = super.getQueryRepresentation();
+
+        final NewsEspCommandConfig config = getSearchConfiguration();
+
+        String medium = (String) datamodel.getJunkYard().getValue(config.getMediumParameter());
+        if (medium == null || medium.length() == 0) {
+            medium = config.getDefaultMedium();
         }
-    }
 
-    /**
-     * @param clause
-     */
-    @Override
-    protected void visitImpl(final Object clause) {
+        final int qLength = result.length();
 
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
+        if(!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium)) {
 
-        super.visitImpl(clause);
-        if (clause instanceof Clause) {
-            addMedium((Clause) clause);
+            if (0 < qLength) {
+
+                result = "and(" + result + ',' + config.getMediumPrefix() + ":\"" + medium + "\")";
+
+            }else if(null != getQuery().getQueryString() && "*".equals(getQuery().getQueryString().trim()) ){
+
+                result = config.getMediumPrefix() + ":\"" + medium + "\"";
+            }
         }
-    }
 
-    /**
-     * @param clause
-     */
-    protected void visitImpl(final Clause clause) {
+        if(result.length() == qLength){
+            LOG.debug("Did not add medium on rootclause: medium=" + medium + ", queryLength=" + qLength);
+        }else{
+            LOG.debug("Added medium");
+        }
 
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-
-    @Override
-    protected void visitImpl(final LeafClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-    @Override
-    protected void visitImpl(final OperationClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-    @Override
-    protected void visitImpl(final AndClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-    @Override
-    protected void visitImpl(final OrClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-    @Override
-    protected void visitImpl(final DefaultOperatorClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-    @Override
-    protected void visitImpl(final NotClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause="
-                + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-    @Override
-    protected void visitImpl(final AndNotClause clause) {
-
-        LOG.debug("Visiting me with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitImpl(clause);
-        addMedium(clause);
-    }
-
-
-    @Override
-    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
-
-        LOG.debug("Visit xorClause called with: " + clause
-                + ", isroot=" + (getQuery().getRootClause() == clause)
-                + ", rootClause=" + getQuery().getRootClause());
-
-        super.visitXorClause(visitor, clause);
-        addMedium(clause);
+        return result;
     }
 
     @Override

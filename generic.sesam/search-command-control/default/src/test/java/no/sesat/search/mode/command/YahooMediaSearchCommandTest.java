@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,71 +17,81 @@
 package no.sesat.search.mode.command;
 
 
-import no.sesat.search.mode.command.*;
+import java.util.Collections;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
+import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.view.config.SearchTab.EnrichmentHint;
+import no.sesat.search.view.config.SearchTab.EnrichmentPlacementHint;
+import no.sesat.search.view.config.SearchTab.Layout;
+import no.sesat.search.view.config.SearchTab.Scope;
+import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
 
 
 /**
- *
+ * @version $Id$
  */
 public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test a single term.
      */
+    @Test
     public void testSingleTerm()  throws Exception{
-        executeTestOfQuery("test", "test", "");
+        executeTestOfQuery("test", "+test", "");
     }
 
 
+    @Test
     public void testTwoTerms()  throws Exception{
-        executeTestOfQuery("test1 test2", "test1 AND test2", "");
+        executeTestOfQuery("test1 test2", "+test1 +test2", "");
     }
 
+    @Test
     public void testThreeTerms()  throws Exception{
-        executeTestOfQuery("test1 test2 test3", "test3 AND test1 AND test2", "");
+        executeTestOfQuery("test1 test2 test3", "+test1 +test2 +test3", "");
     }
 
+    @Test
     public void testTwoTermsPlus()  throws Exception{
-        executeTestOfQuery("+test1 +test2", "test1 AND test2", "");
+        executeTestOfQuery("+test1 +test2", "+test1 +test2", "");
     }
 
 
+    @Test
     public void testNot()  throws Exception{
-        executeTestOfQuery("test1 -test2", "test1 ANDNOT test2", "");
+        executeTestOfQuery("test1 -test2", "+test1 -test2", "");
     }
 
+    @Test
     public void testLeadingNot()  throws Exception{
-        executeTestOfQuery("-test1 test2", "test2 ANDNOT test1", "");
+        executeTestOfQuery("-test1 test2", "-test1 +test2", "");
     }
 
+    @Test
     public void testOr()  throws Exception{
-        executeTestOfQuery("(test1 test2)", "(test1 OR test2)", "");
+        executeTestOfQuery("(test1 test2)", "test1 test2", "");
     }
 
+    @Test
     public void testLeadingNotAndOr()  throws Exception{
-        executeTestOfQuery("-a (test1 test2)", "(test1 OR test2) ANDNOT a", "");
+        executeTestOfQuery("-a (test1 test2)", "-a test1 test2", "");
     }
 
+    @Test
     public void testLotsOfNots()  throws Exception{
-        executeTestOfQuery("-a d -b -e c -f", "c AND d ANDNOT a ANDNOT b ANDNOT e ANDNOT f", "");
-        executeTestOfQuery("-a d -b -e c g -f", "g AND c AND d ANDNOT a ANDNOT b ANDNOT e ANDNOT f", "");
-        executeTestOfQuery("-a -b c", "c ANDNOT a ANDNOT b", "");
-        executeTestOfQuery("-a (e f) c", "c AND (e OR f) ANDNOT a", "");
+        executeTestOfQuery("-a d -b -e c -f", "-a +d -b -e +c -f", "");
+        executeTestOfQuery("-a d -b -e c g -f", "-a +d -b -e +c +g -f", "");
+        executeTestOfQuery("-a -b c", "-a -b +c", "");
+        executeTestOfQuery("-a (e f) c", "-a e f +c", "");
     }
 
 
+    @Test
     public void testSiteRestriction() throws Exception{
 
-        executeTestOfQuery("site:aftonbladet.se banan", "banan", "");
-        executeTestOfQuery("banan site:aftonbladet.se", "banan", "");
-
-        final SearchCommand.Context cxt
-                = createCommandContext("site:aftonbladet.se banan", "d", "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt);
-        cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
-        assertTrue(cmd.createRequestURL().contains("rurl=http://aftonbladet.se"));
+        executeTestOfQuery("site:aftonbladet.se banan", "+banan", "+site:aftonbladet.se");
+        executeTestOfQuery("banan site:aftonbladet.se", "+banan", "+site:aftonbladet.se");
     }
 
     /**
@@ -97,10 +107,15 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
             final String wantedQuery,
             final String wantedFilter)  throws SiteKeyedFactoryInstantiationException{
 
-        final SearchCommand.Context cxt = createCommandContext(query, "d", "yahoo-image-search");
+        final SearchTab fakeTab = new SearchTab(null, "fake-view", "default-mode", "test", null, null, true,
+                null, Collections.<EnrichmentPlacementHint>emptyList(), Collections.<EnrichmentHint>emptyList(), null,
+                0, 0, Collections.<String>emptyList(), Collections.<String>emptyList(), false, false,
+                null, Collections.<String,Layout>emptyMap(), Scope.REQUEST);
+
+        final SearchCommand.Context cxt = createCommandContext(query, fakeTab, "default-yahoo-image-command");
         final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt);
-        final String generatedQuery = cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
+        final String generatedQuery = cmd.getQueryRepresentation();
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
-        assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());
+        assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getFilter());
     }
 }

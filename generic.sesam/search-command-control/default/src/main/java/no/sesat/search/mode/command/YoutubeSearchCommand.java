@@ -38,6 +38,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @see YoutubeCommandConfig
+ * @version $Id$
  */
 public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
 
@@ -55,16 +56,34 @@ public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
         super(cxt);
         this.cxt = cxt;
         conf = (YoutubeCommandConfig) cxt.getSearchConfiguration();
+        setXmlRestful(
+                new AbstractXmlRestful(cxt) {
+                    public String createRequestURL() {
+
+                        return MessageFormat.format(COMMAND_URL_PATTERN,
+                                YoutubeSearchCommand.this.cxt.getDataModel().getQuery().getUtf8UrlEncoded(),
+                                (null != getParameter("userSortBy")
+                                    ? getParameter("userSortBy")
+                                    : YoutubeSearchCommand.this.conf.getSortBy()),
+                                // first result is 1, not 0
+                                (null != YoutubeSearchCommand.this.getParameter("offset")
+                                    ? Integer.parseInt(YoutubeSearchCommand.this.getParameter("offset"))+1 : "1"),
+                                YoutubeSearchCommand.this.conf.getResultsToReturn(),
+                                YoutubeSearchCommand.this.conf.getFormat(),
+                                YoutubeSearchCommand.this.conf.getRacy());
+                    }
+        });
     }
 
     @Override
     @SuppressWarnings("static-access")
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         Document doc;
         try {
-            doc = getXmlResult();
+            doc = getXmlRestful().getXmlResult();
+
         } catch (SocketTimeoutException ste) {
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
             return new BasicResultList<ResultItem>();
@@ -83,115 +102,111 @@ public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
             final NodeList entryList = rootEl.getElementsByTagName("entry");
 
             for(int i = 0; i < entryList.getLength(); i++) {
-                ResultItem resItem = new BasicResultItem();
-                final Element entryEl = (Element) entryList.item(i);
-                final Element publishedEl = (Element) entryEl.getElementsByTagName("published").item(0);
-                final String published = publishedEl.getFirstChild().getNodeValue();
 
-                final NodeList categoryList = entryEl.getElementsByTagName("category");
-                List<String> tags = new ArrayList<String>();
-                List<String> categories = new ArrayList<String>();
-                for(int j = 0; j < categoryList.getLength(); j++) {
-                    final Element categoryEl = (Element) categoryList.item(j);
-                    final String term = categoryEl.getAttribute("term");
-                    final String label = categoryEl.getAttribute("label");
-                    if(null != label && label.length() > 0) {
-                        categories.add(term);
-                    } else if(!term.startsWith("http")) { // Filter out junk
-                        tags.add(term);
-                    }
-                }
-
-                final Element titleEl = (Element) entryEl.getElementsByTagName("title").item(0);
-                final String title = titleEl.getFirstChild().getNodeValue();
-
-                final Element contentEl = (Element) entryEl.getElementsByTagName("content").item(0);
-                final String content = contentEl.getFirstChild().getNodeValue();
-
-                final Element authorEl = (Element) entryEl.getElementsByTagName("author").item(0);
-                final Element authorNameEl = (Element) authorEl.getElementsByTagName("name").item(0);
-                final Element authorUrlEl = (Element) authorEl.getElementsByTagName("uri").item(0);
-                final String author = authorNameEl.getFirstChild().getNodeValue();
-                final String authorUrl = authorUrlEl.getFirstChild().getNodeValue();
-
-                final Element mediaGroupEl = (Element) entryEl.getElementsByTagName("media:group").item(0);
-                final Element durationEl = (Element) mediaGroupEl.getElementsByTagName("yt:duration").item(0);
-                final String duration = durationEl.getAttribute("seconds");
-                final String durationMin = String.valueOf(Integer.parseInt(duration) / 60);
-                final String durationSec = String.valueOf(Integer.parseInt(duration) % 60);
-
-                final NodeList mediaContentList = mediaGroupEl.getElementsByTagName("media:content");
-                for(int j = 0; j < mediaContentList.getLength(); j++) {
-                    final Element mediaContentEl = (Element) mediaContentList.item(j);
-                    final String url = mediaContentEl.getAttribute("url");
-                    final String format = mediaContentEl.getAttribute("yt:format");
-                    final String type = mediaContentEl.getAttribute("type");
-                    if(format.equals(conf.getFormat())) {
-                        resItem.addField("videoUrl", url);
-                        resItem.addField("videoType", type);
-                    }
-                }
-
-                final Element mediaPlayerEl = (Element) mediaGroupEl.getElementsByTagName("media:player").item(0);
-                final String playerUrl = mediaPlayerEl.getAttribute("url");
-
-                final List<Map<String,String>> thumbnails = new ArrayList<Map<String,String>>();
-                final NodeList mediaThumbnailList = mediaGroupEl.getElementsByTagName("media:thumbnail");
-                for(int j = 0; j < mediaThumbnailList.getLength(); j++) {
-                    final Element mediaThumbnailEl = (Element) mediaThumbnailList.item(j);
-                    final String url = mediaThumbnailEl.getAttribute("url");
-                    final String height = mediaThumbnailEl.getAttribute("height");
-                    final String width = mediaThumbnailEl.getAttribute("width");
-                    final String time = mediaThumbnailEl.getAttribute("time");
-                    final Map<String,String> thumbnail = new HashMap<String,String>();
-                    thumbnail.put("url", url);
-                    thumbnail.put("height", height);
-                    thumbnail.put("width", width);
-                    thumbnail.put("time", time);
-                    int lastDot = url.lastIndexOf(".");
-                    thumbnail.put("id", url.substring(lastDot-1, lastDot));
-                    thumbnails.add(thumbnail);
-                }
-
-                final Element gdRating = (Element)entryEl.getElementsByTagName("gd:rating").item(0);
-                String ratingNum = null;
-                String rating = null;
-                if(null != gdRating) {
-                    ratingNum = gdRating.getAttribute("numRaters");
-                    rating = gdRating.getAttribute("average");
-                }
-
-                resItem.addField("title", title);
-                resItem.addField("content", content);
-                resItem.addField("published", published);
-                resItem.addField("author", author);
-                resItem.addField("authorUrl", authorUrl);
-                resItem.addField("duration", duration);
-                resItem.addField("durationMin", durationMin);
-                resItem.addField("durationSec", durationSec);
-                resItem.addObjectField("thumbnails",(Serializable) thumbnails);
-                resItem.addObjectField("categories",(Serializable) categories);
-                resItem.addObjectField("tags",(Serializable) tags);
-                resItem.addField("ratingNum", ratingNum);
-                resItem.addField("rating", rating);
-                resItem.addField("youtubeUrl", playerUrl);
-
-                result.addResult(resItem);
+                result.addResult(createItem((Element) entryList.item(i)));
             }
 
         }
         return result;
     }
 
-    protected String createRequestURL() {
+    @Override
+    protected ResultItem createItem(final Element entryEl) {
 
-        return MessageFormat.format(COMMAND_URL_PATTERN,
-                datamodel.getQuery().getUtf8UrlEncoded(),
-                (null != getParameter("userSortBy") ? getParameter("userSortBy") : conf.getSortBy()),
-                // first result is 1, not 0
-                (null != getParameter("offset") ? Integer.parseInt(getParameter("offset"))+1 : "1"),
-                conf.getResultsToReturn(),
-                conf.getFormat(),
-                conf.getRacy());
+        ResultItem resItem = new BasicResultItem();
+        final Element publishedEl = (Element) entryEl.getElementsByTagName("published").item(0);
+        final String published = publishedEl.getFirstChild().getNodeValue();
+
+        final NodeList categoryList = entryEl.getElementsByTagName("category");
+        List<String> tags = new ArrayList<String>();
+        List<String> categories = new ArrayList<String>();
+        for(int j = 0; j < categoryList.getLength(); j++) {
+            final Element categoryEl = (Element) categoryList.item(j);
+            final String term = categoryEl.getAttribute("term");
+            final String label = categoryEl.getAttribute("label");
+            if(null != label && label.length() > 0) {
+                categories.add(term);
+            } else if(!term.startsWith("http")) { // Filter out junk
+                tags.add(term);
+            }
+        }
+
+        final Element titleEl = (Element) entryEl.getElementsByTagName("title").item(0);
+        final String title = titleEl.getFirstChild().getNodeValue();
+
+        final Element contentEl = (Element) entryEl.getElementsByTagName("content").item(0);
+        final String content = contentEl.getFirstChild().getNodeValue();
+
+        final Element authorEl = (Element) entryEl.getElementsByTagName("author").item(0);
+        final Element authorNameEl = (Element) authorEl.getElementsByTagName("name").item(0);
+        final Element authorUrlEl = (Element) authorEl.getElementsByTagName("uri").item(0);
+        final String author = authorNameEl.getFirstChild().getNodeValue();
+        final String authorUrl = authorUrlEl.getFirstChild().getNodeValue();
+
+        final Element mediaGroupEl = (Element) entryEl.getElementsByTagName("media:group").item(0);
+        final Element durationEl = (Element) mediaGroupEl.getElementsByTagName("yt:duration").item(0);
+        final String duration = durationEl.getAttribute("seconds");
+        final String durationMin = String.valueOf(Integer.parseInt(duration) / 60);
+        final String durationSec = String.valueOf(Integer.parseInt(duration) % 60);
+
+        final NodeList mediaContentList = mediaGroupEl.getElementsByTagName("media:content");
+        for(int j = 0; j < mediaContentList.getLength(); j++) {
+            final Element mediaContentEl = (Element) mediaContentList.item(j);
+            final String url = mediaContentEl.getAttribute("url");
+            final String format = mediaContentEl.getAttribute("yt:format");
+            final String type = mediaContentEl.getAttribute("type");
+            if(format.equals(conf.getFormat())) {
+                resItem = resItem
+                        .addField("videoUrl", url)
+                        .addField("videoType", type);
+            }
+        }
+
+        final Element mediaPlayerEl = (Element) mediaGroupEl.getElementsByTagName("media:player").item(0);
+        final String playerUrl = mediaPlayerEl.getAttribute("url");
+
+        final List<Map<String,String>> thumbnails = new ArrayList<Map<String,String>>();
+        final NodeList mediaThumbnailList = mediaGroupEl.getElementsByTagName("media:thumbnail");
+        for(int j = 0; j < mediaThumbnailList.getLength(); j++) {
+            final Element mediaThumbnailEl = (Element) mediaThumbnailList.item(j);
+            final String url = mediaThumbnailEl.getAttribute("url");
+            final String height = mediaThumbnailEl.getAttribute("height");
+            final String width = mediaThumbnailEl.getAttribute("width");
+            final String time = mediaThumbnailEl.getAttribute("time");
+            final Map<String,String> thumbnail = new HashMap<String,String>();
+            thumbnail.put("url", url);
+            thumbnail.put("height", height);
+            thumbnail.put("width", width);
+            thumbnail.put("time", time);
+            int lastDot = url.lastIndexOf(".");
+            thumbnail.put("id", url.substring(lastDot-1, lastDot));
+            thumbnails.add(thumbnail);
+        }
+
+        final Element gdRating = (Element)entryEl.getElementsByTagName("gd:rating").item(0);
+        String ratingNum = null;
+        String rating = null;
+        if(null != gdRating) {
+            ratingNum = gdRating.getAttribute("numRaters");
+            rating = gdRating.getAttribute("average");
+        }
+
+        return resItem
+                .addField("title", title)
+                .addField("content", content)
+                .addField("published", published)
+                .addField("author", author)
+                .addField("authorUrl", authorUrl)
+                .addField("duration", duration)
+                .addField("durationMin", durationMin)
+                .addField("durationSec", durationSec)
+                .addObjectField("thumbnails",(Serializable) thumbnails)
+                .addObjectField("categories",(Serializable) categories)
+                .addObjectField("tags",(Serializable) tags)
+                .addField("ratingNum", ratingNum)
+                .addField("rating", rating)
+                .addField("youtubeUrl", playerUrl);
+
     }
+
 }

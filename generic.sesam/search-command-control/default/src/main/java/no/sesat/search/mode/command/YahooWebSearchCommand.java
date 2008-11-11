@@ -54,7 +54,6 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
             + "results={3}&start={4}&"
             + "format={5}&{6}{7}language={8}&{9}{10}";
 
-    private static final String DATE_PATTERN = "yyyy/MM/dd";
     private static final String TOTALHITS_ATTRIBUTE ="totalResultsAvailable";
     private static final String RESULT_ELEMENT = "Result";
 
@@ -64,20 +63,57 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
      * @param cxt The context to execute in.
      */
     public YahooWebSearchCommand(final Context cxt) {
+
         super(cxt);
+
+        setXmlRestful(
+                new AbstractXmlRestful(cxt) {
+                    public String createRequestURL() {
+
+                        final YahooWebCommandConfig conf = YahooWebSearchCommand.this.getSearchConfiguration();
+
+                        final String wrappedTransformedQuery =  YahooWebSearchCommand.this.getTransformedQuery()
+                                + ' ' + YahooWebSearchCommand.this.getFilter();
+
+                        final String site = null != conf.getSite()
+                                ? "site=" + conf.getSite()
+                                : null != cxt.getDataModel().getParameters().getValue("site")
+                                ? "site=" + cxt.getDataModel().getParameters().getValue("site").getUtf8UrlEncoded()
+                                : "";
+
+                        try {
+                            return MessageFormat.format(
+                                    COMMAND_URL_PATTERN,
+                                    conf.getAppid(),
+                                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
+                                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
+                                    conf.getResultsToReturn(),
+                                    YahooWebSearchCommand.this.getOffset(),
+                                    conf.getFormat(),
+                                    conf.getAdult() ? "adult_ok=1&" : "",
+                                    conf.getSimilar() ? "similar_ok=1&" : "",
+                                    conf.getLanguage(),
+                                    null != conf.getCountry() ? "country=" + conf.getCountry() + "&" : "",
+                                    site);
+
+                        } catch (UnsupportedEncodingException ex) {
+                            throw new SearchCommandException(ERR_FAILED_CREATING_URL, ex);
+                        }
+                    }
+            });
     }
 
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         try {
 
             final ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
             if(getTransformedQuery().trim().length() > 0
-                    || getAdditionalFilter().trim().length() > 0
+                    || getFilter().trim().length() > 0
                     || "*".equals(getQuery().getQueryString())){
 
-                final Document doc = getXmlResult();
+                final Document doc = getXmlRestful().getXmlResult();
 
                 if (doc != null) {
                     final Element searchResponseE = doc.getDocumentElement();
@@ -112,41 +148,6 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
 
         } catch (SAXException e) {
             throw new SearchCommandException(e);
-        }
-    }
-
-    /** Returns the GET http request path and parameters
-     *
-     * @return path and parameters to use.
-     */
-    protected String createRequestURL() {
-
-        final YahooWebCommandConfig conf = getSearchConfiguration();
-
-        final String wrappedTransformedQuery =  getTransformedQuery() + ' ' + getAdditionalFilter();
-        final String site = null != conf.getSite()
-                ? "site=" + conf.getSite()
-                : null != context.getDataModel().getParameters().getValue("site")
-                ? "site=" + context.getDataModel().getParameters().getValue("site").getUtf8UrlEncoded()
-                : "";
-
-        try {
-            return MessageFormat.format(
-                    COMMAND_URL_PATTERN,
-                    conf.getAppid(),
-                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
-                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
-                    conf.getResultsToReturn(),
-                    getOffset(),
-                    conf.getFormat(),
-                    conf.getAdult() ? "adult_ok=1&" : "",
-                    conf.getSimilar() ? "similar_ok=1&" : "",
-                    conf.getLanguage(),
-                    null != conf.getCountry() ? "country=" + conf.getCountry() + "&" : "",
-                    site);
-
-        } catch (UnsupportedEncodingException ex) {
-            throw new SearchCommandException(ERR_FAILED_CREATING_URL, ex);
         }
     }
 

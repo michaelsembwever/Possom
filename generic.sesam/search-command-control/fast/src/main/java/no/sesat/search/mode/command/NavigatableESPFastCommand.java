@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
@@ -56,9 +55,11 @@ import no.sesat.search.datamodel.generic.StringDataObject;
  */
 public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
+    // Deprecated code. I cannot see how anybody is using it. Much related below is also commented out.
+    //private final Map<String, String[]> navigatedValues = new HashMap<String, String[]>();
+
     // Attributes ----------------------------------------------------
     private final Map<String, Navigator> navigatedTo = new HashMap<String, Navigator>();
-    private final Map<String, String[]> navigatedValues = new HashMap<String, String[]>();
 
 
     public NavigatableESPFastCommand(final Context cxt) {
@@ -66,29 +67,38 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         super(cxt);
     }
 
+    /** Return all our configured navigator's field:value pairs in one string in filter syntax.
+     *
+     * @return field:value filter string.
+     */
     public Collection createNavigationFilterStrings() {
+
         final Collection<String> filterStrings = new ArrayList<String>();
 
-        for (String field : navigatedValues.keySet()) {
-            final String modifiers[] = navigatedValues.get(field);
-
-            for (String modifier : modifiers) {
-                if (!field.equals("contentsource") || !modifier.equals("Norske nyheter"))
-                    filterStrings.add("+" + field + ":\"" + modifier + "\"");
-            }
-        }
+//        for (String field : navigatedValues.keySet()) {
+//            final String modifiers[] = navigatedValues.get(field);
+//
+//            for (String modifier : modifiers) {
+//                if (!field.equals("contentsource") || !modifier.equals("Norske nyheter"))
+//                    filterStrings.add("+" + field + ":\"" + modifier + "\"");
+//            }
+//        }
 
         for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
             final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
 
 
             if (navigatedValue != null) {
-                final String value =  navigator.isBoundaryMatch() ? "^\"" + navigatedValue.getString() + "\"$" : "\"" + navigatedValue.getString() + "\"";
+                final String value =  navigator.isBoundaryMatch() ? "^\""
+                        + navigatedValue.getString() + "\"$" : "\""
+                        + navigatedValue.getString() + "\"";
 
-                if ("adv".equals(getSearchConfiguration().getFiltertype()))
+                // FIXME this test should be encapsulated with the delegated filterBuilder
+                if ("adv".equals(getSearchConfiguration().getFiltertype())){
                     filterStrings.add(" AND " + navigator.getField() + ':'  + value );
-                else
+                }else{
                     filterStrings.add("+" + navigator.getField() + ':'  + value);
+                }
             }
         }
 
@@ -96,14 +106,14 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     @Override
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
         if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
             for (String navigatorKey : getNavigators().keySet()) {
                 addNavigatedTo(navigatorKey);
             }
         }
 
-        final ResultList<? extends ResultItem> searchResult = super.execute();
+        final ResultList<ResultItem> searchResult = super.execute();
 
         // We want to collect modifiers even if we ignore navigation
         if (getNavigators() != null) {
@@ -113,7 +123,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
 
         if (null != getNavigators() && searchResult instanceof FastSearchResult) {
-            collectModifiers(getIQueryResult(), (FastSearchResult<? extends ResultItem>)searchResult);
+            collectModifiers(getIQueryResult(), (FastSearchResult<ResultItem>)searchResult);
         }
 
         return searchResult;
@@ -128,26 +138,26 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
 
-    public Map getNavigatedValues() {
-        return navigatedValues;
-    }
-
-    public String getNavigatedValue(final String fieldName) {
-        final String[] singleValue = navigatedValues.get(fieldName);
-
-        if (singleValue != null) {
-            return (singleValue[0]);
-        } else {
-            return null;
-        }
-    }
+//    public Map getNavigatedValues() {
+//        return navigatedValues;
+//    }
+//
+//    public String getNavigatedValue(final String fieldName) {
+//        final String[] singleValue = navigatedValues.get(fieldName);
+//
+//        if (singleValue != null) {
+//            return (singleValue[0]);
+//        } else {
+//            return null;
+//        }
+//    }
 
     public Map getNavigatedTo() {
         return navigatedTo;
     }
 
     /**
-     * Assured associated search configuration will always be of this type. *
+     * Assured returned search configuration will always be of type NavigatableEspFastCommandConfig.
      */
     @Override
     public NavigatableEspFastCommandConfig getSearchConfiguration() {
@@ -158,7 +168,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         return getSearchConfiguration().getNavigators();
     }
 
-    private void collectModifiers(IQueryResult result, FastSearchResult<? extends ResultItem> searchResult) {
+    private void collectModifiers(IQueryResult result, FastSearchResult<ResultItem> searchResult) {
 
         for (String navigatorKey : navigatedTo.keySet()) {
 
@@ -166,27 +176,23 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
     }
 
-    private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult<? extends ResultItem> searchResult) {
+    private void collectModifier(
+            final String navigatorKey,
+            final IQueryResult result,
+            final FastSearchResult<ResultItem> searchResult) {
 
         final Navigator nav = navigatedTo.get(navigatorKey);
-        INavigator navigator = null;
-
-        if (result != null) {
-            navigator = result.getNavigator(nav.getName());
-        }
+        final INavigator navigator = null != result ? result.getNavigator(nav.getName()) : null;
 
         if (navigator != null) {
 
-            Iterator modifers = navigator.modifiers();
+            final Iterator modifers = navigator.modifiers();
 
             while (modifers.hasNext()) {
-                IModifier modifier = (IModifier) modifers.next();
-                if (!navigatedValues.containsKey(nav.getField()) || modifier.getName().equals(navigatedValues.get(nav.getField())[0])) {
-                    Modifier mod = new Modifier(modifier.getName(), modifier.getCount(), nav);
-                    searchResult.addModifier(navigatorKey, mod);
-                }
-            }
 
+                final IModifier modifier = (IModifier) modifers.next();
+                searchResult.addModifier(navigatorKey, new Modifier(modifier.getName(), modifier.getCount(), nav));
+            }
 
             if (searchResult.getModifiers(navigatorKey) != null) {
                 switch (nav.getSort()) {
@@ -234,20 +240,28 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
     }
 
-    protected Comparator getModifierComparator(final Navigator nav) {
+    /** Override to provide custom modifier comparators.
+     * This implementation always return null.
+     *
+     * @param nav
+     * @return null
+     */
+    protected Comparator<Modifier> getModifierComparator(final Navigator nav) {
         return null;
     }
 
     @Override
-    protected String getAdditionalFilter() {
+    protected String getFilter() {
 
         final StringBuilder result = new StringBuilder();
+
         if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
             final Collection navStrings = createNavigationFilterStrings();
             result.append( StringUtils.join(navStrings.iterator(), " "));
         }
-        return result.append(' ' + super.getAdditionalFilter()).toString().trim();
+        return result.append(' ' + super.getFilter()).toString().trim();
     }
 
+    @Override
     protected boolean isNavigatable() { return true; }
 }

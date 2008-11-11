@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ public abstract class AbstractResultHandlerConfig implements ResultHandlerConfig
      * @param element
      * @return
      */
-    //@Override // TODO uncomment for java 6
+    @Override
     public AbstractResultHandlerConfig readResultHandler(final Element element){
 
         // Override me to add custom deserialisation

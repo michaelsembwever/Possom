@@ -66,26 +66,29 @@ public class NewsSearchCommand extends FastSearchCommand {
     }
 
     /**
-     * LeafClause
-     *
      * A leaf clause with a site field does not add anything to the query. Also
      * if the query just contains the prefix do not output anything.
      *
+     * @return {@inheritDoc}
      */
     @Override
-    protected void visitImpl(final LeafClause clause) {
-        if (!  containsJustThePrefix() ) {
-            super.visitImpl(clause);
-        }
+    protected synchronized String getQueryRepresentation() {
+
+        return containsJustThePrefix() ? "" : super.getQueryRepresentation();
     }
 
     @Override
-    protected String getAdditionalFilter() {
+    protected String getFilter() {
+
+        // XXX This is a complete hardcoded mess.
+        // But it's a good example of how not to do things but still make it work.
+        // All of it should be put into various separate FilterQueryTransformers
+
         synchronized (this) {
             if (filterBuilder == null) {
-                filterBuilder = new StringBuilder(super.getAdditionalFilter());
+                filterBuilder = new StringBuilder(super.getFilter());
 
-                // <-start- TODO this needs to be put into its own NewsSearchCOmmand.getAdditionalFilter() in genericse.seam.se
+                // <-start- TODO this needs to be put into its own NewsSearchCOmmand.getFilter() in genericse.seam.se
                 if ("se".equals(getSearchConfiguration().getProject())) {
                     // Add filter to retrieve all documents.
                     if (containsJustThePrefix() || getTransformedQuery().equals("")) {

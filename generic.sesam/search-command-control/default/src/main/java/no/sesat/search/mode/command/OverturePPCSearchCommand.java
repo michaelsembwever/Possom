@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
 public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String OVERTURE_PPC_ELEMENT = "Listing";
-    // Old school sitesearches
+    /** @deprecated Old school sitesearches **/
     private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_imp2";
 
     private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
@@ -62,7 +62,49 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @param cxt the context
      */
     public OverturePPCSearchCommand(final Context cxt) {
+
         super(cxt);
+
+        setXmlRestful(
+                new AbstractXmlRestful(cxt) {
+                    public String createRequestURL() {
+
+                        final OverturePpcCommandConfig ppcConfig
+                                = (OverturePpcCommandConfig) cxt.getSearchConfiguration();
+
+                        final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
+
+                        try {
+                            url.append("&Partner=" + OverturePPCSearchCommand.this.getPartnerId());
+
+                            if (null != ppcConfig.getType() && ppcConfig.getType().length() > 0) {
+                                url.append("&type=" + ppcConfig.getType());
+                            }
+
+                            final String serveUrl = "http://"
+                                    + cxt.getDataModel().getSite().getSite().getName()
+                                    + "/search/";
+
+                            url.append("&Keywords=");
+
+                            url.append(URLEncoder.encode(
+                                    OverturePPCSearchCommand.this.getTransformedQuery().replace(' ', '+'),
+                                    ppcConfig.getEncoding()));
+
+                            url.append("&maxCount=");
+                            url.append(OverturePPCSearchCommand.this.getResultsToReturn());
+                            url.append("&serveUrl=");
+                            url.append(URLEncoder.encode(serveUrl.toString(), "UTF-8"));
+
+                            url.append("&" + OverturePPCSearchCommand.this.getAffilDataParameter());
+
+                        }  catch (UnsupportedEncodingException e) {
+                            throw new SearchCommandException(e);
+                        }
+
+                        return url.toString();
+                    }
+        });
     }
 
     /**
@@ -70,7 +112,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      *
      * @return the search result
      */
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
@@ -79,7 +121,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         top = rq.getEngine().evaluateQuery(TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
 
         try {
-            final Document doc = getXmlResult();
+            final Document doc = getXmlRestful().getXmlResult();
             LOG.debug(doc.toString());
             final OvertureSearchResult<ResultItem> searchResult = new OvertureSearchResult<ResultItem>(top);
             searchResult.setHitCount(0);
@@ -99,7 +141,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                 }
             }
 
-            return (ResultList<? extends ResultItem>) searchResult;
+            return (ResultList<ResultItem>) searchResult;
 
         } catch (SocketTimeoutException ste) {
 
@@ -114,59 +156,8 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    /**
-     * @return Returns the request url used for the ppc ads.
-     */
-    protected String createRequestURL() {
-
-        final OverturePpcCommandConfig ppcConfig
-                = (OverturePpcCommandConfig) context.getSearchConfiguration();
-
-        final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
-
-        try {
-            url.append("&Partner=" + getPartnerId());
-
-            if (null != ppcConfig.getType() && ppcConfig.getType().length() > 0) {
-                url.append("&type=" + ppcConfig.getType());
-            }
-
-            final String serveUrl = "http://" + datamodel.getSite().getSite().getName() + "search/";
-
-            url.append("&Keywords=");
-            url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
-            url.append("&maxCount=");
-            url.append(getResultsToReturn());
-            url.append("&serveUrl=");
-            url.append(URLEncoder.encode(serveUrl.toString(), "UTF-8"));
-
-            url.append("&" + getAffilDataParameter());
-
-        }  catch (UnsupportedEncodingException e) {
-            throw new SearchCommandException(e);
-        }
-
-        return url.toString();
-    }
-
-    /**
-     * TODO comment me. *
-     *
-     * @param clause
-     */
-    @Override
-    protected void visitImpl(final NotClause clause) {}
-
-    /**
-     * TODO comment me. *
-     *
-     * @param clause
-     */
-    @Override
-    protected void visitImpl(final AndNotClause clause) {}
-
-    /** TODO comment me. **/
     protected BasicResultItem createItem(final Element ppcListing) {
+
         final BasicResultItem item = new BasicResultItem();
         final NodeList click = ppcListing.getElementsByTagName("ClickUrl");
 
@@ -181,9 +172,9 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         return item;
     }
 
-    /** TODO comment me. **/
     @Override
     protected String getPartnerId(){
+
         // FIXME. When the site searches have their own context
         // remove this and use the property partnerId of OverturePPCConfiguration
         // instead.
@@ -192,6 +183,14 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                 : super.getPartnerId();
     }
 
+    @Override
+    protected String getAffilDataParameter() {
+        return super.getAffilDataParameter();
+    }
+
+    @Override
+    protected int getResultsToReturn() {
+        return super.getResultsToReturn();
+    }
+
 }
-
-

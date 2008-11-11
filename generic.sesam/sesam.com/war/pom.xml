@@ -175,7 +175,6 @@
             <artifactId>generic.sesam-velocity-directives</artifactId>
             <version>${sesat.version}</version>
         </dependency-->
-        
 
         <!-- Cobertura test coverage -->
         <!--dependency>

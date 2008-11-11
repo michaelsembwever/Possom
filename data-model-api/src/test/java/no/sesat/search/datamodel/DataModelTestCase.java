@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -22,11 +22,15 @@
 
 package no.sesat.search.datamodel;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.UUID;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.generic.DataObject;
+import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.junkyard.JunkYardDataObject;
+import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.datamodel.site.SiteDataObject;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
@@ -101,6 +105,10 @@ public abstract class DataModelTestCase extends SiteTestCase{
         return factory;
     }
 
+    /** This returns a NEW datamodel every call!!
+     * @return
+     * @throws SiteKeyedFactoryInstantiationException when unable to instantiate SiteConfiguration
+     */
     protected DataModel getDataModel() throws SiteKeyedFactoryInstantiationException{
 
         getDataModelFactory();
@@ -115,12 +123,20 @@ public abstract class DataModelTestCase extends SiteTestCase{
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConfig));
 
+        final ParametersDataObject parametersDO = factory.instantiate(
+                ParametersDataObject.class,
+                datamodel,
+                new DataObject.Property("values", new HashMap<String,StringDataObject>()),
+                new DataObject.Property("contextPath", "/"),
+                new DataObject.Property("uniqueId", UUID.randomUUID().toString()));
+
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
                 datamodel,
                 new DataObject.Property("values", new Hashtable<String,Object>()));
 
         datamodel.setSite(siteDO);
+        datamodel.setParameters(parametersDO);
         datamodel.setJunkYard(junkYardDO);
 
         return datamodel;

@@ -1,5 +1,5 @@
  /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
 
 
     @Override
-    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+    public Map<Future<ResultList<ResultItem>>,SearchCommand> invokeAll(
             Collection<SearchCommand> callables) throws InterruptedException  {
 
         final Collection<SearchCommand> allowedCallables = new ArrayList<SearchCommand>(callables);
@@ -86,8 +86,8 @@ final class ThrottledSearchCommandExecutor extends ParallelSearchCommandExecutor
     }
 
     @Override
-    public Map<Future<ResultList<? extends ResultItem>>, SearchCommand> waitForAll(
-            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
+    public Map<Future<ResultList<ResultItem>>, SearchCommand> waitForAll(
+            final Map<Future<ResultList<ResultItem>>,SearchCommand> results,
             final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException {
 
         try{

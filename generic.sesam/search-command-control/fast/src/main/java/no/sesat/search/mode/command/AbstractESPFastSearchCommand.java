@@ -33,6 +33,7 @@ import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
+import java.util.Collection;
 import no.sesat.search.mode.config.EspFastCommandConfig;
 import no.sesat.search.query.AndClause;
 import no.sesat.search.query.AndNotClause;
@@ -53,6 +54,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -141,10 +143,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Public --------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         try {
 
@@ -152,11 +151,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             if (getFilter() != null) {
                 filterBuilder.append(getFilter());
-                filterBuilder.append(' ');
-            }
-
-            if (getAdditionalFilter() != null) {
-                filterBuilder.append(getAdditionalFilter());
                 filterBuilder.append(' ');
             }
 
@@ -215,14 +209,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
     }
 
-    private String appendFilter(final String filter, final String q) {
-        if (q.length() == 0 && filter.length() > 0) {
-            return "filter(" + filter + ")";
-        } else {
-            return filter.length() > 0 ? "and(" + q + "," + "filter(" + filter + "))" : q;
-        }
-    }
-
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------
@@ -269,15 +255,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
 
         return sortBy;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String escapeFieldedLeaf(final LeafClause clause) {
-
-        return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + getTransformedTerm(clause) + '"';
     }
 
     /**
@@ -335,108 +312,22 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         return searchResult;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected final String escapeTerm(final String term) {
+    protected Collection<String> getReservedWords() {
 
-        final String termLC = term.toLowerCase();
-
+        final Collection<String> words = new ArrayList<String>(super.getReservedWords());
         for (ReservedWord word : ReservedWord.values()) {
-
-            // Term might already be prefixed by the TermPrefixTransformer.
-            if (termLC.contains(":") && termLC.endsWith(':' + word.getWord()) || termLC.equals(word.getWord())) {
-                return termLC.replace(word.getWord(), '"' + word.getWord() + '"');
-            }
+            words.add(word.getWord());
         }
-
-        return term;
+        return words;
     }
 
-    // Generate query in FQL.
-    /**
-     * {@inheritDoc}
-     */
+    /** In addition to super.escape() also replaces all ? with whitespace.
+     **/
     @Override
-    protected void visitImpl(final AndClause clause) {
-        // The leaf clauses might not produce any output. For example terms
-        // having a site: field. In these cases we should not output the
-        // operator keyword.
-        boolean hasEmptyLeaf = false;
+    protected String escape(String word) {
 
-        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
-        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-
-        clause.getFirstClause().accept(this);
-
-        if (!hasEmptyLeaf)
-            appendToQueryRepresentation(" and ");
-
-        clause.getSecondClause().accept(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void visitImpl(final OrClause clause) {
-        appendToQueryRepresentation(" (");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" or ");
-        clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(") ");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void visitImpl(final DefaultOperatorClause clause) {
-        boolean hasEmptyLeaf = false;
-
-        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
-        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-
-        clause.getFirstClause().accept(this);
-
-        if (!hasEmptyLeaf)
-            appendToQueryRepresentation(" and ");
-
-        clause.getSecondClause().accept(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void visitImpl(final NotClause clause) {
-        appendToQueryRepresentation(" not ");
-        appendToQueryRepresentation("(");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(")");
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void visitImpl(final AndNotClause clause) {
-        appendToQueryRepresentation("andnot ");
-        appendToQueryRepresentation("(");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(")");
-    }
-
-    /**
-     * Adds quotes around the URL and replacing the '?'. Failing so will produce syntax error in filter.
-     *
-     * @param clause The url clause.
-     */
-    protected void visitImpl(final UrlClause clause) {
-
-        appendToQueryRepresentation('\"' + getTransformedTerm(clause).replace("?", " ") + '\"');
+        return super.escape(word.replace('?', ' '));
     }
 
     /**
@@ -547,6 +438,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             }
         }
         return item;
+    }
+
+    private String appendFilter(final String filter, final String q) {
+        if (q.length() == 0 && filter.length() > 0) {
+            return "filter(" + filter + ")";
+        } else {
+            return filter.length() > 0 ? "and(" + q + "," + "filter(" + filter + "))" : q;
+        }
     }
 
     // Inner classes -------------------------------------------------

@@ -117,6 +117,7 @@ public final class Builder {
         defaultConvert.getAttributes().add(new ConfigAttribute("postfix"));
 
         final List<ConfigElement> commands = new ArrayList<ConfigElement>();
+        final List<ConfigElement> queryBuilders = new ArrayList<ConfigElement>();
         final List<ConfigElement> resultHandlers = new ArrayList<ConfigElement>();
         final List<ConfigElement> queryTransformers = new ArrayList<ConfigElement>();
         {
@@ -133,6 +134,15 @@ public final class Builder {
                             }
                         });
                         commands.add(element);
+                    } else if (name.endsWith("QueryBuilderConfig")) {
+                        element.applyNameFilter(new NameFilter() {
+                            public String filter(final String name) {
+                                return toXmlName(name.substring(0, name.lastIndexOf("QueryBuilderConfig")));
+                            }
+                        });
+                        if (!element.getName().isEmpty()) {
+                            queryBuilders.add(element);
+                        }
                     } else if (name.endsWith("ResultHandlerConfig")) {
                         element.applyNameFilter(new NameFilter() {
                             public String filter(final String name) {
@@ -178,6 +188,9 @@ public final class Builder {
         mode.addChildren(commands);
         modes.addChild(mode);
 
+        final ConfigElement queryBuilder = new ConfigElement("query-builder");
+        queryBuilder.addChildren(queryBuilders);
+
         final ConfigElement resultHandler = new ConfigElement("result-handlers");
         resultHandler.addChildren(resultHandlers);
 
@@ -201,6 +214,7 @@ public final class Builder {
         navigators.addChild(navigator);
 
         for (ConfigElement command : commands) {
+            command.addChild(queryBuilder);
             command.addChild(resultHandler);
             command.addChild(queryTransform);
             command.addChild(navigators);
@@ -229,6 +243,7 @@ public final class Builder {
         }
 
         System.out.println("commands : " + commands.size());                    // (authorized)
+        System.out.println("query builders : " + queryBuilders.size());       // (authorized)
         System.out.println("result handlers : " + resultHandlers.size());       // (authorized)
         System.out.println("query transformers : " + queryTransformers.size()); // (authorized)
 

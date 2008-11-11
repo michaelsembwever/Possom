@@ -51,11 +51,10 @@
                         <jsp:text><![CDATA[&nbsp;]]></jsp:text>
                         <c:set var="item_href"><search:boomerang url="${item.fields.clickurl}" param="category:results;pos:${pos}" /></c:set>
                         <a href="${item_href}" class="search_big_url">${item.fields.title}</a>
-                        <br />
-
                         <c:if test="${not empty item.fields.fileformat}">
                             <span class="timestamp" ><search:text key="fileformat_${item.fields.fileformat}" /></span>
                         </c:if>
+                        <br />
                         <c:if test="${not empty item.fields.body}">
                             <span class="search_summary">${item.fields.body}</span>
                         </c:if>

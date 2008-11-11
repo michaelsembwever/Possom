@@ -2,12 +2,12 @@
 <suite name="Search Engine Skin Tests" verbose="10" parallel="false">
 
     
-    <test name="Template Tests">
+    <test name="Template">
         <classes>
             <class name="no.sesat.search.view.velocity.VelocityTemplateTest" />
         </classes>
     </test>
-    <test name="Configuration Tests">
+    <test name="Search Configurations">
         <classes>
             <class name="no.sesat.search.mode.SearchModeFactoryTest"/>
         </classes>
@@ -26,6 +26,11 @@
     <test name="Analysis">
         <packages>
             <package name="no.sesat.search.query.analyser"/>
+        </packages>
+    </test>
+    <test name="Search Commands">
+        <packages>
+            <package name="no.sesat.search.mode.command"/>
         </packages>
     </test>
 </suite>

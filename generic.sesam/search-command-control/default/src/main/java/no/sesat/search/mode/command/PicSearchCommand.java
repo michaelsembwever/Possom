@@ -22,7 +22,6 @@ import no.sesat.search.http.HTTPClient;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.mode.config.PictureCommandConfig;
-import no.sesat.search.query.NotClause;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,7 +34,6 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.LeafClause;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
@@ -46,16 +44,12 @@ import no.sesat.search.result.ResultList;
  *
  * @version <tt>$Id$</tt>
  */
-public class PicSearchCommand extends AbstractSearchCommand {
+public class PicSearchCommand extends AbstractXmlSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
-    private final transient HTTPClient client;
     private final int port;
     private static final String REQ_URL_FMT = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6"
             + "&thumbs={3}&q={4}&start={5}&site={6}&color={7}&size={8}";
-
-    private String siteFilter;
-    private final StringBuilder tldb = new StringBuilder();
 
     /**
      * Creates a new command in given context.
@@ -66,94 +60,90 @@ public class PicSearchCommand extends AbstractSearchCommand {
 
         super(cxt);
 
+        setXmlRestful(
+                new AbstractXmlRestful(cxt) {
+                    public String createRequestURL() {
+
+
+                        final PictureCommandConfig cfg = (PictureCommandConfig) cxt.getSearchConfiguration();
+
+                        try {
+
+                            final String query
+                                    = URLEncoder.encode(PicSearchCommand.this.getTransformedQuery(), "utf-8");
+
+                            final String color = null != PicSearchCommand.this.getParameter("color")
+                                    ? PicSearchCommand.this.getParameter("color")
+                                    : "";
+
+                            final String size = null != PicSearchCommand.this.getParameter("size")
+                                    ? PicSearchCommand.this.getParameter("size")
+                                    : "";
+
+                            final String urlBoost = PicSearchCommand.this.getFilterBuilder().getFilter("tldb")
+                                    .replace('=', ':')
+                                    .replace(' ', ',');
+
+                            if(null != cfg.getSite() && cfg.getSite().length() > 0){
+                                PicSearchCommand.this.getFilterBuilder().addFilter("site", cfg.getSite());
+                            }
+
+                            // The boost can eiter be from the URL or from the configuration.
+                            final String boost = URLEncoder.encode(urlBoost.length() > 0
+                                    ? urlBoost
+                                    : cfg.getDomainBoost(), "utf-8");
+
+                            return MessageFormat.format(REQ_URL_FMT,
+                                    boost,
+                                    cfg.getFilter(),
+                                    cfg.getCustomerId(),
+                                    cfg.getResultsToReturn(),
+                                    query,
+                                    PicSearchCommand.this.getOffset()+1,
+                                    PicSearchCommand.this.getFilterBuilder().getFilter("site").replace(' ', ','),
+                                    color,
+                                    size);
+
+                        } catch (UnsupportedEncodingException e) {
+                           throw new SearchCommandException(e);
+                        }
+
+                    }
+        });
+
         final SiteConfiguration siteConfig = datamodel.getSite().getSiteConfiguration();
         final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
 
-        final String host = siteConfig.getProperty(psConfig.getQueryServerHost());
-        port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
-        client = HTTPClient.instance(host, port);
+        port = Integer.parseInt(siteConfig.getProperty(psConfig.getPort()));
 
-        siteFilter = psConfig.getSite();
     }
 
-    /** {@inheritDoc}
-     */
-    public ResultList<? extends ResultItem> execute() {
-
-        final PictureCommandConfig cfg = (PictureCommandConfig) context.getSearchConfiguration();
-
-        try {
-
-            final String query = URLEncoder.encode(getTransformedQuery(), "utf-8");
-            final String color = null != getParameter("color") ? getParameter("color") : "";
-            final String size = null != getParameter("size") ? getParameter("size") : "";
-            final String urlBoost = tldb.toString();
-
-            // The boost can eiter be from the URL or from the configuration.
-            final String boost = URLEncoder.encode(urlBoost.length() > 0 ? urlBoost : cfg.getDomainBoost(), "utf-8");
-
-            final String url = MessageFormat.format(REQ_URL_FMT,
-                    boost,
-                    cfg.getFilter(),
-                    cfg.getCustomerId(),
-                    cfg.getResultsToReturn(),
-                    query,
-                    getOffset()+1,
-                    siteFilter,
-                    color,
-                    size);
-
-            DUMP.info("Using " + url);
+    public ResultList<ResultItem> execute() {
 
             final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
             if (port > 0){
+                try {
 
-                final Document doc = doSearch(url);
-
-                if (doc != null) {
-
-                    final Element resultElement = doc.getDocumentElement();
-
-                    searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
-
-                    final NodeList list = resultElement.getElementsByTagName("image");
-                    for (int i = 0; i < list.getLength(); i++) {
-
-                        final Element picture = (Element) list.item(i);
-
-                        final BasicResultItem item = new BasicResultItem();
-
-                        for (final Map.Entry<String,String> entry : cfg.getResultFieldMap().entrySet()) {
-
-                            item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
+                    final Document doc = getXmlRestful().getXmlResult();
+                    if (doc != null) {
+                        final Element resultElement = doc.getDocumentElement();
+                        searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
+                        final NodeList list = resultElement.getElementsByTagName("image");
+                        for (int i = 0; i < list.getLength(); i++) {
+                            searchResult.addResult(createItem((Element) list.item(i)));
                         }
-                        searchResult.addResult(item);
-
                     }
+
+                } catch (IOException ex) {
+                    throw new SearchCommandException(ex);
+                } catch (SAXException ex) {
+                    throw new SearchCommandException(ex);
                 }
             }
 
             return searchResult;
 
-        } catch (UnsupportedEncodingException e) {
-           throw new SearchCommandException(e);
-        }
-    }
-
-    /**
-     * Picsearch uses the - notation for NOT.
-     *
-     * @param clause The not clause to generate representation of.
-     */
-    @Override
-    protected void visitImpl(final NotClause clause) {
-        final String childsTerm = getTransformedTerm(clause.getFirstClause());
-
-        if (childsTerm != null && childsTerm.length() > 0) {
-            appendToQueryRepresentation("-");
-            clause.getFirstClause().accept(this);
-        }
     }
 
     /**
@@ -176,48 +166,16 @@ public class PicSearchCommand extends AbstractSearchCommand {
         }
     }
 
-    /**
-     * Extract the field filter site into the <tt>siteFilter</tt> if it exists.
-     * Only done if no static site filter is specified by
-     * {@link no.sesat.search.mode.config.PictureCommandConfig#getSite()}
-     *
-     * @param clause The clause.
-     */
     @Override
-    protected void visitImpl(final LeafClause clause) {
+    protected ResultItem createItem(final Element picture) {
 
-
-        // Temportary code to allow experimenting with the new picsearch API feature "flexible top level domain boost".
-        if (clause.getField() != null && "tldb".equals(clause.getField())) {
-            if (tldb.length() > 0) {
-                tldb.append(',');
-            }
-
-            tldb.append(clause.getTerm().replace('=', ':'));
-            return;
+        final BasicResultItem item = new BasicResultItem();
+        for (final Map.Entry<String, String> entry : getSearchConfiguration().getResultFieldMap().entrySet()) {
+            item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
         }
-        // End temporary code.
+        return item;
 
-        // Do not care about site in query if a static site filter was specified in the configuaration.
-        if (getFieldFilter(clause) != null && "".equals(siteFilter) && "site".equals(clause.getField())) {
-            siteFilter = clause.getTerm();
-        } else {
-            super.visitImpl(clause);
-        }
     }
 
-    private Document doSearch(final String url) {
 
-        try {
-            return client.getXmlDocument(url);
-
-        } catch (IOException e) {
-            LOG.error("Problems with connection to " + url, e);
-            throw new SearchCommandException(e);
-
-        } catch (SAXException e) {
-            LOG.error("XML Parse error " + url , e);
-            throw new SearchCommandException(e);
-        }
-    }
 }

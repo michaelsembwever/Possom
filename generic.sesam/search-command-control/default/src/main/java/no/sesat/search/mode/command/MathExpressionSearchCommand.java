@@ -47,7 +47,8 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
         super(cxt);
     }
 
-    public ResultList<? extends ResultItem> execute() {
+    @Override
+    public ResultList<ResultItem> execute() {
 
 
         final NumberFormat f = NumberFormat.getInstance();
@@ -56,20 +57,18 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
         try{
             final Complex result = ((JepTokenEvaluator)getEngine()
-                    .getEvaluator(Categories.MATHPREDICATE))
+                    .getEvaluator(Categories.MATH))
                     .getComplex(getQuery().getQueryString());
 
             if (result != null) {
-                String s = null;
-
-                s = f.format(result.re());
+                final StringBuilder s = new StringBuilder(f.format(result.re()));
 
                 if (Math.abs(result.im()) > ZERO_THREASHOLD) {
                     if (result.im() < 0) {
 
-                        s = s + " - " + f.format(Math.abs(result.im())) + "i";
+                        s.append(" - " + f.format(Math.abs(result.im())) + "i");
                     } else {
-                        s = s + " + " + f.format(result.im()) + "i";
+                        s.append(" + " + f.format(result.im()) + "i");
                     }
                 }
 

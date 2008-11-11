@@ -1,4 +1,4 @@
-/**
+/** Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,11 +26,8 @@ import java.util.List;
 
 
 /**
- * User: anthor
- * Date: 05.sep.2007
- * Time: 11:51:45
+ * @version $Id$
  */
-
 public class TrimedNavigationController implements NavigationController, NavigationControllerFactory<TrimedNavigationConfig> {
 
     private static final Logger LOG = Logger.getLogger(TrimedNavigationController.class);
@@ -57,7 +54,7 @@ public class TrimedNavigationController implements NavigationController, Navigat
             return item;
         }
 
-        final ResultList<? extends ResultItem> searchResult = search.getResults();
+        final ResultList<ResultItem> searchResult = search.getResults();
 
         if (searchResult instanceof FastSearchResult) {
 

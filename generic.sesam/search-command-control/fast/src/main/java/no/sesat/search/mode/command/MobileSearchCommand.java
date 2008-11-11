@@ -76,7 +76,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     }
 
 
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
         try {
             final IMSearchFactory factory = MSearchFactory.newInstance();
             final IMSearchEngine engine = factory.createSearchEngine();
@@ -170,7 +170,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
         } catch (ConfigurationException ex) {
             LOG.error(ex.getMessage());
-            return new BasicResultList<BasicResultItem>();
+            return new BasicResultList<ResultItem>();
         } catch (IOException ex) {
             throw new SearchCommandException(ex);
         } catch (FastException ex) {
@@ -207,12 +207,13 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     }
 
     private StringBuilder filterBuilder = null;
+
     @Override
-    protected String getAdditionalFilter() {
-        System.out.println("FILTER");
+    protected String getFilter() {
+
         synchronized (this) {
             if (filterBuilder == null) {
-                filterBuilder = new StringBuilder(super.getAdditionalFilter());
+                filterBuilder = new StringBuilder(super.getFilter());
             }
         }
         return filterBuilder.toString();

@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,9 +17,15 @@
 package no.sesat.search.mode.command;
 
 
+import java.util.Collections;
 import no.sesat.search.mode.command.*;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
+import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.view.config.SearchTab.EnrichmentHint;
+import no.sesat.search.view.config.SearchTab.EnrichmentPlacementHint;
+import no.sesat.search.view.config.SearchTab.Layout;
+import no.sesat.search.view.config.SearchTab.Scope;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
 
@@ -30,6 +36,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test a single term.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testSingleTerm()  throws Exception{
@@ -38,6 +45,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test two terms.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testTwoTerms()  throws Exception{
@@ -47,6 +55,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test three terms.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testThreeTerms()  throws Exception{
@@ -55,6 +64,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test OR operator.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testOr()  throws Exception{
@@ -64,6 +74,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test NOT operator.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testNot()  throws Exception{
@@ -74,10 +85,11 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test NOT operator as first token of query.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testLeadingNot()  throws Exception{
-        executeTestOfQuery("-surprise october", "# ANDNOT surprise AND october", "");
+        executeTestOfQuery("-surprise october", "#ANDNOT surprise AND october", "");
     }
 
     /**
@@ -93,10 +105,16 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException {
 
-        final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
-        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt);
-        final String generatedQuery = cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
+        final SearchTab fakeTab = new SearchTab(null, "fake-view", "default-mode", "test", null, null, true,
+                null, Collections.<EnrichmentPlacementHint>emptyList(), Collections.<EnrichmentHint>emptyList(), null,
+                0, 0, Collections.<String>emptyList(), Collections.<String>emptyList(), false, false,
+                null, Collections.<String,Layout>emptyMap(), Scope.REQUEST);
+
+        final SearchCommand.Context cxt = createCommandContext(query, fakeTab, "default-advanced-fast-command");
+        @SuppressWarnings("deprecation")
+        final AbstractSearchCommand cmd = new AdvancedFastSearchCommand(cxt);
+        final String generatedQuery = cmd.getQueryRepresentation();
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
-        assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());
+        assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getFilter());
     }
 }

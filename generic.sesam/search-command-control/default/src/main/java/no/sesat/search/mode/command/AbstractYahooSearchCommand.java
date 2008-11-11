@@ -1,5 +1,5 @@
 /*
- * Copyright (2006-2007) Schibsted Søk AS
+ * Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 
 import org.apache.log4j.Logger;
 
-/**
+/** Yahoo Searches all usually require a partnerId and affilDataParameter.
  *
  *
  * @version $Id$
@@ -83,10 +83,17 @@ public abstract class AbstractYahooSearchCommand extends AbstractXmlSearchComman
     /**
      * @return Returns the affilData element for Yahoo/Overture, not including the prefix "&".
      */
-    protected final String getAffilDataParameter() {
-        final String remoteAddr = datamodel.getBrowser().getRemoteAddr().getString();
-        final String forwardedFor = datamodel.getBrowser().getForwardedFor().getString();
-        final String userAgent = datamodel.getBrowser().getUserAgent().getString();
+    protected String getAffilDataParameter() {
+
+        final String remoteAddr = null != datamodel.getBrowser() && null != datamodel.getBrowser().getRemoteAddr()
+                ? datamodel.getBrowser().getRemoteAddr().getString()
+                : "";
+        final String forwardedFor = null != datamodel.getBrowser() && null != datamodel.getBrowser().getForwardedFor()
+                ? datamodel.getBrowser().getForwardedFor().getString()
+                : "";
+        final String userAgent = null != datamodel.getBrowser() && null != datamodel.getBrowser().getUserAgent()
+                ? datamodel.getBrowser().getUserAgent().getString()
+                : "";
 
         final StringBuilder affilDataValue = new StringBuilder();
         affilDataValue.append("ip=" + (remoteAddr != null ? remoteAddr : ""));
@@ -98,10 +105,10 @@ public abstract class AbstractYahooSearchCommand extends AbstractXmlSearchComman
 
         try {
             return "affilData=" + URLEncoder.encode(affilDataValue.toString(), "UTF-8");
+
         } catch (UnsupportedEncodingException e) {
-            // Should not happen...
             LOG.error(e);
-            return null;
+            throw new IllegalStateException("affilDataValue has unsupported encoding " + affilDataValue, e);
         }
     }
 

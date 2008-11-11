@@ -69,17 +69,17 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
 
 
     @Override
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
         final NewsAggregatorCommandConfig config = getSearchConfiguration();
         final StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
         final String xmlUrl = getXmlUrlString(datamodel, config);
 
         LOG.debug("Loading xml file at: " + xmlUrl);
-        ResultList<? extends ResultItem> searchResult;
+        ResultList<ResultItem> searchResult;
         if (clusterId == null) {
-        	searchResult = getPageResult(config, xmlUrl);
+            searchResult = getPageResult(config, xmlUrl);
         } else {
-        	searchResult = getClusterResult(config, clusterId, xmlUrl);
+            searchResult = getClusterResult(config, clusterId, xmlUrl);
         }
         LOG.debug("Done (+Tried loading xml file at: " + xmlUrl + ")");
         return searchResult;
@@ -120,12 +120,12 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         return newString;
     }
 
-    private ResultList<? extends ResultItem> getClusterResult(
+    private ResultList<ResultItem> getClusterResult(
             final NewsAggregatorCommandConfig config,
             final StringDataObject clusterId,
             final String xmlUrl) {
 
-        ResultList<? extends ResultItem> searchResult;
+        ResultList<ResultItem> searchResult;
         try {
             final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
             final StringDataObject sortObject = datamodel.getParameters().getValue(config.getUserSortParameter());
@@ -157,7 +157,7 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
         }
     }
 
-    private ResultList<? extends ResultItem> search(
+    private ResultList<ResultItem> search(
             final NewsAggregatorCommandConfig config,
             final String clusterId) {
 
@@ -175,12 +175,12 @@ public final class NewsAggregatorSearchCommand extends NewsClusteringESPFastComm
     }
 
 
-    private ResultList<? extends ResultItem> getPageResult(
+    private ResultList<ResultItem> getPageResult(
             final NewsAggregatorCommandConfig config,
             final String xmlUrl) {
 
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
-        ResultList<? extends ResultItem> searchResult;
+        ResultList<ResultItem> searchResult;
         try {
             searchResult = newsAggregatorXmlParser.parseFullPage(config, getOffset(), xmlUrl);
             addSortModifiers((FastSearchResult) searchResult, config.getUserSortParameter(), "descending", "ascending");

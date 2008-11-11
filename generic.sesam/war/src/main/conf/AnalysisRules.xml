@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rules SYSTEM "http://sesam.no/dtds/AnalysisRules.dtd">
 <!--
-    Copyright (2006) Schibsted Søk AS
+    Copyright (2008) Schibsted Søk AS
     Document   : AnalysisRules.xml
     Created on : 25 January 2006, 13:21
     Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -48,7 +48,7 @@
     <predicate id="dropPredicates">
         <any>
             <predicate id="EXACT_CLASSIFIED_MAGIC"/>
-            <predicate id="MATHPREDICATE"/>
+            <predicate id="MATH"/>
             <predicate id="SITEPREFIX"/>
             <predicate id="TNS"/>
         </any>
@@ -137,7 +137,7 @@
 
     <predicate id="phoneOrOrgNr">
         <all>
-            <predicate id="MATHPREDICATE"/>
+            <predicate id="MATH"/>
             <predicate>
                 <any>
                     <predicate id="PHONENUMBER"/>
@@ -346,7 +346,7 @@
         <score predicate="anyMagic">-500</score>
         <score predicate="EXACT_CLASSIFIED_MAGIC">-500</score>
         <score predicate="SITEPREFIX">-500</score>
-        <score predicate="MATHPREDICATE">-500</score>
+        <score predicate="MATH">-500</score>
         <score predicate="categoryOrKeywordWithoutNewsPrefix">-550</score>
     </rule>
         
@@ -488,7 +488,7 @@
         <!-- private predicates -->
 
         <!-- Scoring -->
-        <score predicate="MATHPREDICATE">500</score>
+        <score predicate="MATH">500</score>
     </rule>
     
     <rule id="aksje">

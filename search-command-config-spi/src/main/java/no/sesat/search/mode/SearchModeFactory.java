@@ -27,7 +27,6 @@ import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.query.transform.QueryTransformerConfig;
 import no.sesat.search.result.handler.ResultHandlerConfig;
 import no.sesat.search.site.Site;
-import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
 import no.sesat.search.site.config.Spi;
 import no.sesat.search.site.config.AbstractDocumentFactory;
@@ -50,9 +49,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
+import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.run.handler.RunHandlerConfig;
 
-/**
+/** Controlling class around the deserialisation of modes.xml into all the SearchModes.
+ *  This in turn deserialises all SearchConfigurations, QueryTransformers, QueryBuilders, and ResultHandlers.
  *
  * @version <tt>$Id$</tt>
  */
@@ -74,6 +76,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final ResultHandlerFactory RESULT_HANDLER_FACTORY = new ResultHandlerFactory();
     private static final RunHandlerConfigFactory RUN_HANDLER_FACTORY = new RunHandlerConfigFactory();
     private static final RunTransformerConfigFactory RUN_TRANSFORMER_FACTORY = new RunTransformerConfigFactory();
+    private static final QueryBuilderFactory QUERY_BUILDER_FACTORY = new QueryBuilderFactory();
 
 
     /**
@@ -104,6 +107,34 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private final Context context;
 
     // Static --------------------------------------------------------
+
+
+    static {
+        Interpreter.addFunction("commands", new Interpreter.Function() {
+            public String execute(Interpreter.Context ctx) {
+                String res = "";
+                COMMANDS_LOCK.readLock().lock();
+                try {
+                    for (SearchMode c : COMMANDS.keySet()) {
+                        res += "Mode: " + c + "\n";
+                        for (String s : COMMANDS.get(c).keySet()) {
+                            res += "   " + COMMANDS.get(c).get(s).toString() + "\n";
+                        }
+                        res += "\n";
+                    }
+                }
+                finally {
+                    COMMANDS_LOCK.readLock().unlock();
+                }
+                return res;
+
+            }
+            @Override
+            public String describe() {
+                return "Print out the SearchModes in COMMANDS.";
+            }
+        });
+    }
 
     /**
      * Returns the factory for the site in the context.
@@ -206,8 +237,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     // Package protected ---------------------------------------------
-
-    /* Test use it. **/
 
     /**
      * Return the modes created by the factory.
@@ -447,55 +476,109 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                 final SearchConfiguration sc = parseSearchConfigurationImpl(commandE, inherit, cxt);
 
-                // query transformers
-                NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
-                final Element qtRootElement = (Element) qtNodeList.item(0);
-                if (qtRootElement != null) {
-                    qtNodeList = qtRootElement.getChildNodes();
+                if(sc instanceof BaseSearchConfiguration){
 
-                    // clear all inherited query-transformers
-                    sc.clearQueryTransformers();
+                    // TODO move this into CommandConfig
+                    final BaseSearchConfiguration bsc = (BaseSearchConfiguration)sc;
 
-                    for (int i = 0; i < qtNodeList.getLength(); i++) {
-                        final Node node = qtNodeList.item(i);
-                        if (!(node instanceof Element)) {
-                            continue;
+                    // initial query transformer (fills out the transformedTerms map the first time)
+                    NodeList iqtNodeList = commandE.getElementsByTagName("initial-query-transformer");
+                    final Element iqtRootElement = (Element) iqtNodeList.item(0);
+                    if (iqtRootElement != null) {
+                        iqtNodeList = iqtRootElement.getChildNodes();
+                        for (int i = 0; i < iqtNodeList.getLength(); i++) {
+                            final Node node = iqtNodeList.item(i);
+                            if (!(node instanceof Element)) {
+                                continue;
+                            }
+
+                            final Element iqtE = (Element) node;
+                            if (QUERY_TRANSFORMER_FACTORY.supported(iqtE.getTagName(), cxt)) {
+
+                                bsc.setInitialQueryTransformer(
+                                        QUERY_TRANSFORMER_FACTORY.parseQueryTransformer(iqtE, cxt));
+
+                                // only one can be defined so we're finished
+                                break;
+                            }
                         }
-                        final Element qt = (Element) node;
-                        if (QUERY_TRANSFORMER_FACTORY.supported(qt.getTagName(), cxt)) {
-                            sc.addQueryTransformer(QUERY_TRANSFORMER_FACTORY.parseQueryTransformer(qt, cxt));
+                    } else if (null != inherit && inherit instanceof BaseSearchConfiguration) {
+                        // inherit it
+                        bsc.setInitialQueryTransformer(((BaseSearchConfiguration)inherit).getInitialQueryTransformer());
+                    }
+
+                    // query transformers
+                    NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
+                    final Element qtRootElement = (Element) qtNodeList.item(0);
+                    if (qtRootElement != null) {
+                        qtNodeList = qtRootElement.getChildNodes();
+
+                        // clear all inherited query-transformers
+                        bsc.clearQueryTransformers();
+
+                        for (int i = 0; i < qtNodeList.getLength(); i++) {
+                            final Node node = qtNodeList.item(i);
+                            if (!(node instanceof Element)) {
+                                continue;
+                            }
+                            final Element qt = (Element) node;
+                            if (QUERY_TRANSFORMER_FACTORY.supported(qt.getTagName(), cxt)) {
+                                bsc.addQueryTransformer(QUERY_TRANSFORMER_FACTORY.parseQueryTransformer(qt, cxt));
+                            }
+                        }
+                    }else if (null != inherit && inherit instanceof BaseSearchConfiguration) {
+                        // inherit all
+                        for (QueryTransformerConfig qtc : ((BaseSearchConfiguration)inherit).getQueryTransformers()) {
+                            bsc.addQueryTransformer(qtc);
                         }
                     }
-                } else if (null != inherit) {
-                    // inherit all
-                    for (QueryTransformerConfig qtc : inherit.getQueryTransformers()) {
-                        sc.addQueryTransformer(qtc);
-                    }
-                }
 
-                // result handlers
-                NodeList rhNodeList = commandE.getElementsByTagName("result-handlers");
-                final Element rhRootElement = (Element) rhNodeList.item(0);
-                if (rhRootElement != null) {
-                    rhNodeList = rhRootElement.getChildNodes();
-
-                    // clear all inherited result handlers
-                    sc.clearResultHandlers();
-
-                    for (int i = 0; i < rhNodeList.getLength(); i++) {
-                        final Node node = rhNodeList.item(i);
-                        if (!(node instanceof Element)) {
-                            continue;
+                    // query builder
+                    NodeList qbNodeList = commandE.getElementsByTagName("query-builder");
+                    final Element qbRootElement = (Element) qbNodeList.item(0);
+                    if (qbRootElement != null) {
+                        qbNodeList = qbRootElement.getChildNodes();
+                        for (int i = 0; i < qbNodeList.getLength(); i++) {
+                            final Node node = qbNodeList.item(i);
+                            if (!(node instanceof Element)) {
+                                continue;
+                            }
+                            final Element qb = (Element) node;
+                            if (QUERY_BUILDER_FACTORY.supported(qb.getTagName(), cxt)) {
+                                bsc.setQueryBuilder(QUERY_BUILDER_FACTORY.parseQueryBuilder(qb, cxt));
+                                // only one can be defined so we're finished
+                                break;
+                            }
                         }
-                        final Element rh = (Element) node;
-                        if (RESULT_HANDLER_FACTORY.supported(rh.getTagName(), cxt)) {
-                            sc.addResultHandler(RESULT_HANDLER_FACTORY.parseResultHandler(rh, cxt));
-                        }
+                    }else if (null != inherit && inherit instanceof BaseSearchConfiguration) {
+                        // inherit it
+                        bsc.setQueryBuilder(((BaseSearchConfiguration)inherit).getQueryBuilder());
                     }
-                } else if (null != inherit) {
-                    // inherit all
-                    for (ResultHandlerConfig rhc : inherit.getResultHandlers()) {
-                        sc.addResultHandler(rhc);
+
+                    // result handlers
+                    NodeList rhNodeList = commandE.getElementsByTagName("result-handlers");
+                    final Element rhRootElement = (Element) rhNodeList.item(0);
+                    if (rhRootElement != null) {
+                        rhNodeList = rhRootElement.getChildNodes();
+
+                        // clear all inherited result handlers
+                        bsc.clearResultHandlers();
+
+                        for (int i = 0; i < rhNodeList.getLength(); i++) {
+                            final Node node = rhNodeList.item(i);
+                            if (!(node instanceof Element)) {
+                                continue;
+                            }
+                            final Element rh = (Element) node;
+                            if (RESULT_HANDLER_FACTORY.supported(rh.getTagName(), cxt)) {
+                                bsc.addResultHandler(RESULT_HANDLER_FACTORY.parseResultHandler(rh, cxt));
+                            }
+                        }
+                    } else if (null != inherit && inherit instanceof BaseSearchConfiguration) {
+                        // inherit all
+                        for (ResultHandlerConfig rhc : ((BaseSearchConfiguration)inherit).getResultHandlers()) {
+                            bsc.addResultHandler(rhc);
+                        }
                     }
                 }
 
@@ -618,30 +701,40 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
+    private static final class QueryBuilderFactory extends AbstractConfigFactory<QueryBuilderConfig> {
 
-    static {
-        Interpreter.addFunction("commands", new Interpreter.Function() {
-            public String execute(Interpreter.Context ctx) {
-                String res = "";
-                COMMANDS_LOCK.readLock().lock();
-                try {
-                    for (SearchMode c : COMMANDS.keySet()) {
-                        res += "Mode: " + c + "\n";
-                        for (String s : COMMANDS.get(c).keySet()) {
-                            res += "   " + COMMANDS.get(c).get(s).toString() + "\n";
-                        }
-                        res += "\n";
-                    }
-                }
-                finally {
-                    COMMANDS_LOCK.readLock().unlock();
-                }
-                return res;
+        QueryBuilderFactory() {}
 
+        QueryBuilderConfig parseQueryBuilder(final Element qt, final SearchModeFactory.Context context) {
+
+            final QueryBuilderConfig config = construct(qt, context);
+
+            if( config instanceof QueryBuilderConfig.ModesW3cDomDeserialiser ){
+                return ((QueryBuilderConfig.ModesW3cDomDeserialiser)config).readQueryBuilder(qt);
             }
-            public String describe() {
-                return "Print out the SearchModes in COMMANDS.";
-            }
-        });
+
+            throw new UnsupportedOperationException("Unknown deserialisation method");
+        }
+
+        protected Class<QueryBuilderConfig> findClass(final String xmlName, final Context context)
+                throws ClassNotFoundException {
+
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+
+            LOG.debug("findClass (QueryBuilderConfig) " + className);
+
+            final String classNameFQ = "no.sesat.search.mode.config.querybuilder."
+                    + className
+                    + "QueryBuilderConfig";
+
+            final Class<QueryBuilderConfig> clazz = loadClass(context, classNameFQ, Spi.SEARCH_COMMAND_CONFIG);
+
+            LOG.debug("Found class " + clazz.getName());
+
+            return clazz;
+        }
+
     }
+
 }

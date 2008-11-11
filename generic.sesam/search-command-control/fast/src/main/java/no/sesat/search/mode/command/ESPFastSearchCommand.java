@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ public class ESPFastSearchCommand extends AbstractESPFastSearchCommand {
     /** Creates a new instance of FastSearchCommand
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public ESPFastSearchCommand(final Context cxt) {
 

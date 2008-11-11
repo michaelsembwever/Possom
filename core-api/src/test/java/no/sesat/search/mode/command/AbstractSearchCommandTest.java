@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelTestCase;
+import no.sesat.search.datamodel.access.ControlLevel;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.SearchMode;
 import no.sesat.search.mode.SearchModeFactory;
@@ -75,27 +76,55 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     protected final RunningQuery.Context createRunningQueryContext(final String key)
             throws SiteKeyedFactoryInstantiationException{
 
+        final BaseContext cxt = createBaseRunningQueryContext();
+
+        return ContextWrapper.wrap(
+                RunningQuery.Context.class,
+                cxt,
+                new BaseContext(){
+                    public SearchMode getSearchMode() {
+                        return SearchModeFactory.instanceOf(
+                                ContextWrapper.wrap(SearchModeFactory.Context.class, cxt))
+                                .getMode(getSearchTab().getMode());
+                    }
+                    public SearchTab getSearchTab(){
+                        return SearchTabFactory.instanceOf(
+                            ContextWrapper.wrap(SearchTabFactory.Context.class, cxt))
+                            .getTabByKey(key);
+                    }
+        });
+    }
+
+    protected final RunningQuery.Context createRunningQueryContext(final SearchTab key)
+            throws SiteKeyedFactoryInstantiationException{
+
+        final BaseContext cxt = createBaseRunningQueryContext();
+
+        return ContextWrapper.wrap(
+                RunningQuery.Context.class,
+                cxt,
+                new BaseContext(){
+                    public SearchMode getSearchMode() {
+                        return SearchModeFactory.instanceOf(
+                                ContextWrapper.wrap(SearchModeFactory.Context.class, cxt))
+                                .getMode(key.getMode());
+                    }
+                    public SearchTab getSearchTab(){
+                        return key;
+                    }
+        });
+    }
+
+    private final BaseContext createBaseRunningQueryContext() throws SiteKeyedFactoryInstantiationException{
+
         final DataModel datamodel = getDataModel();
 
-        final SiteContext siteCxt = new SiteContext(){
+        return new BaseContext() {
             public Site getSite() {
                 return datamodel.getSite().getSite();
             }
-        };
-
-        return new RunningQuery.Context() {
             public DataModel getDataModel(){
                 return datamodel;
-            }
-            public SearchMode getSearchMode() {
-                return SearchModeFactory.instanceOf(
-                        ContextWrapper.wrap(SearchModeFactory.Context.class, this, siteCxt))
-                        .getMode(getSearchTab().getMode());
-            }
-            public SearchTab getSearchTab(){
-                return SearchTabFactory.instanceOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this, siteCxt))
-                    .getTabByKey(key);
             }
             public PropertiesLoader newPropertiesLoader(
                     final SiteContext siteCxt,
@@ -123,9 +152,9 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
             final RunningQuery.Context rqCxt,
             final String conf) throws SiteKeyedFactoryInstantiationException{
 
-        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
+        getDataModelFactory().assignControlLevel(rqCxt.getDataModel(), ControlLevel.RUNNING_QUERY_CONSTRUCTION);
 
-        final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
 
         return createCommandContext(rq, rqCxt, conf);
 
@@ -136,13 +165,23 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
             final RunningQuery.Context rqCxt,
             final String conf) throws SiteKeyedFactoryInstantiationException{
 
+        getDataModelFactory().assignControlLevel(rqCxt.getDataModel(), ControlLevel.SEARCH_COMMAND_CONSTRUCTION);
+
         final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
 
         return ContextWrapper.wrap(
                 SearchCommand.Context.class,
                 new BaseContext() {
                     public SearchConfiguration getSearchConfiguration() {
-                        return rqCxt.getSearchMode().getSearchConfiguration(conf);
+
+                        // unusual fallback through parent modes here.
+                        // required as sometimes skins override a mode with the same name hiding
+                        // a command configuration we are looking for
+                        SearchMode mode = rqCxt.getSearchMode();
+                        while(null == mode.getSearchConfiguration(conf) && null != mode.getParentSearchMode()){
+                            mode = mode.getParentSearchMode();
+                        }
+                        return mode.getSearchConfiguration(conf);
                     }
 
                     public RunningQuery getRunningQuery() {
@@ -159,6 +198,16 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final String key,
+            final String conf) throws SiteKeyedFactoryInstantiationException {
+
+        final RunningQuery.Context rqCxt = createRunningQueryContext(key);
+
+        return createCommandContext(query, rqCxt, conf);
+    }
+
+    protected final SearchCommand.Context createCommandContext(
+            final String query,
+            final SearchTab key,
             final String conf) throws SiteKeyedFactoryInstantiationException {
 
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);

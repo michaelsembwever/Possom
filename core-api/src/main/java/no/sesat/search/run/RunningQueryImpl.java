@@ -51,6 +51,7 @@ import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenEvaluationEngineImpl;
 import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.SearchCommandFactory;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.executor.SearchCommandExecutor;
 import no.sesat.search.mode.executor.SearchCommandExecutorFactory;
@@ -195,7 +196,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 datamodel,
                 new DataObject.Property("configuration", context.getSearchTab().getNavigationConfiguration()),
                 new DataObject.Property("navigation",navigations),
-                new DataObject.Property("navigations", navigations)); // FIXME bug that both single and mapped needed
+                new DataObject.Property("navigations", navigations)); // TODO bug that both single and mapped needed
 
         datamodel.setQuery(queryDO);
         datamodel.setNavigation(navDO);
@@ -312,7 +313,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
             dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
 
-            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results
+            final Map<Future<ResultList<ResultItem>>,SearchCommand> results
                     = executeSearchCommands(commands);
 
             // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
@@ -323,12 +324,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 final StringBuilder noHitsOutput = new StringBuilder();
 
-                for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
+                for (Future<ResultList<ResultItem>> task : results.keySet()) {
 
                     if (task.isDone() && !task.isCancelled()) {
 
                         try{
-                            final ResultList<? extends ResultItem> searchResult = task.get();
+                            final ResultList<ResultItem> searchResult = task.get();
                             if (searchResult != null) {
 
                                 // Information we need about and for the enrichment
@@ -509,10 +510,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     @SuppressWarnings("unchecked")
-    private Map<Future<ResultList<? extends ResultItem>>,SearchCommand> executeSearchCommands(
+    private Map<Future<ResultList<ResultItem>>,SearchCommand> executeSearchCommands(
             final Collection<SearchCommand> commands) throws InterruptedException, TimeoutException, ExecutionException{
 
-        Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results = Collections.EMPTY_MAP;
+        Map<Future<ResultList<ResultItem>>,SearchCommand> results = Collections.EMPTY_MAP;
 
         try{
             final SearchCommandExecutor executor = SearchCommandExecutorFactory
@@ -523,18 +524,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             }finally{
 
-                final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitFor;
+                final Map<Future<ResultList<ResultItem>>,SearchCommand> waitFor;
 
                 if(null != datamodel.getParameters().getValue(PARAM_WAITFOR)){
 
-                    waitFor = new HashMap<Future<ResultList<? extends ResultItem>>,SearchCommand>();
+                    waitFor = new HashMap<Future<ResultList<ResultItem>>,SearchCommand>();
 
                     final String[] waitForArr
                             = datamodel.getParameters().getValue(PARAM_WAITFOR).getString().split(",");
 
                     for(String waitForStr : waitForArr){
                         // using generics on the next line crashes javac
-                        for(Entry/*<Future<ResultList<? extends ResultItem>>,SearchCommand>*/ entry
+                        for(Entry/*<Future<ResultList<ResultItem>>,SearchCommand>*/ entry
                                 : results.entrySet()){
 
                             final String entryName
@@ -543,7 +544,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if(waitForStr.equalsIgnoreCase(entryName)){
 
                                 waitFor.put(
-                                        (Future<ResultList<? extends ResultItem>>)entry.getKey(),
+                                        (Future<ResultList<ResultItem>>)entry.getKey(),
                                         (SearchCommand)entry.getValue());
                                 break;
                             }
@@ -558,13 +559,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }else{
 
                     // do not wait on asynchronous commands
-                    waitFor = new HashMap<Future<ResultList<? extends ResultItem>>,SearchCommand>();
+                    waitFor = new HashMap<Future<ResultList<ResultItem>>,SearchCommand>();
                     // using generics on the next line crashes javac
-                    for(Entry/*<Future<ResultList<? extends ResultItem>>,SearchCommand>*/ entry : results.entrySet()){
+                    for(Entry/*<Future<ResultList<ResultItem>>,SearchCommand>*/ entry : results.entrySet()){
                         if(!((SearchCommand)entry.getValue()).getSearchConfiguration().isAsynchronous()){
 
                             waitFor.put(
-                                    (Future<ResultList<? extends ResultItem>>)entry.getKey(),
+                                    (Future<ResultList<ResultItem>>)entry.getKey(),
                                     (SearchCommand)entry.getValue());
                         }
                     }

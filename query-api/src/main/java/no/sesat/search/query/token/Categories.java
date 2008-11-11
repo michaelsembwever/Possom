@@ -538,7 +538,7 @@ public enum Categories implements TokenPredicate {
     /**
      * {@link http://en.wikipedia.org/wiki/Category:Equations}
      */
-    MATHPREDICATE;
+    MATH;
 
     private final TokenPredicateImpl impl;
 

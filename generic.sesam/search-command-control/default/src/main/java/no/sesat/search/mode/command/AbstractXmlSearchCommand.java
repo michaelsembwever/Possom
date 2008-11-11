@@ -1,5 +1,5 @@
 /*
- * Copyright (2006-2007) Schibsted Søk AS
+ * Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -14,36 +14,33 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
-
  */
 package no.sesat.search.mode.command;
 
-import java.io.IOException;
-import java.io.BufferedReader;
 
-import no.sesat.search.http.HTTPClient;
-import no.sesat.search.mode.config.AbstractXmlSearchConfiguration;
-import no.sesat.search.site.config.SiteConfiguration;
+import no.sesat.search.result.ResultItem;
 
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.w3c.dom.Element;
 
 /**
+ * Helper base implementation for search commands that are RESTful and have XML responses.
  *
+ * The RESTful server is defined through:
+ * host: AbstractXmlSearchConfiguration.getHost()
+ * port: AbstractXmlSearchConfiguration.getPort()
  *
  * @version $Id$
  */
-public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
+public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand{
 
 
     // Constants -----------------------------------------------------
 
-    private static final Logger LOG = Logger.getLogger(AbstractXmlSearchCommand.class);
+    //private static final Logger LOG = Logger.getLogger(AbstractXmlSearchCommand.class);
 
     // Attributes ----------------------------------------------------
 
-    private final transient HTTPClient client;
+    private XmlRestful restful;
 
     // Static --------------------------------------------------------
 
@@ -55,65 +52,36 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand {
      *
      * @param cxt The context to execute in.
      */
-    public AbstractXmlSearchCommand(final Context cxt) {
+    protected AbstractXmlSearchCommand(final Context cxt) {
         super(cxt);
-
-        final AbstractXmlSearchConfiguration conf = (AbstractXmlSearchConfiguration)cxt.getSearchConfiguration();
-
-        final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
-        final String host = siteConf.getProperty(conf.getHost());
-        final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
-
-        client = HTTPClient.instance(conf.getHostHeader().length() > 0 ? conf.getHostHeader() : host, port, host);
     }
 
     // Public --------------------------------------------------------
 
-    // Z implementation ----------------------------------------------
+    public String createRequestURL() {
 
-    // Y overrides ---------------------------------------------------
+        return restful.createRequestURL();
+    }
 
-    // Package protected ---------------------------------------------
+
 
     // Protected -----------------------------------------------------
 
-    /**
-     *
-     * @return
-     */
-    protected abstract String createRequestURL();
 
-    /**
+    /** Each individual result is usually defined within one given Element.
      *
-     * @return
+     * @param result the w3c element
+     * @return the ResultItem
      */
-    protected int getResultsToReturn(){
-        return context.getSearchConfiguration().getResultsToReturn();
+    protected abstract ResultItem createItem(final Element result);
+
+    protected final XmlRestful getXmlRestful(){
+        return restful;
     }
 
-    /**
-     *
-     * @return
-     * @throws java.io.IOException
-     * @throws org.xml.sax.SAXException
-     */
-    protected final Document getXmlResult() throws IOException, SAXException {
-        final String url = createRequestURL();
-        DUMP.info("Using " + url);
-        return client.getXmlDocument(url);
+    protected final void setXmlRestful(final XmlRestful restful){
+        this.restful = restful;
     }
-
-    /**
-     *
-     * @return
-     * @throws java.io.IOException
-     */
-    protected final BufferedReader getHttpReader(final String encoding) throws IOException {
-        final String url = createRequestURL();
-        DUMP.info("Using " + url);
-        return client.getBufferedReader(url, encoding);
-    }
-
 
     // Private -------------------------------------------------------
 

@@ -20,7 +20,7 @@ package no.sesat.search.result.test;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.command.SearchCommand;
-import no.sesat.search.mode.config.SearchConfiguration;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.run.RunningQuery;
 import no.sesat.search.run.RunningQueryImpl;
@@ -88,7 +88,7 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
         query = new RunningQueryImpl(rqCxt, queryString);
     }
 
-    public SearchConfiguration getSearchConfiguration() {
+    public BaseSearchConfiguration getSearchConfiguration() {
         return null;
     }
 
@@ -100,7 +100,7 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public ResultList<ResultItem> call() throws Exception {
+    public ResultList<ResultItem> call(){
         return null;
     }
 

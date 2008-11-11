@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ public interface ResultItem extends Serializable{
      * There is no guarantee that this instance is altered.
      * This allows implementations to be immutable if they choose to be.
      *
-     * @param url
+     * @param title
      * @return
      */
     ResultItem setTitle(String title);

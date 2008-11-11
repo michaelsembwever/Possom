@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -66,13 +66,13 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     // Public --------------------------------------------------------
 
 
-    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> invokeAll(
+    public Map<Future<ResultList<ResultItem>>,SearchCommand> invokeAll(
             final Collection<SearchCommand> callables) throws InterruptedException  {
 
         LOG.debug(DEBUG_INVOKEALL + getClass().getSimpleName());
 
-        final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results
-                = new HashMap<Future<ResultList<?>>,SearchCommand>();
+        final Map<Future<ResultList<ResultItem>>,SearchCommand> results
+                = new HashMap<Future<ResultList<ResultItem>>,SearchCommand>();
 
         for (SearchCommand c : callables) {
 
@@ -83,8 +83,8 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
         return results;
     }
 
-    public Map<Future<ResultList<? extends ResultItem>>,SearchCommand> waitForAll(
-            final Map<Future<ResultList<? extends ResultItem>>,SearchCommand> results,
+    public Map<Future<ResultList<ResultItem>>,SearchCommand> waitForAll(
+            final Map<Future<ResultList<ResultItem>>,SearchCommand> results,
             final int timeoutInMillis) throws InterruptedException, TimeoutException, ExecutionException{
 
         // Give the commands a chance to finish its work
@@ -92,7 +92,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
         //   (as the timeout value is intended overall and not for each).
         final long invokedAt = System.currentTimeMillis();
 
-        for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
+        for (Future<ResultList<ResultItem>> task : results.keySet()) {
 
             try{
                 task.get(

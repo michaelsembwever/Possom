@@ -65,7 +65,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
         cfg = (BlendingNewsCommandConfig) cxt.getSearchConfiguration();
     }
 
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         int totalHitCount = 0;
 
@@ -95,8 +95,8 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
         return blended;
     }
 
-    protected String getAdditionalFilter() {
-        return super.getAdditionalFilter() + " " + additionalFilter;
+    protected String getFilter() {
+        return super.getFilter() + " " + additionalFilter;
     }
 
     private void setAdditionalFilter(final String filter) {

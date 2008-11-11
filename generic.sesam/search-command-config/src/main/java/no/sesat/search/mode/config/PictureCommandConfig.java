@@ -17,67 +17,29 @@
  */
 package no.sesat.search.mode.config;
 
-import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
+import no.sesat.search.mode.config.querybuilder.InfixQueryBuilderConfig;
 
 /**
  *
  * @version <tt>$Id$</tt>
  */
 @Controller("PicSearchCommand")
-public class PictureCommandConfig extends CommandConfig {
+public class PictureCommandConfig extends AbstractXmlSearchConfiguration {
 
-    private static final Logger LOG = Logger.getLogger(PictureCommandConfig.class);
-
-    /**
-     * Holds value of property key for the queryServerHost.
-     */
-    private String queryServerHost = "";
-
-    /**
-     * Holds value of property key for the queryServerPort.
-     */
-    private String queryServerPort = "";
+    //private static final Logger LOG = Logger.getLogger(PictureCommandConfig.class);
 
     private String filter = "medium";
     private String customerId = "558735";
     private String site = "";
     private String domainBoost = "";
 
-    /**
-     * Getter for property key for queryServerUrl.
-     * @return Value of property queryServerUrl.
-     */
-    public String getQueryServerHost() {
-        return queryServerHost;
-    }
+    public PictureCommandConfig(){
 
-    /**
-     * Setter for property key for queryServerHost.
-     * @param queryServerHost New value of property queryServerHost.
-     */
-    public void setQueryServerHost(final String queryServerHost) {
-        this.queryServerHost = queryServerHost;
-    }
+        super();
 
-    /**
-     * Getter for property key for queryServerPort.
-     * @return Value of property queryServerPort.
-     */
-    public String getQueryServerPort() {
-        return queryServerPort;
-    }
+        ((InfixQueryBuilderConfig)getQueryBuilder()).setNotPrefix("-");
 
-    /**
-     * Setter for property key for queryServerPort.
-     * @param queryServerPort New value of property queryServerPort.
-     */
-    public void setQueryServerPort(final String queryServerPort) {
-        this.queryServerPort = queryServerPort;
     }
 
     /**

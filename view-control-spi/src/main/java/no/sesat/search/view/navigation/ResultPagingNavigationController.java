@@ -67,7 +67,7 @@ public final class ResultPagingNavigationController
 
         }else{
 
-            final ResultList<? extends ResultItem> searchResult = search.getResults();
+            final ResultList<ResultItem> searchResult = search.getResults();
 
             final int hitCount;
             if(config.getHitcountSource().length() > 0 && null != searchResult.getField(config.getHitcountSource())) {

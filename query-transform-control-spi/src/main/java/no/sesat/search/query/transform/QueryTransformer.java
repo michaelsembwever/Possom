@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ import java.util.Map;
  * indices or other sources for further processing.
  *
  *
- * @version <tt>$Revision: 3829 $</tt>
+ * @version <tt>$Id$</tt>
  */
 public interface QueryTransformer extends Visitor{
 
     /**
-     *
+     * The context any QueryTransformer must work through.
      */
     public interface Context extends QueryContext, ResourceContext, SiteContext, DataModelContext {
 
@@ -77,10 +77,18 @@ public interface QueryTransformer extends Visitor{
          * @return
          */
         String getFieldFilter(LeafClause clause);
+        /** Escape the word.
+         * The word need not be reserved or require escaping but should be escaped anyway.
+         *
+         * @param word
+         * @return escaped version of the word
+         */
+        String escape(String word);
     }
 
     /**
-     * TODO comment me. *
+     * Provide the context. Since it cannot be provided through the constructor.
+     *
      * @param cxt
      */
     void setContext(final Context cxt);

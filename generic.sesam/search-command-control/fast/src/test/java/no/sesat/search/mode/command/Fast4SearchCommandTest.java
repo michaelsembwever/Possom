@@ -16,7 +16,7 @@
 
  */
 /*
- * WebSearchCommandTest.java
+ * Fast4SearchCommandTest.java
  *
  * Created on March 7, 2006, 4:53 PM
  */
@@ -24,8 +24,14 @@
 package no.sesat.search.mode.command;
 
 
+import java.util.Collections;
 import no.sesat.search.mode.command.*;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
+import no.sesat.search.view.config.SearchTab;
+import no.sesat.search.view.config.SearchTab.EnrichmentHint;
+import no.sesat.search.view.config.SearchTab.EnrichmentPlacementHint;
+import no.sesat.search.view.config.SearchTab.Layout;
+import no.sesat.search.view.config.SearchTab.Scope;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
 
@@ -34,10 +40,11 @@ import static org.testng.AssertJUnit.*;
  *
  * @version $Id$
  */
-public final class WebSearchCommandTest extends AbstractSearchCommandTest {
+public final class Fast4SearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test of the site prefix.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testSiteFilter()  throws Exception{
@@ -49,28 +56,31 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
     /**
      * Test of the site prefix whith quotes.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testSiteFilterWithQuotes()  throws Exception{
         executeTestOfQuery(
                 "site:\"zmag.org\" bil",
                 "bil",
-                "+site:zmag.org");
+                "+site:\"zmag.org\"");
     }
 
     /**
      *
      * Make sure that that phrase searches works.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testPhraseSearches()  throws Exception{
         executeTestOfQuery(
                 "\"george bush stands on a chair to raise his IQ\"",
-                "\"george bush stands on a chair to raise his IQ\"",
+                "\"george bush stands on a chair to raise his iq\"",
                 "");
     }
 
     /** Test that the nyhetskilde prefix is escaped.
+     * @throws Exception just throw any problem. it's a test
      */
     @Test
     public void testIgnoreField()  throws Exception{
@@ -135,14 +145,18 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException{
 
-        final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
+        final SearchTab fakeTab = new SearchTab(null, "fake-view", "default-mode", "test", null, null, true,
+                null, Collections.<EnrichmentPlacementHint>emptyList(), Collections.<EnrichmentHint>emptyList(), null,
+                0, 0, Collections.<String>emptyList(), Collections.<String>emptyList(), false, false,
+                null, Collections.<String,Layout>emptyMap(), Scope.REQUEST);
 
+        final SearchCommand.Context cxt = createCommandContext(query, fakeTab, "default-fast-command");
         final WebSearchCommand cmd = new WebSearchCommand(cxt);
 
-        final String generatedQuery = cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
+        final String generatedQuery = cmd.getQueryRepresentation();
 
         assertEquals(wantedQuery, generatedQuery.trim());
-        assertEquals(wantedFilter, cmd.getAdditionalFilter());
+        assertEquals(wantedFilter, cmd.getFilter());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2007) Schibsted Søk AS
+ * Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
+ * @todo rename to Fast4SearchCommand
  * @version <tt>$Id$</tt>
  */
 public class FastSearchCommand extends AbstractSimpleFastSearchCommand {
@@ -31,7 +32,6 @@ public class FastSearchCommand extends AbstractSimpleFastSearchCommand {
     /** Creates a new instance of FastSearchCommand
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public FastSearchCommand(final Context cxt) {
 

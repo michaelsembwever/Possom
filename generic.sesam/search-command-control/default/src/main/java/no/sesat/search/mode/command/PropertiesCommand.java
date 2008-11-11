@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -66,13 +66,13 @@ public final class PropertiesCommand extends AbstractSearchCommand {
 
     // Public --------------------------------------------------------
 
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         result.setHitCount(0);
 
         final PropertiesCommandConfig config = (PropertiesCommandConfig)getSearchConfiguration();
-        final String query = datamodel.getQuery().getString().toLowerCase();
+        final String query = getTransformedQuery();
 
         for(Map.Entry<String,String> entry : config.getProperties().entrySet()){
             if(query.matches(".*(^| )" + entry.getKey().toLowerCase() + "($| ).*")){
@@ -87,6 +87,12 @@ public final class PropertiesCommand extends AbstractSearchCommand {
     }
 
     // Package protected ---------------------------------------------
+
+
+    @Override
+    public String getQueryRepresentation() {
+        return datamodel.getQuery().getString().toLowerCase();
+    }
 
     // Protected -----------------------------------------------------
 

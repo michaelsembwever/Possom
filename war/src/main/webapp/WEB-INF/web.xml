@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (2007) Schibsted Søk AS
+<!-- Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <filter-class>no.sesat.search.http.filters.DataModelFilter</filter-class>
     </filter>
 
-    <filter> <!-- TODO desparately needs sesat-ising. fortunately it's not a required secret anymore. SEARCH-4366 -->
+    <filter>
         <filter-name>md5ProtectParameters</filter-name>
         <filter-class>no.sesat.search.http.filters.MD5ProtectedParametersFilter</filter-class>
     </filter>

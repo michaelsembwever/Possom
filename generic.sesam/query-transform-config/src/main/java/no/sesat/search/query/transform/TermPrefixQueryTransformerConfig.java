@@ -26,44 +26,34 @@ import org.w3c.dom.Element;
 /**
  * A transformer to prefix the terms in a query with a named field.
  *
- * Works the same as <regexp regexp="$" replacement="/prefix/"/>
- *  except that avoid adding the prefix to clauses that already have fields.
+ * Works like <regexp regexp="$" replacement="/prefix/"/>
+ *  except that it
+ *   avoids adding the prefix to clauses that already have fields,
+ *   allows seperate configured prefixes for LeafClauses, IntegerClauses,
+ * and PhoneNumberPrefix, UrlClauses, and EmailClauses.
+ *
+// * Multiple prefixes can be configured with comma seperation.
+// * EG prefix="site,domain"
+// * By default this writes out (site:term domain:term)
  *
  * @version $Id$
- *
- *
  */
 @Controller("TermPrefixQueryTransformer")
 public final class TermPrefixQueryTransformerConfig extends AbstractQueryTransformerConfig {
 
+    private String urlPrefix;
+    private String emailPrefix;
+    private String phoneNumberPrefix;
     private String numberPrefix;
     private String prefix;
 
     /**
-     * Get the prefix to be used for words.
+     * @see #setPrefix(java.lang.String)
      *
      * @return the prefix.
      */
     public String getPrefix() {
         return prefix;
-    }
-
-    /**
-     * Get the prefix to be used for integers.
-     *
-     * @return the numberPrefix.
-     */
-    public String getNumberPrefix() {
-        return numberPrefix;
-    }
-
-    /**
-     * Set the prefix to used for numbers.
-     *
-     * @param numberPrefix The prefix.
-     */
-    public void setNumberPrefix(final String numberPrefix) {
-        this.numberPrefix = numberPrefix;
     }
 
     /**
@@ -74,12 +64,87 @@ public final class TermPrefixQueryTransformerConfig extends AbstractQueryTransfo
         this.prefix = prefix;
     }
 
+    /**
+     * @see #setNumberPrefix(java.lang.String)
+     *
+     * @return the numberPrefix.
+     */
+    public String getNumberPrefix() {
+        return numberPrefix;
+    }
+
+    /**
+     * Set the prefix to used for numbers.
+     * If not defined falls back to value of prefix
+     *
+     * @param numberPrefix The prefix.
+     */
+    public void setNumberPrefix(final String numberPrefix) {
+        this.numberPrefix = numberPrefix;
+    }
+
+    /**
+     * @see #setPhoneNumberPrefix(java.lang.String)
+     *
+     * @return the phoneNumberPrefix.
+     */
+    public String getPhoneNumberPrefix() {
+        return phoneNumberPrefix;
+    }
+
+    /**
+     * Set the prefix to used for numbers.
+     * If not defined falls back to value of numberPreix
+     *
+     * @param phoneNumberPrefix The prefix.
+     */
+    public void setPhoneNumberPrefix(final String phoneNumberPrefix) {
+        this.phoneNumberPrefix = phoneNumberPrefix;
+    }
+
+    /**
+     * @see #setUrlPrefix(java.lang.String)
+     *
+     * @return the prefix.
+     */
+    public String getUrlPrefix() {
+        return urlPrefix;
+    }
+
+    /**
+     * Set the prefix to be used for UrlClauses.
+     * @param prefix The prefix to set.
+     */
+    public void setUrlPrefix(final String prefix) {
+        this.urlPrefix = prefix;
+    }
+
+    /**
+     * @see #setEmailPrefix(java.lang.String)
+     *
+     * @return the prefix.
+     */
+    public String getEmailPrefix() {
+        return emailPrefix;
+    }
+
+    /**
+     * Set the prefix to be used for EmailClauses.
+     * @param prefix The prefix to set.
+     */
+    public void setEmaillPrefix(final String prefix) {
+        this.emailPrefix = prefix;
+    }
+
     @Override
     public TermPrefixQueryTransformerConfig readQueryTransformer(final Element qt){
 
         super.readQueryTransformer(qt);
         AbstractDocumentFactory.fillBeanProperty(this, null, "prefix", ParseType.String, qt, "");
-        AbstractDocumentFactory.fillBeanProperty(this, null, "numberPrefix", ParseType.String, qt, "");
+        AbstractDocumentFactory.fillBeanProperty(this, null, "numberPrefix", ParseType.String, qt, getPrefix());
+        AbstractDocumentFactory.fillBeanProperty(this, null, "phoneNumberPrefix", ParseType.String, qt, getNumberPrefix());
+        AbstractDocumentFactory.fillBeanProperty(this, null, "urlPrefix", ParseType.String, qt, getPrefix());
+        AbstractDocumentFactory.fillBeanProperty(this, null, "emailPrefix", ParseType.String, qt, getPrefix());
         return this;
     }
 }

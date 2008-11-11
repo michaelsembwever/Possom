@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,10 +20,9 @@ import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.SearchType;
-import java.util.Map;
-import no.sesat.search.datamodel.DataModel;
 
 /**
+ * @deprecated use instead the FastSearchCommand with infix-query-builder
  *
  */
 public class AdvancedFastSearchCommand extends AbstractAdvancedFastSearchCommand {
@@ -31,7 +30,6 @@ public class AdvancedFastSearchCommand extends AbstractAdvancedFastSearchCommand
     /** Creates a new instance of an AdvancedFastSearchCommand.
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public AdvancedFastSearchCommand(final Context cxt) {
 
@@ -41,6 +39,7 @@ public class AdvancedFastSearchCommand extends AbstractAdvancedFastSearchCommand
     /** TODO comment me. **/
     @Override
     protected void setAdditionalParameters(final ISearchParameters params) {
+
         super.setAdditionalParameters(params);
         params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
     }

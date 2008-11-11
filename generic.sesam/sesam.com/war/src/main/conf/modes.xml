@@ -23,7 +23,7 @@
 -->
 
 <modes template-prefix="default-"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="modes.xsd">
 
     <mode id="default-mode" analysis="false" inherit="default-magic">
@@ -32,7 +32,6 @@
 
         <yahoo-idp-command id="default-yahoo-idp-command" inherit="default-yahoo-i18n-command"
                            database="www-no"
-                           host="yahooIdpHost"
                            language=""
                            language-mix=""
                            partner-id="yahooIdpPartnerId"
@@ -45,21 +44,6 @@
                 <regexp field="clickurl" target="site" regexp="http://([^/]*)/?"/>
             </result-handlers>
         </yahoo-idp-command>
-        
-
-        <yahoo-web-command id="default-yahoo-web-command"
-                           appid="YahooDemo"
-                           field-filters="site"
-                           host="yahooWebHost"
-                           language="en"
-                           port="yahooWebPort"
-                           result-fields="Title AS title,Summary AS body,Url AS url,ClickUrl AS clickurl"
-                           results-to-return="10">                                            
-            <result-handlers>
-                <field-chooser target="title" fields="title,url"/>
-                <regexp field="url" target="site" regexp="http://([^/]*)/?"/>
-            </result-handlers>
-        </yahoo-web-command>        
         
     </mode>
     

@@ -44,11 +44,6 @@ import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.mode.config.FastCommandConfig;
-import no.sesat.search.query.AndClause;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OrClause;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.FastSearchResult;
 import no.sesat.search.result.Modifier;
@@ -81,6 +76,7 @@ import no.sesat.search.result.WeightedSuggestion;
 /**
  * Handles the basic implementation of the Simple FAST search.
  *
+ * @todo rename to AbstractFast4SearchCommand
  *
  * @version $Id$
  */
@@ -99,7 +95,8 @@ import no.sesat.search.result.WeightedSuggestion;
 
     // Attributes ----------------------------------------------------
     private final Map<String, Navigator> navigatedTo = new HashMap<String, Navigator>();
-    private final Map<String, String[]> navigatedValues = new HashMap<String, String[]>();
+    // Deprecated code. I cannot see how anybody is using it. Much related below is also commented out.
+//    private final Map<String, String[]> navigatedValues = new HashMap<String, String[]>();
 
     private final String queryServerUrl;
 
@@ -122,6 +119,7 @@ import no.sesat.search.result.WeightedSuggestion;
 
     /**
      * Creates a new instance of AbstractSimpleFastSearchCommand
+     * @param cxt the context the search command must work within.
      */
     public AbstractSimpleFastSearchCommand(final Context cxt) {
 
@@ -134,39 +132,42 @@ import no.sesat.search.result.WeightedSuggestion;
 
     // Public --------------------------------------------------------
 
-    /**
+    /** Return all our configured navigator's field:value pairs in one string in filter syntax.
      *
+     * @return field:value filter string.
      */
-    public Collection createNavigationFilterStrings() {
+    public Collection<String> createNavigationFilterStrings() {
 
         final Collection<String> filterStrings = new ArrayList<String>();
 
-        for (final Iterator iterator = navigatedValues.keySet().iterator(); iterator.hasNext();) {
-            final String field = (String) iterator.next();
-
-            final String modifiers[] = navigatedValues.get(field);
-
-            for (int i = 0; i < modifiers.length; i++) {
-                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")) {
-                    if ("adv".equals(getSearchConfiguration().getFiltertype()))
-                        filterStrings.add(" AND " + field + ":\"" + modifiers[i] + "\"");
-                    else
-                        filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
-                }
-            }
-        }
+//        for (final Iterator iterator = navigatedValues.keySet().iterator(); iterator.hasNext();) {
+//            final String field = (String) iterator.next();
+//
+//            final String modifiers[] = navigatedValues.get(field);
+//
+//            for (int i = 0; i < modifiers.length; i++) {
+//                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")) {
+//                    if ("adv".equals(getSearchConfiguration().getFiltertype()))
+//                        filterStrings.add(" AND " + field + ":\"" + modifiers[i] + "\"");
+//                    else
+//                        filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+//                }
+//            }
+//        }
 
         for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
             final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
 
-
             if (navigatedValue != null) {
-                final String value =  navigator.isBoundaryMatch() ? "^\"" + navigatedValue.getString() + "\"$" : "\"" + navigatedValue.getString() + "\"";
+                final String value =  navigator.isBoundaryMatch() ? "^\""
+                        + navigatedValue.getString() + "\"$" : "\"" + navigatedValue.getString() + "\"";
 
-                if ("adv".equals(getSearchConfiguration().getFiltertype()))
+                // FIXME this test should be encapsulated with the delegated filterBuilder
+                if ("adv".equals(getSearchConfiguration().getFiltertype())){
                     filterStrings.add(" AND " + navigator.getField() + ':'  + value );
-                else
+                }else{
                     filterStrings.add("+" + navigator.getField() + ':'  + value);
+                }
             }
         }
 
@@ -174,14 +175,16 @@ import no.sesat.search.result.WeightedSuggestion;
     }
 
     /**
-     * TODO comment me. *
+     * set the IFastSearchEngineFactory to use when getting, or creating, IFastSearchEngines.
+     * @param factory
      */
     public static void setSearchEngineFactory(final IFastSearchEngineFactory factory) {
         engineFactory = factory;
     }
 
     /**
-     * TODO comment me. *
+     * Add to the navigatedTo map the navigator (from SearchConfiguration) by the name "navigatorKey".
+     * @param navigatorKey name of Navigator to add
      */
     public void addNavigatedTo(final String navigatorKey) {
         navigatedTo.put(navigatorKey, getNavigators().get(navigatorKey));
@@ -199,10 +202,7 @@ import no.sesat.search.result.WeightedSuggestion;
         return (FastCommandConfig) super.getSearchConfiguration();
     }
 
-    /**
-     * @inherit *
-     */
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         try {
             if (getNavigators() != null) {
@@ -245,7 +245,7 @@ import no.sesat.search.result.WeightedSuggestion;
 
             DUMP.info(fastQuery.toString());
 
-            final FastSearchResult<? extends ResultItem> searchResult = collectResults(result);
+            final FastSearchResult<ResultItem> searchResult = collectResults(result);
 
             if (getSearchConfiguration().isSpellcheck()) {
                 collectSpellingSuggestions(result, searchResult);
@@ -287,109 +287,31 @@ import no.sesat.search.result.WeightedSuggestion;
         }
     }
 
-    // AbstractReflectionVisitor overrides ----------------------------------------------
-
-    private boolean insideNot = false;
-    private Boolean writeAnd = null;
-
-    /**
-     * TODO comment me. *
-     */
-    @Override
-    protected void visitImpl(final LeafClause clause) {
-
-        final String transformedTerm = getTransformedTerm(clause);
-        if (null == null && null != transformedTerm && transformedTerm.length() > 0) {
-            if (insideNot) {
-                appendToQueryRepresentation("-");
-            } else if (writeAnd != null && writeAnd.booleanValue()) {
-                appendToQueryRepresentation("+");
-            }
-        }
-        super.visitImpl(clause);
-    }
-
-    /**
-     * TODO comment me. *
-     */
-    @Override
-    protected void visitImpl(final AndClause clause) {
-        final Boolean originalWriteAnd = writeAnd;
-        writeAnd = Boolean.TRUE;
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
-        clause.getSecondClause().accept(this);
-        writeAnd = originalWriteAnd;
-    }
-
-    /**
-     * TODO comment me. *
-     */
-    @Override
-    protected void visitImpl(final OrClause clause) {
-        final Boolean originalWriteAnd = writeAnd;
-        writeAnd = Boolean.FALSE;
-        appendToQueryRepresentation(" (");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
-        clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(") ");
-        writeAnd = originalWriteAnd;
-    }
-
-    /**
-     * TODO comment me. *
-     */
-    @Override
-    protected void visitImpl(final NotClause clause) {
-        if (writeAnd == null) {
-            // must start prefixing terms with +
-            writeAnd = Boolean.TRUE;
-        }
-        final boolean originalInsideAndNot = insideNot;
-        insideNot = true;
-        clause.getFirstClause().accept(this);
-        insideNot = originalInsideAndNot;
-
-    }
-
-    /**
-     * TODO comment me. *
-     */
-    @Override
-    protected void visitImpl(final AndNotClause clause) {
-        if (writeAnd == null) {
-            // must start prefixing terms with +
-            writeAnd = Boolean.TRUE;
-        }
-        final boolean originalInsideAndNot = insideNot;
-        insideNot = true;
-        clause.getFirstClause().accept(this);
-        insideNot = originalInsideAndNot;
-    }
-
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
     /**
-     * TODO comment me. *
+     * Get the navigators from the command's SearchConfiguration.
+     * @return the navigators
      */
     protected Map<String, Navigator> getNavigators() {
 
         return getSearchConfiguration().getNavigators();
     }
 
-    /**
-     * TODO comment me. *
-     */
+
+    @Override
     protected int getResultsToReturn() {
 
         return getSearchConfiguration().getResultsToReturn();
     }
 
     /**
-     * TODO comment me. *
+     * Get, or create, the IFastSearchEngine responsible for connecting to and fetching the results from the fsat index.
+     * @return the IFastSearchEngine
+     * @throws ConfigurationException
+     * @throws MalformedURLException index url is malformed
      */
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
         try {
@@ -411,17 +333,21 @@ import no.sesat.search.result.WeightedSuggestion;
         return getSearchConfiguration().getSortBy();
     }
 
-    /**
-     * TODO comment me
+    /** Add additional fast search parameters.
+     * iSearchParameters.setParameter(new SearchParameter(...));
+     *
+     * @param iSearchParameters live list of parameters being built and eventually used in the fast query.
      */
-    protected void setAdditionalParameters(final ISearchParameters params) {
+    protected void setAdditionalParameters(final ISearchParameters iSearchParameters) {
+
         for(Map.Entry<String,String> entry : getSearchConfiguration().getSearchParameterMap().entrySet()){
-            params.setParameter(new SearchParameter(entry.getKey(), entry.getValue()));
+            iSearchParameters.setParameter(new SearchParameter(entry.getKey(), entry.getValue()));
         }
     }
 
     // Private -------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     private void collectSpellingSuggestions(final IQueryResult result, final FastSearchResult searchResult) {
 
         final IQueryTransformations qTransforms = result.getQueryTransformations(false);
@@ -600,13 +526,13 @@ import no.sesat.search.result.WeightedSuggestion;
             }
         }
 
-        if (getAdditionalFilter() != null) {
+        if (null !=getFilter()) {
             filter.append(' ');
-            filter.append(getAdditionalFilter());
+            filter.append(getFilter());
         }
 
         if (getSearchConfiguration().getFilter() != null && getSearchConfiguration().getFilter().length() > 0) {
-
+            // TODO create NowMacroFilterQueryTransfomer to do this instead
             final Calendar c = Calendar.getInstance();
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             final String updatedFilter = getSearchConfiguration().getFilter()
@@ -621,10 +547,8 @@ import no.sesat.search.result.WeightedSuggestion;
 
         LOG.debug("createQuery: superFilter=" + superFilter);
 
-        if (getSearchConfiguration().getFiltertype() != null && getSearchConfiguration().getFiltertype().equals("adv"))
-            params.setParameter(new SearchParameter("filtertype", "adv"));
-        else
-            params.setParameter(new SearchParameter("filtertype", "any"));
+        params.setParameter(new SearchParameter("filtertype",
+                "adv".equals(getSearchConfiguration().getFiltertype())?  "adv": "any" ));
 
         params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
 
@@ -717,30 +641,6 @@ import no.sesat.search.result.WeightedSuggestion;
         return new Query(params);
     }
 
-    private String getDynamicParams(final Map map, final String key, final String defaultValue) {
-
-        LOG.trace("getDynamicParams(map," + key + "," + defaultValue + ')');
-
-        String value = null;
-
-        Object o = map.get(key);
-        if (o == null) {
-            value = defaultValue;
-        } else if (o instanceof String[]) {
-            value = ((String[]) o)[0];
-        } else if (o instanceof String) {
-            value = (String) o;
-        } else {
-            throw new IllegalArgumentException("Unkown param instance " + o);
-        }
-
-        if (value == null || "null".equals(value) || "".equals(value)) {
-            value = defaultValue;
-        }
-        LOG.trace("getDynamicParams returning " + value);
-        return value;
-    }
-
     private String getNavigatorsString() {
 
         if (getNavigators() != null) {
@@ -771,7 +671,7 @@ import no.sesat.search.result.WeightedSuggestion;
         return soFar;
     }
 
-    private void collectModifiers(IQueryResult result, FastSearchResult searchResult) {
+    private void collectModifiers(IQueryResult result, FastSearchResult<ResultItem> searchResult) {
 
         for (String navigatorKey : navigatedTo.keySet()) {
 
@@ -780,21 +680,28 @@ import no.sesat.search.result.WeightedSuggestion;
 
     }
 
-    protected void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
+    protected void collectModifier(
+            final String navigatorKey,
+            final IQueryResult result,
+            final FastSearchResult<ResultItem> searchResult) {
 
         final Navigator nav = navigatedTo.get(navigatorKey);
 
-        INavigator navigator = result.getNavigator(nav.getName());
+        final INavigator navigator = result.getNavigator(nav.getName());
 
-        if (navigator != null) {
+        if (null != navigator) {
 
-            Iterator modifers = navigator.modifiers();
+            final Iterator modifers = navigator.modifiers();
 
             while (modifers.hasNext()) {
-                IModifier modifier = (IModifier) modifers.next();
-                if (!modifier.getName().equals("unknown") && (!navigatedValues.containsKey(nav.getField()) || modifier.getName().equals(navigatedValues.get(nav.getField())[0]))) {
-                    Modifier mod = new Modifier(modifier.getName(), modifier.getCount(), nav);
-                    searchResult.addModifier(navigatorKey, mod);
+
+                final IModifier modifier = (IModifier) modifers.next();
+
+                if (!"unknown".equals(modifier.getName())) {
+
+                    searchResult.addModifier(
+                            navigatorKey,
+                            new Modifier(modifier.getName(), modifier.getCount(), nav));
                 }
             }
 
@@ -833,7 +740,13 @@ import no.sesat.search.result.WeightedSuggestion;
         }
     }
 
-    protected Comparator getModifierComparator(final Navigator nav) {
+    /** Override to provide custom modifier comparators.
+     * This implementation always return null.
+     *
+     * @param nav
+     * @return null
+     */
+    protected Comparator<Modifier> getModifierComparator(final Navigator nav) {
         return null;
     }
 

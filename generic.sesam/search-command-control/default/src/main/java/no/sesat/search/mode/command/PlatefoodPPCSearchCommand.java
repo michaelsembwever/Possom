@@ -65,10 +65,48 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
     /**
      * Create new Platefood command.
      *
+     * @param cxt
      */
     public PlatefoodPPCSearchCommand(final Context cxt) {
 
         super(cxt);
+
+        setXmlRestful(
+                new AbstractXmlRestful(cxt) {
+                    public String createRequestURL() {
+                        final PlatefoodPpcCommandConfig ppcConfig
+                                = (PlatefoodPpcCommandConfig) cxt.getSearchConfiguration();
+                        final String partnerId = PlatefoodPPCSearchCommand.this.getPartnerId();
+                        final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
+
+                        try {
+                            url.append("&channelName=" + partnerId);
+
+                            if (partnerId != null && partnerId.equals(GIFT_PAGE_ID)) {
+                                url.append("&searchTerm=");
+                                url.append(URLEncoder.encode("send gave", ppcConfig.getEncoding()));
+
+                                // Finding location, using that as an extra parameter
+                                final String location = PlatefoodPPCSearchCommand.this.getParameter("ywpoststed");
+                                if (location != null && location.length() > 0) {
+                                    url.append("&locationTerm=");
+                                    url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
+                                }
+                            } else {
+                                url.append("&searchTerm=");
+                                url.append(URLEncoder.encode(
+                                        PlatefoodPPCSearchCommand.this.getTransformedQuery(),
+                                        ppcConfig.getEncoding()));
+                            }
+
+                            url.append("&page=1");
+                        }  catch (UnsupportedEncodingException e) {
+                            throw new SearchCommandException(e);
+                        }
+
+                        return url.toString();
+                    }
+            });
         final PlatefoodPpcCommandConfig conf = (PlatefoodPpcCommandConfig)cxt.getSearchConfiguration();
 
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
@@ -81,7 +119,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
      *
      * @return the search result
      */
-    public ResultList<? extends ResultItem> execute() {
+    public ResultList<ResultItem> execute() {
 
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
@@ -97,8 +135,8 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         top &= rq.getEngine().evaluateQuery(TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
 
         try {
-            final Document doc = getXmlResult();
-            final PlatefoodSearchResult searchResult = new PlatefoodSearchResult(top);
+            final Document doc = getXmlRestful().getXmlResult();
+            final PlatefoodSearchResult<ResultItem> searchResult = new PlatefoodSearchResult<ResultItem>(top);
 
             if (doc != null) {
                 final Element elem = doc.getDocumentElement();
@@ -133,43 +171,6 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    /**
-     * @return Return the request url used to get ads.
-     **/
-    protected String createRequestURL() {
-        final PlatefoodPpcCommandConfig ppcConfig
-                = (PlatefoodPpcCommandConfig) context.getSearchConfiguration();
-        final String partnerId = getPartnerId();
-        final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
-
-        try {
-            url.append("&channelName=" + partnerId);
-
-            if (partnerId != null && partnerId.equals(GIFT_PAGE_ID)) {
-                url.append("&searchTerm=");
-                url.append(URLEncoder.encode("send gave", ppcConfig.getEncoding()));
-
-                // Finding location, using that as an extra parameter
-                final String location = getParameter("ywpoststed");
-                if (location != null && location.length() > 0) {
-                    url.append("&locationTerm=");
-                    url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
-                }
-            } else {
-                url.append("&searchTerm=");
-                url.append(URLEncoder.encode(getTransformedQuery(), ppcConfig.getEncoding()));
-            }
-
-            url.append("&page=1");
-        }  catch (UnsupportedEncodingException e) {
-            throw new SearchCommandException(e);
-        }
-
-        return url.toString();
-    }
-
-    /**
-     **/
     protected BasicResultItem createItem(final Element ppcListing) {
 
         final BasicResultItem item = new BasicResultItem();
@@ -180,7 +181,10 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         final NodeList desc2 = ppcListing.getElementsByTagName("chan:line2");
         final NodeList imageUrl = ppcListing.getElementsByTagName("chan:line1");
         final NodeList phone = ppcListing.getElementsByTagName("chan:phoneNumber");
-        final String place = ppcListing.getParentNode().getParentNode().getAttributes().getNamedItem("id").getNodeValue();
+
+        final String place = ppcListing.getParentNode().getParentNode()
+                .getAttributes().getNamedItem("id").getNodeValue();
+
         LOG.debug("T3X: "+ place);
 
         if (title.getLength() > 0) {
@@ -236,6 +240,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
      * @return the base url
      */
     private String getBaseUrl(final String url) {
+
         if (url == null || url.length() == 0) {
             return null;
         }

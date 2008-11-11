@@ -19,11 +19,12 @@ package no.sesat.search.mode.config;
 
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
+import no.sesat.search.mode.config.querybuilder.PrefixQueryBuilderConfig;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
-/**
+/** Search against Yahoo! Index Data Protocol 2.0.
  *
  * @version <tt>$Id$</tt>
  */

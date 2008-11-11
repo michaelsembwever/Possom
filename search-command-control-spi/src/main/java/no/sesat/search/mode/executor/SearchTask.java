@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  *
  * @version <tt>$Id$</tt>
  */
-public final class SearchTask extends FutureTask<ResultList<? extends ResultItem>> {
+public final class SearchTask extends FutureTask<ResultList<ResultItem>> {
 
     private static final Logger LOG = Logger.getLogger(SearchTask.class);
 
@@ -52,7 +52,7 @@ public final class SearchTask extends FutureTask<ResultList<? extends ResultItem
         return super.cancel(mayInterruptIfRunning);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public synchronized ResultList<? extends ResultItem> get() {
+    public synchronized ResultList<ResultItem> get() {
 
         try {
             LOG.debug("Calling get on " + command);
@@ -67,7 +67,7 @@ public final class SearchTask extends FutureTask<ResultList<? extends ResultItem
         }
     }
 
-    public synchronized ResultList<? extends ResultItem> get(final long timeout, final TimeUnit unit) {
+    public synchronized ResultList<ResultItem> get(final long timeout, final TimeUnit unit) {
 
         try {
             return super.get(timeout, unit);

@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -42,13 +42,12 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
     protected AbstractQueryTransformer(){
     }
 
-    /** {@inherit} **/
-    //@Override // TODO uncomment for java 6
+    @Override
     public void setContext(final Context cxt) {
         context = cxt;
     }
 
-    /**
+    /** Get the context that was set with setContext()
      *
      * @return
      */
@@ -56,35 +55,28 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         return context;
     }
 
-    //@Override // TODO uncomment for java 6
+    @Override
     public String getFilter() {
         return "";
     }
 
-    /** {@inherit} **/
-    //@Override // TODO uncomment for java 6
+    @Override
     public String getFilter(final java.util.Map parameters) {
         return "";
     }
 
     /** @deprecated modify the context's transformedTerms map instead **/
-    //@Override // TODO uncomment for java 6
+    @Override
     public String getTransformedQuery() {
         return getContext().getTransformedQuery();
     }
 
-    /**
-     *
-     * @param clause
-     */
+    @Override
     protected void visitImpl(final Object clause) {
         LOG.info( getClass().getSimpleName() + INFO_OLD_IMPLEMENTATION_STILL);
     }
 
-    /**
-     *
-     * @param clause
-     */
+
     protected final void visitImpl(final XorClause clause) {
 
         getContext().visitXorClause(this, clause);

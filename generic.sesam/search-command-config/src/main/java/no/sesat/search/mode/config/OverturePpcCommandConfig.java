@@ -19,6 +19,7 @@ package no.sesat.search.mode.config;
 
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
+import no.sesat.search.mode.config.querybuilder.PrefixQueryBuilderConfig;
 import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
@@ -29,6 +30,12 @@ import org.w3c.dom.Element;
  */
 @Controller("OverturePPCSearchCommand")
 public class OverturePpcCommandConfig extends AbstractYahooSearchConfiguration {
+
+    public OverturePpcCommandConfig(){
+
+        super();
+        ((PrefixQueryBuilderConfig)getQueryBuilder()).setSupportsNot(false);
+    }
 
     /**
      * Holds value of property url.

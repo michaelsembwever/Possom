@@ -14,9 +14,10 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  */
-package no.sesat.search.result.test;
+package no.sesat.search.mode.command;
 
 
+import no.sesat.search.result.test.*;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.BaseContext;
@@ -24,7 +25,7 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelTestCase;
 import no.sesat.search.mode.command.SearchCommand;
-import no.sesat.search.mode.config.SearchConfiguration;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.mode.config.FastCommandConfig;
 import no.sesat.search.result.Navigator;
 import no.sesat.search.mode.SearchMode;
@@ -57,7 +58,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
      *
      * @return
      */
-    public SearchConfiguration getSearchConfiguration() {
+    public BaseSearchConfiguration getSearchConfiguration() {
         return config;
     }
 
@@ -166,7 +167,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                 SearchCommand.Context.class,
                 new BaseContext() {
-                    public SearchConfiguration getSearchConfiguration() {
+                    public BaseSearchConfiguration getSearchConfiguration() {
                         return config;
                     }
                     public RunningQuery getRunningQuery() {

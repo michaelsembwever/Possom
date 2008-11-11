@@ -33,7 +33,7 @@ import static no.sesat.search.datamodel.access.ControlLevel.SEARCH_COMMAND_EXECU
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
-import no.sesat.search.mode.config.SearchConfiguration;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
@@ -84,7 +84,7 @@ public final class DataModelResultHandler implements ResultHandler{
     // ResultHandler implementation ----------------------------------------------
 
     public void handleResult(final Context cxt, final DataModel datamodel) {
-        final SearchConfiguration config = cxt.getSearchConfiguration();
+        final BaseSearchConfiguration config = cxt.getSearchConfiguration();
 
         // results
         LOG.debug(DEBUG_ADD_RESULT + config.getId());
