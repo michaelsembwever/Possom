@@ -32,6 +32,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
+import no.sesat.search.mode.command.querybuilder.FilterBuilder;
 import no.sesat.search.query.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.ResultItem;
@@ -177,5 +178,14 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
 
     }
 
+    @Override
+    protected String getParameter(final String key){
+        return super.getParameter(key);
+    }
+
+    @Override
+    protected FilterBuilder getFilterBuilder(){
+        return super.getFilterBuilder();
+    }
 
 }
