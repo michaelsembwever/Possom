@@ -405,28 +405,31 @@ public final class SiteLocatorFilter implements Filter {
                     ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
                 }
             } else {
-                stack.push(request);
-
                 long start = System.currentTimeMillis();
+                stack.push(request);
                 synchronized (session) {
-                    long timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
-                    while (stack.peek() != request && timeLeft > 0) {
-                        try {
-                            session.wait(timeLeft);
-                            timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
-                        } catch (InterruptedException e) {
-                            LOG.error(e);
-                            timeLeft = -1;
+                    try {
+                        long timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
+                        while (stack.peek() != request && timeLeft > 0) {
+                            try {
+                                session.wait(timeLeft);
+                                timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
+                            } catch (InterruptedException e) {
+                                LOG.error(e);
+                                timeLeft = -1;
+                            }
+                        }
+                        if (timeLeft >= 0) {
+                            chain.doFilter(request, response);
+                        } else {
+                            LOG.warn(" -- response 409 (Timeout: Waited " + (WAIT_TIME - timeLeft) + " ms. )");
+                            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
                         }
                     }
-                    if (timeLeft >= 0) {
-                        chain.doFilter(request, response);
-                    } else {
-                        LOG.warn(" -- response 409 (Timeout: Waited " + (WAIT_TIME - timeLeft) + " ms. )");
-                        ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
+                    finally {
+                        stack.pop();
+                        session.notifyAll();
                     }
-                    stack.pop();
-                    session.notifyAll();
                 }
             }
         } else {
