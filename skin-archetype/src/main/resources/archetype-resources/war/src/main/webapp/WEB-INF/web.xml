@@ -35,7 +35,7 @@
     
     <servlet>
         <servlet-name>resource servlet</servlet-name>
-        <servlet-class>no.${package}.commons.resourcefeed.ResourceServlet</servlet-class>
+        <servlet-class>no.sesat.commons.resourcefeed.ResourceServlet</servlet-class>
         <init-param>
             <param-name>ipaddresses.allowed</param-name>
             <param-value>80.91.33.</param-value>
