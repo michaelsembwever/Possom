@@ -291,7 +291,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     // SearchCommand overrides ---------------------------------------------------
 
     public BaseSearchConfiguration getSearchConfiguration() {
-        return context.getSearchConfiguration();
+        return (BaseSearchConfiguration) context.getSearchConfiguration();
     }
 
     /**
