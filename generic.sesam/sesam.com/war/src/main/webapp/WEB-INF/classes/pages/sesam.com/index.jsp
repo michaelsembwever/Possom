@@ -64,8 +64,7 @@
                 <b>Schibsted Sök AB</b><br />
                 105 17 STOCKHOLM<br />
                 Sweden<br/><br />
-                Telephone: +46 08 13 53 10<br />
-                Fax:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>+46 08 20 96 70<br />
+                Telephone: +46 08-725 20 00<br />
                 Email:<![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]]>
                 <a href="mailto:kontakt@sesam.se?SUBJECT=Feedback fra www.sesam.com">kontakt@sesam.se</a><br />
         </p>
