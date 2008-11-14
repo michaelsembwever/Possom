@@ -60,6 +60,7 @@ public final class ResultPagingNavigationController
     public NavigationItem getNavigationItems(final Context context) {
 
         final SearchDataObject search = context.getDataModel().getSearch(config.getCommandName());
+        final String offsetId = null != config.getId() && config.getId().length() > 0 ? config.getId() : OFFSET_KEY;
         NavigationItem item = null;
 
         if (search == null) {
@@ -75,7 +76,7 @@ public final class ResultPagingNavigationController
             }else {
                 hitCount = searchResult.getHitCount();
             }
-            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(OFFSET_KEY);
+            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(offsetId);
             final int offset = offsetString == null ? 0 : Integer.parseInt(offsetString.getUtf8UrlEncoded());
 
             item = new BasicNavigationItem();

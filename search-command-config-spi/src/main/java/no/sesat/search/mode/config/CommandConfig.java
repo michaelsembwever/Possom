@@ -86,6 +86,7 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
     private boolean runBlank = false;
     private boolean asynchronous = false;
     private String statisticalName = "";
+    private String pagingParameter = DEFAULT_PAGING_PARAMETER;
 
     /**
      * Holds value of property fieldFilters.
@@ -300,6 +301,20 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
     public void setInitialQueryTransformer(final QueryTransformerConfig initialQueryTransformer) {
         this.initialQueryTransformer = initialQueryTransformer;
     }
+
+    public String getPagingParameter() {
+        return pagingParameter;
+    }
+
+    /** @see #getPagingParameter()
+     *
+     * @param pagingParameter the paginParameter
+     */
+    public void setPagingParameter(final String pagingParameter) {
+        this.pagingParameter = pagingParameter;
+    }
+
+
 
     // Protected --------------------------------------------------------
 

@@ -18,6 +18,7 @@
  */
 package no.sesat.search.view.navigation;
 
+import no.sesat.search.mode.config.SearchConfiguration;
 import static no.sesat.search.site.config.AbstractDocumentFactory.fillBeanProperty;
 import static no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
@@ -31,7 +32,7 @@ import org.w3c.dom.Element;
 public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
 
     /** Used for both the id of the configuration AND the parameter name. **/
-    public static final String OFFSET_KEY = "offset";
+    public static final String OFFSET_KEY = SearchConfiguration.DEFAULT_PAGING_PARAMETER;
 
     private int pageSize;
     private int numberOfPages;

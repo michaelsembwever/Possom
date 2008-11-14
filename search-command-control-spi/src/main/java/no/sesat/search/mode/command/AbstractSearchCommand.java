@@ -58,7 +58,6 @@ import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
 import no.sesat.search.view.config.SearchTab;
 import static no.sesat.search.view.navigation.NavigationConfig.USER_SORT_KEY;
-import static no.sesat.search.view.navigation.ResultPagingNavigationConfig.OFFSET_KEY;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -553,7 +552,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         int offset = 0;
 
         if(isPaginated()){
-            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(OFFSET_KEY);
+            final String offsetKey = getSearchConfiguration().getPagingParameter();
+            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(offsetKey);
             if( null != offsetString ){
                 offset = Integer.parseInt(offsetString.getUtf8UrlEncoded());
             }
@@ -566,8 +566,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         final boolean navMapExists = null != context.getDataModel().getNavigation()
                 && null != context.getDataModel().getNavigation().getConfiguration();
 
+        final String offsetKey = getSearchConfiguration().getPagingParameter();
+
         final Nav offsetNav = navMapExists
-                ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(OFFSET_KEY)
+                ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(offsetKey)
                 : null;
 
         return null != offsetNav && getSearchConfiguration().getId().equals(offsetNav.getCommandName());

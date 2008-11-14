@@ -23,6 +23,11 @@
             <artifactId>sesat-site-spi</artifactId>
             <version>${sesat.version}</version>
         </dependency>
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-search-command-config-spi</artifactId>
+            <version>${sesat.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

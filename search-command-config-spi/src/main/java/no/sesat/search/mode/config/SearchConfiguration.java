@@ -31,6 +31,11 @@ import org.w3c.dom.Element;
 public interface SearchConfiguration extends Serializable {
 
     /**
+     * Default value associated with getPagingParameter()
+     */
+    public static final String DEFAULT_PAGING_PARAMETER = "offset";
+
+    /**
      * @param resultField
      */
     void addResultField(String... resultField);
@@ -77,6 +82,16 @@ public interface SearchConfiguration extends Serializable {
      * @return The statistical name.
      */
     String getStatisticalName();
+
+    /** Return the parameter key that any associated ResultPagingNavigationController
+     * should use to fetch the offset value.
+     * Defaults to "offset".
+     *
+     * Typically used when multiple ResultPagingNavigationControllers are to be configured on the one mode.
+     *
+     * @return
+     */
+    String getPagingParameter();
 
     /**
      * @return true if the command should always run.
