@@ -1,8 +1,5 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2008) Schibsted Søk AS
  * This file is part of SESAT.
- * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
- * You should have received a copy of the SESAT License along with this program.
- * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
  *
  *   SESAT is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Affero General Public License as published by
@@ -16,207 +13,192 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- *
- * StringChopper.java
- *
- * Created on June 22, 2006, 5:10 PM
- *
  */
 
 package no.sesat.search.result;
 
-import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.apache.log4j.Logger;
+import java.util.Stack;
 
-/** My favourite dish of ChopSuey.
- *
- * @version $Id$
- *
- */
-public final class StringChopper {
+public class StringChopper {
 
-    // Constants -----------------------------------------------------
-
-    private static final Logger LOG = Logger.getLogger(StringChopper.class);
-
-    private static final String DEBUG_CHOPSUEY = "Chopped it up to ";
-
-    private static final Pattern openTag = Pattern.compile("<[^?!][^<]*>");
-    private static final Pattern closeTag = Pattern.compile("</[^<]+>");
-    private static final Pattern singleTag = Pattern.compile("<[^<]+/>");
-
-    // Attributes ----------------------------------------------------
-
-    // Static --------------------------------------------------------
+    private enum State {
+        none, tag, startTag, endTag, cdata, comment, declaration
+    };
 
     /**
-     * null safe.
-     * @param s
+     * Truncate s to the given length at closest space or xml tag. Any xml tags will be closed/balanced.
+     *
+     * @param input The string that should be truncated.
      * @param length
-     * @return
+     * @return The truncated string
      */
-    public static String chop(final String s, final int length) {
-        return chop(s, length, false);
+    public static String chop(final String input, final int length) {
+        return chop(input, length, false);
     }
 
     /**
-     * null safe.
-     * @param s
-     * @param length
-     * @param chopWord allowed to chop a word in half
-     * @return
+     * Truncate s to the given length or to closest space/tag depending on chop. Any xml tags will be closed/balanced.
+     * @param input The string that should be truncated.
+     * @param length max length of string (if choped the string will be '...' longer then max.)
+     * @param chop If words should be choped, or if we chop inbetween spaces.
+     * @return The truncated string
      */
-    public static String chop(final String s, final int length, final boolean chopWord) {
+    public static String chop(final String input, final int length, final boolean chop) {
 
-        if(null != s){
+        if (input == null)
+            return null;
 
-            final StringBuilder choppedString = new StringBuilder(s);
+        Stack<Integer> stack = new Stack<Integer>();
+        char[] s = input.toCharArray();
+        StringBuilder res = new StringBuilder(s.length);
+        State state = State.none;
+        int count = 0;
+        int i = 0;
 
-            int laOriginalCount = 0, raOriginalCount = 0, markupLength = 0;
-            boolean insideMarkup = false;
-            for(int i = 0; i < choppedString.length(); ++i){
-                if( '<' == choppedString.charAt(i) ){ ++laOriginalCount; insideMarkup = true;}
-
-                if (insideMarkup) {
-                    ++markupLength;
-                }
-
-                if( '>' == choppedString.charAt(i) ){ ++raOriginalCount; insideMarkup = false;}
-
-            }
-
-            // if we have more left than right arrows
-            while(laOriginalCount > raOriginalCount){
-                choppedString.append('>');
-                ++raOriginalCount;
-                markupLength = 0; // Be safe, use original length if markup unbalanced.
-            }
-
-            // We're interested in limiting the length of the rendered string excluding the length of the markup.
-            final int maxLength = length + markupLength;
-
-            if(length > 0 && choppedString.length() > maxLength){
-
-                // chop the string first
-                choppedString.setLength(maxLength);
-
-                // if we chopped a tag in half remove the half left over.
-                int laCount = 0, raCount = 0;
-                for(int i = 0; i < choppedString.length(); ++i){
-                    if( '<' == choppedString.charAt(i) ){ ++laCount; }
-                    else if( '>' == choppedString.charAt(i) ){ ++raCount; }
-                }
-
-                // if we have more left than right arrows
-                if( laCount > raCount ){
-                    choppedString.setLength(choppedString.lastIndexOf("<"));
-                }
-
-                // append the dot-dot-dot
-                switch( choppedString.length() >0 ? choppedString.charAt( choppedString.length() - 1 ) : ' '){
-                    case '.':
-                        final String toString = choppedString.toString();
-                        if( !toString.endsWith("...")){
-                            if( toString.endsWith("..")){
-                                choppedString.append('.');
-                            }else {
-                                choppedString.append("..");
-                            }
-                        }
-                        break;
-                    default:
-                        if(!chopWord){
-                            final int lastSpace = choppedString.lastIndexOf(" ");
-
-                            if (lastSpace >= 0) {
-                                choppedString.setLength(lastSpace + 1);
-                            }
-                        }
-                        choppedString.append("...");
-                        break;
-                }
-
-            }
-
-            if(0 < laOriginalCount){
-                // balance opening tags if the chop happened inbetween open and close tags.
-                //LOG.debug("");LOG.debug("Balancing " + choppedString);
-
-                final LinkedList<String> tags = new LinkedList<String>();
-                final LinkedList<int[]> tagsToRemove = new LinkedList<int[]>();
-
-                final Matcher matcher = openTag.matcher(choppedString);
-
-                while( matcher.find() ){
-                    if( closeTag.matcher(matcher.group()).find()) {
-
-                        if(tags.size() > 0 && matcher.group().equalsIgnoreCase(tags.getFirst().replaceFirst("<", "</"))){
-
-                            //LOG.debug("Found closing tag   " + matcher.group());
-                            tags.removeFirst();
-
-                        }else{
-
-                            // we've found a premature closing tag. remove it.
-                            //LOG.debug("Found unmatched closing tag " + matcher.group());
-                            tagsToRemove.addFirst(new int[]{matcher.start(), matcher.end()});
-                        }
-
-                    }else if( singleTag.matcher(matcher.group()).find() ){
-
-                        //LOG.debug("Ignoring single tag " + matcher.group());
-                    }else{
-
-                        // Removing attributes etc to find the correct closing tag.
-                        //LOG.debug("Found opening tag  " + matcher.group());
-                        //LOG.debug("  adding to stack: " + matcher.group().replaceFirst(" [^>]+", ""));
-                        tags.addFirst(matcher.group().replaceFirst(" [^>]+", ""));
+        main: for (; i < s.length; i++) {
+            char c = s[i];
+            switch (state) {
+            case none:
+                if (c == '<') {
+                    state = State.tag;
+                } else {
+                    count++;
+                    if (count == length) {
+                        res.append(c);
+                        break main;
                     }
                 }
+                break;
 
-                // remove tags that had no opening
-                for(final int[] startEnd : tagsToRemove){
-
-                    //LOG.debug("Removing " + matcher.group());
-                    choppedString.delete(startEnd[0], startEnd[1]);
+            case tag:
+                if (c == '/') {
+                    state = State.endTag;
+                } else if (c == '!') {
+                    // ![CDATA[
+                    if (s.length > (i + 7) && s[i + 1] == '[' && (s[i + 2] == 'C' || s[i + 2] == 'c')
+                            && (s[i + 3] == 'D' || s[i + 3] == 'd') && (s[i + 4] == 'A' || s[i + 4] == 'a')
+                            && (s[i + 5] == 'T' || s[i + 5] == 't') && (s[i + 6] == 'A' || s[i + 6] == 'a')
+                            && s[i + 7] == '[') {
+                        state = State.cdata;
+                        res.append("![CDATA[");
+                        i += 7;
+                        continue;
+                    }
+                    // !--
+                    else if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '-') {
+                        state = State.comment;
+                        res.append("!--");
+                        i += 2;
+                        continue;
+                    }
+                } else if (c == '?') {
+                    state = State.declaration;
+                } else {
+                    stack.push(i);
+                    state = State.startTag;
                 }
+                break;
 
-                // add tags to balance
-                for(final String tag : tags){
-
-                    //LOG.debug("Adding " + tag.replaceFirst("<", "</"));
-                    choppedString.append(tag.replaceFirst("<", "</"));
+            case startTag:
+                if (c == '/') {
+                    if (s.length > (i + 1) && s[i + 1] == '>') {
+                        state = State.none;
+                        res.append("/>");
+                        i += 1;
+                        if(!stack.isEmpty())
+                            stack.pop();
+                        continue;
+                    }
+                } else if (c == '>') {
+                    state = State.none;
                 }
+                break;
+
+            case endTag:
+                if (c == '>') {
+                    state = State.none;
+                    if(!stack.isEmpty())
+                        stack.pop();
+                }
+                break;
+
+            case cdata:
+
+                if (c == ']') {// ]]>
+                    if (s.length > (i + 2) && s[i + 1] == ']' && s[i + 2] == '>') {
+                        state = State.none;
+                        res.append("]]>");
+                        i += 2;
+                        continue;
+                    }
+                } else {
+                    count++;
+                    if (count == length) {
+                        res.append(c);
+                        break main;
+                    }
+                }
+                break;
+
+            case comment:
+                if (c == '-') {
+                    // -->
+                    if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '>') {
+                        state = State.none;
+                        res.append("-->");
+                        i += 2;
+                        continue;
+                    }
+                }
+                break;
+
+            case declaration:
+                if (c == '?') {
+                    if (s.length > (i + 1) && s[i + 1] == '>') {
+                        state = State.none;
+                        res.append("?>");
+                        i += 1;
+                        continue;
+                    }
+                }
+                break;
             }
-            LOG.trace(DEBUG_CHOPSUEY + choppedString);
-
-            return choppedString.toString();
+            res.append(c);
         }
-        return null;
+
+        // append dots
+        dot: if (i < s.length - 1) {
+            if (chop) {
+                res.append("...");
+            } else {
+                for (int k = i; k > 0; k--) {
+                    if (s[k] == ' ' || s[k] == ((state == State.cdata) ? '[' : '>')) {
+                        res.setLength(k + 1);
+                        res.append("...");
+                        break dot;
+                    }
+                }
+                res.append("...");
+            }
+        }
+
+        // close CDATA if we are in one
+        if (state == State.cdata) {
+            res.append("]]>");
+        }
+
+        // close all other open tags
+        while (!stack.isEmpty()) {
+            int j = stack.pop();
+            char c = s[j];
+            res.append("</");
+            while (s.length > j && c != '>') {
+                res.append(c);
+                c = s[++j];
+            }
+            res.append('>');
+        }
+
+        return res.toString();
     }
-
-    // Constructors --------------------------------------------------
-
-    /** Creates a new instance of StringChopper */
-    private StringChopper(){
-    }
-
-    // Public --------------------------------------------------------
-
-    // Z implementation ----------------------------------------------
-
-    // Y overrides ---------------------------------------------------
-
-    // Package protected ---------------------------------------------
-
-    // Protected -----------------------------------------------------
-
-    // Private -------------------------------------------------------
-
-    // Inner classes -------------------------------------------------
-
-
-
 }
