@@ -210,7 +210,7 @@
                 <!-- QR Server for relevant queries -->
                 <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-                <queryServer.solr.1>http://sch-fast-query01.osl.basefarm.net:8180/solr/</queryServer.solr.1>
+                <queryServer.solr.1>http://sch-fast-query.osl.basefarm.net:8180/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -235,7 +235,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-fast-query01.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -255,7 +255,7 @@
                 <!-- QR Server for relevant queries -->
                 <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-                <queryServer.solr.1>http://sch-fast-query01.osl.basefarm.net:8180/solr/</queryServer.solr.1>
+                <queryServer.solr.1>http://sch-fast-query.osl.basefarm.net:8180/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -280,7 +280,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-fast-query01.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -297,7 +297,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-                <queryServer.solr.1>http://sch-fast-query01.osl.basefarm.net:8180/solr/</queryServer.solr.1>
+                <queryServer.solr.1>http://sch-fast-query.osl.basefarm.net:8180/solr/</queryServer.solr.1>
                 <!--espBlogQueryServer>sch-fast-admin-e01.osl.basefarm.net:15100</espBlogQueryServer-->
                 <!--espBlogQueryServer>http://sch-fast-admin-e01.osl.basefarm.net:15100</espBlogQueryServer-->
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
@@ -330,7 +330,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-fast-query01.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -350,7 +350,7 @@
                 <!-- QR Server for relevant queries -->
                 <relevantqueries.url>http://10.16.195.250:15200</relevantqueries.url>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-                <queryServer.solr.1>http://sch-fast-query01.osl.basefarm.net:8180/solr/</queryServer.solr.1>
+                <queryServer.solr.1>http://sch-fast-query.osl.basefarm.net:8180/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -375,7 +375,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-fast-query01.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -392,7 +392,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-                <queryServer.solr.1>http://sch-fast-query01.osl.basefarm.net:8180/solr/</queryServer.solr.1>
+                <queryServer.solr.1>http://sch-fast-query.osl.basefarm.net:8180/solr/</queryServer.solr.1>
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
 
@@ -420,7 +420,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-fast-query01.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
@@ -439,7 +439,7 @@
                 <!-- QR Servers -->
                 <newsQueryServerURL>http://10.16.195.250:15100</newsQueryServerURL>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
-                <queryServer.solr.1>http://sch-fast-query01.osl.basefarm.net:8180/solr/</queryServer.solr.1>
+                <queryServer.solr.1>http://sch-fast-query.osl.basefarm.net:8180/solr/</queryServer.solr.1>
 
                 <espBlogQueryServer>sch-fast-query.osl.basefarm.net:15500</espBlogQueryServer>
                 <espScanpixQueryServer>sch-fast-query.osl.basefarm.net:15500</espScanpixQueryServer>
@@ -468,7 +468,7 @@
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <tokenevaluator.port>15200</tokenevaluator.port>
-                <tokenevaluator.solr.serverUrl>http://sch-fast-query01.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
+                <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>user-service/UserServiceImpl/remote</user_service_jndi_name>
