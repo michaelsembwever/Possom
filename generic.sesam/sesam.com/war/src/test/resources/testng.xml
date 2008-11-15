@@ -32,6 +32,6 @@
     test name="Search Commands">
         <packages>
             <package name="no.sesat.search.mode.command"/>
-        </packages-->
-    </test>
+        </packages>
+    </test-->
 </suite>
