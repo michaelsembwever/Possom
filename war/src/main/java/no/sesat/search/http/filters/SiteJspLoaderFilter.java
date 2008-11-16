@@ -34,9 +34,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import no.sesat.search.site.Site;
-import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
 import no.sesat.search.site.config.UrlResourceLoader;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 
@@ -157,6 +157,9 @@ public final class SiteJspLoaderFilter implements Filter {
             final HttpServletRequest request,
             final String jsp) throws MalformedURLException{
 
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         byte[] golden = new byte[0];
 
         // search skins for the jsp and write it out to "golden"
@@ -171,11 +174,7 @@ public final class SiteJspLoaderFilter implements Filter {
 
             final Site finalSite = site;
             final BytecodeLoader bcLoader = UrlResourceLoader.newBytecodeLoader(
-                    new SiteContext(){
-                        public Site getSite() {
-                            return finalSite;
-                        }
-                    },
+                    finalSite.getSiteContext(),
                     jsp,
                     null
             );
@@ -238,6 +237,9 @@ public final class SiteJspLoaderFilter implements Filter {
                 LOG.error(ex.getMessage(), ex);
             }
         }
+
+        stopWatch.stop();
+        LOG.trace("SiteJspLoaderFilter.downloadJsp(..) took " + stopWatch);
     }
 
     //// Imported from org.catalina.jasper.Constants
