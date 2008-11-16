@@ -78,6 +78,19 @@ public interface TokenEvaluationEngine {
     };
 
     /**
+     * Evaluator that will throws an EvaluationException under all circumstances.
+     */
+    static final TokenEvaluator DEAD_EVALUATOR = new TokenEvaluator() {
+        public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
+            throw new EvaluationRuntimeException(
+                    new EvaluationException("DEAD_EVALUATOR", null));
+        }
+        public boolean isQueryDependant(final TokenPredicate predicate) {
+            return false;
+        }
+    };
+
+    /**
      * Holder for evaluation state during the engine's evaluation.
      * Evaluation on any term, clause, or query requires state of the current term and query,
      *  and of the already matched known and possible predicates.

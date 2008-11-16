@@ -19,6 +19,7 @@
 package no.sesat.search.run;
 
 
+import no.sesat.search.query.token.DeadTokenEvaluationEngineImpl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,9 +45,11 @@ import no.sesat.search.datamodel.generic.MapDataObjectSupport;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.navigation.NavigationDataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
+import no.sesat.search.query.Clause;
 import no.sesat.search.query.analyser.AnalysisRule;
 import no.sesat.search.query.analyser.AnalysisRuleFactory;
 import no.sesat.search.query.QueryStringContext;
+import no.sesat.search.query.token.EvaluationException;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenEvaluationEngineImpl;
 import no.sesat.search.mode.command.SearchCommand;
@@ -60,6 +63,8 @@ import no.sesat.search.query.Query;
 import no.sesat.search.query.parser.QueryParser;
 import no.sesat.search.query.parser.QueryParserImpl;
 import no.sesat.search.query.token.TokenEvaluationEngineContext;
+import no.sesat.search.query.token.TokenEvaluator;
+import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
@@ -155,23 +160,30 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         };
 
-        final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
-                ContextWrapper.wrap(
-                    TokenEvaluationEngine.Context.class,
-                    context,
-                    new QueryStringContext() {
-                        public String getQueryString() {
-                            return queryStr;
-                        }
-                    },
-                    new BaseContext(){
-                        public String getUniqueId(){
-                            return datamodel.getParameters().getUniqueId();
-                        }
-                    },
-                    siteCxt);
+        if(cxt.getSearchMode().isEvaluation()){
 
-        engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
+                    ContextWrapper.wrap(
+                        TokenEvaluationEngine.Context.class,
+                        context,
+                        new QueryStringContext() {
+                            public String getQueryString() {
+                                return queryStr;
+                            }
+                        },
+                        new BaseContext(){
+                            public String getUniqueId(){
+                                return datamodel.getParameters().getUniqueId();
+                            }
+                        },
+                        siteCxt);
+
+            engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+
+        }else{
+            // use a dead token evaluation engine. false and stale evaluation so it is not cached.
+            engine = new DeadTokenEvaluationEngineImpl(queryStr, siteCxt.getSite());
+        }
 
         // queryStr parser
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {

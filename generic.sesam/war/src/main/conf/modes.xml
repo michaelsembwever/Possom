@@ -340,7 +340,7 @@ Copyright (2006-2008) Schibsted Søk AS
     <!-- General common modes -->
 
         <!-- Realtime Suggestions -->
-    <mode id="solrSuggestions" auto-broadening="false" inherit="default-mode">
+    <mode id="solrSuggestions" auto-broadening="false" evaluation="false" inherit="default-mode">
         <!-- Note the default-solr.1 default value in generic.sesam will not work outside of schibsted søk. -->
         <solr-command id="solrSuggestions"
                 result-fields="list_name,list_entry"

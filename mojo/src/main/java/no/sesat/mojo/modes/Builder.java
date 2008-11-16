@@ -181,6 +181,7 @@ public final class Builder {
         // TODO replace with introspection
         mode.getAttributes().add(new ConfigAttribute("id"));
         mode.getAttributes().add(new ConfigAttribute("inherit"));
+        mode.getAttributes().add(new ConfigAttribute("evaluation"));
         mode.getAttributes().add(new ConfigAttribute("analysis"));
         mode.getAttributes().add(new ConfigAttribute("executor"));
         mode.getAttributes().add(new ConfigAttribute("auto-broadening"));
