@@ -273,7 +273,11 @@ public final class UserFilter implements Filter {
      */
     private static BasicUserService getBasicUserService(final DataModel datamodel) {
 
-        if (!Boolean.getBoolean("jnp.disableDiscovery")) {
+        final boolean enabled = Boolean.parseBoolean(
+                datamodel.getSite().getSiteConfiguration().getProperty("sesat.userservice.enabled"));
+
+        if (enabled && !Boolean.getBoolean("jnp.disableDiscovery")) {
+
             // lookup the ejb3-client service
             final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
             final String url = siteConf.getProperty("schibstedsok_remote_service_url");
