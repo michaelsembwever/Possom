@@ -77,6 +77,7 @@ public final class SearchMode implements Serializable {
 
     private Collection<SearchConfiguration> searchConfigurations;
     private SearchMode parentSearchMode;
+    private boolean queryEvaluationEnabled = true;
     private boolean queryAnalysisEnabled = false;
     private boolean autoBroadening = true;
     private String parentMode;
@@ -103,6 +104,7 @@ public final class SearchMode implements Serializable {
         if( inherit != null ){
             parentSearchMode = inherit;
             parentMode = inherit.parentMode;
+            queryEvaluationEnabled = inherit.queryEvaluationEnabled;
             queryAnalysisEnabled = inherit.queryAnalysisEnabled;
             searchCommandExecutor = inherit.searchCommandExecutor;
             autoBroadening = inherit.autoBroadening;
@@ -186,11 +188,12 @@ public final class SearchMode implements Serializable {
 
     /**
      * Get the queryAnalysisEnabled.
+     * To return true isEvaluation() must also return true.
      *
      * @return the queryAnalysisEnabled.
      */
     public boolean isAnalysis() {
-        return queryAnalysisEnabled;
+        return queryEvaluationEnabled && queryAnalysisEnabled;
     }
 
     /**
@@ -200,6 +203,24 @@ public final class SearchMode implements Serializable {
      */
     public void setAnalysis(boolean queryAnalysisEnabled) {
         this.queryAnalysisEnabled = queryAnalysisEnabled;
+    }
+
+    /**
+     * Get the queryEvaluationEnabled.
+     *
+     * @return the queryEvaluationEnabled.
+     */
+    public boolean isEvaluation() {
+        return queryEvaluationEnabled;
+    }
+
+    /**
+     * Set the queryEvaluationEnabled.
+     *
+     * @param queryEvaluationEnabled The queryEvaluationEnabled to set.
+     */
+    public void setEvaluation(boolean queryEvaluationEnabled) {
+        this.queryEvaluationEnabled = queryEvaluationEnabled;
     }
 
     /**
