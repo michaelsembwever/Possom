@@ -44,7 +44,7 @@ public class SolrCommandConfig extends CommandConfig {
      */
     private String serverUrl = "";
 
-    private String querySuffix = "";
+    private String filteringQuery = "";
 
     // Static --------------------------------------------------------
 
@@ -64,23 +64,31 @@ public class SolrCommandConfig extends CommandConfig {
     }
 
     /**
-     * Setter for property serverUrl.
+     * @see #getServerUrl()
      * @param serverUrl New value of property serverUrl.
      */
     public void setServerUrl(final String serverUrl) {
         this.serverUrl = serverUrl;
     }
 
-    public String getQuerySuffix(){
-        return querySuffix;
+    /** The filter query.
+     * Used like an additional filter to narrow the query down.
+     * @see org.apache.solr.client.solrj.SolrQuery#setFilterQueries(String...)
+     *
+     * TODO change bean property from String to String[] to support multiple filtering queries.
+     *
+     * @return
+     */
+    public String getFilteringQuery(){
+        return filteringQuery;
     }
 
-    /** A string to append to every query. Used as an additional filter.
+    /** @see #getFilteringQuery()
      *
-     * @param querySuffix
+     * @param filteringQuery
      */
-    public void setQuerySuffix(final String querySuffix){
-        this.querySuffix = querySuffix;
+    public void setFilteringQuery(final String filteringQuery){
+        this.filteringQuery = filteringQuery;
     }
 
     // Z implementation ----------------------------------------------

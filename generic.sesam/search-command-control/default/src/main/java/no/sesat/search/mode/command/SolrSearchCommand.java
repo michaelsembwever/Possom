@@ -17,9 +17,13 @@
  */
 package no.sesat.search.mode.command;
 
+import java.lang.ref.Reference;
 import java.net.MalformedURLException;
 import java.util.Map;
-import no.sesat.search.mode.config.SearchConfiguration;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.mode.config.SolrCommandConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
@@ -55,6 +59,10 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
     // Static --------------------------------------------------------
 
+    private static final ReferenceMap<String,SolrServer> SERVERS = new ReferenceMap<String,SolrServer>(
+            ReferenceMap.Type.SOFT,
+            new ConcurrentHashMap<String, Reference<SolrServer>>());
+
     // Constructors --------------------------------------------------
 
     public SolrSearchCommand(final Context cxt) {
@@ -62,9 +70,16 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         super(cxt);
         try {
 
-            final String serverUrl = ((SolrCommandConfig)cxt.getSearchConfiguration()).getServerUrl();
+            final String serverUrlKey = ((SolrCommandConfig)cxt.getSearchConfiguration()).getServerUrl();
             final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
-            server = new CommonsHttpSolrServer(siteConf.getProperty(serverUrl));
+            final String serverUrl = siteConf.getProperty(serverUrlKey);
+
+            server = SERVERS.get(serverUrl);
+
+            if(null == server){
+                server = new CommonsHttpSolrServer(serverUrl);
+                SERVERS.put(serverUrl, server);
+            }
 
         } catch (MalformedURLException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -82,6 +97,7 @@ public class SolrSearchCommand extends AbstractSearchCommand{
             // set up query
             final SolrQuery query = new SolrQuery()
                     .setQuery(getTransformedQuery())
+                    .setFilterQueries(getSearchConfiguration().getFilteringQuery())
                     .setStart(getOffset())
                     .setRows(getSearchConfiguration().getResultsToReturn())
                     .setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
@@ -104,11 +120,6 @@ public class SolrSearchCommand extends AbstractSearchCommand{
             LOG.error(ex.getMessage(), ex);
         }
         return searchResult;
-    }
-
-    @Override
-    public String getTransformedQuery() {
-        return super.getTransformedQuery() + getSearchConfiguration().getQuerySuffix();
     }
 
     @Override
