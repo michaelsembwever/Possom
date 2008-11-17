@@ -78,12 +78,15 @@ public class PropertiesCommandConfig extends CommandConfig {
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "propertiesFilename", ParseType.String, element, "");
 
         final Properties props = new Properties();
-        context.newPropertiesLoader(context, propertiesFilename + ".properties", props).abut();
-
         final Map<String,String> map = new HashMap<String,String>();
-        for(Map.Entry<Object,Object> entry : props.entrySet()){
-            if(entry.getValue() instanceof String){
-                map.put((String)entry.getKey(), (String)entry.getValue());
+
+        if(0 < propertiesFilename.length()){
+            context.newPropertiesLoader(context, propertiesFilename + ".properties", props).abut();
+
+            for(Map.Entry<Object,Object> entry : props.entrySet()){
+                if(entry.getValue() instanceof String){
+                    map.put((String)entry.getKey(), (String)entry.getValue());
+                }
             }
         }
         properties = Collections.unmodifiableMap(map);
