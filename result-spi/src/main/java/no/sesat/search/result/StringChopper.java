@@ -54,163 +54,160 @@ public class StringChopper {
      */
     public static String chop(final String input, final int length, final boolean chop) {
 
-        if (input == null) {
-            return null;
-        }
+        if (input != null) {
+            final Deque<Integer> stack = new ArrayDeque<Integer>();
+            final char[] s = input.toCharArray();
+            final StringBuilder res = new StringBuilder(s.length);
+            State state = State.NONE;
+            int count = 0;
+            int i = 0;
 
-        final Deque<Integer> stack = new ArrayDeque<Integer>();
-        char[] s = input.toCharArray();
-        final StringBuilder res = new StringBuilder(s.length);
-        State state = State.NONE;
-        int count = 0;
-        int i = 0;
-
-        main: for (; i < s.length; i++) {
-            char c = s[i];
-            switch (state) {
-            case NONE:
-                if (c == '<') {
-                    state = State.TAG;
-                } else {
-                    count++;
-                    if (count == length) {
-                        res.append(c);
-                        break main;
+            main: for (; i < s.length; i++) {
+                char c = s[i];
+                switch (state) {
+                case NONE:
+                    if (c == '<') {
+                        state = State.TAG;
+                    } else {
+                        count++;
+                        if (count == length) {
+                            res.append(c);
+                            break main;
+                        }
                     }
-                }
-                break;
+                    break;
 
-            case TAG:
-                if (c == '/') {
-                    state = State.ENDTAG;
-                } else if (c == '!') {
-                    // ![CDATA[
-                    if (s.length > (i + 7) && s[i + 1] == '[' && (s[i + 2] == 'C' || s[i + 2] == 'c')
-                            && (s[i + 3] == 'D' || s[i + 3] == 'd') && (s[i + 4] == 'A' || s[i + 4] == 'a')
-                            && (s[i + 5] == 'T' || s[i + 5] == 't') && (s[i + 6] == 'A' || s[i + 6] == 'a')
-                            && s[i + 7] == '[') {
-                        state = State.CDATA;
-                        res.append("![CDATA[");
-                        i += 7;
-                        continue;
+                case TAG:
+                    if (c == '/') {
+                        state = State.ENDTAG;
+                    } else if (c == '!') {
+                        // ![CDATA[
+                        if (s.length > (i + 7) && s[i + 1] == '[' && (s[i + 2] == 'C' || s[i + 2] == 'c')
+                                && (s[i + 3] == 'D' || s[i + 3] == 'd') && (s[i + 4] == 'A' || s[i + 4] == 'a')
+                                && (s[i + 5] == 'T' || s[i + 5] == 't') && (s[i + 6] == 'A' || s[i + 6] == 'a')
+                                && s[i + 7] == '[') {
+                            state = State.CDATA;
+                            res.append("![CDATA[");
+                            i += 7;
+                            continue;
+                        }
+                        // !--
+                        else if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '-') {
+                            state = State.COMMENT;
+                            res.append("!--");
+                            i += 2;
+                            continue;
+                        }
+                    } else if (c == '?') {
+                        state = State.DECLARATION;
+                    } else {
+                        stack.push(i);
+                        state = State.STARTTAG;
                     }
-                    // !--
-                    else if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '-') {
-                        state = State.COMMENT;
-                        res.append("!--");
-                        i += 2;
-                        continue;
-                    }
-                } else if (c == '?') {
-                    state = State.DECLARATION;
-                } else {
-                    stack.push(i);
-                    state = State.STARTTAG;
-                }
-                break;
+                    break;
 
-            case STARTTAG:
-                if (c == '/') {
-                    if (s.length > (i + 1) && s[i + 1] == '>') {
+                case STARTTAG:
+                    if (c == '/') {
+                        if (s.length > (i + 1) && s[i + 1] == '>') {
+                            state = State.NONE;
+                            res.append("/>");
+                            i += 1;
+                            if (!stack.isEmpty()) {
+                                stack.pop();
+                            }
+                            continue;
+                        }
+                    } else if (c == '>') {
                         state = State.NONE;
-                        res.append("/>");
-                        i += 1;
+                    }
+                    break;
+
+                case ENDTAG:
+                    if (c == '>') {
+                        state = State.NONE;
                         if (!stack.isEmpty()) {
                             stack.pop();
                         }
-                        continue;
                     }
-                } else if (c == '>') {
-                    state = State.NONE;
+                    break;
+
+                case CDATA:
+
+                    if (c == ']') {// ]]>
+                        if (s.length > (i + 2) && s[i + 1] == ']' && s[i + 2] == '>') {
+                            state = State.NONE;
+                            res.append("]]>");
+                            i += 2;
+                            continue;
+                        }
+                    } else {
+                        count++;
+                        if (count == length) {
+                            res.append(c);
+                            break main;
+                        }
+                    }
+                    break;
+
+                case COMMENT:
+                    if (c == '-') {
+                        // -->
+                        if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '>') {
+                            state = State.NONE;
+                            res.append("-->");
+                            i += 2;
+                            continue;
+                        }
+                    }
+                    break;
+
+                case DECLARATION:
+                    if (c == '?') {
+                        if (s.length > (i + 1) && s[i + 1] == '>') {
+                            state = State.NONE;
+                            res.append("?>");
+                            i += 1;
+                            continue;
+                        }
+                    }
+                    break;
                 }
-                break;
-
-            case ENDTAG:
-                if (c == '>') {
-                    state = State.NONE;
-                    if (!stack.isEmpty()) {
-                        stack.pop();
-                    }
-                }
-                break;
-
-            case CDATA:
-
-                if (c == ']') {// ]]>
-                    if (s.length > (i + 2) && s[i + 1] == ']' && s[i + 2] == '>') {
-                        state = State.NONE;
-                        res.append("]]>");
-                        i += 2;
-                        continue;
-                    }
-                } else {
-                    count++;
-                    if (count == length) {
-                        res.append(c);
-                        break main;
-                    }
-                }
-                break;
-
-            case COMMENT:
-                if (c == '-') {
-                    // -->
-                    if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '>') {
-                        state = State.NONE;
-                        res.append("-->");
-                        i += 2;
-                        continue;
-                    }
-                }
-                break;
-
-            case DECLARATION:
-                if (c == '?') {
-                    if (s.length > (i + 1) && s[i + 1] == '>') {
-                        state = State.NONE;
-                        res.append("?>");
-                        i += 1;
-                        continue;
-                    }
-                }
-                break;
-            }
-            res.append(c);
-        }
-
-        // append dots
-        dot: if (i < s.length - 1) {
-            if (chop) {
-                res.append("...");
-            } else {
-                for (int k = i; k > 0; k--) {
-                    if (s[k] == ' ' || s[k] == ((state == State.CDATA) ? '[' : '>')) {
-                        res.setLength(k + 1);
-                        res.append("...");
-                        break dot;
-                    }
-                }
-                res.append("...");
-            }
-        }
-
-        // close CDATA if we are in one
-        if (state == State.CDATA) {
-            res.append("]]>");
-        }
-
-        // close all other open tags
-        while (!stack.isEmpty()) {
-            int j = stack.pop();
-            char c = s[j];
-            res.append("</");
-            while (s.length > j && c != '>') {
                 res.append(c);
-                c = s[++j];
             }
-            res.append('>');
-        }
 
-        return res.toString();
+            // append dots
+            if (i < s.length - 1) {
+                if (!chop) {
+                    for (int k = i; k > 0 && count > 0; k--) {
+                        if (s[k] == ' ' || s[k] == ((state == State.CDATA) ? '[' : '>')) {
+                            res.setLength(k + 1);
+                            k = 0;
+                        }
+                        count--;
+                    }
+                    res.append("...");
+                }
+            }
+
+            // close CDATA if we are in one
+            if (state == State.CDATA) {
+                res.append("]]>");
+            }
+
+            // close all other open tags
+            while (!stack.isEmpty()) {
+                int j = stack.pop();
+                char c = s[j];
+                res.append("</");
+                while (s.length > j && c != '>') {
+                    res.append(c);
+                    c = s[++j];
+                }
+                res.append('>');
+            }
+
+            return res.toString();
+        }
+        return null;
     }
 }
