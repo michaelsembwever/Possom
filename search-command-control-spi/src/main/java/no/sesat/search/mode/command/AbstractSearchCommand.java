@@ -236,7 +236,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         initialiseTransformedTerms();
 
         // construct the queryBuilder
-        queryBuilder = QueryBuilderFactory.getController(queryBuilderContext, bsc.getQueryBuilder());
+        queryBuilder = constructQueryBuilder(cxt, queryBuilderContext);
 
         // construct the sesamSyntaxQueryBuilder
         sesamSyntxQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext);
@@ -383,6 +383,28 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     // Protected -----------------------------------------------------
+
+    /** Construct from scratch, and return the query builder to use.
+     * Default implementation returns the query builder that is configured from the BaseSearchConfiguration.
+     *
+     * <br/>
+     *
+     * This method is intended to be overridden, but it called from the constructor.
+     * So it is important the overrides do not reference "this",
+     *  or any other fields as they will likely not be initialised yet.
+     *
+     * @param cxt search command's context
+     * @param queryBuilderContext the query builder context
+     * @return
+     */
+    protected QueryBuilder constructQueryBuilder(
+            final SearchCommand.Context cxt,
+            final QueryBuilder.Context queryBuilderContext){
+
+        return QueryBuilderFactory.getController(
+                queryBuilderContext,
+                ((BaseSearchConfiguration)cxt.getSearchConfiguration()).getQueryBuilder());
+    }
 
     protected Collection<String> getReservedWords(){
         return Collections.emptySet();
