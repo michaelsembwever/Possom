@@ -16,13 +16,8 @@
  */
 package no.sesat.search.mode.command;
 
-import no.fast.ds.search.ISearchParameters;
-import no.fast.ds.search.SearchParameter;
-import no.fast.ds.search.BaseParameter;
-import no.fast.ds.search.SearchType;
-
 /**
- * @deprecated use instead the FastSearchCommand with infix-query-builder
+ * @deprecated use instead the Fast4SearchCommand with infix-query-builder
  *
  */
 public class AdvancedFastSearchCommand extends AbstractAdvancedFastSearchCommand {
@@ -36,11 +31,4 @@ public class AdvancedFastSearchCommand extends AbstractAdvancedFastSearchCommand
         super(cxt);
     }
 
-    /** TODO comment me. **/
-    @Override
-    protected void setAdditionalParameters(final ISearchParameters params) {
-
-        super.setAdditionalParameters(params);
-        params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
-    }
 }

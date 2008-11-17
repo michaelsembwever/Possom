@@ -18,27 +18,31 @@
  */
 package no.sesat.search.mode.config;
 
-import java.util.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
 import no.sesat.search.result.Navigator;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
+/** Configure a Fast 4 search command
  *
  * @version <tt>$Id$</tt>
  */
-@Controller("FastSearchCommand")
+@Controller("Fast4SearchCommand")
 public class FastCommandConfig extends CommandConfig {
 
     private static final Logger LOG = Logger.getLogger(FastCommandConfig.class);
 
+    /** @deprecated TODO not sesat related. move out. **/
     private static final String[] ALL_COLLECTIONS = {
         "retriever",
         "tv",
@@ -82,6 +86,7 @@ public class FastCommandConfig extends CommandConfig {
     private int spamScoreLimit = -1;
 
     private String filter = "";
+    private String queryType = "all";
     private String filtertype = "";
     private String project = "";
 
@@ -131,11 +136,12 @@ public class FastCommandConfig extends CommandConfig {
         String result = "";
 
         if (collections.size() > 1) {
-
+            // <-- DEPRECATED. not sesat.
             final Collection<String> invertedCollection = new ArrayList<String>(Arrays.asList(ALL_COLLECTIONS));
             invertedCollection.removeAll(collections);
             final String [] coll = prependMetaCollection(invertedCollection);
             result = StringUtils.join(coll, ' ');
+            // -->
 
         } else if (collections.size() == 1) {
             result = "+meta.collection:" + collections.get(0);
@@ -149,10 +155,11 @@ public class FastCommandConfig extends CommandConfig {
 
         if ("adv".equals(this.filtertype)) {
             for (int i = 0; i < coll.length; i++) {
-                if (i == 0)
+                if (i == 0){
                     coll[i] = " size:>0 ANDNOT meta.collection:" + coll[i];
-                else
+                }else{
                     coll[i] = " ANDNOT meta.collection:" + coll[i];
+                }
             }
         } else {
             for (int i = 0; i < coll.length; i++) {
@@ -445,6 +452,25 @@ public class FastCommandConfig extends CommandConfig {
      */
     public void setFiltertype(final String filtertype) {
         this.filtertype = filtertype;
+    }
+
+    /** @see #setQueryType(java.lang.String)
+     *
+     * @return
+     */
+    public String getQueryType() {
+        return queryType;
+    }
+
+    /** Set the query type @see BaseParameter.TYPE
+     *
+     * "any" for simple query syntax
+     * "adv" for advanced
+     *
+     * @param queryType
+     */
+    public void setQueryType(final String queryType) {
+        this.queryType = queryType;
     }
 
     /**

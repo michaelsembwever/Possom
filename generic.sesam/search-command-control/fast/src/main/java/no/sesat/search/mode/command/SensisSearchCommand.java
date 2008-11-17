@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ package no.sesat.search.mode.command;
  *
  * @version $Id$
  */
-public class SensisSearchCommand extends FastSearchCommand {
+public class SensisSearchCommand extends Fast4SearchCommand {
 
     /** Creates a new instance of SensisSearchCommand
      *

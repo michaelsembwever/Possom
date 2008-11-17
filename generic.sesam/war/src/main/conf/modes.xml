@@ -60,6 +60,7 @@ Copyright (2006-2008) Schibsted Søk AS
        </fast-command>
 
        <fast-command id="default-fast4-command-advanced-query"
+                    query-type="adv"
                     search-parameters=""
                     inherit="default-fast-command">
            <query-builder>
@@ -71,6 +72,7 @@ Copyright (2006-2008) Schibsted Søk AS
 
        <!-- @deprecated use default-fast4-command-advanced-query instead. -->
        <advanced-fast-command id="default-advanced-fast-command"
+                    query-type="adv"
                     search-parameters=""
                     inherit="default-command">
            <query-builder>

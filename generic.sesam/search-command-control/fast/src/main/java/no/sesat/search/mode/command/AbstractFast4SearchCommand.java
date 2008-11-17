@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
  *
- * AbstractSimpleFastSearchCommand.java
+ * AbstractFast4SearchCommand.java
  *
  * Created on 14 March 2006, 19:51
  *
@@ -76,14 +76,12 @@ import no.sesat.search.result.WeightedSuggestion;
 /**
  * Handles the basic implementation of the Simple FAST search.
  *
- * @todo rename to AbstractFast4SearchCommand
- *
  * @version $Id$
  */
- public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchCommand {
+ public abstract class AbstractFast4SearchCommand extends AbstractSearchCommand {
 
     // Constants -----------------------------------------------------
-    private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(AbstractFast4SearchCommand.class);
     private static final String ERR_FAST_FAILURE = " suffered from a FAST error ";
     private static final String ERR_EXECUTE_FAILURE = "execute() failed";
     private static final String DEBUG_FAST_SEARCH_ENGINE = "Creating Fast Engine to ";
@@ -118,10 +116,10 @@ import no.sesat.search.result.WeightedSuggestion;
     // Constructors --------------------------------------------------
 
     /**
-     * Creates a new instance of AbstractSimpleFastSearchCommand
+     * Creates a new instance of AbstractFast4SearchCommand
      * @param cxt the context the search command must work within.
      */
-    public AbstractSimpleFastSearchCommand(final Context cxt) {
+    public AbstractFast4SearchCommand(final Context cxt) {
 
         super(cxt);
 
@@ -550,7 +548,7 @@ import no.sesat.search.result.WeightedSuggestion;
         params.setParameter(new SearchParameter("filtertype",
                 "adv".equals(getSearchConfiguration().getFiltertype())?  "adv": "any" ));
 
-        params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
+        params.setParameter(new SearchParameter(BaseParameter.TYPE, getSearchConfiguration().getQueryType()));
 
         params.setParameter(new SearchParameter(BaseParameter.FILTER, filter.toString() + ' ' + superFilter));
 

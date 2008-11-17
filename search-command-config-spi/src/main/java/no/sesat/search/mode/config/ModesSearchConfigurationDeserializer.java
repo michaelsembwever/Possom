@@ -25,21 +25,26 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class ModesSearchConfigurationDeserializer {
+
     private static final Logger LOG = Logger.getLogger(ModesSearchConfigurationDeserializer.class);
 
-    public static void readSearchConfiguration(final SearchConfiguration.ModesW3cDomDeserialiser config,
-            final Element element, final SearchConfiguration inherit) {
-        HashMap<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
-        String[] path = new String[]{"no.sesat.search.mode.config"};
+    public static void readSearchConfiguration(
+            final SearchConfiguration.ModesW3cDomDeserialiser config,
+            final Element element,
+            final SearchConfiguration inherit) {
+
+        final Map<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
+        final String[] path = new String[]{"no.sesat.search.mode.config"};
         Introspector.setBeanInfoSearchPath(path);
         try {
-            BeanInfo info = Introspector.getBeanInfo(config.getClass());
+            final BeanInfo info = Introspector.getBeanInfo(config.getClass());
             for (PropertyDescriptor d : info.getPropertyDescriptors()) {
                 descriptors.put(d.getName(), d);
             }
@@ -47,11 +52,11 @@ public class ModesSearchConfigurationDeserializer {
             LOG.error("Failed to get bean info from class " + config.getClass().getSimpleName(), e);
         }
 
-        NamedNodeMap attribs = element.getAttributes();
+        final NamedNodeMap attribs = element.getAttributes();
         for (int i = 0; i < attribs.getLength(); i++) {
-            Node attrib = attribs.item(i);
-            String name = attrib.getNodeName();
-            if (!name.equals("inherit")) {
+            final Node attrib = attribs.item(i);
+            final String name = attrib.getNodeName();
+            if (!"inherit".equals(name)) {
                 final StringBuilder beanName = new StringBuilder(name);
                 for (int j = 0; j < beanName.length(); ++j) {
                     final char c = beanName.charAt(j);
@@ -60,31 +65,32 @@ public class ModesSearchConfigurationDeserializer {
                         ++j;
                     }
                 }
-                PropertyDescriptor descriptor = descriptors.get(beanName.toString());
+                final PropertyDescriptor descriptor = descriptors.get(beanName.toString());
 
-                if (descriptor != null) {
-                    Method setter = descriptor.getWriteMethod();
+                if (null != descriptor) {
+                    final Method setter = descriptor.getWriteMethod();
 
-                    if (setter != null) {
-                        Class<?> type = setter.getParameterTypes()[0];
+                    if (null != setter) {
+                        final Class<?> type = setter.getParameterTypes()[0];
                         Object value = null;
                         String valueString = attrib.getNodeValue();
-                        if (type == String.class)
+                        if (type == String.class){
                             value = valueString;
-                        else if (type == String[].class)
+                        }else if (type == String[].class){
                             value = valueString.split(",");
-                        else if (type == int.class || type == Integer.class)
+                        }else if (type == int.class || type == Integer.class){
                             value = Integer.parseInt(valueString);
-                        else if (type == boolean.class || type == Boolean.class)
+                        }else if (type == boolean.class || type == Boolean.class){
                             value = Boolean.parseBoolean(valueString);
-                        else if (type == char.class || type == Character.class) {
+                        }else if (type == char.class || type == Character.class) {
                             value = valueString.charAt(0);
-                            if (valueString.length() > 1)
+                            if (valueString.length() > 1){
                                 LOG.error("Setting char attribute where input was more then a character long");
+                            }
                         } else {
                             LOG.error("Failed to set attribute " + setter.getName() + ", unnsuported type.");
                         }
-                        if (value != null) {
+                        if (null != value) {
                             try {
 
                                 setter.invoke(config, value);
@@ -105,7 +111,7 @@ public class ModesSearchConfigurationDeserializer {
         // inherited attributes
         if (inherit != null) {
             for (PropertyDescriptor d : descriptors.values()) {
-                Method getter = d.getReadMethod();
+                final Method getter = d.getReadMethod();
                 if (getter != null && getter.getDeclaringClass().isInstance(inherit)) {
                     Object value = null;
 
@@ -115,14 +121,15 @@ public class ModesSearchConfigurationDeserializer {
                         LOG.error("Failed to get value from " + inherit.getName(), e);
                     }
                     if (value != null) {
-                        Method setter = d.getWriteMethod();
+                        final Method setter = d.getWriteMethod();
                         if (setter != null) {
                             try {
 
                                 setter.invoke(config, value);
 
                             } catch (Exception e) {
-                                LOG.error("Failed to set value from " + inherit.getName() + " on " + config.getName(),
+                                LOG.error(
+                                        "Failed to set value from " + inherit.getName() + " on " + config.getName(),
                                         e);
                             }
                         }

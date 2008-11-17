@@ -34,7 +34,7 @@ import no.sesat.search.query.token.Categories;
  *
  * @version $Id$
  */
-public class NewsSearchCommand extends FastSearchCommand {
+public class NewsSearchCommand extends Fast4SearchCommand {
 
     // Filter used to get all articles.
     private static final String FAST_SIZE_HACK = " +size:>0";

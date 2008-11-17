@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import no.sesat.search.query.XorClause;
  *
  * @version $Id$
  */
-public class WebSearchCommand extends FastSearchCommand {
+public class WebSearchCommand extends Fast4SearchCommand {
 
     /** Creates a new instance of WebSearchCommand
      *

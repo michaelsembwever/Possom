@@ -20,20 +20,19 @@ package no.sesat.search.mode.command;
 
 import org.apache.log4j.Logger;
 
-/**
+/** Fast 4 search command.
  *
- * @todo rename to Fast4SearchCommand
  * @version <tt>$Id$</tt>
  */
-public class FastSearchCommand extends AbstractSimpleFastSearchCommand {
+public class Fast4SearchCommand extends AbstractFast4SearchCommand {
 
-    private static final Logger LOG = Logger.getLogger(FastSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(Fast4SearchCommand.class);
 
-    /** Creates a new instance of FastSearchCommand
+    /** Creates a new instance of Fast4SearchCommand
      *
      * @param cxt Search command context.
      */
-    public FastSearchCommand(final Context cxt) {
+    public Fast4SearchCommand(final Context cxt) {
 
         super(cxt);
     }

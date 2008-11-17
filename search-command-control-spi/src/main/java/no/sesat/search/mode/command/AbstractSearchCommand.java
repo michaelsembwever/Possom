@@ -144,7 +144,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // Constructors --------------------------------------------------
 
-    /**
+    /** Default constructor. Only constructor.
      * @param cxt The context to execute in.
      */
     public AbstractSearchCommand(final SearchCommand.Context cxt) {
@@ -189,7 +189,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
                     public Query getQuery() {
                         // Important that initialiseQuery() has been called first
-                        return AbstractSearchCommand.this.getQuery(); // XXX will this end up in subclass overrides?
+                        return getSearchCommandsQuery(); // XXX will this end up in subclass overrides?
                     }
 
                     public TokenEvaluationEngine getTokenEvaluationEngine() {
@@ -944,6 +944,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      **/
     private void checkForCancellation() throws SearchCommandException{
         if( isCancelled() ){ throw new SearchCommandException("cancelled", new InterruptedException()); }
+    }
+
+    /** Wrapper around getQuery(). Nothing more than a different method signature. **/
+    private Query getSearchCommandsQuery(){
+        return getQuery();
     }
 
     /**

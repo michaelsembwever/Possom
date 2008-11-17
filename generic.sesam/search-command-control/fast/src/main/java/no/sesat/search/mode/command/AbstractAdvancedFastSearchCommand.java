@@ -19,11 +19,11 @@ package no.sesat.search.mode.command;
 
 /**
  * Command producing queries in advanced query syntax for Fast FDS4.
- * @deprecated use instead the FastSearchCommand with a infix-query-builder configured.
+ * @deprecated use instead the Fast4SearchCommand with a infix-query-builder configured.
  * An example is set up and ready to use.
  * see generic.sesam/war/src/main/conf/modes.xml id="default-fast4-command-advanced-query"
  */
-public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFastSearchCommand {
+public abstract class AbstractAdvancedFastSearchCommand extends AbstractFast4SearchCommand {
 
     /**
      * Creates new advanced commmand.

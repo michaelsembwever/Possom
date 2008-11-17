@@ -240,7 +240,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             // TODO move-out to genericno. this is configuration hardcoded.
             // it would be nice to have a sortBy-fields to allow these types of mappings to be configured easily.
-            // see AbstractSimpleFastSearchCommand.createQuery()
+            // see AbstractFast4SearchCommand.createQuery()
             if("default".equals(userSortBy)) {
                 sortBy = cfg.getSortBy();
             } else if ("alternative".equals(userSortBy) && cfg.getAlternativeSortBy() != null) {

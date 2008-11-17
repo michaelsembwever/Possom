@@ -23,6 +23,21 @@
         <module>default</module>
         <module>assemble</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                  <filesets>
+                    <fileset>
+                      <directory>assemble/src/main/java</directory>
+                    </fileset>
+                  </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     
     <profiles>
         <profile>

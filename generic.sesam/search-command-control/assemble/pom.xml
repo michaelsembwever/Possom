@@ -16,9 +16,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                        <excludes>
-                                <exclude>**/*.*</exclude>
-                        </excludes>
+                    <excludes><exclude>**/*.*</exclude></excludes>
                 </configuration> 
             </plugin>
             <plugin>
@@ -47,8 +45,8 @@
                 </configuration>
                 <executions>
                     <execution>
-                            <phase>generate-resources</phase>
-                            <goals><goal>directory-single</goal></goals>
+                        <phase>generate-resources</phase>
+                        <goals><goal>directory-single</goal></goals>
                         </execution>
                 </executions>
             </plugin>
