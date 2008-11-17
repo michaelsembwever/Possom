@@ -17,18 +17,21 @@
 
 package no.sesat.search.result;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class StringChopper {
 
     private enum State {
-        none, tag, startTag, endTag, cdata, comment, declaration
+        NONE, TAG, STARTTAG, ENDTAG, CDATA, COMMENT, DECLARATION
     };
 
     /**
-     * Truncate s to the given length at closest space or xml tag. Any xml tags will be closed/balanced.
+     * Truncate s to the given length at closest space or xml tag. Any xml tags
+     * will be closed/balanced.
      *
-     * @param input The string that should be truncated.
+     * @param input
+     *            The string that should be truncated.
      * @param length
      * @return The truncated string
      */
@@ -37,30 +40,37 @@ public class StringChopper {
     }
 
     /**
-     * Truncate s to the given length or to closest space/tag depending on chop. Any xml tags will be closed/balanced.
-     * @param input The string that should be truncated.
-     * @param length max length of string (if choped the string will be '...' longer then max.)
-     * @param chop If words should be choped, or if we chop inbetween spaces.
+     * Truncate s to the given length or to closest space/tag depending on chop.
+     * Any xml tags will be closed/balanced.
+     *
+     * @param input
+     *            The string that should be truncated.
+     * @param length
+     *            max length of string (if choped the string will be '...'
+     *            longer then max.)
+     * @param chop
+     *            If words should be choped, or if we chop inbetween spaces.
      * @return The truncated string
      */
     public static String chop(final String input, final int length, final boolean chop) {
 
-        if (input == null)
+        if (input == null) {
             return null;
+        }
 
-        Stack<Integer> stack = new Stack<Integer>();
+        final Deque<Integer> stack = new ArrayDeque<Integer>();
         char[] s = input.toCharArray();
-        StringBuilder res = new StringBuilder(s.length);
-        State state = State.none;
+        final StringBuilder res = new StringBuilder(s.length);
+        State state = State.NONE;
         int count = 0;
         int i = 0;
 
         main: for (; i < s.length; i++) {
             char c = s[i];
             switch (state) {
-            case none:
+            case NONE:
                 if (c == '<') {
-                    state = State.tag;
+                    state = State.TAG;
                 } else {
                     count++;
                     if (count == length) {
@@ -70,63 +80,65 @@ public class StringChopper {
                 }
                 break;
 
-            case tag:
+            case TAG:
                 if (c == '/') {
-                    state = State.endTag;
+                    state = State.ENDTAG;
                 } else if (c == '!') {
                     // ![CDATA[
                     if (s.length > (i + 7) && s[i + 1] == '[' && (s[i + 2] == 'C' || s[i + 2] == 'c')
                             && (s[i + 3] == 'D' || s[i + 3] == 'd') && (s[i + 4] == 'A' || s[i + 4] == 'a')
                             && (s[i + 5] == 'T' || s[i + 5] == 't') && (s[i + 6] == 'A' || s[i + 6] == 'a')
                             && s[i + 7] == '[') {
-                        state = State.cdata;
+                        state = State.CDATA;
                         res.append("![CDATA[");
                         i += 7;
                         continue;
                     }
                     // !--
                     else if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '-') {
-                        state = State.comment;
+                        state = State.COMMENT;
                         res.append("!--");
                         i += 2;
                         continue;
                     }
                 } else if (c == '?') {
-                    state = State.declaration;
+                    state = State.DECLARATION;
                 } else {
                     stack.push(i);
-                    state = State.startTag;
+                    state = State.STARTTAG;
                 }
                 break;
 
-            case startTag:
+            case STARTTAG:
                 if (c == '/') {
                     if (s.length > (i + 1) && s[i + 1] == '>') {
-                        state = State.none;
+                        state = State.NONE;
                         res.append("/>");
                         i += 1;
-                        if(!stack.isEmpty())
+                        if (!stack.isEmpty()) {
                             stack.pop();
+                        }
                         continue;
                     }
                 } else if (c == '>') {
-                    state = State.none;
+                    state = State.NONE;
                 }
                 break;
 
-            case endTag:
+            case ENDTAG:
                 if (c == '>') {
-                    state = State.none;
-                    if(!stack.isEmpty())
+                    state = State.NONE;
+                    if (!stack.isEmpty()) {
                         stack.pop();
+                    }
                 }
                 break;
 
-            case cdata:
+            case CDATA:
 
                 if (c == ']') {// ]]>
                     if (s.length > (i + 2) && s[i + 1] == ']' && s[i + 2] == '>') {
-                        state = State.none;
+                        state = State.NONE;
                         res.append("]]>");
                         i += 2;
                         continue;
@@ -140,11 +152,11 @@ public class StringChopper {
                 }
                 break;
 
-            case comment:
+            case COMMENT:
                 if (c == '-') {
                     // -->
                     if (s.length > (i + 2) && s[i + 1] == '-' && s[i + 2] == '>') {
-                        state = State.none;
+                        state = State.NONE;
                         res.append("-->");
                         i += 2;
                         continue;
@@ -152,10 +164,10 @@ public class StringChopper {
                 }
                 break;
 
-            case declaration:
+            case DECLARATION:
                 if (c == '?') {
                     if (s.length > (i + 1) && s[i + 1] == '>') {
-                        state = State.none;
+                        state = State.NONE;
                         res.append("?>");
                         i += 1;
                         continue;
@@ -172,7 +184,7 @@ public class StringChopper {
                 res.append("...");
             } else {
                 for (int k = i; k > 0; k--) {
-                    if (s[k] == ' ' || s[k] == ((state == State.cdata) ? '[' : '>')) {
+                    if (s[k] == ' ' || s[k] == ((state == State.CDATA) ? '[' : '>')) {
                         res.setLength(k + 1);
                         res.append("...");
                         break dot;
@@ -183,7 +195,7 @@ public class StringChopper {
         }
 
         // close CDATA if we are in one
-        if (state == State.cdata) {
+        if (state == State.CDATA) {
             res.append("]]>");
         }
 
