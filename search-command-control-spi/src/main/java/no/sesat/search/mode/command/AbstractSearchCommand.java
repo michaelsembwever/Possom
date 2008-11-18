@@ -81,20 +81,18 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  * While the SearchCommand interface defines basic execution behavour this abstraction defines:<ul>
  * <li>delegation of the call method to the execute method so to provide a default implementation for handling
  *      cancellations, thread renaming during execution, and avoidance of execution on blank queries,
- * <li>internal visitor pattern to express the query string in the index's required manner,</li>
- * <li>helper methods for the internal visitor pattern,</li>
+ * <li>assigned queryBuilder and filterBuilder to express the query and filter as the index's requires,</li>
  * <li>delegation to the appropriate query to use (sometimes not the user's query),</li>
  * <li>handling and control of the query transformations as defined in the commands config,</li>
  * <li>handling and control of the result handlers as defined in the commands config,</li>
  * <li>helper methods, beyond the query transformers, for filter (and advanced-filter) construction,</li>
- * <li>basic implementation (visitor pattern) for constructing a user presentable version of the transformed query.</li>
+ * <li>assigned displayableQueryBuilder for constructing a user presentable version of the transformed query,
+ *       that in turn can be parsed again by sesat's query parser to return the same query.</li>
  * </ul>
- *                                                                                                          <br/><br/>
+ *                                        <br/><br/>
  *
- * <b>TODO</b> There is work planned to separate and encapsulate alot of this functionality into individual classes.
- *                   http://sesat.no/scarab/issues/id/SKER2149                                            <br/><br/>
- *
- *
+ * This command undertook a large refactoring in 2.18 to clean up internal concerns.
+ * See the specification {@link http://sesat.no/new-design-proposal-for-searchcommand-and-abstractsearchcommand.html}
  *
  * @version <tt>$Id$</tt>
  */
@@ -127,13 +125,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private transient final QueryBuilder.Context queryBuilderContext;
     private transient final QueryTransformer initialQueryTransformer;
     private transient final QueryBuilder queryBuilder;
-    private transient final SesamSyntaxQueryBuilder sesamSyntxQueryBuilder;
+    private transient final SesamSyntaxQueryBuilder displayableQueryBuilder;
     private transient final FilterBuilder filterBuilder;
 
     protected final String untransformedQuery;
     private final Map<Clause, String> transformedTerms = new LinkedHashMap<Clause, String>();
     private String transformedQuery;
     private String transformedQuerySesamSyntax;
+
+    private final SearchCommandParameter offsetParameter;
+    private final SearchCommandParameter userSortByParameter;
 
     protected transient final DataModel datamodel;
 
@@ -239,13 +240,27 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         queryBuilder = constructQueryBuilder(cxt, queryBuilderContext);
 
         // construct the sesamSyntaxQueryBuilder
-        sesamSyntxQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext);
+        displayableQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext);
 
         // FIXME implement configuration lookup
         filterBuilder = new BaseFilterBuilder(queryBuilderContext, null);
 
         // run an initial queryBuilder run and store the untransformed resulting queryString.
         untransformedQuery = getQueryRepresentation();
+
+        // parameters
+
+        offsetParameter = new NavigationSearchCommandParameter(
+                context,
+                getSearchConfiguration().getPagingParameter(),
+                getSearchConfiguration().getPagingParameter(),
+                BaseSearchCommandParameter.Origin.REQUEST);
+
+        userSortByParameter = new NavigationSearchCommandParameter(
+                context,
+                USER_SORT_KEY,
+                USER_SORT_KEY,
+                BaseSearchCommandParameter.Origin.REQUEST);
 
     }
 
@@ -571,30 +586,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected int getOffset(){
 
-        int offset = 0;
-
-        if(isPaginated()){
-            final String offsetKey = getSearchConfiguration().getPagingParameter();
-            final StringDataObject offsetString = context.getDataModel().getParameters().getValue(offsetKey);
-            if( null != offsetString ){
-                offset = Integer.parseInt(offsetString.getUtf8UrlEncoded());
-            }
-        }
-        return offset;
+        return null != offsetParameter.getValue()
+                ? Integer.parseInt(offsetParameter.getValue())
+                : 0;
     }
 
     public boolean isPaginated(){
 
-        final boolean navMapExists = null != context.getDataModel().getNavigation()
-                && null != context.getDataModel().getNavigation().getConfiguration();
-
-        final String offsetKey = getSearchConfiguration().getPagingParameter();
-
-        final Nav offsetNav = navMapExists
-                ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(offsetKey)
-                : null;
-
-        return null != offsetNav && getSearchConfiguration().getId().equals(offsetNav.getCommandName());
+        return offsetParameter.isActive();
     }
 
    /**
@@ -608,30 +607,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     */
     protected String getUserSortBy(){
 
-        String result = null;
-
-        if(isUserSortable()){
-
-            final StringDataObject userSortByString = context.getDataModel().getParameters().getValue(USER_SORT_KEY);
-
-            if(null != userSortByString){
-                result = userSortByString.getString();
-            }
-        }
-
-        return result;
+        return userSortByParameter.getValue();
     }
 
     public boolean isUserSortable(){
 
-        final boolean navMapExists = null != context.getDataModel().getNavigation()
-                && null != context.getDataModel().getNavigation().getConfiguration();
-
-        final Nav sortingNav = navMapExists
-                ? context.getDataModel().getNavigation().getConfiguration().getNavMap().get(USER_SORT_KEY)
-                : null;
-
-        return null != sortingNav && getSearchConfiguration().getName().equals(sortingNav.getCommandName());
+        return userSortByParameter.isActive();
     }
 
     /**
@@ -834,7 +815,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     protected void updateTransformedQuerySesamSyntax(){
 
-        setTransformedQuerySesamSyntax(sesamSyntxQueryBuilder.getQueryString());
+        setTransformedQuerySesamSyntax(displayableQueryBuilder.getQueryString());
     }
 
     protected void setTransformedQuerySesamSyntax(final String sesamSyntax){
