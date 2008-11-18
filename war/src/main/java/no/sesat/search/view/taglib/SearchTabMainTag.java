@@ -22,9 +22,12 @@ package no.sesat.search.view.taglib;
 
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -55,7 +58,8 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
     private static final String MISSING = "Missing_SearchTabMain_Template";
 
     private static final String PAGES_DIRECTORY = "/pages/";
-
+    private static final String RFC1123="EEE, dd MMM yyyy HH:mm:ss zzz";
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(RFC1123);
 
 
     // Attributes ----------------------------------------------------
@@ -102,6 +106,13 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
 
                 if(layout.getContentType() != null) {
                     cxt.getResponse().setContentType(layout.getContentType());
+                }
+
+                if(layout.getExpiresInSeconds() != -1) {
+                    HttpServletResponse httpResponse = (HttpServletResponse)cxt.getResponse();
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.SECOND, layout.getExpiresInSeconds());
+                    httpResponse.setHeader("EXPIRES", dateFormat.format(cal.getTime()));
                 }
 
                 if(include.endsWith(".jsp")){

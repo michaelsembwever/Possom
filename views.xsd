@@ -39,6 +39,7 @@
         <xsd:attribute name='origin'/>
         <xsd:attribute name='front'/>
         <xsd:attribute name='content-type'/>
+        <xsd:attribute name='expires-in-seconds' type="xsd:integer"/>
     </xsd:complexType>
 	<xsd:complexType name='include'>
         <xsd:attribute name='key'/>

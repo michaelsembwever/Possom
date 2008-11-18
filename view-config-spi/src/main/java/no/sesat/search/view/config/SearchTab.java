@@ -545,6 +545,7 @@ public final class SearchTab implements Serializable{
         private Map<String,String> includes;
         private Map<String,String> properties;
         private String contentType;
+        private int expires = -1;
 
         private Layout(){}
 
@@ -561,6 +562,7 @@ public final class SearchTab implements Serializable{
                 includes = inherit.includes;
                 properties = inherit.properties;
                 contentType = inherit.contentType;
+                expires = inherit.expires;
             }
         }
 
@@ -640,9 +642,19 @@ public final class SearchTab implements Serializable{
            return contentType;
        }
 
+       /**
+        * Number of seconds until this layout (page) should expire.
+        *
+        * @return number of seconds until page expires.
+        */
+       public int getExpiresInSeconds() {
+           return expires;
+       }
+
         /** Will return null when the element argument is null.
          * Otherwise returns the Layout object deserialised from the contents of the Element.
          ** @param element
+         *
          * @return
          */
         public Layout readLayout(final Element element){
@@ -662,6 +674,9 @@ public final class SearchTab implements Serializable{
                 }
                 if(0 < element.getAttribute("content-type").length()){
                     contentType = element.getAttribute("content-type");
+                }
+                if(0 < element.getAttribute("expires-in-seconds").length()){
+                    expires = Integer.parseInt(element.getAttribute("expires-in-seconds"));
                 }
                 includes = readMap(includes, element.getElementsByTagName("include"), "key", "template");
                 properties = readMap(properties, element.getElementsByTagName("property"), "key", "value");
