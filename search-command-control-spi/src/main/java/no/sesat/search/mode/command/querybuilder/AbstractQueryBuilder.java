@@ -84,7 +84,7 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
      */
     protected String getEscapedTransformedTerm(final Clause clause){
 
-        return escape(context.getTransformedTerm(clause).toLowerCase());
+        return escape(context.getTransformedTerm(clause));
 
     }
 
