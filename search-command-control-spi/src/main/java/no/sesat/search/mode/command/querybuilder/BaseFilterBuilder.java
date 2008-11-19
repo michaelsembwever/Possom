@@ -95,20 +95,22 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
 
         final StringTokenizer tokeniser = new StringTokenizer(getFilterString());
 
-        for(String[] pair = tokeniser.nextToken().split(":");
-                tokeniser.hasMoreTokens();
-                pair = tokeniser.nextToken().split(":")){
+        if(tokeniser.hasMoreTokens()){
+            for(String[] pair = tokeniser.nextToken().split(":");
+                    tokeniser.hasMoreTokens();
+                    pair = tokeniser.nextToken().split(":")){
 
-            if(pair[0].equals(string)){
+                if(pair[0].equals(string)){
 
-                if(sb.length() > 0){ sb.append(' '); }
-                sb.append(pair[1]);
+                    if(sb.length() > 0){ sb.append(' '); }
+                    sb.append(pair[1]);
 
-            }else if(null == string && 1 == pair.length){
+                }else if(null == string && 1 == pair.length){
 
-                if(sb.length() > 0){ sb.append(' '); }
-                sb.append(pair[0]);
+                    if(sb.length() > 0){ sb.append(' '); }
+                    sb.append(pair[0]);
 
+                }
             }
         }
 

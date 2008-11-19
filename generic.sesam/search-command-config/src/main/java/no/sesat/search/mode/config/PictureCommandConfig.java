@@ -20,7 +20,9 @@ package no.sesat.search.mode.config;
 import no.sesat.search.mode.config.CommandConfig.Controller;
 import no.sesat.search.mode.config.querybuilder.InfixQueryBuilderConfig;
 
-/**
+/** A search command that uses the picsearch API.
+ * {@link http://www.picsearch.com/}
+ * {@link http://about.picsearch.com/image_search/}
  *
  * @version <tt>$Id$</tt>
  */

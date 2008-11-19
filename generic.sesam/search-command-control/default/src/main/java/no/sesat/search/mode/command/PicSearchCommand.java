@@ -18,7 +18,6 @@ package no.sesat.search.mode.command;
 
 
 import no.sesat.search.site.config.SiteConfiguration;
-import no.sesat.search.http.HTTPClient;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.mode.config.PictureCommandConfig;
@@ -40,17 +39,26 @@ import no.sesat.search.result.ResultList;
 
 /**
  *
- * A search command that uses the picsearch API.
+ * @see PictureCommandConfig
  *
  *
  * @version <tt>$Id$</tt>
  */
 public class PicSearchCommand extends AbstractXmlSearchCommand {
 
+    // Constants -----------------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
-    private final int port;
     private static final String REQ_URL_FMT = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6"
             + "&thumbs={3}&q={4}&start={5}&site={6}&color={7}&size={8}";
+
+    // Attributes ----------------------------------------------------
+
+    private final int port;
+
+    // Static --------------------------------------------------------
+
+    // Constructors --------------------------------------------------
 
     /**
      * Creates a new command in given context.
@@ -100,7 +108,7 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
                                     cfg.getCustomerId(),
                                     cfg.getResultsToReturn(),
                                     query,
-                                    PicSearchCommand.this.getOffset()+1,
+                                    PicSearchCommand.this.getOffset() + 1,
                                     PicSearchCommand.this.getFilterBuilder().getFilter("site").replace(' ', ','),
                                     color,
                                     size);
@@ -118,6 +126,8 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
         port = Integer.parseInt(siteConfig.getProperty(psConfig.getPort()));
 
     }
+
+    // Public --------------------------------------------------------
 
     public ResultList<ResultItem> execute() {
 
@@ -146,6 +156,10 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
             return searchResult;
 
     }
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
 
     /**
      * Visits full names as separate words rather than as an entity.
@@ -188,4 +202,12 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
         return super.getFilterBuilder();
     }
 
+    @Override
+    protected int getOffset() {
+        return super.getOffset();
+    }
+
+    // Private -------------------------------------------------------
+
+    // Inner classes -------------------------------------------------
 }
