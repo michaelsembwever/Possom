@@ -51,13 +51,13 @@
                 <dependency><!-- override making optional -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam-search-command-control</artifactId>
-                    <version>${sesat.version}</version>
+                    <version>${sesatVersion}</version>
                     <optional>true</optional>
                 </dependency>
                 <dependency><!-- add the include-fast variant -->
                     <groupId>sesat</groupId>
                     <artifactId>generic.sesam-search-command-control</artifactId>
-                    <version>${sesat.version}</version>
+                    <version>${sesatVersion}</version>
                     <classifier>include-fast</classifier>
                 </dependency>
                 <!-- Additions when testing -->
@@ -173,7 +173,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-resourcefeed</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -182,74 +182,74 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-velocity-directives</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
 
         <!-- Test JARs -->
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -264,210 +264,210 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-core-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-javabean-impl</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-handler-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-transform-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-transform-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-velocity-directives</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
@@ -476,210 +476,210 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-core-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-javabean-impl</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-handler-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-transform-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-transform-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-velocity-directives</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <classifier>sources</classifier>
             <scope>test</scope>
         </dependency-->

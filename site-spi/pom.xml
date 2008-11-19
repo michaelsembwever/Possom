@@ -25,7 +25,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>

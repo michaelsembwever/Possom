@@ -19,45 +19,45 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <!-- XXX temporary -->
             <groupId>sesat</groupId>
             <artifactId>sesat-core-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <!-- XXX temporary -->
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

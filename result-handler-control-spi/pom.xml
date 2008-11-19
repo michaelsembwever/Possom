@@ -21,12 +21,12 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -42,14 +42,14 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${sesat.version}</version>
+            <version>${sesatVersion}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
