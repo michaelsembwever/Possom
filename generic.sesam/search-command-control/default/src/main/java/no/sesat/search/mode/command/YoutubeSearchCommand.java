@@ -42,15 +42,21 @@ import org.xml.sax.SAXException;
  */
 public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
 
+    // Constants -----------------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(YoutubeSearchCommand.class);
 
     private static final String COMMAND_URL_PATTERN =
              "/feeds/api/videos?vq={0}&orderby={1}&start-index={2}&max-results={3}"
-            +"&format={4}&racy={5}";
+            + "&format={4}&racy={5}";
 
-    private Context cxt;
-    private YoutubeCommandConfig conf;
+    // Static --------------------------------------------------------
+    // Attributes ----------------------------------------------------
 
+    private final Context cxt;
+    private final YoutubeCommandConfig conf;
+
+    // Constructors -------------------------------------------------
 
     public YoutubeSearchCommand(final Context cxt) {
         super(cxt);
@@ -61,25 +67,28 @@ public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
                     public String createRequestURL() {
 
                         return MessageFormat.format(COMMAND_URL_PATTERN,
-                                YoutubeSearchCommand.this.cxt.getDataModel().getQuery().getUtf8UrlEncoded(),
+                                cxt.getDataModel().getQuery().getUtf8UrlEncoded(),
                                 (null != getParameter("userSortBy")
                                     ? getParameter("userSortBy")
-                                    : YoutubeSearchCommand.this.conf.getSortBy()),
+                                    : conf.getSortBy()),
                                 // first result is 1, not 0
                                 (null != YoutubeSearchCommand.this.getParameter("offset")
-                                    ? Integer.parseInt(YoutubeSearchCommand.this.getParameter("offset"))+1 : "1"),
-                                YoutubeSearchCommand.this.conf.getResultsToReturn(),
-                                YoutubeSearchCommand.this.conf.getFormat(),
-                                YoutubeSearchCommand.this.conf.getRacy());
+                                    ? Integer.parseInt(YoutubeSearchCommand.this.getParameter("offset"))+1
+                                    : "1"),
+                                conf.getResultsToReturn(),
+                                conf.getFormat(),
+                                conf.getRacy());
                     }
         });
     }
+
+    // Public --------------------------------------------------------
 
     @Override
     @SuppressWarnings("static-access")
     public ResultList<ResultItem> execute() {
 
-        ResultList<ResultItem> result = new BasicResultList<ResultItem>();
+        final ResultList<ResultItem> result = new BasicResultList<ResultItem>();
         Document doc;
         try {
             doc = getXmlRestful().getXmlResult();
@@ -109,6 +118,8 @@ public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
         }
         return result;
     }
+
+    // Protected --------------------------------------------------------
 
     @Override
     protected ResultItem createItem(final Element entryEl) {
@@ -208,5 +219,12 @@ public class YoutubeSearchCommand extends AbstractXmlSearchCommand {
                 .addField("youtubeUrl", playerUrl);
 
     }
+
+    @Override
+    protected String getParameter(String paramName) {
+        return super.getParameter(paramName);
+    }
+
+    // Private --------------------------------------------------------
 
 }
