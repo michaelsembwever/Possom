@@ -350,6 +350,8 @@ Copyright (2006-2008) Schibsted Søk AS
                 sort="list_entry_length"
                 inherit="default-solr-command">
             <query-transformers>
+                <!-- ignore any query less than three characters -->
+                <regexp regexp="^&quot;(.?)(.?)&quot;$" replacement=""/>
                 <!-- The following works against a Solr configured field of type string named "list_entry". -->
                 <!-- We use String instead of text as the whole query can be treated as a single token. -->
                 <!--  The incoming query must be phrased as well to give the chance to escape the whitespace. -->
