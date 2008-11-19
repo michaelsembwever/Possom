@@ -60,6 +60,7 @@
     <mode id="solrSuggestions" inherit="solrSuggestions">
         <solr-command id="solrSuggestions"
             filtering-query="list_name:common_english"
+            sort="list_entry"
             inherit="solrSuggestions"/>
      </mode>
 

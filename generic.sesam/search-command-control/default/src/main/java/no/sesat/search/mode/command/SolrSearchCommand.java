@@ -102,6 +102,12 @@ public class SolrSearchCommand extends AbstractSearchCommand{
                     .setRows(getSearchConfiguration().getResultsToReturn())
                     .setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
 
+            final Map<String,String> sortMap = getSearchConfiguration().getSortMap();
+            for(Map.Entry<String,String> entry : sortMap.entrySet()){
+                final SolrQuery.ORDER order = SolrQuery.ORDER.valueOf(entry.getValue());
+                query.addSortField(entry.getKey(), order);
+            }
+
             DUMP.info(query.toString());
 
             // query

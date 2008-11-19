@@ -347,6 +347,7 @@ Copyright (2006-2008) Schibsted Søk AS
         <solr-command id="solrSuggestions"
                 result-fields="list_name,list_entry"
                 results-to-return="99"
+                sort="list_entry_length"
                 inherit="default-solr-command">
             <query-transformers>
                 <!-- The following works against a Solr configured field of type string named "list_entry". -->

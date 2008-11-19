@@ -21,10 +21,11 @@
 
 package no.sesat.search.mode.config;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.w3c.dom.Element;
 
 /** Searching against a Solr index using the Solrj client.
@@ -39,12 +40,11 @@ public class SolrCommandConfig extends CommandConfig {
 
     // Attributes ----------------------------------------------------
 
-    /**
-     * Holds value of property key for serverUrl.
-     */
     private String serverUrl = "";
 
     private String filteringQuery = "";
+
+    private final Map<String,String> sort = new HashMap<String,String>();
 
     // Static --------------------------------------------------------
 
@@ -91,6 +91,53 @@ public class SolrCommandConfig extends CommandConfig {
         this.filteringQuery = filteringQuery;
     }
 
+    /** @see #setFieldFilters(java.lang.String[])
+     *
+     * @return Value of map property sort.
+     */
+    public Map<String,String> getSortMap() {
+        return Collections.unmodifiableMap(sort);
+    }
+
+    public void clearSort(){
+        sort.clear();
+    }
+
+    /**
+     * Syntax: sort="fieldName1 asc, fieldName2 desc"
+     *
+     * Just "fieldName1" will presume ascending (asc) order.
+     *
+     * @param sortFields Array of sort fields.
+     */
+    public void setSort(final String[] sortFields) {
+
+        for (String string : sortFields) {
+            setSort(string);
+        }
+    }
+
+    @Override
+    public SearchConfiguration readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit,
+            final Context context) {
+
+        if(null!=inherit && inherit instanceof SolrCommandConfig){
+            sort.putAll(((SolrCommandConfig)inherit).getSortMap());
+        }
+
+        ModesSearchConfigurationDeserializer.readSearchConfiguration(this, element, inherit);
+
+        if (element.hasAttribute("sort")) {
+            if (element.getAttribute("sort").length() == 0) {
+               clearSort();
+            }
+        }
+
+        return this;
+    }
+
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------
@@ -100,6 +147,13 @@ public class SolrCommandConfig extends CommandConfig {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
+
+    private void setSort(final String sortFieldAndOrder) {
+
+        final String parsed[] = sortFieldAndOrder.trim().split(" ");
+        final String field = parsed[0].trim();
+        sort.put(field, (parsed.length > 1) ? parsed[1].trim() : "asc");
+    }
 
     // Inner classes -------------------------------------------------
 
