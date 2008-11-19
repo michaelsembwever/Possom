@@ -113,7 +113,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-resourcefeed</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
@@ -122,58 +122,58 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <!-- Uncomment the following as needed. -->
         <!--dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-velocity-directives</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
         </dependency-->
 
         <!-- Cobertura test coverage -->
@@ -186,210 +186,210 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-core-api</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-javabean-impl</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-handler-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-transform-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-run-transform-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-evaluation</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-query-transform-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-run-handler-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-velocity-directives</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <classifier>cobertura</classifier>
             <scope>test</scope>
         </dependency-->

@@ -38,97 +38,97 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-httpclient-api</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-api</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result-handler-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-result</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-config-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-view-config</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-data-model-api</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-query-transform-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-result-handler-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-search-command-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>generic.sesam-search-command-control</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-view-control-spi</artifactId>
-            <version>${sesatVersion}</version>
+            <version>2.18-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

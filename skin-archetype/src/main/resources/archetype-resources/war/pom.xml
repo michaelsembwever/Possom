@@ -50,7 +50,7 @@
             <build><plugins><plugin>
                 <groupId>sesat</groupId>
                 <artifactId>sesat-mojo</artifactId>
-                <version>${sesatVersion}</version>
+                <version>2.18-SNAPSHOT</version>
                 <executions><execution>
                     <id>copy-self</id>
                     <phase>install</phase>
