@@ -27,7 +27,7 @@
     <name>Sesat Mojo</name>
     <groupId>sesat</groupId>
     <artifactId>sesat-mojo</artifactId>
-    <version>2.18-SNAPSHOT</version>
+    <version>2.19-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <description>SESAT's Mojos.</description>

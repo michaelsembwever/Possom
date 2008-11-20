@@ -4,7 +4,7 @@
   <parent>
    <groupId>sesat</groupId>
    <artifactId>sesat-kernel</artifactId>
-   <version>2.18-SNAPSHOT</version>
+   <version>2.19-SNAPSHOT</version>
   </parent>
   <artifactId>sesat-skin-archetype</artifactId>
   <packaging>maven-archetype</packaging>
