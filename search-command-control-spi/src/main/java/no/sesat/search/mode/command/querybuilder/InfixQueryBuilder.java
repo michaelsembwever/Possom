@@ -126,27 +126,32 @@ public class InfixQueryBuilder extends AbstractQueryBuilder{
     protected void visitImpl(final AndClause clause) {
 
         if (!isEmptyLeaf(clause)) {
-            if(getConfig().getAndGrouped()){ appendToQueryRepresentation(getConfig().getAndGroupOpen()); }
+
+            final boolean unary = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
+            if(getConfig().getAndGrouped() && !unary){ appendToQueryRepresentation(getConfig().getAndGroupOpen()); }
             clause.getFirstClause().accept(this);
-            if(!getConfig().getSupportsNot() || !isNextLeafInsideNotClause(clause.getSecondClause())){
+            if((!getConfig().getSupportsNot() || !isNextLeafInsideNotClause(clause.getSecondClause())) && !unary){
                 appendToQueryRepresentation(' ' + getConfig().getAndInfix() + ' ');
             }
             clause.getSecondClause().accept(this);
-            if(getConfig().getAndGrouped()){ appendToQueryRepresentation(getConfig().getAndGroupClose()); }
-
+            if(getConfig().getAndGrouped() && !unary){ appendToQueryRepresentation(getConfig().getAndGroupClose()); }
         }
     }
 
     protected void visitImpl(final OrClause clause) {
 
         if (!isEmptyLeaf(clause)) {
-            if(getConfig().getOrGrouped()){ appendToQueryRepresentation(getConfig().getOrGroupOpen()); }
+
+            final boolean unary = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
+            if(getConfig().getOrGrouped() && !unary){ appendToQueryRepresentation(getConfig().getOrGroupOpen()); }
             clause.getFirstClause().accept(this);
-            if(!getConfig().getSupportsNot() || !isNextLeafInsideNotClause(clause.getSecondClause())){
+            if((!getConfig().getSupportsNot() || !isNextLeafInsideNotClause(clause.getSecondClause())) && !unary){
                 appendToQueryRepresentation(' ' + getConfig().getOrInfix() + ' ');
             }
             clause.getSecondClause().accept(this);
-            if(getConfig().getOrGrouped()){ appendToQueryRepresentation(getConfig().getOrGroupClose()); }
+            if(getConfig().getOrGrouped() && !unary){ appendToQueryRepresentation(getConfig().getOrGroupClose()); }
 
         }
     }
@@ -154,13 +159,16 @@ public class InfixQueryBuilder extends AbstractQueryBuilder{
     protected void visitImpl(final DefaultOperatorClause clause) {
 
         if (!isEmptyLeaf(clause)) {
-            if(getConfig().getDefaultGrouped()){ appendToQueryRepresentation(getConfig().getDefaultGroupOpen()); }
+
+            final boolean unary = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
+            if(getConfig().getDefaultGrouped() && !unary){ appendToQueryRepresentation(getConfig().getDefaultGroupOpen()); }
             clause.getFirstClause().accept(this);
-            if(!getConfig().getSupportsNot() || !isNextLeafInsideNotClause(clause.getSecondClause())){
+            if((!getConfig().getSupportsNot() || !isNextLeafInsideNotClause(clause.getSecondClause())) && !unary){
                 appendToQueryRepresentation(' ' + getConfig().getDefaultInfix() + ' ');
             }
             clause.getSecondClause().accept(this);
-            if(getConfig().getDefaultGrouped()){ appendToQueryRepresentation(getConfig().getDefaultGroupOpen()); }
+            if(getConfig().getDefaultGrouped() && !unary){ appendToQueryRepresentation(getConfig().getDefaultGroupOpen()); }
         }
     }
 
