@@ -623,7 +623,7 @@
         <!-- We must hardcode the version to sesat artifacts so child skins can themselves be a different version. -->
         <!-- We cannot use ${pom.version} as it is interpretted as the current's pom's version not this pom's version.-->
         <!-- maven-release-plugin will not update this version: it must be manually updated after any version bump. -->
-        <sesatVersion>2.18-SNAPSHOT</sesatVersion>
+        <sesat.version>2.18-SNAPSHOT</sesat.version>
     </properties>
 
     <profiles>
