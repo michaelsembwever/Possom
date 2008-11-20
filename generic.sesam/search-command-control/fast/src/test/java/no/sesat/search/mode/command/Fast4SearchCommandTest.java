@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ public final class Fast4SearchCommandTest extends AbstractSearchCommandTest {
     public void testPhraseSearches()  throws Exception{
         executeTestOfQuery(
                 "\"george bush stands on a chair to raise his IQ\"",
-                "\"george bush stands on a chair to raise his iq\"",
+                "\"george bush stands on a chair to raise his IQ\"",
                 "");
     }
 

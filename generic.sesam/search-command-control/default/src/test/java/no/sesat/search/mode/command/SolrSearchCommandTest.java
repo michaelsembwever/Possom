@@ -86,8 +86,8 @@ public class SolrSearchCommandTest extends AbstractSearchCommandTest {
     @Test
     public void testSiteRestriction() throws Exception{
 
-        executeTestOfQuery("site:aftonbladet.se banan", "banan", "+site:aftonbladet.se");
-        executeTestOfQuery("banan site:aftonbladet.se", "banan", "+site:aftonbladet.se");
+        executeTestOfQuery("site:aftonbladet.se banan", "site\\:aftonbladet.se  banan", "");
+        executeTestOfQuery("banan site:aftonbladet.se", "banan  site\\:aftonbladet.se", "");
     }
 
     /**
