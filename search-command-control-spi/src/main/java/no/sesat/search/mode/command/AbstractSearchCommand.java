@@ -240,7 +240,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         queryBuilder = constructQueryBuilder(cxt, queryBuilderContext);
 
         // construct the sesamSyntaxQueryBuilder
-        displayableQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext);
+        displayableQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext, bsc);
 
         // FIXME implement configuration lookup
         filterBuilder = new BaseFilterBuilder(queryBuilderContext, null);

@@ -17,8 +17,10 @@
 
 package no.sesat.search.mode.command.querybuilder;
 
+import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.config.querybuilder.InfixQueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
+import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.XorClause;
 
@@ -37,9 +39,9 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
 
     private static final QueryBuilderConfig SESAM_SYNTAX_CONFIG = new InfixQueryBuilderConfig(
             "",
-            "AND",
             "",
-            "NOT ",
+            "",
+            "-",
             true,
             false,
             false);
@@ -49,22 +51,54 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
 
     // Attributes ----------------------------------------------------
 
+    private final SearchConfiguration searchConf;
 
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
-    public SesamSyntaxQueryBuilder(final Context cxt) {
+    public SesamSyntaxQueryBuilder(final Context cxt, final SearchConfiguration searchConf) {
+
         super(cxt, SESAM_SYNTAX_CONFIG);
+        this.searchConf = searchConf;
     }
 
     // AbstractReflectionVisitor implementation ----------------------------------------------
 
     private boolean insideOr = false;
 
+    /** Avoids writting out fields to terms that
+ * do not come from the original query,  are not possible for the user to use.
+     *
+     * {@inheritDoc}
+     * @param clause {@inheritDoc}
+     */
+    @Override
+    protected void visitImpl(LeafClause clause) {
+
+        if(!isEmptyLeaf(clause)){
+
+            String transformedClause = getEscapedTransformedTerm(clause);
+
+            if(null == clause.getField() && transformedClause.matches("[^\\]:")){
+
+                final String field = transformedClause.substring(0,transformedClause.indexOf(':'));
+
+                if(!searchConf.getFieldFilterMap().containsValue(field)){
+
+                    // query transformation has prepended the term with fields that are meaningless to the user.
+                    transformedClause = transformedClause.substring(transformedClause.indexOf(':') + 1);
+                }
+            }
+
+            appendToQueryRepresentation(transformedClause);
+        }
+    }
+
     @Override
     protected void visitImpl(final OrClause clause) {
 
+        // avoid nesting ()'s
         boolean wasInside = insideOr;
         if (!insideOr) {
             appendToQueryRepresentation('(');

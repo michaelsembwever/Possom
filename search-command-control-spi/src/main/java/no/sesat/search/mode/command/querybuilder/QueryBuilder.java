@@ -45,6 +45,7 @@ public interface QueryBuilder extends Visitor {
          * @return collection of reserved words
          */
         Collection<String> getReservedWords();
+        /** the SearchConfiguration for the command we are currently running for. **/
     }
 
     /** The Query String built from the Query's transformed clauses.
