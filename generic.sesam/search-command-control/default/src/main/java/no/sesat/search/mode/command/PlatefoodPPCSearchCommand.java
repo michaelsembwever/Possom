@@ -107,6 +107,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
                         return url.toString();
                     }
             });
+
         final PlatefoodPpcCommandConfig conf = (PlatefoodPpcCommandConfig)cxt.getSearchConfiguration();
 
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
@@ -253,6 +254,11 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
             LOG.warn("Failed to get base url from gift url: " + url);
             return null;
         }
+    }
+
+    @Override
+    protected String getParameter(String paramName) {
+        return super.getParameter(paramName);
     }
 
 }

@@ -80,7 +80,7 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
 
             String transformedClause = getEscapedTransformedTerm(clause);
 
-            if(null == clause.getField() && transformedClause.matches("[^\\]:")){
+            if(null == clause.getField() && transformedClause.contains(":") && !transformedClause.contains("\\:")){
 
                 final String field = transformedClause.substring(0,transformedClause.indexOf(':'));
 
