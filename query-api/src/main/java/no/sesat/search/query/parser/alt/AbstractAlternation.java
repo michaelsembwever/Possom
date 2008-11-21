@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ import no.sesat.search.query.AndClause;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryOperatorClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.XorClause;
 import org.apache.log4j.Logger;
@@ -79,7 +79,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected <T extends DoubleOperatorClause> T leftOpChild(final T clause){
+    protected <T extends BinaryOperatorClause> T leftOpChild(final T clause){
 
         final Clause c = leftChild(clause);
         return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
@@ -89,7 +89,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected Clause leftChild(final OperationClause clause) {
+    protected Clause leftChild(final UnaryClause clause) {
 
         final Clause c = clause.getFirstClause();
         LOG.trace("leftChild -->" + c);
@@ -100,7 +100,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected <T extends DoubleOperatorClause> T rightOpChild(final T clause){
+    protected <T extends BinaryOperatorClause> T rightOpChild(final T clause){
 
         final Clause c = rightChild(clause);
         return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
@@ -110,7 +110,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected Clause rightChild(final DoubleOperatorClause clause) {
+    protected Clause rightChild(final BinaryOperatorClause clause) {
 
         final Clause c = clause.getSecondClause();
         LOG.trace("rightChild -->" + c);
@@ -124,11 +124,11 @@ public abstract class AbstractAlternation implements Alternation{
      * @param child
      * @param root
      */
-    protected <T extends OperationClause> T parent(final T root, final Clause child) {
+    protected <T extends UnaryClause> T parent(final T root, final Clause child) {
 
-        final List<OperationClause> parents = context.getParentFinder().getParents(root, child);
+        final List<UnaryClause> parents = context.getParentFinder().getParents(root, child);
         T result = null;
-        for(OperationClause c : parents){
+        for(UnaryClause c : parents){
             if(root.getClass().isAssignableFrom(c.getClass())){
                 if(null != result){
                     throw new IllegalStateException(ERR_MULTIPLE_POSSIBLE_PARENTS + root.getClass());
@@ -144,7 +144,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param child
      * @return
      */
-    protected <T extends OperationClause> List<T> parents(final T root, final Clause child) {
+    protected <T extends UnaryClause> List<T> parents(final T root, final Clause child) {
 
         return (List<T>) context.getParentFinder().getParents(root, child);
     }
@@ -158,19 +158,19 @@ public abstract class AbstractAlternation implements Alternation{
      * @param originalParent
      * @return
      */
-    protected OperationClause replaceDescendant(
-            final DoubleOperatorClause root,
-            final DoubleOperatorClause newChild,
-            final DoubleOperatorClause originalChild,
-            final DoubleOperatorClause originalParent){
+    protected UnaryClause replaceDescendant(
+            final BinaryOperatorClause root,
+            final BinaryOperatorClause newChild,
+            final BinaryOperatorClause originalChild,
+            final BinaryOperatorClause originalParent){
 
-        OperationClause nC = newChild;
-        OperationClause rC = originalChild;
-        OperationClause rCParent = originalParent;
+        UnaryClause nC = newChild;
+        UnaryClause rC = originalChild;
+        UnaryClause rCParent = originalParent;
 
         do{
             nC = replaceOperatorClause(nC, rC, rCParent);
-            for(OperationClause parent : context.getParentFinder().getParents(root, rC)){
+            for(UnaryClause parent : context.getParentFinder().getParents(root, rC)){
                 if(rCParent == parent){
                     rC = parent;
                     rCParent = root == rCParent
@@ -191,7 +191,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param originalParent
      * @return
      */
-    protected <T extends OperationClause> T replaceOperatorClause(
+    protected <T extends UnaryClause> T replaceOperatorClause(
             final Clause newChild,
             final Clause originalChild,
             final T originalParent) {
@@ -202,11 +202,11 @@ public abstract class AbstractAlternation implements Alternation{
 
         final Clause rightChild;
 
-        if(originalParent instanceof DoubleOperatorClause){
+        if(originalParent instanceof BinaryOperatorClause){
 
-            rightChild = rightChild((DoubleOperatorClause)originalParent) == originalChild
+            rightChild = rightChild((BinaryOperatorClause)originalParent) == originalChild
                             ? newChild
-                            : rightChild((DoubleOperatorClause)originalParent);
+                            : rightChild((BinaryOperatorClause)originalParent);
         }else{
             rightChild = null;
         }
@@ -223,7 +223,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param replacementFor
      * @return
      */
-    protected <T extends OperationClause> T createOperatorClause(
+    protected <T extends UnaryClause> T createOperatorClause(
             final Clause left,
             final Clause right,
             final T replacementFor) {

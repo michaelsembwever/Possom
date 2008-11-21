@@ -25,16 +25,6 @@ import java.util.TimeZone;
 
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.mode.config.NewsEspCommandConfig;
-import no.sesat.search.query.AndClause;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.Clause;
-import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
-import no.sesat.search.query.OrClause;
-import no.sesat.search.query.Visitor;
-import no.sesat.search.query.XorClause;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.FastSearchResult;
 import no.sesat.search.result.ResultItem;

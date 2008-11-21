@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -13,30 +13,26 @@
  *
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
- * OperationClause.java
+ * DoubleOperatorClause.java
  *
  * Created on 11 January 2006, 14:16
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.sesat.search.query;
 
 
-/** An operation clause. Often a join between two other clauses, but can also be a prefix operator
- * to another term.
+/** An operation clause. A join between two other clauses.
  *
- * @version $Id$
+ * @version $Id: OperationClause.java 3359 2006-08-03 08:13:22Z mickw $
  *
  */
-public interface OperationClause extends Clause {
+public interface BinaryOperatorClause extends UnaryClause {
     /**
-     * Get the clause.
+     * Get the second clause.
      *
-     *
-     * @return the clause.
+     * @return the second clause.
      */
-    Clause getFirstClause();
+    Clause getSecondClause();
 
 }

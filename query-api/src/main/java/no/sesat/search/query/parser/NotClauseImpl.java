@@ -39,7 +39,7 @@ import no.sesat.search.site.Site;
  *
  * @version $Id$
  */
-public final class NotClauseImpl extends AbstractOperationClause implements NotClause {
+public final class NotClauseImpl extends AbstractUnaryClause implements NotClause {
 
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;

@@ -39,7 +39,7 @@ import no.sesat.search.site.Site;
  *
  * @version $Id$
  */
-public final class AndClauseImpl extends AbstractOperationClause implements AndClause {
+public final class AndClauseImpl extends AbstractBinaryClause implements AndClause {
 
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
@@ -50,8 +50,6 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
      */
     private static final Map<Site,ReferenceMap<String,AndClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,AndClauseImpl>>();
-
-    private final Clause secondClause;
 
     /**
      * Creator method for AndClauseImpl objects. By avoiding the constructors,
@@ -135,17 +133,6 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
             final Set<TokenPredicate> knownPredicates,
             final Set<TokenPredicate> possiblePredicates) {
 
-        super(term, first, knownPredicates, possiblePredicates);
-        this.secondClause = second;
+        super(term, first, second, knownPredicates, possiblePredicates);
     }
-
-    /**
-     * Get the secondClause.
-     *
-     * @return the secondClause.
-     */
-    public Clause getSecondClause() {
-        return secondClause;
-    }
-
 }

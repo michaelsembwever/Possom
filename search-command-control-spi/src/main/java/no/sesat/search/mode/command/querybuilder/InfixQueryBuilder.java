@@ -28,7 +28,7 @@ import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.EmailClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.UrlClause;
 
@@ -116,7 +116,7 @@ public class InfixQueryBuilder extends AbstractQueryBuilder{
         }
     }
 
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
 
         if (!isEmptyLeaf(clause)) {
             clause.getFirstClause().accept(this);

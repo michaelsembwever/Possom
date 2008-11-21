@@ -21,10 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractReflectionVisitor;
@@ -139,12 +139,12 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
         boolean result = false;
 
-        if(clause instanceof DoubleOperatorClause){
-            final DoubleOperatorClause c = (DoubleOperatorClause)clause;
+        if(clause instanceof BinaryOperatorClause){
+            final BinaryOperatorClause c = (BinaryOperatorClause)clause;
             result = isEmptyLeaf(c.getFirstClause()) && isEmptyLeaf(c.getSecondClause());
 
-        }else if(clause instanceof OperationClause){
-            final OperationClause c = (OperationClause)clause;
+        }else if(clause instanceof UnaryClause){
+            final UnaryClause c = (UnaryClause)clause;
             result = isEmptyLeaf(c.getFirstClause());
 
         }else if(clause instanceof LeafClause){
@@ -167,8 +167,8 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
          if(clause instanceof NotClause){
             result = !isEmptyLeaf(clause);
-        }else if(clause instanceof OperationClause){
-            result = isNextLeafInsideNotClause(((OperationClause)clause).getFirstClause());
+        }else if(clause instanceof UnaryClause){
+            result = isNextLeafInsideNotClause(((UnaryClause)clause).getFirstClause());
         }
 
         return result;

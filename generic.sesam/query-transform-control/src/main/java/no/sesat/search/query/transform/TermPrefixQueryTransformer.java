@@ -24,7 +24,7 @@ import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.EmailClause;
 import no.sesat.search.query.IntegerClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.PhoneNumberClause;
 import no.sesat.search.query.UrlClause;
@@ -112,7 +112,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final OperationClause clause) {
+    public void visitImpl(final UnaryClause clause) {
         clause.getFirstClause().accept(this);
     }
 

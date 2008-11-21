@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@ package no.sesat.search.query.transform;
 import java.util.Map;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import org.apache.log4j.Logger;
 
 /** Transforms the query into <br/>
@@ -91,7 +91,7 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final DoubleOperatorClause clause) {
+    public void visitImpl(final BinaryOperatorClause clause) {
 
         // remember what visitingLast was
         final Boolean original = visitingLast;
@@ -112,7 +112,7 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final OperationClause clause) {
+    public void visitImpl(final UnaryClause clause) {
 
         visitLast();
 

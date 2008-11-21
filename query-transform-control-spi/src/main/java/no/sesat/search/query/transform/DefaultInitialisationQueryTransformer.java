@@ -17,9 +17,9 @@
  */
 package no.sesat.search.query.transform;
 
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryOperatorClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.transform.AbstractQueryTransformer;
 
 /** Default initial QueryTransformer that fills out the transformedTerms map.
@@ -60,12 +60,12 @@ public class DefaultInitialisationQueryTransformer extends AbstractQueryTransfor
         }
     }
 
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
 
         clause.getFirstClause().accept(this);
     }
 
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryOperatorClause clause) {
 
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);

@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  *
  * @version $Id$
  */
-public abstract class AbstractOperationClause extends AbstractClause implements OperationClause {
+public abstract class AbstractUnaryClause extends AbstractClause implements UnaryClause {
 
     private static final Logger LOG = Logger.getLogger(AbstractLeafClause.class);
 
@@ -62,7 +62,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      * @return Either a clause already in use that matches this term and field, or a newly created cluase for this term and field.
      */
-    public static <T extends AbstractOperationClause> T createClause(
+    public static <T extends AbstractUnaryClause> T createClause(
             final Class<T> clauseClass,
             final String term,
             final Clause left,
@@ -122,7 +122,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
     /** You must use <CODE>AbstractOperationClause(String, Set&lt;Predicate&gt;, Set&lt;Predicate&gt;)</CODE> instead.
      * This constructor will throw an IllegalArgumentException.
      **/
-    protected AbstractOperationClause() {
+    protected AbstractUnaryClause() {
         throw new IllegalArgumentException(ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR);
     }
 
@@ -133,7 +133,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */
-    protected AbstractOperationClause(
+    protected AbstractUnaryClause(
             final String term,
             final Clause first,
             final Set<TokenPredicate> knownPredicates,
@@ -143,11 +143,10 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
         firstClause = first;
     }
 
-
-
-    /** TODO comment me. **/
+    /**
+     *  The first clause of a binary clause, or the only clause of a UnaryClause.
+     */
     protected final Clause firstClause;
-
 
     /**
      * Get the firstClause.
@@ -156,5 +155,10 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      */
     public Clause getFirstClause() {
         return firstClause;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + getFirstClause() + ']';
     }
 }

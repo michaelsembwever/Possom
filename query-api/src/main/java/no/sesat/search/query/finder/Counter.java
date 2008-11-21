@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@ package no.sesat.search.query.finder;
 
 import java.io.Serializable;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryOperatorClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.*;
 
@@ -54,7 +54,7 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
      *
      * @param clause
      */
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
         clause.getFirstClause().accept(this);
     }
 
@@ -70,7 +70,7 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
      *
      * @param clause
      */
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryOperatorClause clause) {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }

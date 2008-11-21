@@ -30,7 +30,7 @@ import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
@@ -234,7 +234,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         public void visitImpl(final LeafClause clause) {
             sb.append(map.get(clause));
         }
-        public void visitImpl(final OperationClause clause) {
+        public void visitImpl(final UnaryClause clause) {
             clause.getFirstClause().accept(this);
         }
         public void visitImpl(final AndClause clause) {
@@ -289,7 +289,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
             map.put(clause, fullTerm);
         }
-        public void visitImpl(final OperationClause clause) {
+        public void visitImpl(final UnaryClause clause) {
             clause.getFirstClause().accept(this);
         }
         public void visitImpl(final AndClause clause) {

@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 package no.sesat.search.query.finder;
 
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryOperatorClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.parser.*;
 
 
@@ -28,7 +28,7 @@ final class ChildFinder extends AbstractReflectionVisitor {
     private boolean found;
     private Clause child = null;
 
-    public synchronized boolean childExists(final OperationClause parent, final Clause child) {
+    public synchronized boolean childExists(final UnaryClause parent, final Clause child) {
 
         found = false;
         this.child = child;
@@ -36,14 +36,14 @@ final class ChildFinder extends AbstractReflectionVisitor {
         return found;
     }
 
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryOperatorClause clause) {
         if (!found) { // still looking
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
     }
 
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
         if (!found ) { // still looking
             clause.getFirstClause().accept(this);
         }

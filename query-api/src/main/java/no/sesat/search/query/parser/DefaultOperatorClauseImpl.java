@@ -39,7 +39,7 @@ import no.sesat.search.site.Site;
  *
  * @version $Id: OrClauseImpl.java 2399 2006-03-01 21:01:02Z mickw $
  */
-public class DefaultOperatorClauseImpl extends AbstractOperationClause implements DefaultOperatorClause {
+public class DefaultOperatorClauseImpl extends AbstractBinaryClause implements DefaultOperatorClause {
 
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
@@ -50,8 +50,6 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
      */
     private static final Map<Site,ReferenceMap<String,DefaultOperatorClauseImpl>> WEAK_CACHE
             = new ConcurrentHashMap<Site,ReferenceMap<String,DefaultOperatorClauseImpl>>();
-
-    private final Clause secondClause;
 
     /**
      * Creator method for OrClauseImpl objects. By avoiding the constructors,
@@ -137,16 +135,6 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
             final Set<TokenPredicate> knownPredicates,
             final Set<TokenPredicate> possiblePredicates) {
 
-        super(term, first, knownPredicates, possiblePredicates);
-        this.secondClause = second;
-    }
-
-    /**
-     * Get the secondClause.
-     *
-     * @return the secondClause.
-     */
-    public Clause getSecondClause() {
-        return secondClause;
+        super(term, first, second, knownPredicates, possiblePredicates);
     }
 }
