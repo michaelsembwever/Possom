@@ -906,12 +906,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param filter
      */
     protected void addFilterString(final String filter){
-
         if(null != filter && filter.length() > 0){
+            final int pos = filter.indexOf(":");
 
-            final String[] pair = filter.split(":");
-            if(2 == pair.length){
-                filterBuilder.addFilter(pair[0], pair[1]);
+            if(pos > 0){
+                filterBuilder.addFilter(filter.substring(0, pos), filter.substring(pos+1));
             }else{
                 filterBuilder.addFilter(null, filter);
             }
