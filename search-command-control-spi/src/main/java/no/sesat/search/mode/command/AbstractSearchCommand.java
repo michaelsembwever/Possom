@@ -807,10 +807,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * Returns the query as it is after the query transformers have been applied to it.
      *
+     * It is normalised.
+     *
      * @return
      */
     protected String getTransformedQuerySesamSyntax() {
-        return transformedQuerySesamSyntax;
+
+        // also normalise it
+        return transformedQuerySesamSyntax.replaceAll(" +", " ");
     }
 
     protected void updateTransformedQuerySesamSyntax(){
