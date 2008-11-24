@@ -22,8 +22,10 @@
 
 package no.sesat.search.query.parser;
 
+import java.lang.ref.Reference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -32,6 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import no.sesat.Interpreter;
 import no.sesat.Interpreter.Context;
+import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Visitor;
 import org.apache.log4j.Logger;
@@ -66,6 +69,10 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     private static final String TRACE_KEEP_LOOKING = "keep looking";
     private static final String RB = ")";
 
+    private static final ReferenceMap<Class<? extends Visitor>,Map<Class<? extends Clause>,Method>> CACHE =
+            new ReferenceMap<Class<? extends Visitor>,Map<Class<? extends Clause>,Method>>(
+            ReferenceMap.Type.SOFT,
+            new ConcurrentHashMap<Class<? extends Visitor>,Reference<Map<Class<? extends Clause>,Method>>>());
 
 
     /** Creates a new instance of AbstractReflectionVisitor.
@@ -77,47 +84,24 @@ public abstract class AbstractReflectionVisitor implements Visitor {
      * Method implementing Visitor interface. Uses reflection to find the method with name VISIT_METHOD_IMPL with the
      * closest match to the clause subclass.
      *
-     * We cache the methods used by the visitor in a WeakHashMap. This is done in a WeakHashMap since the skins can
+     * We CACHE the methods used by the visitor. This is done in a soft ReferenceMap since the skins can
      * be reloaded, and then we would have had a memory leak.
-     *
-     * To access the cache we lock using a readlock, and when we need to write we will lock with a write lock.
-     *
-     * Inside the cache we have another HashMap, this one a thread safe version, holding the methods.
      *
      * @param clause the clause we're visiting.
      */
-    private static WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>> cache =
-        new WeakHashMap<Class<? extends Visitor>, ConcurrentHashMap<Class<? extends Clause>, Method>>();
-    private static ReadWriteLock cacheLock = new ReentrantReadWriteLock();
-    private static Lock readLock = cacheLock.readLock();
-    private static Lock writeLock = cacheLock.writeLock();
-
     public void visit(final Clause clause) {
-        ConcurrentHashMap<Class<? extends Clause>, Method> map;
-        try {
-            readLock.lock();
-            map = cache.get(getClass());
-        }
-        finally {
-            readLock.unlock();
-        }
 
-        if (map == null) {
-            try {
-                writeLock.lock();
-                map = cache.get(getClass());
-                if (map == null) {
-                    map = new ConcurrentHashMap<Class<? extends Clause>, Method>();
-                    cache.put(getClass(), map);
-                }
-            }
-            finally {
-                writeLock.unlock();
-            }
+        Map<Class<? extends Clause>,Method> map = CACHE.get(getClass());
+
+        if (null == map) {
+
+            map = new ConcurrentHashMap<Class<? extends Clause>,Method>();
+
+            CACHE.put(getClass(), map);
         }
 
         Method method = map.get(clause.getClass());
-        if (method == null) {
+        if (null == method) {
             method = getMethod(clause.getClass());
             method.setAccessible(true);
             map.put(clause.getClass(), method);
@@ -249,27 +233,27 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         }
     }
 
-    /**
-     * Add some debug function to the interpreter.
-     */
-    static {
-        Interpreter.addFunction("visitor-methods", new Interpreter.Function() {
-            public String execute(Context ctx) {
-                String res = "";
-                for (Class<? extends Visitor> cv : cache.keySet()) {
-                    res += cv.getName() + "\n";
-                    for (Class<? extends Clause> cc : cache.get(cv).keySet()) {
-                        res += "    " + cc.getName() + " - " + cache.get(cv).get(cc).toGenericString() + "\n";
-                    }
-                }
-                res += "Total: " + cache.size();
-                return res;
-            }
-
-            public String describe() {
-                return "Print out the methods in the cach used by the visitors.";
-            }
-
-        });
-    }
+//    /**
+//     * Add some debug function to the interpreter.
+//     */
+//    static {
+//        Interpreter.addFunction("visitor-methods", new Interpreter.Function() {
+//            public String execute(Context ctx) {
+//                String res = "";
+//                for (Class<? extends Visitor> cv : CACHE.keySet()) {
+//                    res += cv.getName() + "\n";
+//                    for (Class<? extends Clause> cc : CACHE.get(cv).keySet()) {
+//                        res += "    " + cc.getName() + " - " + CACHE.get(cv).get(cc).toGenericString() + "\n";
+//                    }
+//                }
+//                res += "Total: " + CACHE.size();
+//                return res;
+//            }
+//
+//            public String describe() {
+//                return "Print out the methods in the cach used by the visitors.";
+//            }
+//
+//        });
+//    }
 }
