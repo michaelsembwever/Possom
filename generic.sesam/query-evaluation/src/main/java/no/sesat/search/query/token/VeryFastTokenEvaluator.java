@@ -103,8 +103,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     // Attributes ----------------------------------------------------
 
-    private final HTTPClient httpClient;
     private final Context context;
+    private final Site site;
     private final Map<String, List<TokenMatch>> analysisResult;
 
     // Static --------------------------------------------------------
@@ -124,23 +124,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         // pre-condition check
 
         context = cxt;
+        site = cxt.getSite();
 
-        final Properties props = SiteConfiguration.instanceOf(
-                        ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
-        final String host = props.getProperty(TOKEN_HOST_PROPERTY);
-        final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
+        init();
 
-        if(0 < port){
-            httpClient = HTTPClient.instance(host, port);
+        // Remove whitespace (except space itself) and operator characters.
+        analysisResult = queryFast(cleanString(context.getQueryString()));
 
-            init();
-
-            // Remove whitespace (except space itself) and operator characters.
-            analysisResult = queryFast(cleanString(context.getQueryString()));
-        }else{
-            httpClient = null;
-            analysisResult = Collections.emptyMap();
-        }
     }
 
     // Public --------------------------------------------------------
@@ -191,7 +181,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 }
             }
         }else{
-            LOG.info(context.getSite() + " does not define lists behind the token predicate " + token);
+            LOG.info(site + " does not define lists behind the token predicate " + token);
         }
         return evaluation;
     }
@@ -373,45 +363,56 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 String url = null;
 
                 try {
-                    final String token = URLEncoder.encode(query.replaceAll("\"", ""), "utf-8");
 
-                    url = CGI_PATH + token;
+                    final Properties props = SiteConfiguration.instanceOf(
+                                    ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
 
-                    final Document doc = httpClient.getXmlDocument(url);
+                    final String host = props.getProperty(TOKEN_HOST_PROPERTY);
+                    final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
+                    if(0 < port){
 
-                    NodeList l = doc.getElementsByTagName("QUERYTRANSFORMS");
-                    final Element e = (Element) l.item(0);
+                        final HTTPClient httpClient = HTTPClient.instance(host, port);
 
-                    l = e.getElementsByTagName("QUERYTRANSFORM");
+                        final String token = URLEncoder.encode(query.replaceAll("\"", ""), "utf-8");
 
-                    for (int i = 0; i < l.getLength(); ++i) {
+                        url = CGI_PATH + token;
 
-                        final Element trans = (Element) l.item(i);
-                        final String name = trans.getAttribute("NAME");
-                        final String custom = trans.getAttribute("CUSTOM");
-                        final String exactname = 0 <= name.indexOf(LIST_PREFIX) && 0 < name.indexOf(LIST_SUFFIX)
-                                ? LIST_PREFIX + EXACT_PREFIX
-                                    + name.substring(name.indexOf('_') + 1, name.indexOf("QM"))
-                                    + LIST_SUFFIX
-                                : null;
+                        final Document doc = httpClient.getXmlDocument(url);
 
-                        if(custom.matches(".+->.*") && usesListName(name, exactname)){
+                        NodeList l = doc.getElementsByTagName("QUERYTRANSFORMS");
+                        final Element e = (Element) l.item(0);
 
-                            final String match = (custom.indexOf("->") >0
-                                    ? custom.substring(0, custom.indexOf("->"))
-                                    : custom)
-                                    // remove words made solely of characters that the parser considers whitespace
-                                    .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
+                        l = e.getElementsByTagName("QUERYTRANSFORM");
 
-                            final String value = custom.indexOf("->") > 0
-                                    ? custom.substring(custom.indexOf("->") + 2)
+                        for (int i = 0; i < l.getLength(); ++i) {
+
+                            final Element trans = (Element) l.item(i);
+                            final String name = trans.getAttribute("NAME");
+                            final String custom = trans.getAttribute("CUSTOM");
+                            final String exactname = 0 <= name.indexOf(LIST_PREFIX) && 0 < name.indexOf(LIST_SUFFIX)
+                                    ? LIST_PREFIX + EXACT_PREFIX
+                                        + name.substring(name.indexOf('_') + 1, name.indexOf("QM"))
+                                        + LIST_SUFFIX
                                     : null;
 
-                            addMatch(name, match, value,query, result);
+                            if(custom.matches(".+->.*") && usesListName(name, exactname)){
 
-                            if (match.equalsIgnoreCase(query.trim())) {
+                                final String match = (custom.indexOf("->") >0
+                                        ? custom.substring(0, custom.indexOf("->"))
+                                        : custom)
+                                        // remove words made solely of characters that the parser considers whitespace
+                                        .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
 
-                                addMatch(exactname, match, value, query, result);
+                                final String value = custom.indexOf("->") > 0
+                                        ? custom.substring(custom.indexOf("->") + 2)
+                                        : null;
+
+                                addMatch(name, match, value,query, result);
+
+                                if (match.equalsIgnoreCase(query.trim())) {
+
+                                    addMatch(exactname, match, value, query, result);
+                                }
                             }
                         }
                     }
@@ -507,7 +508,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         String[] listNames = null;
         try{
             LIST_NAMES_LOCK.readLock().lock();
-            Site site = context.getSite();
+            Site site = this.site;
 
             while(null == listNames && null != site){
 
