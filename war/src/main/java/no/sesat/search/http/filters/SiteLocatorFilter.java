@@ -131,6 +131,13 @@ public final class SiteLocatorFilter implements Filter {
 
     // Static --------------------------------------------------------
 
+    static String getRequestId(final ServletRequest servletRequest){
+
+        if(null == servletRequest.getAttribute("UNIQUE_ID")){
+            servletRequest.setAttribute("UNIQUE_ID", UUID.randomUUID().toString());
+        }
+        return (String)servletRequest.getAttribute("UNIQUE_ID");
+    }
 
     // Constructors --------------------------------------------------
 
@@ -385,10 +392,15 @@ public final class SiteLocatorFilter implements Filter {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    private static void doChainFilter(final FilterChain chain, final ServletRequest request,
+
+    @SuppressWarnings("unchecked")
+    private static void doChainFilter(
+            final FilterChain chain,
+            final ServletRequest request,
             final ServletResponse response) throws IOException, ServletException {
+
         if (request instanceof HttpServletRequest) {
-            HttpSession session = ((HttpServletRequest) request).getSession();
+            final HttpSession session = ((HttpServletRequest) request).getSession();
 
             Stack<ServletRequest> stack;
             synchronized (session) {
@@ -405,7 +417,9 @@ public final class SiteLocatorFilter implements Filter {
                     ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
                 }
             } else {
-                long start = System.currentTimeMillis();
+
+                // requests added to the stack enter a wait loop here and are thrown out after WAIT_TIME
+                final long start = System.currentTimeMillis();
                 stack.push(request);
                 synchronized (session) {
                     try {
@@ -425,8 +439,7 @@ public final class SiteLocatorFilter implements Filter {
                             LOG.warn(" -- response 409 (Timeout: Waited " + (WAIT_TIME - timeLeft) + " ms. )");
                             ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
                         }
-                    }
-                    finally {
+                    }finally {
                         stack.pop();
                         session.notifyAll();
                     }
@@ -435,14 +448,6 @@ public final class SiteLocatorFilter implements Filter {
         } else {
             chain.doFilter(request, response);
         }
-    }
-
-    static String getRequestId(final ServletRequest servletRequest){
-
-        if(null == servletRequest.getAttribute("UNIQUE_ID")){
-            servletRequest.setAttribute("UNIQUE_ID", UUID.randomUUID().toString());
-        }
-        return (String)servletRequest.getAttribute("UNIQUE_ID");
     }
 
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
