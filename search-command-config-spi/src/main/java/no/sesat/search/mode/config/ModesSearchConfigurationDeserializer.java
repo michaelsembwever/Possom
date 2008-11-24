@@ -31,26 +31,29 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class ModesSearchConfigurationDeserializer {
+/** Provides a way for default named xml-named-attributes to be deserialised into javabean getters and setters.
+ * Including support for sesat's polymorphic xml configurations.
+ *
+ * From Issue SKER4404:  (Automatically assign config settings in readSearchConfiguration where there is a setter).
+ * http://sesat.no/scarab/issues/id/SKER4404
+ *
+ *
+ * @version $id$
+ */
+public final class ModesSearchConfigurationDeserializer {
+
+    // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(ModesSearchConfigurationDeserializer.class);
+
+    // Static --------------------------------------------------------
 
     public static void readSearchConfiguration(
             final SearchConfiguration.ModesW3cDomDeserialiser config,
             final Element element,
             final SearchConfiguration inherit) {
 
-        final Map<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
-        final String[] path = new String[]{"no.sesat.search.mode.config"};
-        Introspector.setBeanInfoSearchPath(path);
-        try {
-            final BeanInfo info = Introspector.getBeanInfo(config.getClass());
-            for (PropertyDescriptor d : info.getPropertyDescriptors()) {
-                descriptors.put(d.getName(), d);
-            }
-        } catch (IntrospectionException e) {
-            LOG.error("Failed to get bean info from class " + config.getClass().getSimpleName(), e);
-        }
+        final Map<String, PropertyDescriptor> descriptors = getDescriptors(config);
 
         final NamedNodeMap attribs = element.getAttributes();
         for (int i = 0; i < attribs.getLength(); i++) {
@@ -110,32 +113,68 @@ public class ModesSearchConfigurationDeserializer {
 
         // inherited attributes
         if (inherit != null) {
-            for (PropertyDescriptor d : descriptors.values()) {
-                final Method getter = d.getReadMethod();
-                if (getter != null && getter.getDeclaringClass().isInstance(inherit)) {
-                    Object value = null;
+            readInheritedValues(config, inherit, descriptors);
+        }
+    }
 
-                    try {
-                        value = getter.invoke(inherit);
-                    } catch (Exception e) {
-                        LOG.error("Failed to get value from " + inherit.getName(), e);
-                    }
-                    if (value != null) {
-                        final Method setter = d.getWriteMethod();
-                        if (setter != null) {
-                            try {
+    // Constructor -------------------------------------------------------
 
-                                setter.invoke(config, value);
+    /**
+     * Hide default constructor.
+     * Class is intended only as a static utility.
+     */
+    private ModesSearchConfigurationDeserializer(){}
 
-                            } catch (Exception e) {
-                                LOG.error(
-                                        "Failed to set value from " + inherit.getName() + " on " + config.getName(),
-                                        e);
-                            }
+    // Private -------------------------------------------------------
+
+    private static Map<String, PropertyDescriptor> getDescriptors(
+            final SearchConfiguration.ModesW3cDomDeserialiser config){
+
+        final Map<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
+        final String[] path = new String[]{"no.sesat.search.mode.config"};
+        Introspector.setBeanInfoSearchPath(path);
+        try {
+            final BeanInfo info = Introspector.getBeanInfo(config.getClass());
+            for (PropertyDescriptor d : info.getPropertyDescriptors()) {
+                descriptors.put(d.getName(), d);
+            }
+        } catch (IntrospectionException e) {
+            LOG.error("Failed to get bean info from class " + config.getClass().getSimpleName(), e);
+        }
+        return descriptors;
+    }
+
+    private static void readInheritedValues(
+            final SearchConfiguration.ModesW3cDomDeserialiser config,
+            final SearchConfiguration inherit,
+            final Map<String, PropertyDescriptor> descriptors){
+
+        for (PropertyDescriptor d : descriptors.values()) {
+            final Method getter = d.getReadMethod();
+            if (getter != null && getter.getDeclaringClass().isInstance(inherit)) {
+                Object value = null;
+
+                try {
+                    value = getter.invoke(inherit);
+                } catch (Exception e) {
+                    LOG.error("Failed to get value from " + inherit.getName(), e);
+                }
+                if (null != value) {
+                    final Method setter = d.getWriteMethod();
+                    if (null != setter) {
+                        try {
+
+                            setter.invoke(config, value);
+
+                        } catch (Exception e) {
+                            LOG.error(
+                                    "Failed to set value from " + inherit.getName() + " on " + config.getName(),
+                                    e);
                         }
                     }
                 }
             }
         }
     }
+
 }
