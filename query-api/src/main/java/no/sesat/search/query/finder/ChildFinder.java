@@ -23,11 +23,21 @@ import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.parser.*;
 
 
-final class ChildFinder extends AbstractReflectionVisitor {
+/** Used to find if a particular clause exists underneath another.
+ *
+ * @version $Id$
+ */
+public final class ChildFinder extends AbstractReflectionVisitor {
 
     private boolean found;
     private Clause child = null;
 
+    /** Does the child clause exist any depth underneath the parent.
+     *
+     * @param parent the parent clause
+     * @param child the child clause.
+     * @return Does the child clause exist any depth underneath the parent.
+     */
     public synchronized boolean childExists(final UnaryClause parent, final Clause child) {
 
         found = false;

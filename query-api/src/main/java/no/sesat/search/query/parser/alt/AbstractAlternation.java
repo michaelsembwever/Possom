@@ -31,6 +31,7 @@ import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.XorClause;
+import no.sesat.search.query.finder.ChildFinder;
 import org.apache.log4j.Logger;
 
 /** Base abstraction class for any Alternation implementation.
@@ -150,13 +151,14 @@ public abstract class AbstractAlternation implements Alternation{
     }
 
     /** Build new DoubleOperatorClauses from newChild all the way back up to the root.
-     * XXX Only handles single splits, or one layer of variations, denoted by the childsParentBeforeRotation argument.
-     *      This could be solved by using an array, specifying ancestry line, for the argument instead.
-     ** @param root
-     * @param newChild
-     * @param originalChild
-     * @param originalParent
-     * @return
+     * XXX Only handles single splits, or one layer of variations, denoted by the originalParent argument.
+     *      This could be solved by using an array, specifying ancestry line, for the argument instead. <br/><br/>
+     * If, under root, originalParent cannot be found then root is returned unaltered.
+     * @param root the root clause. an altered version of this will be returned.
+     * @param newChild the new child.
+     * @param originalChild the original child.
+     * @param originalParent the original parent of the original child. expected to be found under root.
+     * @return the root clause where the originalChild has been replaced with the newChild.
      */
     protected UnaryClause replaceDescendant(
             final BinaryOperatorClause root,
@@ -164,24 +166,33 @@ public abstract class AbstractAlternation implements Alternation{
             final BinaryOperatorClause originalChild,
             final BinaryOperatorClause originalParent){
 
-        UnaryClause nC = newChild;
-        UnaryClause rC = originalChild;
-        UnaryClause rCParent = originalParent;
+        // pre-condition check: originalParent must be found under root somewhere
+        if(new ChildFinder().childExists(root, originalParent)){
 
-        do{
-            nC = replaceOperatorClause(nC, rC, rCParent);
-            for(UnaryClause parent : context.getParentFinder().getParents(root, rC)){
-                if(rCParent == parent){
-                    rC = parent;
-                    rCParent = root == rCParent
-                            ? rCParent
-                            : context.getParentFinder().getParent(root, rCParent);
-                    break;
+            UnaryClause nC = newChild;
+            UnaryClause rC = originalChild;
+            UnaryClause rCParent = originalParent;
+
+            do{
+                nC = replaceOperatorClause(nC, rC, rCParent);
+                for(UnaryClause parent : context.getParentFinder().getParents(root, rC)){
+                    if(rCParent == parent){
+                        rC = parent;
+                        rCParent = root == rCParent
+                                ? rCParent
+                                : context.getParentFinder().getParent(root, rCParent);
+                        break;
+                    }
                 }
-            }
-        }while(root != rC);
+            }while(root != rC);
 
-        return nC;
+            return nC;
+
+        }else{
+            LOG.error("originalParent does not live inside root\n" + originalParent + '\n' + root);
+            // return the unaltered root
+            return root;
+        }
     }
 
     /** Replace the originalChild that exists under the originalParent will the newChild.
