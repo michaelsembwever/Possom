@@ -17,7 +17,7 @@
 package no.sesat.search.query.finder;
 
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.parser.*;
@@ -46,7 +46,7 @@ public final class ChildFinder extends AbstractReflectionVisitor {
         return found;
     }
 
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
         if (!found) { // still looking
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);

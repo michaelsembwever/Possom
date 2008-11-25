@@ -27,7 +27,7 @@ package no.sesat.search.query;
  * @version $Id: OperationClause.java 3359 2006-08-03 08:13:22Z mickw $
  *
  */
-public interface BinaryOperatorClause extends UnaryClause {
+public interface BinaryClause extends UnaryClause {
     /**
      * Get the second clause.
      *

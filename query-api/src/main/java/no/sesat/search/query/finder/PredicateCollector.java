@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractReflectionVisitor;
@@ -74,7 +74,7 @@ public final class PredicateCollector extends AbstractReflectionVisitor implemen
 
 
     /** TODO comment me. **/
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         clause.getFirstClause().accept(this);
         collect(clause);

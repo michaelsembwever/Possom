@@ -25,6 +25,6 @@ package no.sesat.search.query;
  * @version $Id$
  *
  */
-public interface DefaultOperatorClause extends BinaryOperatorClause {
+public interface DefaultOperatorClause extends BinaryClause {
 
 }

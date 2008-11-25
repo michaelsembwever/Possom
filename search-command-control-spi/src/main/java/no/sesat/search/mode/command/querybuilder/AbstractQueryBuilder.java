@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
@@ -139,8 +139,8 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
         boolean result = false;
 
-        if(clause instanceof BinaryOperatorClause){
-            final BinaryOperatorClause c = (BinaryOperatorClause)clause;
+        if(clause instanceof BinaryClause){
+            final BinaryClause c = (BinaryClause)clause;
             result = isEmptyLeaf(c.getFirstClause()) && isEmptyLeaf(c.getSecondClause());
 
         }else if(clause instanceof UnaryClause){

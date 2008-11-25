@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractReflectionVisitor;
 import no.sesat.search.query.Clause;
@@ -105,7 +105,7 @@ public final class PredicateFinder extends AbstractReflectionVisitor {
     /** TODO comment me. *
      * @param clause
      */
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         if(null == firstClause){
             evaluate(clause);

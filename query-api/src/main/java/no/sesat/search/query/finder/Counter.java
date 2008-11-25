@@ -18,7 +18,7 @@ package no.sesat.search.query.finder;
 
 import java.io.Serializable;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.XorClause;
@@ -70,7 +70,7 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
      *
      * @param clause
      */
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }

@@ -20,7 +20,7 @@ package no.sesat.search.query.transform;
 import java.util.Map;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
@@ -91,7 +91,7 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final BinaryOperatorClause clause) {
+    public void visitImpl(final BinaryClause clause) {
 
         // remember what visitingLast was
         final Boolean original = visitingLast;

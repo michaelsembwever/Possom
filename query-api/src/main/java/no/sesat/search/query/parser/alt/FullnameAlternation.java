@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.PhraseClause;
 import no.sesat.search.query.XorClause;
@@ -157,13 +157,13 @@ public final class FullnameAlternation extends AbstractAlternation {
                 LOG.debug("XorClause created " + xorClause);
 
                 // replace fullname with the new xorClause
-                final BinaryOperatorClause fullnameParent = result == fullname
+                final BinaryClause fullnameParent = result == fullname
                         ? doFullname
-                        : (BinaryOperatorClause) context.getParentFinder().getParent(result, fullname);
+                        : (BinaryClause) context.getParentFinder().getParent(result, fullname);
 
                 result = result == fullname
                         ? xorClause
-                        : replaceDescendant((BinaryOperatorClause)result, xorClause, doFullname, fullnameParent);
+                        : replaceDescendant((BinaryClause)result, xorClause, doFullname, fullnameParent);
                 LOG.debug("Updated root to " + result);
             }
         }

@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.PhraseClause;
@@ -152,7 +152,7 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
         }
     }
 
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }

@@ -35,7 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.Query;
@@ -113,7 +113,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         LOG.trace("visitImpl(" + clause + ')');
 

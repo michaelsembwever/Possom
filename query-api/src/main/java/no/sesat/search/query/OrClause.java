@@ -28,6 +28,6 @@ package no.sesat.search.query;
  * @version $Id$
  *
  */
-public interface OrClause extends BinaryOperatorClause {
+public interface OrClause extends BinaryClause {
 
 }

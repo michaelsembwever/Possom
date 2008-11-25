@@ -27,6 +27,6 @@ package no.sesat.search.query;
  * @version $Id$
  *
  */
-public interface AndClause extends BinaryOperatorClause{
+public interface AndClause extends BinaryClause{
 
 }

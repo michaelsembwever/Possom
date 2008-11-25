@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.parser.AbstractReflectionVisitor;
@@ -135,7 +135,7 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
         innerCache.put(child, new ArrayList<UnaryClause>(parents));
     }
 
-    private synchronized <T extends BinaryOperatorClause> void findParentsImpl(final Clause root, final Clause child) {
+    private synchronized <T extends BinaryClause> void findParentsImpl(final Clause root, final Clause child) {
 
         this.child = child;
         if (searching || child == null) {
@@ -177,7 +177,7 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      *
      * @param clause
      */
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         if (!singleMode || parents.size() == 0) {
 

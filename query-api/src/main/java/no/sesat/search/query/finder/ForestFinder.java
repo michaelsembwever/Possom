@@ -20,7 +20,7 @@ package no.sesat.search.query.finder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.XorClause;
@@ -39,7 +39,7 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     private static final Logger LOG = Logger.getLogger(ForestFinder.class);
     private static final String DEBUG_COUNT_TO = " trees in forest ";
     private boolean searching = false;
-    private final List<BinaryOperatorClause> roots = new ArrayList<BinaryOperatorClause>();
+    private final List<BinaryClause> roots = new ArrayList<BinaryClause>();
 
     private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
             = "visit(object) can't be called directly on this visitor!";
@@ -49,7 +49,7 @@ public final class ForestFinder extends AbstractReflectionVisitor {
      * @param root
      * @return
      */
-    public synchronized List<BinaryOperatorClause> findForestRoots(final UnaryClause root) {
+    public synchronized List<BinaryClause> findForestRoots(final UnaryClause root) {
 
         if (searching) {
             throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
@@ -58,7 +58,7 @@ public final class ForestFinder extends AbstractReflectionVisitor {
         roots.clear();
         visit(root);
         searching = false;
-        return Collections.unmodifiableList(new ArrayList<BinaryOperatorClause>(roots));
+        return Collections.unmodifiableList(new ArrayList<BinaryClause>(roots));
     }
 
 
@@ -85,9 +85,9 @@ public final class ForestFinder extends AbstractReflectionVisitor {
      *
      * @param clause
      */
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
-        final BinaryOperatorClause forestDepth = forestWalk(clause);
+        final BinaryClause forestDepth = forestWalk(clause);
         clause.getFirstClause().accept(this);
         forestDepth.getSecondClause().accept(this);
     }
@@ -103,7 +103,7 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     /** Returns the deepest tree in the forest.
      * And adds the forest to the roots if it contains more than one tree.
      **/
-    private <T extends BinaryOperatorClause> T forestWalk(final T clause){
+    private <T extends BinaryClause> T forestWalk(final T clause){
 
         int count = 1;
         T forestDepth = clause;

@@ -30,7 +30,7 @@ import java.util.Set;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.BinaryOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
@@ -235,7 +235,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
      *
      * @param clause
      */
-    protected void visitImpl(final BinaryOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         if(validQuery){
             clause.getFirstClause().accept(this);
@@ -316,7 +316,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             }
         }
 
-        protected void visitImpl(final BinaryOperatorClause clause) {
+        protected void visitImpl(final BinaryClause clause) {
 
             if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                 clause.getFirstClause().accept(this);
