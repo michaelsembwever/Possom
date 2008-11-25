@@ -222,7 +222,11 @@ Copyright (2006-2008) Schibsted Søk AS
 
         <solr-command id="default-solr-command"
                 server-url="queryServer.solr.1"
-                inherit="default-command"/>
+                inherit="default-command">
+           <query-builder>
+               <infix and-infix="AND" default-infix="AND" or-infix="OR" not-prefix="NOT " or-grouped="true"/>
+           </query-builder>
+        </solr-command>
 
         <stock-command id="default-stock-command" inherit="default-command">
             <query-transformers>
