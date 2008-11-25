@@ -77,6 +77,12 @@
                     <include>*.html</include>
                     <include>**/*.vm</include>
                     <include>**/*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/templates</directory>
+                <filtering>false</filtering>
+                <includes>
                     <include>*.jsp</include>
                     <include>**/*.jsp</include>
                 </includes>
