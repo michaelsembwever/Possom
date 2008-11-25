@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,13 +23,23 @@ import no.sesat.search.query.OperationClause;
 import no.sesat.search.query.parser.*;
 
 
-final class ChildFinder extends AbstractReflectionVisitor {
-    
+/** Used to find if a particular clause exists underneath another.
+ *
+ * @version $Id$
+ */
+public final class ChildFinder extends AbstractReflectionVisitor {
+
     private boolean found;
     private Clause child = null;
 
+    /** Does the child clause exist any depth underneath the parent.
+     *
+     * @param parent the parent clause
+     * @param child the child clause.
+     * @return Does the child clause exist any depth underneath the parent.
+     */
     public synchronized boolean childExists(final OperationClause parent, final Clause child) {
-        
+
         found = false;
         this.child = child;
         visit(parent);
@@ -42,7 +52,7 @@ final class ChildFinder extends AbstractReflectionVisitor {
             clause.getSecondClause().accept(this);
         }
     }
-    
+
     protected void visitImpl(final OperationClause clause) {
         if (!found ) { // still looking
             clause.getFirstClause().accept(this);
@@ -50,7 +60,7 @@ final class ChildFinder extends AbstractReflectionVisitor {
     }
 
     protected void visitImpl(final LeafClause clause) {
-        
+
         found = clause == child;
     }
 
