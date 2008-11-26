@@ -258,8 +258,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         userSortByParameter = new NavigationSearchCommandParameter(
                 context,
-                USER_SORT_KEY,
-                USER_SORT_KEY,
+                getSearchConfiguration().getUserSortParameter(),
+                getSearchConfiguration().getUserSortParameter(),
                 BaseSearchCommandParameter.Origin.REQUEST);
 
     }

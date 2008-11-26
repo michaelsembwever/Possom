@@ -42,9 +42,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
 
     private String nestedResultsField = "entries";;
     private int collapsingMaxFetch = 10;
-
-    /** Name of the sort parameter used in the url. */
-    private String userSortParameter = "sort";
     /** Sort field used when sort is not relevance. */
     private String sortField = "publishedtime";
     /** Default sort direction if no sort is configured. */
@@ -61,20 +58,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private int maxAgeAmount;
     private String ageField = "publishedtime";
     private char ageSymbol;
-
-    /** Getter for the userSortParameter property.
-     * @return the userSortParameter value
-     */
-    public String getUserSortParameter() {
-        return userSortParameter;
-    }
-
-    /** Setter for the userSortParameter property.
-     * @param userSortParameter the new userSortParameter value
-     */
-    public void setUserSortParameter(final String userSortParameter) {
-        this.userSortParameter = userSortParameter;
-    }
 
     /** Getter for the sortField property.
      * @return the sortField value

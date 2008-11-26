@@ -36,6 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
+import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.view.config.SearchTab;
 
 /**
@@ -53,7 +54,7 @@ import no.sesat.search.view.config.SearchTab;
  */
 public final class NavigationConfig implements Serializable {
 
-    public static final String USER_SORT_KEY = "sort";
+    public static final String USER_SORT_KEY = SearchConfiguration.DEFAULT_USER_SORT_PARAMETER;
 
     private final Map<String, Nav> navMap = new HashMap<String, Nav>();
     private final Map<String, Navigation> navigationMap = new HashMap<String, Navigation>();
