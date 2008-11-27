@@ -96,7 +96,7 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  *
  * @version <tt>$Id$</tt>
  */
-public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
+public abstract class AbstractSearchCommand implements SearchCommand, Serializable {
 
     // Constants -----------------------------------------------------
 
