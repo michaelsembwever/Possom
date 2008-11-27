@@ -47,7 +47,7 @@ prority attribute of the navigation hints -->
     <!-- Common views -->
 
     <tab id="solrSuggestions" key="suggest" mode="solrSuggestions">
-        <layout main="/fragments/layout/generic.sesam/solrSuggestions.jsp" content-type="text/plain" expires-in-seconds="28800" />
+        <layout main="/fragments/layout/generic.sesam/solrSuggestions.jsp" expires-in-seconds="28800" />
         <navigation>
             <navigation id="offset">
               <result-paging id="offset" command-name="solrSuggestions" page-size="99" number-of-pages="1" hitcount-source="totalhits"/>
