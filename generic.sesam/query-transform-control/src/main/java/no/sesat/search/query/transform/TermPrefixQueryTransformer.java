@@ -28,10 +28,7 @@ import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.PhoneNumberClause;
 import no.sesat.search.query.UrlClause;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
 
 /**
  * @see TermPrefixQueryTransformerConfig
@@ -144,10 +141,9 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
     }
 
     private void addPrefix(final Clause clause, final String prefix) {
-
         final String term = getTransformedTerms().get(clause);
 
-        if (!(term.equals("") || isAlreadyPrefixed(term, prefix))) {
+        if (term != null && !(term.equals("") || isAlreadyPrefixed(term, prefix))) {
             getTransformedTerms().put(clause, prefix + ':' + term);
         }
     }
