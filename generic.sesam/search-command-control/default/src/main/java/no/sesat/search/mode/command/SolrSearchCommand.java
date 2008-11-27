@@ -30,6 +30,7 @@ import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.SiteConfiguration;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -101,6 +102,11 @@ public class SolrSearchCommand extends AbstractSearchCommand{
                     .setStart(getOffset())
                     .setRows(getSearchConfiguration().getResultsToReturn())
                     .setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
+
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                query.setTimeAllowed(getSearchConfiguration().getTimeout());
+            }
 
             final Map<String,String> sortMap = getSearchConfiguration().getSortMap();
             for(Map.Entry<String,String> entry : sortMap.entrySet()){

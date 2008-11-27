@@ -46,6 +46,8 @@ public class SolrCommandConfig extends CommandConfig {
 
     private final Map<String,String> sort = new HashMap<String,String>();
 
+    private Integer timeout = Integer.MAX_VALUE;
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -115,6 +117,22 @@ public class SolrCommandConfig extends CommandConfig {
         for (String string : sortFields) {
             setSort(string);
         }
+    }
+
+    /**
+     *
+     * @param integer
+     */
+    public void setTimeout(final Integer integer){
+        timeout = integer;
+    }
+
+    /** @see #setTimeout(java.lang.Integer)
+     *
+     * @return
+     */
+    public int getTimeout(){
+        return timeout;
     }
 
     @Override
