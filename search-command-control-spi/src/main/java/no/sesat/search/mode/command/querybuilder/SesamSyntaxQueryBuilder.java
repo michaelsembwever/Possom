@@ -39,7 +39,7 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
 
     private static final QueryBuilderConfig SESAM_SYNTAX_CONFIG = new InfixQueryBuilderConfig(
             "",
-            "",
+            "AND",
             "",
             "-",
             true,
@@ -68,7 +68,7 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
     private boolean insideOr = false;
 
     /** Avoids writting out fields to terms that
- * do not come from the original query,  are not possible for the user to use.
+     * do not come from the original query,  are not possible for the user to use.
      *
      * {@inheritDoc}
      * @param clause {@inheritDoc}
@@ -87,7 +87,7 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
                 if(!searchConf.getFieldFilterMap().containsValue(field)){
 
                     // query transformation has prepended the term with fields that are meaningless to the user.
-                    transformedClause = transformedClause.substring(transformedClause.indexOf(':') + 1);
+                    transformedClause = transformedClause.replace(field + ':', "");
                 }
             }
 
