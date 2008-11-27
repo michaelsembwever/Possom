@@ -174,7 +174,7 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
         //  Both branches to a XorClause should never be used.
         switch(clause.getHint()){
             case FULLNAME_ON_LEFT:
-                clause.getSecondClause().accept(this);
+                clause.getSecondClause().accept(visitor);
                 break;
             default:
                 super.visitXorClause(visitor, clause);
