@@ -541,10 +541,10 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                         return datamodel.getPage().getCurrentTab();
                     }
                     public Query getQuery() {
-                        return AbstractSearchCommand.this.getQuery();
+                        return getSearchCommandsQuery();
                     }
                     public String getDisplayQuery(){
-                        return AbstractSearchCommand.this.getTransformedQuerySesamSyntax();
+                        return getTransformedQuerySesamSyntax();
                     }
                 },
                 context
@@ -813,8 +813,10 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
      */
     protected String getTransformedQuerySesamSyntax() {
 
-        // also normalise it
-        return transformedQuerySesamSyntax.replaceAll(" +", " ");
+        // if it's been nulled then return the original query
+        return null != transformedQuerySesamSyntax
+                ? transformedQuerySesamSyntax.replaceAll(" +", " ") // also normalise it
+                : context.getDataModel().getQuery().getString();
     }
 
     protected void updateTransformedQuerySesamSyntax(){
