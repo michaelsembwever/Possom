@@ -40,7 +40,9 @@ public interface QueryBuilder extends Visitor {
          * @return unescaped transformed term
          */
         String getTransformedTerm(Clause clause);
-        /** The collection of words that have special meaning/function within the query string
+        /** The collection of words that have special meaning/function within the query string.
+         *
+         * Each is treated as a regular expressions to match complex words if neccessary.
          *
          * @return collection of reserved words
          */

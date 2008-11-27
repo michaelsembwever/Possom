@@ -190,7 +190,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
 
                     public Query getQuery() {
                         // Important that initialiseQuery() has been called first
-                        return getSearchCommandsQuery(); // XXX will this end up in subclass overrides?
+                        return getSearchCommandsQuery();
                     }
 
                     public TokenEvaluationEngine getTokenEvaluationEngine() {
@@ -198,11 +198,11 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                     }
 
                     public void visitXorClause(final Visitor visitor, final XorClause clause) {
-                        AbstractSearchCommand.this.visitXorClause(visitor, clause);
+                        searchCommandsVisitXorClause(visitor, clause);
                     }
 
                     public String getFieldFilter(final LeafClause clause) {
-                        return AbstractSearchCommand.this.getFieldFilter(clause);
+                        return getSearchCommandsFieldFilter(clause);
                     }
 
                     public String getTransformedTerm(final Clause clause) {
@@ -215,16 +215,16 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
 
                     public Collection<String> getReservedWords() {
 
-                        return AbstractSearchCommand.this.getReservedWords();
+                        return getSearchCommandsReservedWords();
                     }
 
                     public String escape(final String word) {
 
-                        return AbstractSearchCommand.this.escape(word);
+                        return searchCommandsEscape(word);
                     }
 
                     public Map<Clause, String> getTransformedTerms() {
-                        return AbstractSearchCommand.this.getTransformedTerms();
+                        return getSearchCommandsTransformedTerms();
                     }
                 },
                 cxt
@@ -934,6 +934,23 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
     private Query getSearchCommandsQuery(){
         return getQuery();
     }
+
+    /** Wrapper around visitXorClause(). Nothing more than a different method signature. **/
+    private void searchCommandsVisitXorClause(final Visitor visitor, final XorClause clause) {
+        visitXorClause(visitor, clause);
+    }
+
+    /** Wrapper around getReservedWords(). Nothing more than a different method signature. **/
+    private String getSearchCommandsFieldFilter(final LeafClause clause) { return getFieldFilter(clause); }
+
+    /** Wrapper around getQuery(). Nothing more than a different method signature. **/
+    private Collection<String> getSearchCommandsReservedWords() { return getReservedWords(); }
+
+    /** Wrapper around escape(). Nothing more than a different method signature. **/
+    private String searchCommandsEscape(final String word) { return escape(word); }
+
+    /** Wrapper around getTransformedTerms(). Nothing more than a different method signature. **/
+    private Map<Clause, String> getSearchCommandsTransformedTerms() { return getTransformedTerms(); }
 
     /**
      *

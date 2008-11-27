@@ -101,14 +101,18 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
         for (String word : getWordsToEscape()) {
 
             // Case-insensitive check against word.
-            // Term might already be prefixed by the TermPrefixTransformer.
-            if (string.toLowerCase().endsWith(':' + word.toLowerCase()) || string.equalsIgnoreCase(word)) {
+            // Term might already be prefixed by a field.
 
-                final Pattern p = Pattern.compile(
-                        Matcher.quoteReplacement(word),
-                        Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+            final String regexp = "(.*:)?" + word;
+            if (string.toLowerCase().matches(regexp)) {
 
-                return p.matcher(word).replaceAll(context.escape(string));
+                final Pattern p = Pattern.compile(word, Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+
+                final String term = string.contains(":") && !string.contains("\\:")
+                        ? string.substring(string.indexOf(':') + 1)
+                        : string;
+
+                return p.matcher(string).replaceAll(context.escape(term));
             }
         }
 

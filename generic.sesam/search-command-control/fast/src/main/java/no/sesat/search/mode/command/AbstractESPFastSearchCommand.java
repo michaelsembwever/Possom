@@ -55,6 +55,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -122,6 +123,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             return word;
         }
     }
+
+    private static transient Collection<String> RESERVED_WORDS;
 
     // Constructors --------------------------------------------------
 
@@ -315,11 +318,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     @Override
     protected Collection<String> getReservedWords() {
 
-        final Collection<String> words = new ArrayList<String>(super.getReservedWords());
-        for (ReservedWord word : ReservedWord.values()) {
-            words.add(word.getWord());
+        if(null == RESERVED_WORDS){
+            final Collection<String> words = new ArrayList<String>(super.getReservedWords());
+            for (ReservedWord word : ReservedWord.values()) {
+                words.add(word.getWord());
+            }
+            RESERVED_WORDS = Collections.unmodifiableCollection(words);
         }
-        return words;
+        return RESERVED_WORDS;
     }
 
     /** In addition to super.escape() also replaces all ? with whitespace.
