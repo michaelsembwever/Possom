@@ -42,7 +42,7 @@ import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.UrlClause;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;

@@ -17,6 +17,7 @@
  */
 package no.sesat.search.query.finder;
 
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

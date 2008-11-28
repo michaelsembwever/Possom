@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.token.TokenEvaluator;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;

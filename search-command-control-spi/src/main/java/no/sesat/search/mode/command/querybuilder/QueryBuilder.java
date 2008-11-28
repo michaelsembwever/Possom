@@ -19,7 +19,7 @@ package no.sesat.search.mode.command.querybuilder;
 import java.util.Collection;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.transform.QueryTransformer;
 
 /** QueryBuilder provides a string representation of a Query Tree against of map of "transformed terms".

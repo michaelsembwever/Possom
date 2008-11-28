@@ -32,7 +32,7 @@ import java.util.Map;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import no.sesat.search.mode.command.querybuilder.FilterBuilder;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;

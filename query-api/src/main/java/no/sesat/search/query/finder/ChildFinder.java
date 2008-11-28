@@ -16,6 +16,7 @@
  */
 package no.sesat.search.query.finder;
 
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;

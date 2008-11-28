@@ -27,7 +27,7 @@ import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 
 /** Abstract QueryBuilder providing basic support for mantaining context and stringBuilder fields (and related methods).
  *

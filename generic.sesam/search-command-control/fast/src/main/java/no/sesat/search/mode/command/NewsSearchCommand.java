@@ -25,7 +25,7 @@ package no.sesat.search.mode.command;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.token.Categories;
 

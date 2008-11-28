@@ -26,7 +26,7 @@ import no.sesat.search.query.Clause;
 import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 

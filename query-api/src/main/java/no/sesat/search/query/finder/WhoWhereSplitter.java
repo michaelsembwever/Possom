@@ -36,7 +36,7 @@ import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.QueryContext;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
 

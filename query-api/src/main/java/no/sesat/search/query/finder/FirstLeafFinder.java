@@ -16,6 +16,7 @@
  */
 package no.sesat.search.query.finder;
 
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import java.io.Serializable;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;

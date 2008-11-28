@@ -19,7 +19,7 @@ package no.sesat.search.query.transform;
 
 
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 

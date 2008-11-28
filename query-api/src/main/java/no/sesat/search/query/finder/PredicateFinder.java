@@ -28,7 +28,7 @@ import java.util.Set;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;

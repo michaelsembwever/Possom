@@ -23,7 +23,7 @@
 package no.sesat.search.query.analyser;
 
 import java.io.IOException;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
