@@ -24,7 +24,7 @@ package no.sesat.search.result.handler;
 
 import java.lang.ref.Reference;
 import java.util.concurrent.ConcurrentHashMap;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;

@@ -38,7 +38,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 
 /** @deprecated An automatic approach is required, similar to how AnalysisRuleFactory warms up EvaluatorFactories.
  *

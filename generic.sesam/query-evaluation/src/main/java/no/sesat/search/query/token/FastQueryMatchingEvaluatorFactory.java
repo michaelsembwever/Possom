@@ -17,7 +17,7 @@
 package no.sesat.search.query.token;
 
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 

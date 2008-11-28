@@ -22,8 +22,8 @@ package no.sesat.search.run.handler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.run.handler.AbstractRunHandlerConfig.Controller;
 import no.sesat.search.site.config.SiteClassLoaderFactory;
 import no.sesat.search.site.config.Spi;

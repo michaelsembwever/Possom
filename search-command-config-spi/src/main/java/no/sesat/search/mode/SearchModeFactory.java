@@ -21,7 +21,7 @@ package no.sesat.search.mode;
 import no.sesat.Interpreter;
 import no.sesat.search.run.transform.RunTransformerConfig;
 import no.sesat.search.site.config.AbstractConfigFactory;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.config.CommandConfig;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.query.transform.QueryTransformerConfig;

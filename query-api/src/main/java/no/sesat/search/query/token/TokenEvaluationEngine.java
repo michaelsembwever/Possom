@@ -19,7 +19,7 @@ package no.sesat.search.query.token;
 
 import java.io.Serializable;
 import java.util.Set;
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
 import no.sesat.search.site.config.ResourceContext;

@@ -25,7 +25,7 @@
 package no.sesat.search.http.servlet;
 
 import java.util.Locale;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.query.analyser.AnalysisRuleFactory;

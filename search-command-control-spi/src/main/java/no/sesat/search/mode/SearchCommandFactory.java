@@ -26,8 +26,8 @@ import java.lang.reflect.Constructor;
 
 import org.apache.log4j.Logger;
 
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 
 import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.config.CommandConfig.Controller;

@@ -18,7 +18,7 @@
 package no.sesat.search.result.test;
 
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.command.SearchCommand;
 import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;

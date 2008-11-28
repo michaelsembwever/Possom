@@ -19,7 +19,7 @@
 package no.sesat.search.mode.command;
 
 import java.util.concurrent.Callable;
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 import no.sesat.search.datamodel.DataModelContext;
 import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.config.SearchConfigurationContext;

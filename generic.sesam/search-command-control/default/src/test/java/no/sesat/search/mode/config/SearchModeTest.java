@@ -20,7 +20,7 @@ package no.sesat.search.mode.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.mode.SearchMode;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.run.RunningQuery;
