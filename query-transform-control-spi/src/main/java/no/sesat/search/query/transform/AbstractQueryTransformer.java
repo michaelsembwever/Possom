@@ -21,7 +21,6 @@ package no.sesat.search.query.transform;
 import no.sesat.search.query.XorClause;
 import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
 
 /**
  * AbstractQueryTransformer is part of no.sesat.search.query
@@ -42,7 +41,6 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
     protected AbstractQueryTransformer(){
     }
 
-    @Override
     public void setContext(final Context cxt) {
         context = cxt;
     }
@@ -55,18 +53,15 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         return context;
     }
 
-    @Override
     public String getFilter() {
         return "";
     }
 
-    @Override
     public String getFilter(final java.util.Map parameters) {
         return "";
     }
 
     /** @deprecated modify the context's transformedTerms map instead **/
-    @Override
     public String getTransformedQuery() {
         return getContext().getTransformedQuery();
     }
