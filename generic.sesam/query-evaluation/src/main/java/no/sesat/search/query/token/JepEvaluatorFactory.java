@@ -95,58 +95,59 @@ public final class JepEvaluatorFactory extends AbstractEvaluatorFactory{
                 ));
         }
 
-        try{
-            EVALUATORS_LOCK.writeLock().lock();
+        if(null == EVALUATORS.get(site)){
 
-            if(null == EVALUATORS.get(site)){
+            try{
+                EVALUATORS_LOCK.writeLock().lock();
 
-                // create map entry for this site
-                EVALUATORS.put(site, new HashMap<TokenPredicate,JepTokenEvaluator>());
 
-                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setValidating(false);
-                final DocumentBuilder builder = factory.newDocumentBuilder();
+                    // create map entry for this site
+                    EVALUATORS.put(site, new HashMap<TokenPredicate,JepTokenEvaluator>());
 
-                final DocumentLoader loader = cxt.newDocumentLoader(cxt, JEP_EVALUATOR_XMLFILE, builder);
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setValidating(false);
+                    final DocumentBuilder builder = factory.newDocumentBuilder();
 
-                loader.abut();
-                LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " started");
-                final Document doc = loader.getDocument();
+                    final DocumentLoader loader = cxt.newDocumentLoader(cxt, JEP_EVALUATOR_XMLFILE, builder);
 
-                assert null != doc : "No document loaded for " + site.getName();
+                    loader.abut();
+                    LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " started");
+                    final Document doc = loader.getDocument();
 
-                final Element root = doc.getDocumentElement();
-                if(null != root){
-                    final NodeList evaluators = root.getElementsByTagName("evaluator");
-                    for (int i = 0; i < evaluators.getLength(); ++i) {
+                    assert null != doc : "No document loaded for " + site.getName();
 
-                        final Element evaluator = (Element) evaluators.item(i);
+                    final Element root = doc.getDocumentElement();
+                    if(null != root){
+                        final NodeList evaluators = root.getElementsByTagName("evaluator");
+                        for (int i = 0; i < evaluators.getLength(); ++i) {
 
-                        final String tokenName = evaluator.getAttribute("token");
-                        LOG.info(" ->evaluator@token: " + tokenName);
+                            final Element evaluator = (Element) evaluators.item(i);
 
-                        TokenPredicate token;
-                        try{
-                            token = TokenPredicateUtility.getTokenPredicate(tokenName);
+                            final String tokenName = evaluator.getAttribute("token");
+                            LOG.info(" ->evaluator@token: " + tokenName);
 
-                        }catch(IllegalArgumentException iae){
-                            LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
-                            token = TokenPredicateUtility.createAnonymousTokenPredicate(
-                                    tokenName);
+                            TokenPredicate token;
+                            try{
+                                token = TokenPredicateUtility.getTokenPredicate(tokenName);
+
+                            }catch(IllegalArgumentException iae){
+                                LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
+                                token = TokenPredicateUtility.createAnonymousTokenPredicate(
+                                        tokenName);
+                            }
+
+                            final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
+                            LOG.info(" ->evaluator@query-dependant: " + queryDep);
+
+                            final JepTokenEvaluator jepTokenEvaluator = new JepTokenEvaluator("*", queryDep);
+                            EVALUATORS.get(site).put(token, jepTokenEvaluator);
+
                         }
-
-                        final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
-                        LOG.info(" ->evaluator@query-dependant: " + queryDep);
-
-                        final JepTokenEvaluator jepTokenEvaluator = new JepTokenEvaluator("*", queryDep);
-                        EVALUATORS.get(site).put(token, jepTokenEvaluator);
-
                     }
-                }
-                LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " finished");
+                    LOG.info("Parsing " + JEP_EVALUATOR_XMLFILE + " finished");
+            }finally{
+                EVALUATORS_LOCK.writeLock().unlock();
             }
-        }finally{
-            EVALUATORS_LOCK.writeLock().unlock();
         }
     }
 

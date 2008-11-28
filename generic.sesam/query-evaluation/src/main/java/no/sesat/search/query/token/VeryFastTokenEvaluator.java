@@ -279,65 +279,65 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 ));
         }
 
-        try{
-            LIST_NAMES_LOCK.writeLock().lock();
+        if(null == LIST_NAMES.get(site)){
+            try{
+                LIST_NAMES_LOCK.writeLock().lock();
 
-            if(null == LIST_NAMES.get(site)){
 
-                // create map entry for this site
-                LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
+                    // create map entry for this site
+                    LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
 
-                // initialise this site's configuration
-                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                final DocumentBuilder builder = factory.newDocumentBuilder();
-                final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
-                loader.abut();
+                    // initialise this site's configuration
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    final DocumentBuilder builder = factory.newDocumentBuilder();
+                    final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
+                    loader.abut();
 
-                LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
-                final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
-                final Document doc = loader.getDocument();
+                    LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
+                    final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
+                    final Document doc = loader.getDocument();
 
-                if(null != doc && null != doc.getDocumentElement()){
+                    if(null != doc && null != doc.getDocumentElement()){
 
-                    final Element root = doc.getDocumentElement();
-                    final NodeList lists = root.getElementsByTagName("list");
-                    for (int i = 0; i < lists.getLength(); ++i) {
+                        final Element root = doc.getDocumentElement();
+                        final NodeList lists = root.getElementsByTagName("list");
+                        for (int i = 0; i < lists.getLength(); ++i) {
 
-                        final Element list = (Element) lists.item(i);
+                            final Element list = (Element) lists.item(i);
 
-                        final String tokenName = list.getAttribute("token");
-                        LOG.info(" ->list@token: " + tokenName);
+                            final String tokenName = list.getAttribute("token");
+                            LOG.info(" ->list@token: " + tokenName);
 
-                        TokenPredicate token;
-                        try{
-                            token = TokenPredicateUtility.getTokenPredicate(tokenName);
+                            TokenPredicate token;
+                            try{
+                                token = TokenPredicateUtility.getTokenPredicate(tokenName);
 
-                        }catch(IllegalArgumentException iae){
-                            LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
-                            token = TokenPredicateUtility.createAnonymousTokenPredicate(tokenName);
-                        }
-
-                        final String[] listNameArr = list.getAttribute("list-name").split(",");
-                        LOG.info(" ->lists: " + list.getAttribute("list-name"));
-
-                        // update each listname to the format the fast query matching servers use
-                        if(null != listNameArr){
-                            for(int j = 0; j < listNameArr.length; ++j){
-                                listNameArr[j] = LIST_PREFIX + listNameArr[j] + LIST_SUFFIX;
+                            }catch(IllegalArgumentException iae){
+                                LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
+                                token = TokenPredicateUtility.createAnonymousTokenPredicate(tokenName);
                             }
 
-                            // put the listnames in
-                            Arrays.sort(listNameArr, null);
-                            listNames.put(token, listNameArr);
+                            final String[] listNameArr = list.getAttribute("list-name").split(",");
+                            LOG.info(" ->lists: " + list.getAttribute("list-name"));
+
+                            // update each listname to the format the fast query matching servers use
+                            if(null != listNameArr){
+                                for(int j = 0; j < listNameArr.length; ++j){
+                                    listNameArr[j] = LIST_PREFIX + listNameArr[j] + LIST_SUFFIX;
+                                }
+
+                                // put the listnames in
+                                Arrays.sort(listNameArr, null);
+                                listNames.put(token, listNameArr);
+                            }
+
+
                         }
-
-
                     }
-                }
-                LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
+                    LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
+            }finally{
+                LIST_NAMES_LOCK.writeLock().unlock();
             }
-        }finally{
-            LIST_NAMES_LOCK.writeLock().unlock();
         }
     }
 
