@@ -33,11 +33,8 @@ import java.util.Properties;
 import java.util.UUID;
 import java.text.MessageFormat;
 import java.util.Deque;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -430,35 +427,36 @@ public final class SiteLocatorFilter implements Filter {
         // deque has a time limit. start counting.
         long timeLeft = WAIT_TIME;
 
-        // attempt to join deque
-        if (deque.offerFirst(request)) {
-            timeLeft = tryLock(request, deque, lock, timeLeft);
-        }
+        try{
+            // attempt to join deque
+            if (deque.offerFirst(request)) {
+                timeLeft = tryLock(request, deque, lock, timeLeft);
+            }
 
-        if(lock.isHeldByCurrentThread()){
+            if(lock.isHeldByCurrentThread()){
 
-            try{
                 // waiting is over. and we can execute
                 chain.doFilter(request, response);
 
-            }finally{
-                // take out of deque first
-                deque.remove(request);
+            }else{
+                // we failed to execute. return 409 response.
+                if (response instanceof HttpServletResponse) {
 
-                // release the lock, waiting up the next request
-                lock.unlock();
+                    LOG.warn(" -- response 409 " +
+                            (0 < timeLeft
+                            ? "(More then " + REQUEST_QUEUE_SIZE + " requests already in queue)"
+                            : "(Timeout: Waited " + WAIT_TIME + " ms)"));
+
+                    response.sendError(HttpServletResponse.SC_CONFLICT);
+                }
             }
-        }else{
-            // we failed to execute. return 409 response.
-            if (response instanceof HttpServletResponse) {
+        }finally{
 
-                LOG.warn(" -- response 409 " +
-                        (0 < timeLeft
-                        ? "(More then " + REQUEST_QUEUE_SIZE + " requests already in queue)"
-                        : "(Timeout: Waited " + WAIT_TIME + " ms)"));
+            // take out of deque first
+            deque.remove(request);
 
-                response.sendError(HttpServletResponse.SC_CONFLICT);
-            }
+            // release the lock, waiting up the next request
+            if(lock.isHeldByCurrentThread()){ lock.unlock(); }
         }
     }
 
