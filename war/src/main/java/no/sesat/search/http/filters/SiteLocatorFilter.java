@@ -32,10 +32,15 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.text.MessageFormat;
+import java.util.Deque;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -89,7 +94,7 @@ public final class SiteLocatorFilter implements Filter {
     private static final String UNKNOWN = "unknown";
 
     private static final String USER_REQUEST_QUEUE = "userRequestQueue";
-    private static final String USER_REQUEST_SEMAPHORE = "userRequestSemaphore";
+    private static final String USER_REQUEST_LOCK = "userRequestSemaphore";
     private static final long WAIT_TIME = 5000;
     private static final int REQUEST_QUEUE_SIZE = 5;
 
@@ -397,81 +402,112 @@ public final class SiteLocatorFilter implements Filter {
 
     // Private -------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
     private static void doChainFilter(
             final FilterChain chain,
             final ServletRequest request,
             final ServletResponse response) throws IOException, ServletException {
 
         if (request instanceof HttpServletRequest) {
-            final HttpSession session = ((HttpServletRequest) request).getSession();
-
-            // fetch the user's queue
-            BlockingQueue<ServletRequest> queue
-                    = (BlockingQueue<ServletRequest>) session.getAttribute(USER_REQUEST_QUEUE);
-
-            // construct queue if necessary
-            if (null == queue) {
-                queue = new ArrayBlockingQueue<ServletRequest>(REQUEST_QUEUE_SIZE);
-                session.setAttribute(USER_REQUEST_QUEUE, queue);
-                session.setAttribute(USER_REQUEST_SEMAPHORE, new Semaphore(1));
-            }
-
-            // queue has a time limit. start counting.
-            final long start = System.currentTimeMillis();
-
-            // attempt to join queue
-            if (queue.offer(request)) {
-
-                // a semphore is used for waiting within the queue. it lets us sleep peacefully until front of queue.
-                final Semaphore semaphore = (Semaphore) session.getAttribute(USER_REQUEST_SEMAPHORE);
-
-                try {
-                    while(queue.peek() != request){
-
-                        final long timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
-
-                        // let's sleep. sleeping too long results in 409 response.
-                        if(!semaphore.tryAcquire(timeLeft, TimeUnit.MILLISECONDS)){
-
-                            LOG.warn(" -- response 409 (Timeout: Waited " + (WAIT_TIME - timeLeft) + " ms. )");
-                            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
-                            return; // response is set
-
-                        }else if(queue.peek() != request){
-                            // we've acquire the semaphore but we're not at front of queue.
-                            // mix up. and probably not possible in the jvm?
-                            // release the semaphore and go back to sleep
-                            semaphore.release();
-                            LOG.error("acquired semaphore without being at front of queue: " + queue);
-                        }
-                    }
-
-                    // waiting is over. we can execute.
-                    chain.doFilter(request, response);
-
-                }catch(InterruptedException ie){
-                    LOG.error("Failed using session's semaphore", ie);
-
-                }finally {
-
-                    // take out of queue first so (queue.peek() != request) is true for the next request.
-                    queue.remove();
-                    // release the semaphore, waiting up the next request.
-                    semaphore.release();
-                }
-
-            }else{
-                // the queue is too long to join. immediately return 409 response.
-                if (response instanceof HttpServletResponse) {
-                    LOG.warn(" -- response 409 (More then " + REQUEST_QUEUE_SIZE + " request in queue)");
-                    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
-                }
-            }
-
+            doChainFilter(chain, (HttpServletRequest)request, (HttpServletResponse)response);
         } else {
             chain.doFilter(request, response);
         }
+    }
+
+    private static void doChainFilter(
+            final FilterChain chain,
+            final HttpServletRequest request,
+            final HttpServletResponse response) throws IOException, ServletException {
+
+        final HttpSession session = request.getSession();
+
+        // fetch the user's deque
+        final Deque<ServletRequest> deque = getUsersDeque(session);
+
+        // lock to execute
+        final ReentrantLock lock = (ReentrantLock) session.getAttribute(USER_REQUEST_LOCK);
+
+        // deque has a time limit. start counting.
+        long timeLeft = WAIT_TIME;
+
+        // attempt to join deque
+        if (deque.offerFirst(request)) {
+            timeLeft = tryLock(request, deque, lock, timeLeft);
+        }
+
+        if(lock.isHeldByCurrentThread()){
+
+            try{
+                // waiting is over. and we can execute
+                chain.doFilter(request, response);
+
+            }finally{
+                // take out of deque first
+                deque.remove(request);
+
+                // release the lock, waiting up the next request
+                lock.unlock();
+            }
+        }else{
+            // we failed to execute. return 409 response.
+            if (response instanceof HttpServletResponse) {
+
+                LOG.warn(" -- response 409 " +
+                        (0 < timeLeft
+                        ? "(More then " + REQUEST_QUEUE_SIZE + " requests already in queue)"
+                        : "(Timeout: Waited " + WAIT_TIME + " ms)"));
+
+                response.sendError(HttpServletResponse.SC_CONFLICT);
+            }
+        }
+    }
+
+    private static Deque<ServletRequest> getUsersDeque(final HttpSession session){
+
+        @SuppressWarnings("unchecked")
+        Deque<ServletRequest> deque = (BlockingDeque<ServletRequest>) session.getAttribute(USER_REQUEST_QUEUE);
+
+        // construct deque if necessary
+        if (null == deque) {
+            // it may be possible for duplicates across threads to be constructed here
+            deque = new LinkedBlockingDeque<ServletRequest>(REQUEST_QUEUE_SIZE);
+            session.setAttribute(USER_REQUEST_QUEUE, deque);
+            session.setAttribute(USER_REQUEST_LOCK, new ReentrantLock());
+        }
+
+        return deque;
+    }
+
+    private static long tryLock(
+            final HttpServletRequest request,
+            final Deque<ServletRequest> deque,
+            final Lock lock,
+            long timeLeft){
+
+        final long start = System.currentTimeMillis();
+
+        try {
+            do{
+                timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
+
+                // let's sleep. sleeping too long results in 409 response
+                if(0 >= timeLeft || !lock.tryLock(timeLeft, TimeUnit.MILLISECONDS)){
+                    // we timed out or got the lock. waiting is over
+                    break;
+
+                }else if(deque.peek() != request){
+                    // we've acquired the lock but we're not at front of deque
+                    // release the lock and try again
+                    lock.unlock();
+                }
+            }while(deque.peek() != request);
+
+
+        }catch(InterruptedException ie){
+            LOG.error("Failed using user's lock", ie);
+        }
+
+        return timeLeft;
     }
 
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
