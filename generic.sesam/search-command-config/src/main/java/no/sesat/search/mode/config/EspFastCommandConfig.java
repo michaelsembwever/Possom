@@ -55,6 +55,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
     private boolean collapsingRemoves;
     private String qtPipeline = "";
     private boolean lemmatize;
+    private Integer timeout = 1000;
 
 
     private static final String ERR_FAST_EPS_QR_SERVER =
@@ -245,6 +246,26 @@ public class EspFastCommandConfig extends FastCommandConfig {
     public boolean isLemmatize() {
         return lemmatize;
     }
+
+    /** Fast ESP supports timeout on query with BaseParameter.TIMEOUT.
+     * Specified in milliseconds.
+     * Default is one second.
+     * Only actived when root log4j logger is set to INFO or higher.
+     * Rationale here is that we don't want timeouts in debugging environments.
+     * @param integer
+     */
+    public void setTimeout(final Integer integer){
+        timeout = integer;
+    }
+
+    /** @see #setTimeout(java.lang.Integer)
+     *
+     * @return
+     */
+    public int getTimeout(){
+        return timeout;
+    }
+
 
     @Override
     public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {

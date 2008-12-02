@@ -100,7 +100,9 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
                         TimeUnit.MILLISECONDS);
 
             }catch(TimeoutException te){
-                LOG.error(ERR_COMMAND_TIMEOUT + te.getMessage());
+                LOG.error(ERR_COMMAND_TIMEOUT
+                        + results.get(task).getSearchConfiguration().getId()
+                        +" [" + results.get(task).getSearchConfiguration().getStatisticalName() + ']');
                 task.cancel(true);
             }
         }

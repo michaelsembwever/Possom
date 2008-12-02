@@ -34,14 +34,8 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import java.util.Collection;
+import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.mode.config.EspFastCommandConfig;
-import no.sesat.search.query.AndClause;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OrClause;
-import no.sesat.search.query.UrlClause;
 import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.BasicResultList;
@@ -59,6 +53,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.log4j.Level;
 
 /**
  * Base class for commands querying a FAST EPS Server.
@@ -198,6 +193,11 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             DUMP.info(query);
 
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                query.setParameter(BaseParameter.TIMEOUT, getSearchConfiguration().getTimeout());
+            }
+
             result = searchView.search(query);
 
             return createSearchResult(result);
@@ -212,9 +212,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
     }
 
-    // Z implementation ----------------------------------------------
-
-    // Y overrides ---------------------------------------------------
+    @Override
+    public EspFastCommandConfig getSearchConfiguration() {
+        return (EspFastCommandConfig) super.getSearchConfiguration();
+    }
 
     // Package protected ---------------------------------------------
 

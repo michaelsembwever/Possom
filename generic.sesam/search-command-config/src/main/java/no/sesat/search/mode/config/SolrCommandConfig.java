@@ -119,8 +119,11 @@ public class SolrCommandConfig extends CommandConfig {
         }
     }
 
-    /**
+    /** Specified in milliseconds.
+     * Default is Integer.MAX_VALUE.
      *
+     * Only actived when root log4j logger is set to INFO or higher.
+     * Rationale here is that we don't want timeouts in debugging environments.
      * @param integer
      */
     public void setTimeout(final Integer integer){
