@@ -37,6 +37,7 @@ import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.config.SiteConfiguration;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.solr.client.solrj.SolrServer;
@@ -282,7 +283,14 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
     private SolrTokenEvaluator getSolrEvaluator() throws EvaluationException {
 
         try {
-            solrEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
+
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+
+                solrEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
+            }else{
+                solrEvaluatorCreator.get();
+            }
 
         } catch (InterruptedException ex) {
             LOG.error(ex.getMessage(), ex);

@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -111,7 +112,13 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
     private VeryFastTokenEvaluator getFastEvaluator() throws EvaluationException {
 
         try {
-            fastEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+
+                fastEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
+            }else{
+                fastEvaluatorCreator.get();
+            }
 
         } catch (InterruptedException ex) {
             LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
