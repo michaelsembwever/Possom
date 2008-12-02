@@ -481,7 +481,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         boolean uses = false;
         try{
             LIST_NAMES_LOCK.readLock().lock();
-            Site site = context.getSite();
+            Site site = this.site;
 
             while(!uses && null != site){
 

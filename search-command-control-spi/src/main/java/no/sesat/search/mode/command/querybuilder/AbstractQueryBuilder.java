@@ -17,7 +17,6 @@
 package no.sesat.search.mode.command.querybuilder;
 
 import java.util.Collection;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.Clause;
@@ -25,7 +24,6 @@ import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.UnaryClause;
-import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
 import no.sesat.commons.visitor.AbstractReflectionVisitor;
 

@@ -71,6 +71,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
     private final Future solrEvaluatorCreator;
     private SolrTokenEvaluator solrEvaluator;
     private SolrServer server;
+    private final Site site;
 
     // TODO this will leak when sites are redeploy without Sesat being restarted.
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
@@ -82,6 +83,8 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
     public SolrEvaluatorFactory(final Context cxt) throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
+
+        this.site = cxt.getSite();
 
         try{
             final Properties props = SiteConfiguration.instanceOf(
@@ -113,11 +116,11 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         final Context cxt = getContext();
 
         TokenEvaluator result = isResponsibleFor(token) ? getSolrEvaluator() : null;
-        if(result == null && null != cxt.getSite().getParent()){
+        if(result == null && null != site.getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    cxt.getSite().getParent().getSiteContext(),
+                    site.getParent().getSiteContext(),
                     cxt
                 )).getEvaluator(token);
 
@@ -148,7 +151,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         boolean uses = false;
         try{
             LIST_NAMES_LOCK.readLock().lock();
-            Site site = getContext().getSite();
+            Site site = this.site;
 
             while(!uses && null != site){
 
@@ -175,7 +178,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         String[] listNames = null;
         try{
             LIST_NAMES_LOCK.readLock().lock();
-            Site site = getContext().getSite();
+            Site site = this.site;
 
             while(null == listNames && null != site){
 

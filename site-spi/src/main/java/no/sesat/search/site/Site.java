@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.sesat.commons.ioc.BaseContext;
 import org.apache.log4j.Level;
@@ -90,6 +91,7 @@ public final class Site implements Serializable {
     private static final String CORE_CONF_FILE = "core.properties";
     private static final Map<String,Site> INSTANCES = new HashMap<String,Site>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    private static final Map<Locale,String> LOCALE_DISPLAY_NAMES = new ConcurrentHashMap<Locale, String>();
 
     private static volatile boolean constructingDefault = false;
 
@@ -377,7 +379,13 @@ public final class Site implements Serializable {
      */
     public static String getUniqueName(final String siteName, final Locale locale) {
 
-        return siteName + '[' + locale.getDisplayName() + ']';
+        String localDisplayName = LOCALE_DISPLAY_NAMES.get(locale);
+        if(null == localDisplayName){
+            localDisplayName = locale.getDisplayName();
+            LOCALE_DISPLAY_NAMES.put(locale, localDisplayName);
+        }
+
+        return siteName + '[' + localDisplayName + ']';
     }
 
     private static String ensureTrailingSlash(final String theSiteName) {
@@ -406,6 +414,7 @@ public final class Site implements Serializable {
                 }
                 return res;
             }
+            @Override
             public String describe() {
                 return "List content of INSTANCES in Site.";
             }

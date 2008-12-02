@@ -85,7 +85,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 //        }
 
         for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
-            final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
+            final StringDataObject navigatedValue = datamodelParameters.get(navigator.getId());
 
 
             if (navigatedValue != null) {

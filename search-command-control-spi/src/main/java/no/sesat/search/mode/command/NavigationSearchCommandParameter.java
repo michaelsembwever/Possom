@@ -18,6 +18,7 @@
 */
 package no.sesat.search.mode.command;
 
+import no.sesat.search.datamodel.navigation.NavigationDataObject;
 import no.sesat.search.view.navigation.NavigationConfig.Nav;
 
 /** Implementation that handles parameters that are related to the navigation configuration.
@@ -28,7 +29,15 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  */
 class NavigationSearchCommandParameter extends BaseSearchCommandParameter {
 
+    // Static --------------------------------------------------------
+    // Attributes ----------------------------------------------------
+
     private final String navigationMapKey;
+
+    private final NavigationDataObject navDO;
+
+    // Constructors --------------------------------------------------
+    // Public --------------------------------------------------------
 
     public NavigationSearchCommandParameter(
             final SearchCommand.Context context,
@@ -38,6 +47,7 @@ class NavigationSearchCommandParameter extends BaseSearchCommandParameter {
 
         super(context, name, lookupOrder);
         this.navigationMapKey = navigationMapKey;
+        this.navDO = context.getDataModel().getNavigation();
     }
 
     /** {@inheritDoc}
@@ -51,15 +61,18 @@ class NavigationSearchCommandParameter extends BaseSearchCommandParameter {
     @Override
     public boolean isActive() {
 
-        final boolean navMapExists =
-                null != getContext().getDataModel().getNavigation()
-                && null != getContext().getDataModel().getNavigation().getConfiguration();
+        final boolean navMapExists = null != navDO && null != navDO.getConfiguration();
 
         final Nav nav = navMapExists
-                ? getContext().getDataModel().getNavigation().getConfiguration().getNavMap().get(navigationMapKey)
+                ? navDO.getConfiguration().getNavMap().get(navigationMapKey)
                 : null;
 
         return null != nav && getContext().getSearchConfiguration().getId().equals(nav.getCommandName());
     }
+
+    // Package protected ---------------------------------------------
+    // Protected -----------------------------------------------------
+    // Private -------------------------------------------------------
+
 }
 
