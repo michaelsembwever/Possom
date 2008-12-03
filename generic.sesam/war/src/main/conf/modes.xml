@@ -108,15 +108,6 @@ Copyright (2006-2008) Schibsted Søk AS
             </query-builder>
         </overture-ppc-command>
 
-        <platefood-ppc-command id="default-platefood-ppc-command" inherit="default-command"
-                               encoding="UTF-8"
-                               host="platefoodHost"
-                               host-header="pfp.sesam.no"
-                               port="platefoodPort"
-                               results-to-return="4"
-                               url="/publisher/search?"
-                               statistical-name="platefood_ads"/>
-
         <properties-command id="default-properties-command" inherit="default-command"/>
 
         <yahoo-idp-command id="default-yahoo-command" inherit="default-command"
