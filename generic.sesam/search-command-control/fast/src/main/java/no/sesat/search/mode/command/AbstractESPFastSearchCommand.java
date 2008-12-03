@@ -89,6 +89,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         AND("and"),
         OR("or"),
         ANDNOT("andnot"),
+        NOT("not"),
         MAX("max"),
         MIN("min"),
         ANY("any"),

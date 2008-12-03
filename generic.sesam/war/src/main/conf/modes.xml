@@ -85,7 +85,7 @@ Copyright (2006-2008) Schibsted Søk AS
         <esp-fast-command id="default-esp-fast-command" inherit="default-command">
             
            <query-builder>
-               <infix and-infix="and" or-infix="or" not-prefix="not " default-infix="and" or-grouped="true" not-grouped="true"/>
+               <infix and-infix="and" or-infix="or" not-prefix="andnot" default-infix="and" or-grouped="true" not-grouped="true"/>
            </query-builder>
         </esp-fast-command>
 
