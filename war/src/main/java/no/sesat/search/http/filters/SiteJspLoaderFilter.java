@@ -199,15 +199,15 @@ public final class SiteJspLoaderFilter implements Filter {
                 final RandomAccessFile fileAccess = new RandomAccessFile(file, "rw");
                 final FileChannel channel = fileAccess.getChannel();
 
-                try{
-                    // channel.lock() only synchronises file access between programs, but not between threads inside
-                    //  the current JVM. The latter results in the OverlappingFileLockException.
-                    //  At least this is my current understanding of java.nio.channels
-                    //   It may be that no synchronisation or locking is required at all. A beer to whom answers :-)
-                    // So we must provide synchronisation between our own threads,
-                    //  synchronisation against the file's path (using the JVM's String.intern() functionality)
-                    //  should work. (I can't imagine this string be used for any other synchronisation purposes).
-                    synchronized(file.toString().intern()){
+                // channel.lock() only synchronises file access between programs, but not between threads inside
+                //  the current JVM. The latter results in the OverlappingFileLockException.
+                //  At least this is my current understanding of java.nio.channels
+                //   It may be that no synchronisation or locking is required at all. A beer to whom answers :-)
+                // So we must provide synchronisation between our own threads,
+                //  synchronisation against the file's path (using the JVM's String.intern() functionality)
+                //  should work. (I can't imagine this string be used for any other synchronisation purposes).
+                synchronized(file.toString().intern()){
+                    try{
                         channel.lock();
 
                         if(fileExisted){
@@ -226,11 +226,11 @@ public final class SiteJspLoaderFilter implements Filter {
                             file.deleteOnExit();
 
                         }
-                    }
-                }finally{
-                    channel.close();
-                    LOG.debug("resource created as " + config.getServletContext().getResource(jsp));
+                    }finally{
+                        channel.close();
+                        LOG.debug("resource created as " + config.getServletContext().getResource(jsp));
 
+                    }
                 }
 
             }catch (IOException ex) {
