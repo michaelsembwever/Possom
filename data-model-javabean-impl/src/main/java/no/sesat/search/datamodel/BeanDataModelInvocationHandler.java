@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler
 
     static final class DataModelBeanContextSupport extends BeanContextSupport{
 
-        final Object dataModelLock = new Boolean(true); // needs to be serialisable
+        transient final Object dataModelLock = new Object(){};
 
         private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;
 
