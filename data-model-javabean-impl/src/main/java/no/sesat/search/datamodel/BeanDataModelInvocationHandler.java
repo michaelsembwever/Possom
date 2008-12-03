@@ -25,6 +25,7 @@ package no.sesat.search.datamodel;
 
 import java.beans.IntrospectionException;
 //import java.beans.beancontext.BeanContextSupport;
+import java.io.Serializable;
 import no.sesat.search.datamodel.access.ControlLevel;
 import org.apache.log4j.Logger;
 
@@ -74,7 +75,7 @@ final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler
 
     static final class DataModelBeanContextSupport extends BeanContextSupport{
 
-        transient final Object dataModelLock = new Object(){};
+        final Object dataModelLock = new Serializable() {};
 
         private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;
 
