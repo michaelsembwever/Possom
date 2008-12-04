@@ -208,7 +208,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             return new BasicResultList<ResultItem>();
 
         } catch (IOException ex) {
-            LOG.error(ex.getMessage(), ex);
             throw new SearchCommandException(ex);
         }
     }
