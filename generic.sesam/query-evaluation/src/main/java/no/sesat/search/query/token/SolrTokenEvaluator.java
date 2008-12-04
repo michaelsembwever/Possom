@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.sesat.search.query.token.AbstractEvaluatorFactory.Context;
+import org.apache.log4j.Level;
 import static no.sesat.search.query.parser.AbstractQueryParser.SKIP_REGEX;
 import static no.sesat.search.query.parser.AbstractQueryParser.OPERATOR_REGEX;
 import org.apache.log4j.Logger;
@@ -69,7 +70,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
     private final Context context;
     private SolrEvaluatorFactory factory;
-    private final Map<String, List<TokenMatch>> analysisResult;
+    private transient Map<String, List<TokenMatch>> analysisResult;
 
     // Static --------------------------------------------------------
 
@@ -85,13 +86,11 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
      * @param factory
      * @throws EvaluationException
      */
-    public SolrTokenEvaluator(final Context cxt, final SolrEvaluatorFactory factory) throws EvaluationException{
+    SolrTokenEvaluator(final Context cxt, final SolrEvaluatorFactory factory) throws EvaluationException{
 
         context = cxt;
         this.factory = factory;
 
-        // Remove whitespace (except space itself) and operator characters.
-        analysisResult = query(cleanString(cxt.getQueryString()));
     }
 
     // Public --------------------------------------------------------
@@ -106,6 +105,8 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
             for(int i = 0; !evaluation && i < listnames.length; ++i){
 
                 final String listname = listnames[i];
+
+                if(null == analysisResult){ analysisResult = query(cleanString(context.getQueryString())); }
 
                 if (analysisResult.containsKey(listname)) {
                     if (term == null) {
@@ -150,6 +151,9 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
         if(null != listnames){
             for(int i = 0; i < listnames.length; i++){
                 final String listname = listnames[i];
+
+                if(null == analysisResult){ analysisResult = query(cleanString(context.getQueryString())); }
+
                 if (analysisResult.containsKey(listname)) {
 
                     // HACK since DefaultOperatorClause wraps its children in parenthesis
@@ -190,7 +194,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
      * @param query
      */
     @SuppressWarnings("unchecked")
-    private Map<String, List<TokenMatch>> query(final String query) throws EvaluationException{
+    private synchronized Map<String, List<TokenMatch>> query(final String query){
 
         LOG.trace("queryFast( " + query + " )");
         Map<String, List<TokenMatch>> result = null;
@@ -213,6 +217,12 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                     final SolrQuery solrQuery = new SolrQuery()
                             .setQuery("list_entry_shingle:\"" + token + "\"")
                             .setRows(Integer.MAX_VALUE);
+
+                    // when the root logger is set to DEBUG do not limit connection times
+                    if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                        // default timeout is half second. TODO make configuration.
+                        solrQuery.setTimeAllowed(500);
+                    }
 
                     DUMP.info(solrQuery.toString());
 
@@ -250,7 +260,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
                 } catch (SolrServerException ex) {
                     LOG.error(ex.getMessage(), ex);
-                    throw new EvaluationException(ERR_QUERY_FAILED + url, ex);
+                    throw new EvaluationRuntimeException(new EvaluationException(ERR_QUERY_FAILED + url, ex));
 
                 }finally{
                     if(!updatedCache){

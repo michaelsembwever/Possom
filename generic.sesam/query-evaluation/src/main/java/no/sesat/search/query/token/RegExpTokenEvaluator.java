@@ -18,6 +18,8 @@ package no.sesat.search.query.token;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import org.apache.log4j.Logger;
@@ -81,4 +83,9 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return queryDependant;
     }
+
+    public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+        return Collections.emptySet();
+    }
+
 }

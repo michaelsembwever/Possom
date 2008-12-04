@@ -114,7 +114,7 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
         try {
             // when the root logger is set to DEBUG do not limit connection times
             if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
-
+                // default timeout is one second. TODO make configuration.
                 fastEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
             }else{
                 fastEvaluatorCreator.get();

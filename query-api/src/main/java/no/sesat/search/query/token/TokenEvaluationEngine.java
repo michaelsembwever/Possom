@@ -18,6 +18,7 @@
 package no.sesat.search.query.token;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Set;
 import no.sesat.commons.ioc.BaseContext;
 import no.sesat.search.query.Clause;
@@ -58,9 +59,11 @@ public interface TokenEvaluationEngine {
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return false;
         }
-
         public boolean isQueryDependant(final TokenPredicate predicate) {
             return false;
+        }
+        public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+            return Collections.emptySet();
         }
     };
 
@@ -71,9 +74,11 @@ public interface TokenEvaluationEngine {
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return true;
         }
-
         public boolean isQueryDependant(final TokenPredicate predicate) {
             return false;
+        }
+        public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+            return Collections.emptySet();
         }
     };
 
@@ -87,6 +92,9 @@ public interface TokenEvaluationEngine {
         }
         public boolean isQueryDependant(final TokenPredicate predicate) {
             return false;
+        }
+        public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+            return Collections.emptySet();
         }
     };
 

@@ -105,7 +105,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     private final Context context;
     private final Site site;
-    private final Map<String, List<TokenMatch>> analysisResult;
+    private transient Map<String, List<TokenMatch>> analysisResult;
 
     // Static --------------------------------------------------------
 
@@ -128,27 +128,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         init();
 
-        // Remove whitespace (except space itself) and operator characters.
-        analysisResult = queryFast(cleanString(context.getQueryString()));
-
     }
 
     // Public --------------------------------------------------------
 
-    /**
-     * Find out if given token is on or more of the following.
-     *      <li>GEO
-     *      <li>FIRSTNAME
-     *      <li>LASTNAME
-     *      <li>COMPANY
-     *      <li>KEYWORDS
-     *      <li>CATEGORY
-     * </ul>
-     *
-     * @param token  can be any of the above
-     * @param query
-     * @return true if the query contains any of the above
-     */
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
@@ -158,6 +141,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             for(int i = 0; !evaluation && i < listnames.length; ++i){
 
                 final String listname = listnames[i];
+
+                if(null == analysisResult){ analysisResult = queryFast(cleanString(context.getQueryString())); }
 
                 if (analysisResult.containsKey(listname)) {
                     if (term == null) {
@@ -186,14 +171,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return evaluation;
     }
 
-
-    /**
-     * get all match values and values for given Fast list .
-     *
-     * @param token
-     * @param term
-     * @return a list of Tokens
-     */
     public Set<String> getMatchValues(final TokenPredicate token, final String term) {
 
         final Set<String> values = new HashSet<String>();
@@ -202,6 +179,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         if(null != listnames){
             for(int i = 0; i < listnames.length; i++){
                 final String listname = listnames[i];
+
+                if(null == analysisResult){ analysisResult = queryFast(cleanString(context.getQueryString())); }
+
                 if (analysisResult.containsKey(listname)) {
 
                     // HACK since DefaultOperatorClause wraps its children in parenthesis
@@ -221,11 +201,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return Collections.unmodifiableSet(values);
     }
 
-    /**
-     *
-     * @param predicate
-     * @return
-     */
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
@@ -346,7 +321,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      * @param query
      */
     @SuppressWarnings("unchecked")
-    private Map<String, List<TokenMatch>> queryFast(final String query) throws EvaluationException{
+    private synchronized Map<String, List<TokenMatch>> queryFast(final String query){
 
         LOG.trace("queryFast( " + query + " )");
         Map<String, List<TokenMatch>> result = null;
@@ -426,11 +401,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 } catch (IOException e1) {
                     LOG.error(ERR_QUERY_FAILED + url, e1);
                     result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new EvaluationException(ERR_QUERY_FAILED + url, e1);
+                    throw new EvaluationRuntimeException(new EvaluationException(ERR_QUERY_FAILED + url, e1));
                 } catch (SAXException e1) {
                     LOG.error(ERR_PARSE_FAILED + url, e1);
                     result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new EvaluationException(ERR_PARSE_FAILED + url, e1);
+                    throw new EvaluationRuntimeException(new EvaluationException(ERR_PARSE_FAILED + url, e1));
                 }finally{
                     if(!updatedCache){
                         CACHE_QUERY.cancelUpdate(query);
