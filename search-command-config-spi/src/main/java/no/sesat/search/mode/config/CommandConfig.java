@@ -327,14 +327,18 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
         return this;
     }
 
-    @Override
-    public String toString() {
+    public String toStringLong() {
         try {
             return this.getClass().getSimpleName() + " " + BeanUtils.describe(this).toString();
         } catch (Exception e) {
             LOG.warn("Failed to do BeanUtils.describe", e);
         }
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " Id: " + getId();
     }
 
     /**
