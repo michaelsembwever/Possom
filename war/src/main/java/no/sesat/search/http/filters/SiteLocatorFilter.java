@@ -517,13 +517,6 @@ public final class SiteLocatorFilter implements Filter {
 
         if(null != site){
 
-            final DataModel dataModel = getDataModel(request);
-
-            if (null != dataModel && !dataModel.getSite().getSite().equals(site)) {
-                LOG.warn(WARN_FAULTY_BROWSER + dataModel.getBrowser().getUserAgent().getXmlEscaped());
-                // DataModelFilter will correct it
-            }
-
             request.setAttribute(Site.NAME_KEY, site);
             request.setAttribute("startTime", FindResource.START_TIME);
             MDC.put(Site.NAME_KEY, site.getName());
