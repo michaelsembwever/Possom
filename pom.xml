@@ -662,30 +662,24 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>aspectj-maven-plugin</artifactId>
-                        <configuration>
-                            <complianceLevel>1.5</complianceLevel>
-                            <encoding>UTF-8</encoding>
-                            <showWeaveInfo>true</showWeaveInfo>
-                            <aspectLibraries>
-                                <aspectLibrary>
-                                    <groupId>sesat</groupId>
-                                    <artifactId>commons-interpreter-aspectj</artifactId>
-                                </aspectLibrary>
-                            </aspectLibraries>
-                            <verbose>true</verbose>
-                            <showWeaveInfo>true</showWeaveInfo>
-                        </configuration>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.1</version>
                         <executions>
                             <execution>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <tasks>
+   
+                                    </tasks>
+                                </configuration>
                                 <goals>
-                                    <goal>compile</goal>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>           
+                </plugins>
+                           
             </build>
             <dependencies>
                 <dependency>
