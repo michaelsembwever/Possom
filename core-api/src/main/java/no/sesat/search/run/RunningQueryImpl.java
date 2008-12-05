@@ -103,6 +103,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     // TODO generic parameter key to be put into ParameterDataObject
     public static final String PARAM_LAYOUT = "layout";
+    public static final String PARAM_LAYOUT_OLD = "output"; //FIXME: added since we had problems using the url-rewrite rules.
+
     // TODO generic parameter key to be put into ParameterDataObject
     private static final String PARAM_COMMANDS = "commands";
     // TODO generic parameter key to be put into ParameterDataObject

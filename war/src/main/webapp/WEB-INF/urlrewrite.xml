@@ -53,4 +53,5 @@
 
     <!-- legacy -->
     <rule><from>(.*)&amp;output=(.*)</from><to type="permanent-redirect">$1&amp;layout=$2</to></rule>
+    <rule><from>(.*)\?output=(.*)</from><to type="permanent-redirect">$1?layout=$2</to></rule>
 </urlrewrite>
