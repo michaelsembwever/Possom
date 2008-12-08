@@ -254,7 +254,7 @@ public class EspFastCommandConfig extends FastCommandConfig {
      * Rationale here is that we don't want timeouts in debugging environments.
      * @param integer
      */
-    public void setTimeout(final Integer integer){
+    public void setTimeout(final int integer){
         timeout = integer;
     }
 
