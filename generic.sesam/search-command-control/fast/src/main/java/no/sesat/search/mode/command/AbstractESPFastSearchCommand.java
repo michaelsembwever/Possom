@@ -47,6 +47,7 @@ import no.sesat.search.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -206,7 +207,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + ' ' + ex.getCause());
             return new BasicResultList<ResultItem>();
-
+        } catch (SocketTimeoutException ex) {
+            LOG.warn(this +" timed out. (Timeout=" + cfg.getTimeout() + "ms)");
+            return new BasicResultList<ResultItem>();
         } catch (IOException ex) {
             throw new SearchCommandException(ex);
         }
