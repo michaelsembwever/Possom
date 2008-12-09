@@ -207,7 +207,7 @@ public class StringChopper {
             while (!stack.isEmpty()) {
                 int j = stack.pop();
                 res.append("</");
-                while (s.length > j && s[j] != '>') {
+                while (s.length > j && (s[j] != '>' && s[j] != ' ')) {
                     res.append(s[j]);
                     j++;
                 }

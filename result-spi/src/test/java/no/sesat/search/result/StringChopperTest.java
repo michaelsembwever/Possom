@@ -100,4 +100,34 @@ public class StringChopperTest {
         assertEquals("<b>a<!-- ups-->nd</b>", StringChopper.chop("<b>a<!-- ups-->nd", -1, true));
         assertEquals("fi<!-- ups-->s<!-- ups-->k<b>an<!-- ups-->d<!-- ups--></b>", StringChopper.chop("fi<!-- ups-->s<!-- ups-->k<b>an<!-- ups-->d<!-- ups-->", -1, true));
     }
+
+    @Test
+    public void Directive() {
+      assertEquals("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><attrib name=\"allowed_types\"> fisk</attrib>",
+                StringChopper.chop("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><attrib name=\"allowed_types\"> fisk", -1, false));
+    }
+
+    /** currently not supported
+    @Test
+    public void Doctype() {
+        assertEquals("<!DOCTYPE html\nPUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\";>",
+                StringChopper.chop("<!DOCTYPE html\nPUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\";>", -1));
+    }
+     */
+
+    @Test
+    public void Morten() {
+        assertEquals("<attrib name=\"allowed_types\" type=\"list-string\"><member> text/html </member><member> text/plain </member></attrib>",
+                StringChopper.chop("<attrib name=\"allowed_types\" type=\"list-string\"><member> text/html </member><member> text/plain </member>", -1, false));
+        assertEquals("<attrib name=\"allowed_types\" value=\"morten er kool\"/>",
+                StringChopper.chop("<attrib name=\"allowed_types\" value=\"morten er kool\"/>", -1, false));
+        assertEquals("<attrib name=\"allowed_types\"> fisk</attrib>",
+                StringChopper.chop("<attrib name=\"allowed_types\"> fisk", -1, false));
+    }
+
+    @Test
+    public void Haavard() {
+        assertEquals("<div>wonk</div>...",
+                StringChopper.chop("<div>wonk</div>tonk</div>", 5, false));
+    }
 }
