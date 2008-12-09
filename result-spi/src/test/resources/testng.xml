@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite name="Search Engine Skin Tests" verbose="10" parallel="true">
+    
+    <test name="StringChopper Tests">
+        <classes>
+            <class name="no.sesat.search.result.StringChopperTest" />
+        </classes>
+    </test>
+
+</suite>
