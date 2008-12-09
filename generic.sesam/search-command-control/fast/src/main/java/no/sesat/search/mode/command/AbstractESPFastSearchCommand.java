@@ -34,7 +34,6 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import java.util.Collection;
-import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.mode.config.EspFastCommandConfig;
 import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
@@ -108,7 +107,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         ENDS_WITH("ends-with"),
         EQUALS("equals"),
         COUNT("count"),
-        STRING("string");
+        STRING("string"),
+        ESCAPE_REGEXP(".*[<>=].*");
 
         private String word;
 
