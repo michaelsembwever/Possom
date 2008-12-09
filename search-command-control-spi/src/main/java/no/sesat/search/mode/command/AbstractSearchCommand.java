@@ -116,10 +116,9 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
 
     // Attributes ----------------------------------------------------
 
-    /**
-     * The context to work against.
-     */
+    /** The context to work against. */
     protected transient final Context context;
+    /** Assigned by initialiseQuery(). **/
     private transient Query query = null;
     private transient TokenEvaluationEngine engine = null;
     private transient final QueryTransformerFactory.Context qtfContext;
@@ -238,11 +237,12 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                 }
         };
 
-        // initialise the transformed terms
-        initialQueryTransformer = new QueryTransformerFactory(qtfContext)
-                .getController(bsc.getInitialQueryTransformer());
+        // construct the initialQueryTransformer and then initialise the map of transformed terms
+        initialQueryTransformer
+                = new QueryTransformerFactory(qtfContext).getController(bsc.getInitialQueryTransformer());
+
         initialQueryTransformer.setContext(queryBuilderContext);
-        initialiseTransformedTerms();
+        initialiseTransformedTerms(query);
 
         // construct the queryBuilder
         queryBuilder = constructQueryBuilder(cxt, queryBuilderContext);
@@ -273,8 +273,9 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
     }
 
     /** Set (or reset) the transformed terms back to the state before any queryTransformers were run.
+     * @param query the query that the transformedTerms map will be constructed from. This should match getQuery()
      */
-    protected final void initialiseTransformedTerms(){
+    protected final void initialiseTransformedTerms(final Query query){
 
         initialQueryTransformer.visit(query.getRootClause());
     }
