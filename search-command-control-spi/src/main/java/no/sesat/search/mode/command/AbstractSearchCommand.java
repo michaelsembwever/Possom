@@ -431,7 +431,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
     }
 
     protected Collection<String> getReservedWords(){
-        return Collections.emptySet();
+        return Collections.<String>emptySet();
     }
 
     /**

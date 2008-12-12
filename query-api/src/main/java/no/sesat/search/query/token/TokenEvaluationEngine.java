@@ -63,7 +63,7 @@ public interface TokenEvaluationEngine {
             return false;
         }
         public Set<String> getMatchValues(final TokenPredicate token, final String term) {
-            return Collections.emptySet();
+            return Collections.<String>emptySet();
         }
     };
 
@@ -78,7 +78,7 @@ public interface TokenEvaluationEngine {
             return false;
         }
         public Set<String> getMatchValues(final TokenPredicate token, final String term) {
-            return Collections.emptySet();
+            return Collections.<String>emptySet();
         }
     };
 
@@ -94,7 +94,7 @@ public interface TokenEvaluationEngine {
             return false;
         }
         public Set<String> getMatchValues(final TokenPredicate token, final String term) {
-            return Collections.emptySet();
+            return Collections.<String>emptySet();
         }
     };
 

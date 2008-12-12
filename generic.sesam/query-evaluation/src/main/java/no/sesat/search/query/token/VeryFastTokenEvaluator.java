@@ -413,7 +413,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 }
             }
         } else {
-            result = Collections.emptyMap();
+            result = Collections.<String, List<TokenMatch>>emptyMap();
         }
         return result;
     }

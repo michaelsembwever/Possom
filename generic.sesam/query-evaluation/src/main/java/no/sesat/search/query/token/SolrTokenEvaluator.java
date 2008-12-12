@@ -269,7 +269,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                 }
             }
         } else {
-            result = Collections.emptyMap();
+            result = Collections.<String, List<TokenMatch>>emptyMap();
         }
         return result;
     }

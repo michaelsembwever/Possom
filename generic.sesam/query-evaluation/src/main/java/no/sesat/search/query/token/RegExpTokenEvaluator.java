@@ -85,7 +85,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
     }
 
     public Set<String> getMatchValues(final TokenPredicate token, final String term) {
-        return Collections.emptySet();
+        return Collections.<String>emptySet();
     }
 
 }
