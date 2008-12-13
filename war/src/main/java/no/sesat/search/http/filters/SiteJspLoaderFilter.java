@@ -196,8 +196,6 @@ public final class SiteJspLoaderFilter implements Filter {
                 if(!fileExisted){
                     file.createNewFile();
                 }
-                final RandomAccessFile fileAccess = new RandomAccessFile(file, "rw");
-                final FileChannel channel = fileAccess.getChannel();
 
                 // channel.lock() only synchronises file access between programs, but not between threads inside
                 //  the current JVM. The latter results in the OverlappingFileLockException.
@@ -207,7 +205,15 @@ public final class SiteJspLoaderFilter implements Filter {
                 //  synchronisation against the file's path (using the JVM's String.intern() functionality)
                 //  should work. (I can't imagine this string be used for any other synchronisation purposes).
                 synchronized(file.toString().intern()){
+
+                    RandomAccessFile fileAccess = null;
+                    FileChannel channel = null;
+
                     try{
+
+                        fileAccess = new RandomAccessFile(file, "rws");
+                        channel = fileAccess.getChannel();
+
                         channel.lock();
 
                         if(fileExisted){
@@ -222,14 +228,13 @@ public final class SiteJspLoaderFilter implements Filter {
                         if(needsUpdating){
                             // download file from skin
                             channel.write(ByteBuffer.wrap(golden), 0);
-                            channel.force(true);
                             file.deleteOnExit();
-
                         }
                     }finally{
-                        channel.close();
-                        LOG.debug("resource created as " + config.getServletContext().getResource(jsp));
+                        if(null != channel){ channel.close(); }
+                        if(null != fileAccess){ fileAccess.close(); }
 
+                        LOG.debug("resource created as " + config.getServletContext().getResource(jsp));
                     }
                 }
 
