@@ -73,6 +73,7 @@ import no.sesat.search.mode.command.querybuilder.QueryBuilder;
 import no.sesat.search.mode.command.querybuilder.SesamSyntaxQueryBuilder;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig.Controller;
+import no.sesat.search.query.token.DeadTokenEvaluationEngineImpl;
 import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.site.config.SiteClassLoaderFactory;
 import no.sesat.search.site.config.Spi;
@@ -693,58 +694,85 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
     }
 
     /**
-     * XXX Very expensive method to call!
+     * Uses QueryParser to create a new Query with all evaluation enabled.
      *
-     * @param queryString
-     * @return
+     * XXX Very expensive method to call! Consider disabling evaluation.
+     *
+     * @param queryString the new query string to parse.
+     * @return newly constructed Query.
      */
     protected final ReconstructedQuery createQuery(final String queryString) {
 
+        return createQuery(queryString, true);
+    }
+
+    /**
+     * Uses QueryParser to create a new Query with the option to disable evaluation.
+     *
+     * XXX Very expensive method to call! It helps to disable evaluation.
+     *
+     * @param queryString the new query string to parse.
+     * @param evaluationEnabled whether to enable evaluation. if false the DeadTokenEvaluationEngineImpl is used.
+     * @return newly constructed Query.
+     */
+    protected final ReconstructedQuery createQuery(final String queryString, final boolean evaluationEnabled) {
+
         LOG.debug("createQuery(" + queryString + ')');
 
-        if (datamodel.getQuery().getQuery().getQueryString().equalsIgnoreCase(queryString)) {
+        ReconstructedQuery reconstructedQuery = null;
+
+        if (datamodel.getQuery().getQuery().getQueryString().trim().equalsIgnoreCase(queryString.trim())) {
 
             // return original query and engine
-            return new ReconstructedQuery(datamodel.getQuery().getQuery(), context.getTokenEvaluationEngine());
+            reconstructedQuery = new ReconstructedQuery(
+                    datamodel.getQuery().getQuery(),
+                    context.getTokenEvaluationEngine());
 
         } else {
 
-            final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                    TokenEvaluationEngine.Context.class,
-                    context,
-                    new BaseContext() {
-                        public String getQueryString() {
-                            return queryString;
-                        }
-                        public Site getSite() {
-                            return datamodel.getSite().getSite();
-                        }
-                        public String getUniqueId(){
-                            return datamodel.getParameters().getUniqueId();
-                        }
-                    }
-            );
+            final TokenEvaluationEngine newEngine;
 
-            // This will among other things perform the initial fast search
-            // for textual analysis.
-            final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            if(evaluationEnabled){
+
+                final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                        TokenEvaluationEngine.Context.class,
+                        context,
+                        new BaseContext() {
+                            public String getQueryString() {
+                                return queryString;
+                            }
+                            public Site getSite() {
+                                return datamodel.getSite().getSite();
+                            }
+                            public String getUniqueId(){
+                                return datamodel.getParameters().getUniqueId();
+                            }
+                        }
+                );
+
+                // This will among other things perform the evaluator searches - local and remote.
+                newEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            }else{
+                // no evaluators will be called.
+                newEngine = new DeadTokenEvaluationEngineImpl(queryString, datamodel.getSite().getSite());
+            }
 
             // queryStr parser
             final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
                 public TokenEvaluationEngine getTokenEvaluationEngine() {
-                    return engine;
+                    return newEngine;
                 }
             });
 
             try {
-                return new ReconstructedQuery(parser.getQuery(), engine);
+                reconstructedQuery = new ReconstructedQuery(parser.getQuery(), engine);
 
             } catch (TokenMgrError ex) {
                 // Errors (as opposed to exceptions) are fatal.
                 LOG.fatal(ERR_PARSING, ex);
             }
         }
-        return null;
+        return reconstructedQuery;
     }
 
 
