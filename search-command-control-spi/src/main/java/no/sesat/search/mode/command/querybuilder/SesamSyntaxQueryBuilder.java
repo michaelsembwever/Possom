@@ -114,6 +114,9 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
 
             insideOr = true;
             clause.getFirstClause().accept(this);
+            if(!isNextLeafInsideNotClause(clause.getSecondClause()) && !unary){
+                appendToQueryRepresentation(' ' + getConfig().getDefaultInfix() + ' ');
+            }
             clause.getSecondClause().accept(this);
             insideOr = wasInside;
 
