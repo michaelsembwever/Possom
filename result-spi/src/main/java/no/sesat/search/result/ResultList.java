@@ -22,25 +22,26 @@
 
 package no.sesat.search.result;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Collection;
 import java.util.List;
 
-/**
+/** A list of ResultItems.
+ * The list itself is a "result" that contain properties (suggestions, relevant queries, etc).
  *
- * @param T
- *
+ * @param <T> the result item type the list contains.
  * @version $Id$
  */
 public interface ResultList<T extends ResultItem> extends ResultItem{
 
-    /**
+    /** Get the hitcount. May not match getResults().size().
      *
      * @return
      */
     int getHitCount();
 
-    /**
+    /** Set the hitcount.
      *
      * @param hitCount
      */
@@ -135,10 +136,18 @@ public interface ResultList<T extends ResultItem> extends ResultItem{
     List<WeightedSuggestion> getRelevantQueries();
 
     /** Opposed to the superinterface, ResultLists can mutate and this method will return itself.
-     *
-     * @param name
-     * @param value
+     * {@inheritDoc}
+     * @param name {@inheritDoc}
+     * @param value {@inheritDoc}
      */
+    @Override
     ResultList<T> addField(String name, String value);
 
+    /** Opposed to the superinterface, ResultLists can mutate and this method will return itself.
+     * {@inheritDoc}
+     * @param name {@inheritDoc}
+     * @param value {@inheritDoc}
+     */
+    @Override
+    ResultList<T> addObjectField(String name, Serializable value);
 }
