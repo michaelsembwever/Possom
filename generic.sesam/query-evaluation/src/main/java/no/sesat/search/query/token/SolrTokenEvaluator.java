@@ -68,7 +68,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
     private final Context context;
     private SolrEvaluatorFactory factory;
-    private transient Map<String, List<TokenMatch>> analysisResult;
+    private final Map<String, List<TokenMatch>> analysisResult;
 
     // Static --------------------------------------------------------
 
@@ -89,6 +89,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
         context = cxt;
         this.factory = factory;
 
+        analysisResult = query(cleanString(context.getQueryString()));
     }
 
     // Public --------------------------------------------------------
@@ -103,8 +104,6 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
             for(int i = 0; !evaluation && i < listnames.length; ++i){
 
                 final String listname = listnames[i];
-
-                if(null == analysisResult){ analysisResult = query(cleanString(context.getQueryString())); }
 
                 if (analysisResult.containsKey(listname)) {
                     if (term == null) {
@@ -150,8 +149,6 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
             for(int i = 0; i < listnames.length; i++){
                 final String listname = listnames[i];
 
-                if(null == analysisResult){ analysisResult = query(cleanString(context.getQueryString())); }
-
                 if (analysisResult.containsKey(listname)) {
 
                     // HACK since DefaultOperatorClause wraps its children in parenthesis
@@ -192,7 +189,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
      * @param query
      */
     @SuppressWarnings("unchecked")
-    private synchronized Map<String, List<TokenMatch>> query(final String query){
+    private Map<String, List<TokenMatch>> query(final String query) throws EvaluationException{
 
         LOG.trace("queryFast( " + query + " )");
         Map<String, List<TokenMatch>> result = null;
@@ -262,12 +259,10 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                             solrQuery.setRows(rest);
                             // query
                             response = factory.getSolrServer().query(solrQuery);
-                        }
-                        else {
+                        }else {
                             more = false;
                         }
-                    }
-                    while (more);
+                    }while (more);
 
 
                     result = Collections.unmodifiableMap(result);
@@ -276,7 +271,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
                 } catch (SolrServerException ex) {
                     LOG.error(ex.getMessage(), ex);
-                    throw new EvaluationRuntimeException(new EvaluationException(ERR_QUERY_FAILED + url, ex));
+                    throw new EvaluationException(ERR_QUERY_FAILED + url, ex);
 
                 }finally{
                     if(!updatedCache){

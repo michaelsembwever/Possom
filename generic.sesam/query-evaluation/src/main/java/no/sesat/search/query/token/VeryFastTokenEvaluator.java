@@ -105,7 +105,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     private final Context context;
     private final Site site;
-    private transient Map<String, List<TokenMatch>> analysisResult;
+    private final Map<String, List<TokenMatch>> analysisResult;
 
     // Static --------------------------------------------------------
 
@@ -128,6 +128,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         init();
 
+        analysisResult = queryFast(cleanString(context.getQueryString()));
     }
 
     // Public --------------------------------------------------------
@@ -141,8 +142,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             for(int i = 0; !evaluation && i < listnames.length; ++i){
 
                 final String listname = listnames[i];
-
-                if(null == analysisResult){ analysisResult = queryFast(cleanString(context.getQueryString())); }
 
                 if (analysisResult.containsKey(listname)) {
                     if (term == null) {
@@ -179,8 +178,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         if(null != listnames){
             for(int i = 0; i < listnames.length; i++){
                 final String listname = listnames[i];
-
-                if(null == analysisResult){ analysisResult = queryFast(cleanString(context.getQueryString())); }
 
                 if (analysisResult.containsKey(listname)) {
 
@@ -321,7 +318,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      * @param query
      */
     @SuppressWarnings("unchecked")
-    private synchronized Map<String, List<TokenMatch>> queryFast(final String query){
+    private Map<String, List<TokenMatch>> queryFast(final String query) throws EvaluationException{
 
         LOG.trace("queryFast( " + query + " )");
         Map<String, List<TokenMatch>> result = null;
@@ -401,11 +398,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 } catch (IOException e1) {
                     LOG.error(ERR_QUERY_FAILED + url, e1);
                     result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new EvaluationRuntimeException(new EvaluationException(ERR_QUERY_FAILED + url, e1));
+                    throw new EvaluationException(ERR_QUERY_FAILED + url, e1);
                 } catch (SAXException e1) {
                     LOG.error(ERR_PARSE_FAILED + url, e1);
                     result = (Map<String, List<TokenMatch>>)nre.getCacheContent();
-                    throw new EvaluationRuntimeException(new EvaluationException(ERR_PARSE_FAILED + url, e1));
+                    throw new EvaluationException(ERR_PARSE_FAILED + url, e1);
                 }finally{
                     if(!updatedCache){
                         CACHE_QUERY.cancelUpdate(query);
