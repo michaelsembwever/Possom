@@ -95,19 +95,32 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
         }
     }
 
+    /** Overridden to detect and prevent writing out multiple orGroupOpen and orGroupClose ie ()'s
+     * {@inheritDoc}
+     * @param clause {@inheritDoc}
+     */
     @Override
     protected void visitImpl(final OrClause clause) {
 
-        // avoid nesting ()'s
-        boolean wasInside = insideOr;
-        if (!insideOr) {
-            appendToQueryRepresentation('(');
-        }
-        insideOr = true;
-        super.visitImpl(clause);
-        insideOr = wasInside;
-        if (!insideOr) {
-            appendToQueryRepresentation(')');
+        if (!isEmptyLeaf(clause)) {
+
+            boolean wasInside = insideOr;
+
+            final boolean unary = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
+            if(!insideOr && getConfig().getOrGrouped() && !unary){
+                appendToQueryRepresentation(getConfig().getOrGroupOpen());
+            }
+
+            insideOr = true;
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+            insideOr = wasInside;
+
+            if(!insideOr && getConfig().getOrGrouped() && !unary){
+                appendToQueryRepresentation(getConfig().getOrGroupClose());
+            }
+
         }
     }
 
