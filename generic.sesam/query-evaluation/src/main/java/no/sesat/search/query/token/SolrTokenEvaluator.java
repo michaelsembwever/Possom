@@ -18,9 +18,6 @@ package no.sesat.search.query.token;
 
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +59,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
     private static final int REFRESH_PERIOD = 60;
     // smaller than usual as each entry can contain up to 600 values!
     private static final int CACHE_QUERY_CAPACITY = 100;
+    private static final int INITIAL_ROWS_TO_FETCH = 25;
 
     private static final String ERR_QUERY_FAILED = "Querying Solr failed on ";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
@@ -216,7 +214,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                     // set up query
                     final SolrQuery solrQuery = new SolrQuery()
                             .setQuery("list_entry_shingle:\"" + token + "\"")
-                            .setRows(Integer.MAX_VALUE);
+                            .setRows(INITIAL_ROWS_TO_FETCH);
 
                     // when the root logger is set to DEBUG do not limit connection times
                     if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
@@ -224,35 +222,53 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                         solrQuery.setTimeAllowed(500);
                     }
 
-                    DUMP.info(solrQuery.toString());
+                    // query for hits
+                    QueryResponse response = factory.getSolrServer().query(solrQuery);
+                    final int numberOfHits = (int)response.getResults().getNumFound();
 
-                    // query
-                    final QueryResponse response = factory.getSolrServer().query(solrQuery);
-                    final SolrDocumentList docs = response.getResults();
+                    boolean more = false;
+                    do {
+                        DUMP.info(solrQuery.toString());
 
+                        final SolrDocumentList docs = response.getResults();
 
-                    // iterate through docs
-                    for(SolrDocument doc : docs){
+                        // iterate through docs
+                        for(SolrDocument doc : docs){
 
-                        final String name = (String) doc.getFieldValue("list_name");
-                        final String exactname = EXACT_PREFIX + name;
+                            final String name = (String) doc.getFieldValue("list_name");
+                            final String exactname = EXACT_PREFIX + name;
 
-                        // remove words made solely of characters that the parser considers whitespace
-                        final String hit = ((String) doc.getFieldValue("list_entry"))
-                                .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
+                            // remove words made solely of characters that the parser considers whitespace
+                            final String hit = ((String) doc.getFieldValue("list_entry"))
+                                    .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
 
-                        final String synonym = (String) doc.getFieldValue("list_entry_synonym");
+                            final String synonym = (String) doc.getFieldValue("list_entry_synonym");
 
-                        if(factory.usesListName(name, exactname)){
+                            if(factory.usesListName(name, exactname)){
 
-                            addMatch(name, hit, synonym, query, result);
+                                addMatch(name, hit, synonym, query, result);
 
-                            if (hit.equalsIgnoreCase(query.trim())) {
+                                if (hit.equalsIgnoreCase(query.trim())) {
 
-                                addMatch(exactname, hit, synonym, query, result);
+                                    addMatch(exactname, hit, synonym, query, result);
+                                }
                             }
                         }
+
+                        int rest = numberOfHits - INITIAL_ROWS_TO_FETCH;
+                        if (!more && rest > 0) {
+                            more = true;
+                            solrQuery.setStart(INITIAL_ROWS_TO_FETCH + 1);
+                            solrQuery.setRows(rest);
+                            // query
+                            response = factory.getSolrServer().query(solrQuery);
+                        }
+                        else {
+                            more = false;
+                        }
                     }
+                    while (more);
+
 
                     result = Collections.unmodifiableMap(result);
                     CACHE_QUERY.putInCache(query, result);
