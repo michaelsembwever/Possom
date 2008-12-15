@@ -9,5 +9,5 @@
 -->
 
 <solr-evaluators>
-    <!--list token="ENGLISHWORDS" list-name="common_english"/-->
+    <list token="ENGLISHWORDS" list-name="common_english"/>
  </solr-evaluators>
