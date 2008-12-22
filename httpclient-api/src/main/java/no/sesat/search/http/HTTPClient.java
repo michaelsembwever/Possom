@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -40,6 +41,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.JarURLConnection;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -50,8 +53,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import sun.net.www.protocol.jar.URLJarFile;
-import sun.net.www.protocol.jar.URLJarFileCallBack;
+import no.sesat.search.http.protocol.jar.URLJarFile;
+import no.sesat.search.http.protocol.jar.URLJarFile.URLJarFileCloseController;
+import no.sesat.search.http.protocol.jar.URLJarFileCallBack;
 
 /**
  * Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
@@ -513,7 +517,7 @@ public final class HTTPClient {
             private int BUF_SIZE = 2048;
 
             @SuppressWarnings(value = "unchecked")
-            public JarFile retrieve(final URL url) throws IOException {
+            public JarFile retrieve(final URL url, final URLJarFileCloseController closeController) throws IOException {
 
                 // next to verbose copy from URLJarFile
                 JarFile result = null;
@@ -528,35 +532,53 @@ public final class HTTPClient {
                 final InputStream in = connection.getInputStream();
 
                 try {
-                    result = (JarFile) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+
+                result = (JarFile)
+                        // the following anonymous class is modified from URLJarFile to use java.nio
+                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
                         public Object run() throws IOException {
-                            OutputStream     out = null;
+
                             File tmpFile = null;
                             try {
-                                tmpFile = File.createTempFile("jar_cache", null);
+                                tmpFile = File.createTempFile("jar_sesat-httpclient_cache", null);
                                 tmpFile.deleteOnExit();
-                                out  = new FileOutputStream(tmpFile);
-                                int read = 0;
-                                byte[] buf = new byte[BUF_SIZE];
-                                while ((read = in.read(buf)) != -1) {
-                                    out.write(buf, 0, read);
+
+                                RandomAccessFile fileAccess = null;
+                                FileChannel channel = null;
+
+                                try{
+
+                                    fileAccess = new RandomAccessFile(tmpFile, "rws");
+                                    channel = fileAccess.getChannel();
+
+                                    channel.lock();
+
+                                    final byte[] buf = new byte[BUF_SIZE];
+                                    final ByteBuffer nioBuf = ByteBuffer.wrap(buf);
+
+                                    while (in.read(buf) != -1) {
+                                        channel.write(nioBuf);
+                                    }
+
+                                }finally{
+                                    if(null != channel){ channel.close(); }
+                                    if(null != fileAccess){ fileAccess.close(); }
+                                    if(null != in){ in.close(); }
                                 }
-                                out.close();
-                                out = null;
-                                return new URLJarFile(tmpFile);
+
+                                return new URLJarFile(tmpFile, closeController);
 
                             } catch (IOException e) {
                                 if (tmpFile != null) {
                                     tmpFile.delete();
                                 }
                                 throw e;
-                            } finally {
-                                if (in != null) {
-                                    in.close();
+                            } catch(RuntimeException rte){
+                                if (tmpFile != null) {
+                                    tmpFile.delete();
                                 }
-                                if (out != null) {
-                                    out.close();
-                                }
+                                LOG.error("failed writing jar_sesat-httpclient_cache file", rte);
+                                throw rte;
                             }
                         }
                     });
