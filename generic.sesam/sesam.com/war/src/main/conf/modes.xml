@@ -31,7 +31,7 @@
                     so we inherit default-magic -->  
 
         <yahoo-idp-command id="default-yahoo-idp-command" inherit="default-yahoo-i18n-command"
-                           database="www-no"
+                           database="www-en-us"
                            language=""
                            language-mix=""
                            partner-id="yahooIdpPartnerId"
