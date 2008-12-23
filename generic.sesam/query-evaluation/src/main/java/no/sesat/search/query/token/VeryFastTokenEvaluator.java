@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
 /**
  * VeryFastTokenEvaluator is part of no.sesat.search.query.
  *
- * @todo sesat-ise. bring out to generic.sesam. make CGI_PATH easily configurable. configurable cache settings.
+ * @todo make CGI_PATH easily configurable. configurable cache settings.
  *
  *
  *
@@ -89,8 +89,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     /** General properties to regular expressions configured. **/
     private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 
-    // TODO this will leak when sites are redeploy without Sesat being restarted.
-    // todo move deserialisation & this map to FastQueryMatchingEvaluatorFactory
+    // @todo this will leak when sites are redeploy without Sesat being restarted.
+    // @todo move deserialisation & this map to FastQueryMatchingEvaluatorFactory
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String[]>>();
     private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();
@@ -115,10 +115,12 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     // Constructors -------------------------------------------------
 
-    /**
-     * Search fast and initialize analysis result.
-     * @param cxt
-     */
+    /** Only possible constructor.
+     *
+     * @param cxt the required context
+     * @param factory the factory constructing this.
+     * @throws EvaluationException if the evaluation, request to the fast query matching index, fails.
+     **/
     VeryFastTokenEvaluator(final Context cxt) throws EvaluationException{
 
         // pre-condition check
@@ -128,7 +130,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
         init();
 
-        analysisResult = queryFast(cleanString(context.getQueryString()));
+        // the responsible() method checks if we are responsible for any tokenPredicate at all.
+        // if we are not then the restful request in query(..) is a waste of time and resource.
+        analysisResult = responsible()
+                ? queryFast(cleanString(context.getQueryString()))
+                : Collections.<String, List<TokenMatch>>emptyMap();
     }
 
     // Public --------------------------------------------------------
@@ -136,17 +142,57 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
-        final String[] listnames = getListNames(token);
 
-        if(null != listnames){
-            for(int i = 0; !evaluation && i < listnames.length; ++i){
+        if(!analysisResult.isEmpty()){
 
-                final String listname = listnames[i];
+            final String[] listnames = getListNames(token);
 
-                if (analysisResult.containsKey(listname)) {
-                    if (term == null) {
-                        evaluation = true;
-                    }  else  {
+            if(null != listnames){
+                for(int i = 0; !evaluation && i < listnames.length; ++i){
+
+                    final String listname = listnames[i];
+
+                    if (analysisResult.containsKey(listname)) {
+                        if (term == null) {
+                            evaluation = true;
+                        }  else  {
+
+                            // HACK since DefaultOperatorClause wraps its children in parenthesis
+                            final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
+
+                            for (TokenMatch occurance : analysisResult.get(listname)) {
+
+                                final Matcher m = occurance.getMatcher(hackTerm);
+                                evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+
+                                if (evaluation) {
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }else{
+                LOG.info(site + " does not define lists behind the token predicate " + token);
+            }
+        }
+        return evaluation;
+    }
+
+    public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+
+        final Set<String> values;
+
+        if(!analysisResult.isEmpty()){
+            values = new HashSet<String>();
+
+            final String[] listnames = getListNames(token);
+            if(null != listnames){
+                for(int i = 0; i < listnames.length; i++){
+                    final String listname = listnames[i];
+
+                    if (analysisResult.containsKey(listname)) {
 
                         // HACK since DefaultOperatorClause wraps its children in parenthesis
                         final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
@@ -154,46 +200,16 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                         for (TokenMatch occurance : analysisResult.get(listname)) {
 
                             final Matcher m = occurance.getMatcher(hackTerm);
-                            evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
 
-                            if (evaluation) {
-                                break;
+                            if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
+                                values.add(occurance.getValue());
                             }
                         }
                     }
-
                 }
             }
         }else{
-            LOG.info(site + " does not define lists behind the token predicate " + token);
-        }
-        return evaluation;
-    }
-
-    public Set<String> getMatchValues(final TokenPredicate token, final String term) {
-
-        final Set<String> values = new HashSet<String>();
-
-        final String[] listnames = getListNames(token);
-        if(null != listnames){
-            for(int i = 0; i < listnames.length; i++){
-                final String listname = listnames[i];
-
-                if (analysisResult.containsKey(listname)) {
-
-                    // HACK since DefaultOperatorClause wraps its children in parenthesis
-                    final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
-
-                    for (TokenMatch occurance : analysisResult.get(listname)) {
-
-                        final Matcher m = occurance.getMatcher(hackTerm);
-
-                        if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
-                            values.add(occurance.getValue());
-                        }
-                    }
-                }
-            }
+            values = Collections.<String>emptySet();
         }
         return Collections.unmodifiableSet(values);
     }
@@ -232,7 +248,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         try{
             LIST_NAMES_LOCK.readLock().lock();
 
-            // initialise the parent site's configuration
+            // initialise the parent loopSite's configuration
             parentUninitialised = (null != parent && null == LIST_NAMES.get(parent));
 
         }finally{
@@ -256,10 +272,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 LIST_NAMES_LOCK.writeLock().lock();
 
 
-                    // create map entry for this site
+                    // create map entry for this loopSite
                     LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
 
-                    // initialise this site's configuration
+                    // initialise this loopSite's configuration
                     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                     final DocumentBuilder builder = factory.newDocumentBuilder();
                     final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
@@ -475,8 +491,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     private String[] getListNames(final TokenPredicate token){
 
-
-
         String[] listNames = null;
         try{
             LIST_NAMES_LOCK.readLock().lock();
@@ -507,6 +521,28 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.
                 .replaceAll(OPERATOR_REGEX, " ")
                 .replaceAll(" +", " "); // normalise
+    }
+
+    private boolean responsible(){
+
+        boolean responsible = false;
+        try{
+            LIST_NAMES_LOCK.readLock().lock();
+            Site loopSite = this.site;
+
+            while(null != loopSite){
+
+                // find listnames used for this token predicate
+                responsible =  !LIST_NAMES.get(loopSite).isEmpty();
+                if(responsible){ break; }
+
+                // prepare to go to parent
+                loopSite = loopSite.getParent();
+            }
+        }finally{
+            LIST_NAMES_LOCK.readLock().unlock();
+        }
+        return responsible;
     }
 
     // Inner classes -------------------------------------------------

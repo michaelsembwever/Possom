@@ -194,6 +194,28 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         return listNames;
     }
 
+    boolean responsible(){
+
+        boolean responsible = false;
+        try{
+            LIST_NAMES_LOCK.readLock().lock();
+            Site loopSite = this.site;
+
+            while(null != loopSite){
+
+                // find listnames used for this token predicate
+                responsible =  !LIST_NAMES.get(loopSite).isEmpty();
+                if(responsible){ break; }
+
+                // prepare to go to parent
+                loopSite = loopSite.getParent();
+            }
+        }finally{
+            LIST_NAMES_LOCK.readLock().unlock();
+        }
+        return responsible;
+    }
+
     // private -----------------------------------------------------
 
     private static void init(final Context cxt) throws ParserConfigurationException{

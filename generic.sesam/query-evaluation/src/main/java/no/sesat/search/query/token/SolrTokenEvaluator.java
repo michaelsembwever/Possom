@@ -78,18 +78,22 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
     // Constructors --------------------------------------------------
 
-    /**
+    /** Only possible constructor.
      *
-     * @param cxt
-     * @param factory
-     * @throws EvaluationException
+     * @param cxt the required context
+     * @param factory the factory constructing this.
+     * @throws EvaluationException if the evaluation, request to the solr index, fails.
      */
     SolrTokenEvaluator(final Context cxt, final SolrEvaluatorFactory factory) throws EvaluationException{
 
         context = cxt;
         this.factory = factory;
 
-        analysisResult = query(cleanString(context.getQueryString()));
+        // the responsible() method checks if we are responsible for any tokenPredicate at all.
+        // if we are not then the restful request in query(..) is a waste of time and resource.
+        analysisResult = factory.responsible()
+                ? query(cleanString(context.getQueryString()))
+                : Collections.<String, List<TokenMatch>>emptyMap();
     }
 
     // Public --------------------------------------------------------
@@ -98,36 +102,40 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
-        final String[] listnames = factory.getListNames(token);
 
-        if(null != listnames){
-            for(int i = 0; !evaluation && i < listnames.length; ++i){
+        if(!analysisResult.isEmpty()){
 
-                final String listname = listnames[i];
+            final String[] listnames = factory.getListNames(token);
 
-                if (analysisResult.containsKey(listname)) {
-                    if (term == null) {
-                        evaluation = true;
-                    }  else  {
+            if(null != listnames){
+                for(int i = 0; !evaluation && i < listnames.length; ++i){
 
-                        // HACK since DefaultOperatorClause wraps its children in parenthesis
-                        final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
+                    final String listname = listnames[i];
 
-                        for (TokenMatch occurance : analysisResult.get(listname)) {
+                    if (analysisResult.containsKey(listname)) {
+                        if (term == null) {
+                            evaluation = true;
+                        }  else  {
 
-                            final Matcher m = occurance.getMatcher(hackTerm);
-                            evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+                            // HACK since DefaultOperatorClause wraps its children in parenthesis
+                            final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
 
-                            if (evaluation) {
-                                break;
+                            for (TokenMatch occurance : analysisResult.get(listname)) {
+
+                                final Matcher m = occurance.getMatcher(hackTerm);
+                                evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+
+                                if (evaluation) {
+                                    break;
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
+            }else{
+                LOG.info(context.getSite() + " does not define lists behind the token predicate " + token);
             }
-        }else{
-            LOG.info(context.getSite() + " does not define lists behind the token predicate " + token);
         }
         return evaluation;
     }
@@ -142,28 +150,35 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
      */
     public Set<String> getMatchValues(final TokenPredicate token, final String term) {
 
-        final Set<String> values = new HashSet<String>();
+        final Set<String> values;
 
-        final String[] listnames = factory.getListNames(token);
-        if(null != listnames){
-            for(int i = 0; i < listnames.length; i++){
-                final String listname = listnames[i];
+        if(!analysisResult.isEmpty()){
 
-                if (analysisResult.containsKey(listname)) {
+            values = new HashSet<String>();
 
-                    // HACK since DefaultOperatorClause wraps its children in parenthesis
-                    final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
+            final String[] listnames = factory.getListNames(token);
+            if(null != listnames){
+                for(int i = 0; i < listnames.length; i++){
+                    final String listname = listnames[i];
 
-                    for (TokenMatch occurance : analysisResult.get(listname)) {
+                    if (analysisResult.containsKey(listname)) {
 
-                        final Matcher m = occurance.getMatcher(hackTerm);
+                        // HACK since DefaultOperatorClause wraps its children in parenthesis
+                        final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
 
-                        if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
-                            values.add(occurance.getValue());
+                        for (TokenMatch occurance : analysisResult.get(listname)) {
+
+                            final Matcher m = occurance.getMatcher(hackTerm);
+
+                            if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
+                                values.add(occurance.getValue());
+                            }
                         }
                     }
                 }
             }
+        }else{
+            values = Collections.<String>emptySet();
         }
         return Collections.unmodifiableSet(values);
     }
