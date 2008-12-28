@@ -26,7 +26,6 @@
  */
 
 package no.sesat.search.http.protocol.jar;
-import sun.net.www.protocol.jar.*;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -43,6 +42,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.security.Permission;
+import sun.net.www.protocol.jar.Handler;
 
 /**
  * @author Benjamin Renaud
