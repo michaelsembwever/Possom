@@ -17,6 +17,11 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>sesat</groupId>
+      <artifactId>commons-main</artifactId>
+      <version>1.9-SNAPSHOT</version>
+    </parent>
     <groupId>sesat</groupId>
     <artifactId>sesat-kernel</artifactId>
     <packaging>pom</packaging>
@@ -810,46 +815,6 @@
             </build>
         </profile>
     </profiles>
-    <repositories>
-        <repository>
-         <id>Sesat</id>
-         <name>Sesat Repository</name>
-         <url>http://sesat.no/maven2</url>
-         <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>Central</id>
-            <name>Maven Central Repository</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
-            <id>SourceForge</id>
-            <name>Sourceforge Maven Repository</name>
-            <url>http://maven-plugins.sourceforge.net/maven</url>
-        </repository>
-        <repository>
-            <id>osafoundation</id>
-            <name>Open Source Applications Foundation</name>
-            <url>http://builds.osafoundation.org/maven2</url>
-        </repository>
-        <repository>
-            <releases><enabled>false</enabled></releases>
-            <id>Maven Snapshots</id>
-            <url>http://snapshots.maven.codehaus.org/maven2/</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-         <id>Sesat</id>
-         <name>Sesat Plugins</name>
-         <url>http://sesat.no/maven2</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots />
-       		<id>Codehaus Snapshots</id>
-       		<url>http://snapshots.repository.codehaus.org/</url>
-       	</pluginRepository>
-    </pluginRepositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -1018,7 +983,7 @@
                 <artifactId>solrj</artifactId>
                 <version>1.3-SNAPSHOT</version>
             </dependency>
-            <!-- old duplicate jboss ejb3 client libraries that get sucked in transitively -->
+            <!-- old duplicate jboss ejb3 client libraries that get sucked in transitively @todo fix + remove -->
             <dependency>
               <groupId>jboss-client</groupId>
               <artifactId>jboss-ejb3</artifactId>
@@ -1059,131 +1024,11 @@
             <version>2.0</version>
         </dependency>
    </dependencies>
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-            </plugin>
-            <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-changelog-plugin</artifactId>
-             <!-- maven-changelog-plugin disabled on children. see http://jira.codehaus.org/browse/MCHANGELOG-75 -->
-             <inherited>false</inherited>
-             <configuration>
-                <aggregate>true</aggregate>
-               <type>range</type>
-               <range>3650</range>
-             </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-jxr-plugin</artifactId>
-             <configuration>
-              <aggregate>true</aggregate>
-             </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <reportSets>
-                  <reportSet>
-                    <id>html</id>
-                    <configuration>
-                        <aggregate>true</aggregate>
-                        <charset>UTF-8</charset>
-                        <docencoding>UTF-8</docencoding>
-                        <source>1.6</source>
-                        <docfilessubdirs>true</docfilessubdirs>
-                        <links>
-                            <link>http://java.sun.com/javase/6/docs/api/</link>
-                            <link>http://java.sun.com/javaee/5/docs/api/</link>
-                            <link>http://logging.apache.org/log4j/docs/api/</link>
-                        </links>
-                    </configuration>
-                    <reports>
-                      <report>javadoc</report>
-                    </reports>
-                  </reportSet>
-                  <reportSet>
-                    <id>doccheck</id>
-                    <configuration>
-                      <doclet>com.sun.tools.doclets.doccheck.DocCheck</doclet>
-                      <docletArtifact>
-                        <groupId>com.sun.tools.doclets</groupId>
-                        <artifactId>doccheck</artifactId>
-                        <version>1.2b2</version>
-                      </docletArtifact>
-                        <aggregate>true</aggregate>
-                        <charset>UTF-8</charset>
-                        <docencoding>UTF-8</docencoding>
-                        <source>1.6</source>
-                        <docfilessubdirs>true</docfilessubdirs>
-                      <additionalparam>
-                        -d ${project.build.directory}/site/doccheck -evident 3 -skipPkg no.sesat.search.query.parser
-                      </additionalparam>
-                      <!-- Other dir than apidocs -->
-                      <destDir>doccheck</destDir>
-                      <!-- For the project-reports page-->
-                      <name>DocCheck</name>
-                      <description>DocCheck documentation.</description>
-                    </configuration>
-                    <reports>
-                      <report>javadoc</report>
-                    </reports>
-                  </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>surefire-report-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <locales>en</locales>
-                    <inputEncoding>UTF-8</inputEncoding>
-                    <outputEncoding>UTF-8</outputEncoding>
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>cobertura-maven-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>http://sesat.no/svn/sesat-commons/checkstyle/conf/schibstedsok_checks.xml</configLocation>
-                </configuration>
-             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dashboard-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
     <distributionManagement>
         <site>
           <id>Sesat</id>
           <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
         </site>
-        <repository>
-          <id>Sesat</id>
-          <name>Sesat Repository</name>
-          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
-        </repository>
-        <snapshotRepository>
-          <id>Sesat</id>
-          <name>Sesat Snapshot</name>
-          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
-          <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
     </distributionManagement>
 
 </project>
