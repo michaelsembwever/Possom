@@ -524,11 +524,6 @@ import no.sesat.search.result.WeightedSuggestion;
             }
         }
 
-        if (null !=getFilter()) {
-            filter.append(' ');
-            filter.append(getFilter());
-        }
-
         if (getSearchConfiguration().getFilter() != null && getSearchConfiguration().getFilter().length() > 0) {
             // TODO create NowMacroFilterQueryTransfomer to do this instead
             final Calendar c = Calendar.getInstance();
@@ -540,7 +535,6 @@ import no.sesat.search.result.WeightedSuggestion;
         }
 
         // Init dynamic filters
-        // TODO: Is the following used anywhere?
         final String superFilter = null == super.getFilter() ? "" : super.getFilter();
 
         LOG.debug("createQuery: superFilter=" + superFilter);

@@ -807,7 +807,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
         if (null != clause.getField()) {
             final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilterMap();
             if (fieldFilters.containsKey(clause.getField())) {
-                field = clause.getField();
+                field = fieldFilters.get(clause.getField());
             } else {
 
                 for (String fieldFilter : fieldFilters.keySet()) {
@@ -821,7 +821,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                                 && getEngine().evaluateTerm(tp, clause.getField());
 
                         if (result) {
-                            field = fieldFilter;
+                            field = fieldFilters.get(fieldFilter);
                             break;
                         }
                     } catch (IllegalArgumentException iae) {
