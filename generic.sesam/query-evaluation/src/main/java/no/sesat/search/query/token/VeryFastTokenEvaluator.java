@@ -515,7 +515,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         // Strip out SKIP characters we are not interested in.
         // Also remove any operator characters. (SEARCH-3883 & SEARCH-3967)
 
-        return string
+        return string.toLowerCase()
                 .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces. multiple spaces always normalised.
                 .replaceAll(SKIP_REGEX, " ")
                 .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.
