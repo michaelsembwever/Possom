@@ -117,22 +117,15 @@ public final class Site implements Serializable {
     */
     private final Site parent;
 
-    private transient final SiteContext siteContext;
+    private transient SiteContext siteContext;
 
-    /** No-argument constructor for deserialization. */
     private Site() {
         siteName = null;
         cxtName = null;
         locale = Locale.getDefault();
         uniqueName = null;
         parent = null;
-
-        final Site thisSite = this;
-        siteContext = new SiteContext() {
-            public Site getSite() {
-                return thisSite;
-            }
-        };
+        init();
     }
 
     /** Creates a new instance of Site.
@@ -154,12 +147,7 @@ public final class Site implements Serializable {
             locale = theLocale;
             uniqueName = getUniqueName(siteName, locale);
 
-            final Site thisSite = this;
-            siteContext = new SiteContext() {
-                public Site getSite() {
-                    return thisSite;
-                }
-            };
+            init();
 
             final String parentSiteName;
             if(null != cxt){
@@ -205,6 +193,20 @@ public final class Site implements Serializable {
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
         }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        init();
+    }
+
+    private void init() {
+        final Site thisSite = this;
+        siteContext = new SiteContext() {
+            public Site getSite() {
+                return thisSite;
+            }
+        };
     }
 
     /**
