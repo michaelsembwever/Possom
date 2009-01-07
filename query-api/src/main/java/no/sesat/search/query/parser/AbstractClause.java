@@ -190,13 +190,6 @@ public abstract class AbstractClause implements Clause {
         return success;
     }
 
-    /** We need a no-argument constructor for serialization. */
-    protected AbstractClause() {
-        this.term = null;
-        this.knownPredicates = null;
-        this.possiblePredicates = null;
-    }
-
     /**
      * Create clause with the given term, known and possible predicates.
      * @param term the term (query string) for this clause.

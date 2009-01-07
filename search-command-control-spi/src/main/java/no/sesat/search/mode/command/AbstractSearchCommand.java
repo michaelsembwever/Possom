@@ -731,30 +731,27 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
         } else {
 
             final TokenEvaluationEngine newEngine;
-
-            if(evaluationEnabled){
-
-                final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                        TokenEvaluationEngine.Context.class,
-                        context,
-                        new BaseContext() {
-                            public String getQueryString() {
-                                return queryString;
-                            }
-                            public Site getSite() {
-                                return datamodel.getSite().getSite();
-                            }
-                            public String getUniqueId(){
-                                return datamodel.getParameters().getUniqueId();
-                            }
+            final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                    TokenEvaluationEngine.Context.class,
+                    context,
+                    new BaseContext() {
+                        public String getQueryString() {
+                            return queryString;
                         }
-                );
-
+                        public Site getSite() {
+                            return datamodel.getSite().getSite();
+                        }
+                        public String getUniqueId(){
+                            return datamodel.getParameters().getUniqueId();
+                        }
+                    }
+            );
+            if(evaluationEnabled){
                 // This will among other things perform the evaluator searches - local and remote.
                 newEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
             }else{
                 // no evaluators will be called.
-                newEngine = new DeadTokenEvaluationEngineImpl(queryString, datamodel.getSite().getSite());
+                newEngine = new DeadTokenEvaluationEngineImpl(tokenEvalFactoryCxt);
             }
 
             // queryStr parser

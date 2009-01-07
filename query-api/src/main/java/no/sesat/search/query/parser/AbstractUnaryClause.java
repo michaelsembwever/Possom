@@ -119,13 +119,6 @@ public abstract class AbstractUnaryClause extends AbstractClause implements Unar
         return clause;
     }
 
-    /** You must use <CODE>AbstractOperationClause(String, Set&lt;Predicate&gt;, Set&lt;Predicate&gt;)</CODE> instead.
-     * This constructor will throw an IllegalArgumentException.
-     **/
-    protected AbstractUnaryClause() {
-        throw new IllegalArgumentException(ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR);
-    }
-
     /**
      * Create clause with the given term, known and possible predicates.
      * @param term the term (query string) for this clause.

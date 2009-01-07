@@ -162,29 +162,28 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         };
 
+        final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
+                ContextWrapper.wrap(
+                TokenEvaluationEngine.Context.class,
+                context,
+                new QueryStringContext() {
+                    public String getQueryString() {
+                        return queryStr;
+                    }
+                },
+                new BaseContext() {
+                    public String getUniqueId() {
+                        return datamodel.getParameters().getUniqueId();
+                    }
+                },
+                siteCxt);
+
         if(cxt.getSearchMode().isEvaluation()){
-
-            final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
-                    ContextWrapper.wrap(
-                        TokenEvaluationEngine.Context.class,
-                        context,
-                        new QueryStringContext() {
-                            public String getQueryString() {
-                                return queryStr;
-                            }
-                        },
-                        new BaseContext(){
-                            public String getUniqueId(){
-                                return datamodel.getParameters().getUniqueId();
-                            }
-                        },
-                        siteCxt);
-
             engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
         }else{
             // use a dead token evaluation engine. false and stale evaluation so it is not cached.
-            engine = new DeadTokenEvaluationEngineImpl(queryStr, siteCxt.getSite());
+            engine = new DeadTokenEvaluationEngineImpl(tokenEvalFactoryCxt);
         }
 
         // queryStr parser

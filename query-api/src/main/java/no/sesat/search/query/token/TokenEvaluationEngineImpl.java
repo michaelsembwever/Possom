@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  *
  * @version $Id$
  */
-public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
+public class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     // Constants -----------------------------------------------------
 
