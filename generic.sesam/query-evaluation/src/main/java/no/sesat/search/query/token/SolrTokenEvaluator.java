@@ -270,7 +270,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                         int rest = numberOfHits - INITIAL_ROWS_TO_FETCH;
                         if (!more && rest > 0) {
                             more = true;
-                            solrQuery.setStart(INITIAL_ROWS_TO_FETCH + 1);
+                            solrQuery.setStart(INITIAL_ROWS_TO_FETCH);
                             solrQuery.setRows(rest);
                             // query
                             response = factory.getSolrServer().query(solrQuery);
