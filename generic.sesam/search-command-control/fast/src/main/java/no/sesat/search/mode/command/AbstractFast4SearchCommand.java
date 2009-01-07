@@ -535,7 +535,7 @@ import no.sesat.search.result.WeightedSuggestion;
         }
 
         // Init dynamic filters
-        final String superFilter = null == super.getFilter() ? "" : super.getFilter();
+        final String superFilter = null == getFilter() ? "" : getFilter();
 
         LOG.debug("createQuery: superFilter=" + superFilter);
 
