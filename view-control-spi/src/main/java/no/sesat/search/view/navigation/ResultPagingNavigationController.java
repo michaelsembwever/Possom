@@ -18,6 +18,7 @@
  */
 package no.sesat.search.view.navigation;
 
+import static no.sesat.search.view.navigation.ResultPagingNavigationConfig.OFFSET_KEY;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.search.SearchDataObject;
 import no.sesat.search.result.BasicNavigationItem;
@@ -25,7 +26,7 @@ import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.TextMessages;
-import static no.sesat.search.view.navigation.ResultPagingNavigationConfig.OFFSET_KEY;
+
 import org.apache.log4j.Logger;
 
 
@@ -48,6 +49,8 @@ public final class ResultPagingNavigationController
 
     private static final String MSG_PREV = "prev";
     private static final String MSG_NEXT = "next";
+    private static final String MSG_PREV_MULTIPLE = "prevmult";
+    private static final String MSG_NEXT_MULTIPLE = "nextmult";
 
     private ResultPagingNavigationConfig config;
 
@@ -102,12 +105,28 @@ public final class ResultPagingNavigationController
 
             // Add navigation item for previous page.
             if (pager.getCurrentPage() > 1) {
+
                 final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
-                final String url = context.getUrlGenerator().getURL(pageOffset, config);
-                item.addResult(new BasicNavigationItem(messages.getMessage(MSG_PREV), url, config.getPageSize()));
+
+                item.addResult(new BasicNavigationItem(
+                        messages.getMessage(MSG_PREV),
+                        context.getUrlGenerator().getURL(pageOffset, config),
+                        config.getPageSize()));
+
+                // Add navigation for multi-previous page.
+                if(config.getMultiplePageSize() > 0 && pager.getCurrentPage() > config.getMultiplePageSize()) {
+
+                    final String pageOffsetMulti = Integer.toString(
+                            pager.getOffsetOfPage(pager.getCurrentPage() - config.getMultiplePageSize()));
+
+                    item.addResult(new BasicNavigationItem(
+                            messages.getMessage(MSG_PREV_MULTIPLE),
+                            context.getUrlGenerator().getURL(pageOffsetMulti, config),
+                            config.getMultiplePageSize()*config.getPageSize()));
+                }
             }
 
-            // Add navigation items for the individual pages.
+            // Add navigation items for the individual page thumbnails.
             for (int i = pager.getFirstVisiblePage(); i <= pager.getLastVisiblePage(); ++i) {
 
                 final String pageOffset = Integer.toString(pager.getOffsetOfPage(i));
@@ -123,9 +142,27 @@ public final class ResultPagingNavigationController
 
             // Add navigation item for next page.
             if (pager.getCurrentPage() < pager.getNumberOfPages()) {
+
                 final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() + 1));
-                final String url = context.getUrlGenerator().getURL(pageOffset, config);
-                item.addResult(new BasicNavigationItem(messages.getMessage(MSG_NEXT), url, config.getPageSize()));
+
+                item.addResult(new BasicNavigationItem(
+                        messages.getMessage(MSG_NEXT),
+                        context.getUrlGenerator().getURL(pageOffset, config),
+                        config.getPageSize()));
+
+                final int remainingPages = pager.getNumberOfPages() - pager.getCurrentPage();
+
+                // Add navigation for multi-next page.
+                if(config.getMultiplePageSize() > 0 && remainingPages >= config.getMultiplePageSize()) {
+
+                    final String pageOffsetMulti = Integer.toString(
+                            pager.getOffsetOfPage(pager.getCurrentPage() + config.getMultiplePageSize()));
+
+                    item.addResult(new BasicNavigationItem(
+                            messages.getMessage(MSG_NEXT_MULTIPLE),
+                            context.getUrlGenerator().getURL(pageOffsetMulti, config),
+                            config.getMultiplePageSize()*config.getPageSize()));
+                }
             }
         }
         return item;

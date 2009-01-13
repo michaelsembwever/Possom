@@ -18,13 +18,15 @@
  */
 package no.sesat.search.view.navigation;
 
-import no.sesat.search.mode.config.SearchConfiguration;
 import static no.sesat.search.site.config.AbstractDocumentFactory.fillBeanProperty;
-import static no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
+import no.sesat.search.mode.config.SearchConfiguration;
+import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
+
 import org.w3c.dom.Element;
 
-/**
+/** Configuration for result paging.
+ * Makes it possible to configure pageSize, number of page number thumbnails, and jump forward multiple pages options.
  *
  * @version $Id$
  */
@@ -34,24 +36,39 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
     /** Used for both the id of the configuration AND the parameter name. **/
     public static final String OFFSET_KEY = SearchConfiguration.DEFAULT_PAGING_PARAMETER;
 
+    private int multiplePageSize;
     private int pageSize;
     private int numberOfPages;
     private String commandName;
     private String hitcountSource;
 
-    public ResultPagingNavigationConfig(final NavigationConfig.Nav parent, final NavigationConfig.Navigation navigation, final Element e) {
+    public ResultPagingNavigationConfig(
+            final NavigationConfig.Nav parent,
+            final NavigationConfig.Navigation navigation,
+            final Element e) {
+
         super(parent, navigation, e);
 
+        fillBeanProperty(this, null, "multiplePageSize", ParseType.Int, e, "0");
         fillBeanProperty(this, null, "pageSize", ParseType.Int, e, "10");
         fillBeanProperty(this, null, "numberOfPages", ParseType.Int, e, "10");
         fillBeanProperty(this, null, "commandName", ParseType.String, e, null);
         fillBeanProperty(this, null, "hitcountSource", ParseType.String, e, "");
     }
+
+    public int getMultiplePageSize() {
+        return multiplePageSize;
+    }
+
+    public void setMultiplePageSize(final int multiplePageSize) {
+        this.multiplePageSize = multiplePageSize;
+    }
+
     public int getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public void setPageSize(final int pageSize) {
         this.pageSize = pageSize;
     }
 
@@ -59,7 +76,7 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
         return numberOfPages;
     }
 
-    public void setNumberOfPages(int numberOfPages) {
+    public void setNumberOfPages(final int numberOfPages) {
         this.numberOfPages = numberOfPages;
     }
 
@@ -69,15 +86,15 @@ public final class ResultPagingNavigationConfig extends NavigationConfig.Nav {
     }
 
     @Override
-    public void setCommandName(String commandName) {
+    public void setCommandName(final String commandName) {
         this.commandName = commandName;
     }
 
     public String getHitcountSource() {
         return hitcountSource;
-}
+    }
 
-    public void setHitcountSource(String hitcountSource) {
+    public void setHitcountSource(final String hitcountSource) {
         this.hitcountSource = hitcountSource;
     }
 }
