@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/**
+/** This is largely an example class.
  *
  *
  * @version $Id$
@@ -51,9 +51,6 @@ import org.xml.sax.SAXException;
 public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PlatefoodPPCSearchCommand.class);
-
-    /** Constant that is used as partnerId on the gift page. */
-    private static final String GIFT_PAGE_ID = "wipgift";
 
     /** RegEx pattern used to get a base url from a url. */
     private static final Pattern BASE_URL_PATTERN = Pattern.compile("(https?://)?(.*)");
@@ -82,22 +79,10 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
                         try {
                             url.append("&channelName=" + partnerId);
 
-                            if (partnerId != null && partnerId.equals(GIFT_PAGE_ID)) {
-                                url.append("&searchTerm=");
-                                url.append(URLEncoder.encode("send gave", ppcConfig.getEncoding()));
-
-                                // Finding location, using that as an extra parameter
-                                final String location = PlatefoodPPCSearchCommand.this.getParameter("ywpoststed");
-                                if (location != null && location.length() > 0) {
-                                    url.append("&locationTerm=");
-                                    url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
-                                }
-                            } else {
-                                url.append("&searchTerm=");
-                                url.append(URLEncoder.encode(
-                                        PlatefoodPPCSearchCommand.this.getTransformedQuery(),
-                                        ppcConfig.getEncoding()));
-                            }
+                            url.append("&searchTerm=");
+                            url.append(URLEncoder.encode(
+                                    PlatefoodPPCSearchCommand.this.getTransformedQuery(),
+                                    ppcConfig.getEncoding()));
 
                             url.append("&page=1");
                         }  catch (UnsupportedEncodingException e) {
