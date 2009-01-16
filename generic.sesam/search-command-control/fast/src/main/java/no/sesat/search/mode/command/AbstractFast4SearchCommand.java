@@ -131,6 +131,9 @@ import no.sesat.search.result.WeightedSuggestion;
     // Public --------------------------------------------------------
 
     /** Return all our configured navigator's field:value pairs in one string in filter syntax.
+     * Commas in the navigator's parameter value are treated as separators between optional selected navigator items.
+     *
+     * @deprecated @todo extract to a query transformer, FastNavigationQueryTransformer
      *
      * @return field:value filter string.
      */
@@ -154,18 +157,26 @@ import no.sesat.search.result.WeightedSuggestion;
 //        }
 
         for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
+
             final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
 
             if (navigatedValue != null) {
-                final String value =  navigator.isBoundaryMatch() ? "^\""
-                        + navigatedValue.getString() + "\"$" : "\"" + navigatedValue.getString() + "\"";
 
-                // FIXME this test should be encapsulated with the delegated filterBuilder
-                if ("adv".equals(getSearchConfiguration().getFiltertype())){
-                    filterStrings.add(" AND " + navigator.getField() + ':'  + value );
-                }else{
-                    filterStrings.add("+" + navigator.getField() + ':'  + value);
+                // TODO this test should be encapsulated with the delegated filterBuilder
+                final StringBuilder filter
+                        = new StringBuilder("adv".equals(getSearchConfiguration().getFiltertype()) ? " AND (" : " +(");
+
+                // splitting here allows for multiple navigation selections within the one navigation level.
+                for(String navSingleValue : navigatedValue.getString().split(",")){
+
+                    final String value =  navigator.isBoundaryMatch()
+                            ? "^\"" + navSingleValue + "\"$"
+                            : "\"" + navSingleValue + "\"";
+
+                    filter.append(' ' + navigator.getField() + ':'  + value);
                 }
+
+                filterStrings.add(filter.append(" )").toString());
             }
         }
 
