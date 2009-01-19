@@ -106,14 +106,7 @@ public final class ResultPagingNavigationController
             // Add navigation item for previous page.
             if (pager.getCurrentPage() > 1) {
 
-                final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
-
-                item.addResult(new BasicNavigationItem(
-                        messages.getMessage(MSG_PREV),
-                        context.getUrlGenerator().getURL(pageOffset, config),
-                        config.getPageSize()));
-
-                // Add navigation for multi-previous page.
+                // Add navigation for multi-previous page first.
                 if(config.getMultiplePageSize() > 0 && pager.getCurrentPage() > config.getMultiplePageSize()) {
 
                     final String pageOffsetMulti = Integer.toString(
@@ -124,6 +117,14 @@ public final class ResultPagingNavigationController
                             context.getUrlGenerator().getURL(pageOffsetMulti, config),
                             config.getMultiplePageSize()*config.getPageSize()));
                 }
+
+                final String pageOffset = Integer.toString(pager.getOffsetOfPage(pager.getCurrentPage() - 1));
+
+                item.addResult(new BasicNavigationItem(
+                        messages.getMessage(MSG_PREV),
+                        context.getUrlGenerator().getURL(pageOffset, config),
+                        config.getPageSize()));
+
             }
 
             // Add navigation items for the individual page thumbnails.
