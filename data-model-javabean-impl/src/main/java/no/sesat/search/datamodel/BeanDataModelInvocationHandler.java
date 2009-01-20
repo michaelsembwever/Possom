@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ package no.sesat.search.datamodel;
 
 import java.beans.IntrospectionException;
 //import java.beans.beancontext.BeanContextSupport;
+import java.io.Serializable;
 import no.sesat.search.datamodel.access.ControlLevel;
 import org.apache.log4j.Logger;
 
@@ -74,7 +75,7 @@ final class BeanDataModelInvocationHandler extends BeanDataNodeInvocationHandler
 
     static final class DataModelBeanContextSupport extends BeanContextSupport{
 
-        final Object dataModelLock = new Boolean(true); // needs to be serialisable
+        final Object dataModelLock = new Serializable() {};
 
         private ControlLevel controlLevel = ControlLevel.DATA_MODEL_CONSTRUCTION;
 

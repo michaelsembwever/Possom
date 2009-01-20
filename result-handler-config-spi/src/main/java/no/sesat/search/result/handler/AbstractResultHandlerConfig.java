@@ -48,7 +48,6 @@ public abstract class AbstractResultHandlerConfig implements ResultHandlerConfig
      * @param element
      * @return
      */
-    @Override
     public AbstractResultHandlerConfig readResultHandler(final Element element){
 
         // Override me to add custom deserialisation

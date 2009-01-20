@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;

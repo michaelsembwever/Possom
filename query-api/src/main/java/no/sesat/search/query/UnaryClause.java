@@ -30,7 +30,7 @@ package no.sesat.search.query;
  * @version $Id$
  *
  */
-public interface OperationClause extends Clause {
+public interface UnaryClause extends Clause {
     /**
      * Get the clause.
      *

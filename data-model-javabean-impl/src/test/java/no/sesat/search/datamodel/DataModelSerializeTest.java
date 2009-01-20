@@ -54,7 +54,7 @@ import no.sesat.search.user.enums.PropertyKey;
 import no.sesat.search.view.navigation.NavigationConfig;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.finder.ParentFinder;
 import no.sesat.search.query.parser.AbstractQuery;
 import no.sesat.search.query.token.Categories;

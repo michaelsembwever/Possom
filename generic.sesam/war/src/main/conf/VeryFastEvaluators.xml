@@ -2,5 +2,5 @@
 <!DOCTYPE fast-evaluators SYSTEM "http://sesam.no/dtds/VeryFastEvaluators.dtd">
 
 <fast-evaluators>
-    <!--list token="ENGLISHWORDS" list-name="common_english"/-->
+    <!-- <list token="ENGLISHWORDS" list-name="common_english"/>-->
 </fast-evaluators>

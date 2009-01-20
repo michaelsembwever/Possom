@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.access.ControlLevel;
 import no.sesat.search.mode.SearchCommandFactory;

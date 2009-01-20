@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.PhraseClause;
@@ -38,6 +38,11 @@ import org.apache.log4j.Logger;
  *
  * For example handles the site: syntax.
  *
+ * The default output uses a colon : to join field to the term, and prefixes the pair with the plus sign +
+ * For example: +site:vg.no
+ *
+ * The " +" is defined as the deliminator, and is provided by getDelim() if a subclass wishes to alter just this.
+ *
  * @todo add correct handling of NotClause and AndNotClause.
  * This also needs to be added to the query builder visitor above.
  *
@@ -50,6 +55,8 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(BaseFilterBuilder.class);
+
+    private static final String DELIM = " +";
 
     // Attributes ----------------------------------------------------
 
@@ -89,16 +96,25 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
                 + additionalFilters.toString();
     }
 
+    /** {@inheritDoc}
+     *
+     * When looking for a matching filter any leading QueryParser.OPERATORS
+     * to field names in the filter string are ignored.
+     *
+     * @param string {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     public String getFilter(final String string) {
 
         final StringBuilder sb = new StringBuilder();
 
-        final StringTokenizer tokeniser = new StringTokenizer(getFilterString());
+        final StringTokenizer tokeniser = new StringTokenizer(getFilterString(), getDelim());
 
         if(tokeniser.hasMoreTokens()){
-            for(String[] pair = tokeniser.nextToken().split(":");
-                    tokeniser.hasMoreTokens();
-                    pair = tokeniser.nextToken().split(":")){
+
+            while(tokeniser.hasMoreTokens()){
+
+                final String[] pair = tokeniser.nextToken().split(":");
 
                 if(pair[0].equals(string)){
 
@@ -136,7 +152,7 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
         }
     }
 
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
@@ -152,7 +168,7 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
         final String fieldAs = getContext().getFieldFilter(clause);
         final String term = clause.getTerm();
 
-        appendToQueryRepresentation(" +" + (fieldAs.length() > 0 ? fieldAs + ':' + term : term));
+        appendToQueryRepresentation(getDelim() + (fieldAs.length() > 0 ? fieldAs + ':' + term : term));
     }
 
     /** Override logic. Almost an inversion since the QueryBuilder hides fielded filters
@@ -169,6 +185,10 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
                 ? null == ((LeafClause)clause).getTerm() || null == getContext().getFieldFilter((LeafClause)clause)
                 : super.isEmptyLeaf(clause);
 
+    }
+
+    protected String getDelim(){
+        return DELIM;
     }
 
     // Private -------------------------------------------------------

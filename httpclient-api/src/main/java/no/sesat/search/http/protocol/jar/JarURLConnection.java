@@ -1,8 +1,31 @@
 /*
- * @(#)JarURLConnection.java	1.31 06/08/14
+ * Not Copyright (2008) Schibsted Søk AS
+ * Not under the terms of the GNU Affero General Public License
  *
- * Copyright 2006 Sun Microsystems, Inc. All rights reserved.
- * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * PATCHED TO ADDRESS http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
+ *
+ * Copyright 1997-2006 Sun Microsystems, Inc.  All Rights Reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Sun designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Sun in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
+ * CA 95054 USA or visit www.sun.com if you need additional information or
+ * have any questions.
  */
 
 package no.sesat.search.http.protocol.jar;
@@ -14,23 +37,27 @@ import java.io.BufferedInputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.MalformedURLException;
+import java.net.UnknownServiceException;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.security.Permission;
 import sun.net.www.protocol.jar.Handler;
 
 /**
- *
+ * @author Benjamin Renaud
  * @since 1.2
  */
 public class JarURLConnection extends java.net.JarURLConnection {
+
     private static final boolean debug = false;
 
     /* the Jar file factory. It handles both retrieval and caching.
      */
-    static JarFileFactory factory = new JarFileFactory();
+    private static JarFileFactory factory = new JarFileFactory();
 
     /* the url for the Jar file */
     private URL jarFileURL;
@@ -55,8 +82,8 @@ public class JarURLConnection extends java.net.JarURLConnection {
     /* the content type for this connection */
     private String contentType;
 
-
-    public JarURLConnection(URL url, Handler handler) throws MalformedURLException, IOException {
+    public JarURLConnection(URL url, Handler handler)
+    throws MalformedURLException, IOException {
         super(url);
 
         jarFileURL = getJarFileURL();
@@ -69,26 +96,23 @@ public class JarURLConnection extends java.net.JarURLConnection {
         return jarFile;
     }
 
-    @Override
     public JarEntry getJarEntry() throws IOException {
         connect();
         return jarEntry;
     }
 
-    @Override
     public Permission getPermission() throws IOException {
         return jarFileURLConnection.getPermission();
     }
-    class JarURLInputStream extends java.io.FilterInputStream {
-        JarURLInputStream(InputStream src) {
-            super(src);
-        }
 
-        public void close() throws IOException {
+    class JarURLInputStream extends java.io.FilterInputStream {
+        JarURLInputStream (InputStream src) {
+            super (src);
+        }
+        public void close () throws IOException {
             try {
                 super.close();
-            }
-            finally {
+            } finally {
                 if (!getUseCaches()) {
                     jarFile.close();
                 }
@@ -96,10 +120,12 @@ public class JarURLConnection extends java.net.JarURLConnection {
         }
     }
 
+
+
     public void connect() throws IOException {
         if (!connected) {
             /* the factory call will do the security checks */
-            jarFile = factory.get(getJarFileURL(), this);
+            jarFile = factory.get(getJarFileURL(), getUseCaches(), this);
 
             /* we also ask the factory the permission that was required
              * to get the jarFile, and set it as our permission.
@@ -108,24 +134,24 @@ public class JarURLConnection extends java.net.JarURLConnection {
                 jarFileURLConnection = factory.getConnection(jarFile);
             }
 
-            if (entryName != null) {
-                jarEntry = (JarEntry) jarFile.getEntry(entryName);
+            if ((entryName != null)) {
+                jarEntry = (JarEntry)jarFile.getEntry(entryName);
                 if (jarEntry == null) {
                     try {
                         if (!getUseCaches()) {
                             jarFile.close();
                         }
+                    } catch (Exception e) {
                     }
-                    catch (Exception e) {
-                    }
-                    throw new FileNotFoundException("JAR entry " + entryName + " not found in " + jarFile.getName());
+                    throw new FileNotFoundException("JAR entry " + entryName +
+                                                    " not found in " +
+                                                    jarFile.getName());
                 }
             }
             connected = true;
         }
     }
 
-    @Override
     public InputStream getInputStream() throws IOException {
         connect();
 
@@ -133,17 +159,17 @@ public class JarURLConnection extends java.net.JarURLConnection {
 
         if (entryName == null) {
             throw new IOException("no entry name specified");
-        }
-        else {
+        } else {
             if (jarEntry == null) {
-                throw new FileNotFoundException("JAR entry " + entryName + " not found in " + jarFile.getName());
+                throw new FileNotFoundException("JAR entry " + entryName +
+                                                " not found in " +
+                                                jarFile.getName());
             }
-            result = new JarURLInputStream(jarFile.getInputStream(jarEntry));
+            result = new JarURLInputStream (jarFile.getInputStream(jarEntry));
         }
         return result;
     }
 
-    @Override
     public int getContentLength() {
         int result = -1;
         try {
@@ -151,45 +177,39 @@ public class JarURLConnection extends java.net.JarURLConnection {
             if (jarEntry == null) {
                 /* if the URL referes to an archive */
                 result = jarFileURLConnection.getContentLength();
-            }
-            else {
+            } else {
                 /* if the URL referes to an archive entry */
-                result = (int) getJarEntry().getSize();
+                result = (int)getJarEntry().getSize();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
         }
         return result;
     }
 
-    @Override
     public Object getContent() throws IOException {
         Object result = null;
 
         connect();
         if (entryName == null) {
             result = jarFile;
-        }
-        else {
+        } else {
             result = super.getContent();
         }
         return result;
     }
 
-    @Override
     public String getContentType() {
         if (contentType == null) {
             if (entryName == null) {
                 contentType = "x-java/jar";
-            }
-            else {
+            } else {
                 try {
                     connect();
                     InputStream in = jarFile.getInputStream(jarEntry);
-                    contentType = guessContentTypeFromStream(new BufferedInputStream(in));
+                    contentType = guessContentTypeFromStream(
+                                        new BufferedInputStream(in));
                     in.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     // don't do anything
                 }
             }
@@ -203,7 +223,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
         return contentType;
     }
 
-    @Override
     public String getHeaderField(String name) {
         return jarFileURLConnection.getHeaderField(name);
     }
@@ -215,7 +234,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *                  (e.g., "<code>accept</code>").
      * @param   value   the value associated with it.
      */
-    @Override
     public void setRequestProperty(String key, String value) {
         jarFileURLConnection.setRequestProperty(key, value);
     }
@@ -227,7 +245,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      * @return  the value of the named general request property for this
      *           connection.
      */
-    @Override
     public String getRequestProperty(String key) {
         return jarFileURLConnection.getRequestProperty(key);
     }
@@ -241,7 +258,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *                  (e.g., "<code>accept</code>").
      * @param   value   the value associated with it.
      */
-    @Override
     public void addRequestProperty(String key, String value) {
         jarFileURLConnection.addRequestProperty(key, value);
     }
@@ -256,8 +272,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *
      * @return  a Map of the general request properties for this connection.
      */
-    @Override
-    public Map<String, List<String>> getRequestProperties() {
+    public Map<String,List<String>> getRequestProperties() {
         return jarFileURLConnection.getRequestProperties();
     }
 
@@ -268,7 +283,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      * @param   allowuserinteraction   the new value.
      * @see     java.net.URLConnection#allowUserInteraction
      */
-    @Override
     public void setAllowUserInteraction(boolean allowuserinteraction) {
         jarFileURLConnection.setAllowUserInteraction(allowuserinteraction);
     }
@@ -281,7 +295,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *          this object.
      * @see     java.net.URLConnection#allowUserInteraction
      */
-    @Override
     public boolean getAllowUserInteraction() {
         return jarFileURLConnection.getAllowUserInteraction();
     }
@@ -289,6 +302,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
     /*
      * cache control
      */
+
     /**
      * Sets the value of the <code>useCaches</code> field of this
      * <code>URLConnection</code> to the specified value.
@@ -303,7 +317,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *
      * @see     java.net.URLConnection#useCaches
      */
-    @Override
     public void setUseCaches(boolean usecaches) {
         jarFileURLConnection.setUseCaches(usecaches);
     }
@@ -316,7 +329,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *          <code>useCaches</code> field.
      * @see     java.net.URLConnection#useCaches
      */
-    @Override
     public boolean getUseCaches() {
         return jarFileURLConnection.getUseCaches();
     }
@@ -328,24 +340,22 @@ public class JarURLConnection extends java.net.JarURLConnection {
      * @param   value   the new value.
      * @see     java.net.URLConnection#ifModifiedSince
      */
-    @Override
     public void setIfModifiedSince(long ifmodifiedsince) {
         jarFileURLConnection.setIfModifiedSince(ifmodifiedsince);
     }
 
-    /**
+   /**
      * Sets the default value of the <code>useCaches</code> field to the
      * specified value.
      *
      * @param   defaultusecaches   the new value.
      * @see     java.net.URLConnection#useCaches
      */
-    @Override
     public void setDefaultUseCaches(boolean defaultusecaches) {
         jarFileURLConnection.setDefaultUseCaches(defaultusecaches);
     }
 
-    /**
+   /**
      * Returns the default value of a <code>URLConnection</code>'s
      * <code>useCaches</code> flag.
      * <p>
@@ -357,7 +367,6 @@ public class JarURLConnection extends java.net.JarURLConnection {
      *          <code>useCaches</code> flag.
      * @see     java.net.URLConnection#useCaches
      */
-    @Override
     public boolean getDefaultUseCaches() {
         return jarFileURLConnection.getDefaultUseCaches();
     }

@@ -21,7 +21,7 @@
 
 package no.sesat.search.query.parser;
 
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 import no.sesat.search.query.AndClause;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;

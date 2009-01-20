@@ -25,8 +25,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
 import no.sesat.search.site.Site;
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  *
  * @version $Id$
  */
-public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
+public class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     // Constants -----------------------------------------------------
 

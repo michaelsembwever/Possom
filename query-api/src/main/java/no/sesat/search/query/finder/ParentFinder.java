@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.search.query.UnaryClause;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
@@ -41,10 +41,10 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
 
     private boolean searching = false;
     private boolean singleMode = false;
-    private List<OperationClause> parents = new ArrayList<OperationClause>();
+    private List<UnaryClause> parents = new ArrayList<UnaryClause>();
     private Clause child;
-    private final Map<Clause, Map<Clause, List<OperationClause>>> cache
-            = new HashMap<Clause, Map<Clause, List<OperationClause>>>();
+    private final Map<Clause, Map<Clause, List<UnaryClause>>> cache
+            = new HashMap<Clause, Map<Clause, List<UnaryClause>>>();
 
 
     private static final Logger LOG = Logger.getLogger(ParentFinder.class);
@@ -61,10 +61,10 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      * @param token
      * @return
      */
-    public static boolean insideOf(final List<OperationClause> parents, final TokenPredicate token){
+    public static boolean insideOf(final List<UnaryClause> parents, final TokenPredicate token){
 
         boolean inside = false;
-        for(OperationClause oc : parents){
+        for(UnaryClause oc : parents){
             inside |= oc.getKnownPredicates().contains(token);
         }
         return inside;
@@ -76,11 +76,11 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      * @param clause
      * @return
      */
-    public synchronized List<OperationClause> getAncestors(final Clause root, final Clause clause){
+    public synchronized List<UnaryClause> getAncestors(final Clause root, final Clause clause){
 
-        final List<OperationClause> parents = new ArrayList<OperationClause>();
+        final List<UnaryClause> parents = new ArrayList<UnaryClause>();
 
-        for(OperationClause oc : getParents(root, clause)){
+        for(UnaryClause oc : getParents(root, clause)){
             parents.addAll(getAncestors(root, oc));
             parents.add(oc);
         }
@@ -93,9 +93,9 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      * @param child
      * @return
      */
-    public synchronized List<OperationClause> getParents(final Clause root, final Clause child) {
+    public synchronized List<UnaryClause> getParents(final Clause root, final Clause child) {
         findParentsImpl(root, child);
-        return Collections.unmodifiableList(new ArrayList<OperationClause>( parents ));
+        return Collections.unmodifiableList(new ArrayList<UnaryClause>( parents ));
     }
 
     /** Finds the first found direct parent.
@@ -104,7 +104,7 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      * @param child
      * @return
      */
-    public synchronized OperationClause getParent(final Clause root, final Clause child) {
+    public synchronized UnaryClause getParent(final Clause root, final Clause child) {
 
         singleMode = true;
         findParentsImpl(root, child);
@@ -115,11 +115,11 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
         return parents.get(0);
     }
 
-    private List<OperationClause> findInCache(final Clause root){
+    private List<UnaryClause> findInCache(final Clause root){
 
-        Map<Clause, List<OperationClause>> innerCache = cache.get(root);
+        Map<Clause, List<UnaryClause>> innerCache = cache.get(root);
         if (innerCache == null){
-            innerCache = new HashMap<Clause, List<OperationClause>>();
+            innerCache = new HashMap<Clause, List<UnaryClause>>();
             cache.put(root, innerCache);
         }
         return innerCache.get(child);
@@ -127,15 +127,15 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
 
     private void updateCache(final Clause root){
 
-        Map<Clause, List<OperationClause>> innerCache = cache.get(root);
+        Map<Clause, List<UnaryClause>> innerCache = cache.get(root);
         if (innerCache == null){
-            innerCache = new HashMap<Clause, List<OperationClause>>();
+            innerCache = new HashMap<Clause, List<UnaryClause>>();
             cache.put(root, innerCache);
         }
-        innerCache.put(child, new ArrayList<OperationClause>(parents));
+        innerCache.put(child, new ArrayList<UnaryClause>(parents));
     }
 
-    private synchronized <T extends DoubleOperatorClause> void findParentsImpl(final Clause root, final Clause child) {
+    private synchronized <T extends BinaryClause> void findParentsImpl(final Clause root, final Clause child) {
 
         this.child = child;
         if (searching || child == null) {
@@ -159,7 +159,7 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      *
      * @param clause
      */
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
 
         if (!singleMode || parents.size() == 0) {
 
@@ -177,7 +177,7 @@ public final class ParentFinder extends AbstractReflectionVisitor implements Ser
      *
      * @param clause
      */
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         if (!singleMode || parents.size() == 0) {
 

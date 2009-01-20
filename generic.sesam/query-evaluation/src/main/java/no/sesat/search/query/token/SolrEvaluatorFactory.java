@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +37,7 @@ import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.config.SiteConfiguration;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.solr.client.solrj.SolrServer;
@@ -68,6 +71,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
     private final Future solrEvaluatorCreator;
     private SolrTokenEvaluator solrEvaluator;
     private SolrServer server;
+    private final Site site;
 
     // TODO this will leak when sites are redeploy without Sesat being restarted.
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
@@ -79,6 +83,8 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
     public SolrEvaluatorFactory(final Context cxt) throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
+
+        this.site = cxt.getSite();
 
         try{
             final Properties props = SiteConfiguration.instanceOf(
@@ -110,11 +116,11 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         final Context cxt = getContext();
 
         TokenEvaluator result = isResponsibleFor(token) ? getSolrEvaluator() : null;
-        if(result == null && null != cxt.getSite().getParent()){
+        if(result == null && null != site.getParent()){
 
             result = instanceOf(ContextWrapper.wrap(
                     Context.class,
-                    cxt.getSite().getParent().getSiteContext(),
+                    site.getParent().getSiteContext(),
                     cxt
                 )).getEvaluator(token);
 
@@ -145,7 +151,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         boolean uses = false;
         try{
             LIST_NAMES_LOCK.readLock().lock();
-            Site site = getContext().getSite();
+            Site site = this.site;
 
             while(!uses && null != site){
 
@@ -172,7 +178,7 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
         String[] listNames = null;
         try{
             LIST_NAMES_LOCK.readLock().lock();
-            Site site = getContext().getSite();
+            Site site = this.site;
 
             while(null == listNames && null != site){
 
@@ -186,6 +192,28 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
             LIST_NAMES_LOCK.readLock().unlock();
         }
         return listNames;
+    }
+
+    boolean responsible(){
+
+        boolean responsible = false;
+        try{
+            LIST_NAMES_LOCK.readLock().lock();
+            Site loopSite = this.site;
+
+            while(null != loopSite){
+
+                // find listnames used for this token predicate
+                responsible =  !LIST_NAMES.get(loopSite).isEmpty();
+                if(responsible){ break; }
+
+                // prepare to go to parent
+                loopSite = loopSite.getParent();
+            }
+        }finally{
+            LIST_NAMES_LOCK.readLock().unlock();
+        }
+        return responsible;
     }
 
     // private -----------------------------------------------------
@@ -214,78 +242,88 @@ public final class SolrEvaluatorFactory extends AbstractEvaluatorFactory{
                 ));
         }
 
-        try{
-            LIST_NAMES_LOCK.writeLock().lock();
+        if(null == LIST_NAMES.get(site)){
 
-            if(null == LIST_NAMES.get(site)){
+            try{
+                LIST_NAMES_LOCK.writeLock().lock();
 
-                // create map entry for this site
-                LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
+                    // create map entry for this site
+                    LIST_NAMES.put(site, new HashMap<TokenPredicate,String[]>());
 
-                // initialise this site's configuration
-                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                final DocumentBuilder builder = factory.newDocumentBuilder();
+                    // initialise this site's configuration
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    final DocumentBuilder builder = factory.newDocumentBuilder();
 
-                final DocumentLoader loader = cxt.newDocumentLoader(cxt, SOLR_EVALUATOR_XMLFILE, builder);
-                loader.abut();
+                    final DocumentLoader loader = cxt.newDocumentLoader(cxt, SOLR_EVALUATOR_XMLFILE, builder);
+                    loader.abut();
 
-                LOG.info("Parsing " + SOLR_EVALUATOR_XMLFILE + " started");
-                final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
-                final Document doc = loader.getDocument();
+                    LOG.info("Parsing " + SOLR_EVALUATOR_XMLFILE + " started");
+                    final Map<TokenPredicate,String[]> listNames = LIST_NAMES.get(site);
+                    final Document doc = loader.getDocument();
 
-                if(null != doc && null != doc.getDocumentElement()){
+                    if(null != doc && null != doc.getDocumentElement()){
 
-                    final Element root = doc.getDocumentElement();
-                    final NodeList lists = root.getElementsByTagName("list");
-                    for (int i = 0; i < lists.getLength(); ++i) {
+                        final Element root = doc.getDocumentElement();
+                        final NodeList lists = root.getElementsByTagName("list");
+                        for (int i = 0; i < lists.getLength(); ++i) {
 
-                        final Element list = (Element) lists.item(i);
+                            final Element list = (Element) lists.item(i);
 
-                        final String tokenName = list.getAttribute("token");
-                        LOG.info(" ->list@token: " + tokenName);
+                            final String tokenName = list.getAttribute("token");
+                            LOG.info(" ->list@token: " + tokenName);
 
-                        TokenPredicate token;
-                        try{
-                            token = TokenPredicateUtility.getTokenPredicate(tokenName);
+                            TokenPredicate token;
+                            try{
+                                token = TokenPredicateUtility.getTokenPredicate(tokenName);
 
-                        }catch(IllegalArgumentException iae){
-                            LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
-                            token = TokenPredicateUtility.createAnonymousTokenPredicate(tokenName);
-                        }
-
-                        final String[] listNameArr = list.getAttribute("list-name").split(",");
-                        LOG.info(" ->lists: " + list.getAttribute("list-name"));
-
-                        // update each listname to the format the fast query matching servers use
-                        if(null != listNameArr){
-                            for(int j = 0; j < listNameArr.length; ++j){
-                                listNameArr[j] = listNameArr[j];
+                            }catch(IllegalArgumentException iae){
+                                LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
+                                token = TokenPredicateUtility.createAnonymousTokenPredicate(tokenName);
                             }
 
-                            // put the listnames in
-                            Arrays.sort(listNameArr, null);
-                            listNames.put(token, listNameArr);
+                            final String[] listNameArr = list.getAttribute("list-name").split(",");
+                            LOG.info(" ->lists: " + list.getAttribute("list-name"));
+
+                            // update each listname to the format the fast query matching servers use
+                            if(null != listNameArr){
+                                for(int j = 0; j < listNameArr.length; ++j){
+                                    listNameArr[j] = listNameArr[j];
+                                }
+
+                                // put the listnames in
+                                Arrays.sort(listNameArr, null);
+                                listNames.put(token, listNameArr);
+                            }
+
+
                         }
-
-
                     }
-                }
-                LOG.info("Parsing " + SOLR_EVALUATOR_XMLFILE + " finished");
+                    LOG.info("Parsing " + SOLR_EVALUATOR_XMLFILE + " finished");
+            }finally{
+                LIST_NAMES_LOCK.writeLock().unlock();
             }
-        }finally{
-            LIST_NAMES_LOCK.writeLock().unlock();
         }
     }
 
     private SolrTokenEvaluator getSolrEvaluator() throws EvaluationException {
 
         try {
-            solrEvaluatorCreator.get();
+
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                // default timeout is one second. TODO make configuration.
+                solrEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
+            }else{
+                solrEvaluatorCreator.get();
+            }
 
         } catch (InterruptedException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new EvaluationException(ex.getMessage(), ex);
         } catch (ExecutionException ex) {
+            LOG.error(ex.getMessage(), ex);
+            throw new EvaluationException(ex.getMessage(), ex);
+        } catch (TimeoutException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new EvaluationException(ex.getMessage(), ex);
         }

@@ -22,7 +22,7 @@ import no.sesat.search.datamodel.DataModelContext;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.QueryContext;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.site.SiteContext;

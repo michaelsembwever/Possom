@@ -85,7 +85,7 @@ Copyright (2006-2008) Schibsted Søk AS
         <esp-fast-command id="default-esp-fast-command" inherit="default-command">
             
            <query-builder>
-               <infix and-infix="and" or-infix="or" not-prefix="not " default-infix="and" or-grouped="true" not-grouped="true"/>
+               <infix and-infix="and" or-infix="or" not-prefix="andnot" default-infix="and" or-grouped="true" not-grouped="true"/>
            </query-builder>
         </esp-fast-command>
 
@@ -107,15 +107,6 @@ Copyright (2006-2008) Schibsted Søk AS
                 <infix supports-not="false"/>
             </query-builder>
         </overture-ppc-command>
-
-        <platefood-ppc-command id="default-platefood-ppc-command" inherit="default-command"
-                               encoding="UTF-8"
-                               host="platefoodHost"
-                               host-header="pfp.sesam.no"
-                               port="platefoodPort"
-                               results-to-return="4"
-                               url="/publisher/search?"
-                               statistical-name="platefood_ads"/>
 
         <properties-command id="default-properties-command" inherit="default-command"/>
 
@@ -222,7 +213,11 @@ Copyright (2006-2008) Schibsted Søk AS
 
         <solr-command id="default-solr-command"
                 server-url="queryServer.solr.1"
-                inherit="default-command"/>
+                inherit="default-command">
+           <query-builder>
+               <infix and-infix="AND" default-infix="AND" or-infix="OR" not-prefix="NOT " or-grouped="true"/>
+           </query-builder>
+        </solr-command>
 
         <stock-command id="default-stock-command" inherit="default-command">
             <query-transformers>

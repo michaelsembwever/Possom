@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.BinaryClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.XorClause.Hint;
 import no.sesat.search.query.finder.Counter;
@@ -156,17 +156,17 @@ public final class RotationAlternation extends AbstractAlternation{
 
 
     /** mappings from the newly rotated clause to the same original clause **/
-    private final Map<DoubleOperatorClause,DoubleOperatorClause> originalFromNew
-            = new HashMap<DoubleOperatorClause,DoubleOperatorClause>();
+    private final Map<BinaryClause,BinaryClause> originalFromNew
+            = new HashMap<BinaryClause,BinaryClause>();
     /** mappings from the original clause to the same newly rotated clause **/
-    private final Map<DoubleOperatorClause,DoubleOperatorClause> newFromOriginal
-            = new HashMap<DoubleOperatorClause,DoubleOperatorClause>();
+    private final Map<BinaryClause,BinaryClause> newFromOriginal
+            = new HashMap<BinaryClause,BinaryClause>();
     /** mappings from the newly rotated clause to the same unrotated clause **/
-    private final Map<DoubleOperatorClause,DoubleOperatorClause> beforeRotationFromNew
-            = new HashMap<DoubleOperatorClause,DoubleOperatorClause>();
+    private final Map<BinaryClause,BinaryClause> beforeRotationFromNew
+            = new HashMap<BinaryClause,BinaryClause>();
     /** mappings from the original to the unrotated clause */
-    private final Map<DoubleOperatorClause,DoubleOperatorClause> beforeRotationFromOriginal
-            = new HashMap<DoubleOperatorClause,DoubleOperatorClause>();
+    private final Map<BinaryClause,BinaryClause> beforeRotationFromOriginal
+            = new HashMap<BinaryClause,BinaryClause>();
 
     // Static --------------------------------------------------------
 
@@ -197,17 +197,17 @@ public final class RotationAlternation extends AbstractAlternation{
             // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
             //  although queries rarely start with such clauses.
             // XXX This implementation only handles forests that exist down the right branch only.
-            if(originalRoot instanceof DoubleOperatorClause){
+            if(originalRoot instanceof BinaryClause){
 
                 LOG.debug(DEBUG_STARTING_ROTATIONS);
-                DoubleOperatorClause root = (DoubleOperatorClause) originalRoot;
+                BinaryClause root = (BinaryClause) originalRoot;
 
-                final List<DoubleOperatorClause> forestRoots = new ForestFinder().findForestRoots(root);
+                final List<BinaryClause> forestRoots = new ForestFinder().findForestRoots(root);
                 LOG.debug(DEBUG_FOUND_FORESTS + forestRoots.size());
 
-                for(DoubleOperatorClause clause : forestRoots){
+                for(BinaryClause clause : forestRoots){
 
-                    final LinkedList<? extends DoubleOperatorClause> rotations = createForestRotation(clause);
+                    final LinkedList<? extends BinaryClause> rotations = createForestRotation(clause);
 
                     final XorClause result = createXorClause(rotations);
                     // search in root for all occurances of clause and 'replaceDescendant' on each.
@@ -215,9 +215,9 @@ public final class RotationAlternation extends AbstractAlternation{
                         root = result;
                     }else{
                         // search in root for all occurances of clause and 'replaceDescendant' on each.
-                        final List<DoubleOperatorClause> parents = parents(root, clause);
-                        for(DoubleOperatorClause clauseParent : parents){
-                            root = (DoubleOperatorClause)replaceDescendant(root, result, clause, clauseParent);
+                        final List<BinaryClause> parents = parents(root, clause);
+                        for(BinaryClause clauseParent : parents){
+                            root = (BinaryClause)replaceDescendant(root, result, clause, clauseParent);
                         }
                     }
 
@@ -245,7 +245,7 @@ public final class RotationAlternation extends AbstractAlternation{
 
     /** {@inherit} **/
     @Override
-    protected <T extends OperationClause> T createOperatorClause(
+    protected <T extends UnaryClause> T createOperatorClause(
             final Clause left,
             final Clause right,
             final T replacementFor) {
@@ -255,9 +255,9 @@ public final class RotationAlternation extends AbstractAlternation{
         final T clause = super.createOperatorClause(left, right, replacementFor);
 
         // update our mappings between rotations
-        if(replacementFor instanceof DoubleOperatorClause && clause instanceof DoubleOperatorClause){
-            final DoubleOperatorClause rf = (DoubleOperatorClause)replacementFor;
-            final DoubleOperatorClause c = (DoubleOperatorClause)clause;
+        if(replacementFor instanceof BinaryClause && clause instanceof BinaryClause){
+            final BinaryClause rf = (BinaryClause)replacementFor;
+            final BinaryClause c = (BinaryClause)clause;
             originalFromNew.put(c, rf);
             newFromOriginal.put(rf, c);
             beforeRotationFromNew.put(c, beforeRotationFromOriginal.get(rf));
@@ -273,7 +273,7 @@ public final class RotationAlternation extends AbstractAlternation{
 
     // Private -------------------------------------------------------
 
-    private <T extends DoubleOperatorClause> LinkedList<T> createForestRotation(
+    private <T extends BinaryClause> LinkedList<T> createForestRotation(
             final T oForestRoot) {
 
         LOG.debug("==== STARTING ROTATION ON " + oForestRoot + " ====");
@@ -301,7 +301,7 @@ public final class RotationAlternation extends AbstractAlternation{
 
             // clear mappings
             beforeRotationFromOriginal.clear();
-            for (Entry<DoubleOperatorClause,DoubleOperatorClause> entry : beforeRotationFromNew.entrySet()) {
+            for (Entry<BinaryClause,BinaryClause> entry : beforeRotationFromNew.entrySet()) {
 
                 // reverse key to values in each entry
                 // entry.getValue() is NOT new!!
@@ -340,7 +340,7 @@ public final class RotationAlternation extends AbstractAlternation{
     }
 
 
-    private <T extends DoubleOperatorClause> T rotate(
+    private <T extends BinaryClause> T rotate(
             final T oForestRoot, // from original
             final T oIterate,  // from original
             final T rTop,  // from last rotation
@@ -395,7 +395,7 @@ public final class RotationAlternation extends AbstractAlternation{
             // loop rebuilding the tree, only replacing old instances with new instances.
         final T rForestRoot = (T) beforeRotationFromOriginal.get(oForestRoot);
         if(beforeRotationFromNew.size() != beforeRotationFromOriginal.size()){
-            nOrphan = replaceDescendant(rForestRoot, (DoubleOperatorClause) nOrphan, rTop, parent(rForestRoot,rTop)); // XXX last argument needs to be from orginal branch
+            nOrphan = replaceDescendant(rForestRoot, (BinaryClause) nOrphan, rTop, parent(rForestRoot,rTop)); // XXX last argument needs to be from orginal branch
         }
         return (T) nOrphan;
     }

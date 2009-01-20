@@ -18,6 +18,8 @@
 package no.sesat.search.mode.command;
 
 
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.sesat.search.mode.command.querybuilder.BaseFilterBuilder;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -25,18 +27,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.Collections;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.Query;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractQueryParserContext;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
 import no.sesat.search.query.parser.QueryParser;
 import no.sesat.search.query.parser.QueryParserImpl;
 import no.sesat.search.query.parser.TokenMgrError;
@@ -56,8 +57,9 @@ import no.sesat.search.result.handler.ResultHandlerFactory;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.config.BytecodeLoader;
+import no.sesat.search.site.config.DocumentLoader;
+import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.view.config.SearchTab;
-import static no.sesat.search.view.navigation.NavigationConfig.USER_SORT_KEY;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -71,10 +73,10 @@ import no.sesat.search.mode.command.querybuilder.QueryBuilder;
 import no.sesat.search.mode.command.querybuilder.SesamSyntaxQueryBuilder;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig.Controller;
+import no.sesat.search.query.token.DeadTokenEvaluationEngineImpl;
 import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.site.config.SiteClassLoaderFactory;
 import no.sesat.search.site.config.Spi;
-import no.sesat.search.view.navigation.NavigationConfig.Nav;
 
 /** The base abstraction for Search Commands providing a large framework for commands to run against.
  *                                                                                                          <br/><br/>
@@ -96,7 +98,7 @@ import no.sesat.search.view.navigation.NavigationConfig.Nav;
  *
  * @version <tt>$Id$</tt>
  */
-public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand, Serializable {
+public abstract class AbstractSearchCommand implements SearchCommand, Serializable {
 
     // Constants -----------------------------------------------------
 
@@ -115,10 +117,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // Attributes ----------------------------------------------------
 
-    /**
-     * The context to work against.
-     */
+    /** The context to work against. */
     protected transient final Context context;
+    /** Assigned by initialiseQuery(). **/
     private transient Query query = null;
     private transient TokenEvaluationEngine engine = null;
     private transient final QueryTransformerFactory.Context qtfContext;
@@ -127,8 +128,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private transient final QueryBuilder queryBuilder;
     private transient final SesamSyntaxQueryBuilder displayableQueryBuilder;
     private transient final FilterBuilder filterBuilder;
+    private transient final BaseSearchConfiguration baseSearchConfiguration;
 
     protected final String untransformedQuery;
+    protected transient final DataModel datamodel;
+    protected transient final Map<String,StringDataObject> datamodelParameters;
+
     private final Map<Clause, String> transformedTerms = new LinkedHashMap<Clause, String>();
     private String transformedQuery;
     private String transformedQuerySesamSyntax;
@@ -136,9 +141,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final SearchCommandParameter offsetParameter;
     private final SearchCommandParameter userSortByParameter;
 
-    protected transient final DataModel datamodel;
-
+    // thread execution handling
     protected volatile boolean completed = false;
+    // thread execution handling
     private volatile Thread thread = null;
 
     // Static --------------------------------------------------------
@@ -158,6 +163,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         this.context = cxt;
         this.datamodel = cxt.getDataModel();
+        this.baseSearchConfiguration = (BaseSearchConfiguration) cxt.getSearchConfiguration();
+        this.datamodelParameters = Collections.unmodifiableMap(datamodel.getParameters().getValues());
 
         // do not use this.getSearchConfiguration() in constructor -- it's a overridable method.
         final BaseSearchConfiguration bsc = (BaseSearchConfiguration) context.getSearchConfiguration();
@@ -177,72 +184,74 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             };
 
         // Little more complicated context for QueryBuilder.Context (can be used for QueryTransformer.Context too)
-        queryBuilderContext = ContextWrapper.wrap(
-                QueryBuilder.Context.class,
-                new BaseContext(){
-                    public Site getSite() {
-                        return datamodel.getSite().getSite();
-                    }
+        // dont use ContextWrapper.wrap(..) here as this context really gets hammered and we want to avoid reflection
+        queryBuilderContext = new QueryBuilder.Context(){
+                public Site getSite() {
+                    return datamodel.getSite().getSite();
+                }
+                /** @deprecated {@inheritDoc} **/
+                public String getTransformedQuery() {
+                    return transformedQuery;
+                }
+                public Query getQuery() {
+                    // Important that initialiseQuery() has been called first
+                    return getSearchCommandsQuery();
+                }
+                public TokenEvaluationEngine getTokenEvaluationEngine() {
+                    return engine;
+                }
+                public void visitXorClause(final Visitor visitor, final XorClause clause) {
+                    searchCommandsVisitXorClause(visitor, clause);
+                }
+                public String getFieldFilter(final LeafClause clause) {
+                    return getSearchCommandsFieldFilter(clause);
+                }
+                public String getTransformedTerm(final Clause clause) {
 
-                    public String getTransformedQuery() {
-                        return transformedQuery;
-                    }
+                    // unable to delegate to getTransformedTerm as it escapes reserved words
+                    //  and we're not allowed to here
+                    final String transformedTerm = transformedTerms.get(clause);
+                    return null != transformedTerm ? transformedTerm : clause.getTerm();
+                }
+                public Collection<String> getReservedWords() {
 
-                    public Query getQuery() {
-                        // Important that initialiseQuery() has been called first
-                        return getSearchCommandsQuery(); // XXX will this end up in subclass overrides?
-                    }
+                    return getSearchCommandsReservedWords();
+                }
+                public String escape(final String word) {
 
-                    public TokenEvaluationEngine getTokenEvaluationEngine() {
-                        return engine;
-                    }
+                    return searchCommandsEscape(word);
+                }
+                public Map<Clause, String> getTransformedTerms() {
+                    return getSearchCommandsTransformedTerms();
+                }
+                public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
+                    return cxt.newDocumentLoader(siteCxt, resource, builder);
+                }
+                public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
+                    return cxt.newPropertiesLoader(siteCxt, resource, properties);
+                }
+                public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
+                    return cxt.newBytecodeLoader(siteContext, className, jarFileName);
+                }
+                public DataModel getDataModel() {
+                    return cxt.getDataModel();
+                }
+        };
 
-                    public void visitXorClause(final Visitor visitor, final XorClause clause) {
-                        AbstractSearchCommand.this.visitXorClause(visitor, clause);
-                    }
+        // construct the initialQueryTransformer and then initialise the map of transformed terms
+        initialQueryTransformer
+                = new QueryTransformerFactory(qtfContext).getController(bsc.getInitialQueryTransformer());
 
-                    public String getFieldFilter(final LeafClause clause) {
-                        return AbstractSearchCommand.this.getFieldFilter(clause);
-                    }
-
-                    public String getTransformedTerm(final Clause clause) {
-
-                        // unable to delegate to getTransformedTerm as it escapes reserved words
-                        //  and we're not allowed to here
-                        final String transformedTerm = transformedTerms.get(clause);
-                        return null != transformedTerm ? transformedTerm : clause.getTerm();
-                    }
-
-                    public Collection<String> getReservedWords() {
-
-                        return AbstractSearchCommand.this.getReservedWords();
-                    }
-
-                    public String escape(final String word) {
-
-                        return AbstractSearchCommand.this.escape(word);
-                    }
-
-                    public Map<Clause, String> getTransformedTerms() {
-                        return AbstractSearchCommand.this.getTransformedTerms();
-                    }
-                },
-                cxt
-            );
-
-        // initialise the transformed terms
-        initialQueryTransformer = new QueryTransformerFactory(qtfContext)
-                .getController(bsc.getInitialQueryTransformer());
         initialQueryTransformer.setContext(queryBuilderContext);
-        initialiseTransformedTerms();
+        initialiseTransformedTerms(query);
 
         // construct the queryBuilder
         queryBuilder = constructQueryBuilder(cxt, queryBuilderContext);
 
         // construct the sesamSyntaxQueryBuilder
-        displayableQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext);
+        displayableQueryBuilder = new SesamSyntaxQueryBuilder(queryBuilderContext, bsc);
 
-        // FIXME implement configuration lookup
+        // FIXME (in 2.18) implement configuration lookup
         filterBuilder = new BaseFilterBuilder(queryBuilderContext, null);
 
         // run an initial queryBuilder run and store the untransformed resulting queryString.
@@ -258,15 +267,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         userSortByParameter = new NavigationSearchCommandParameter(
                 context,
-                USER_SORT_KEY,
-                USER_SORT_KEY,
+                getSearchConfiguration().getUserSortParameter(),
+                getSearchConfiguration().getUserSortParameter(),
                 BaseSearchCommandParameter.Origin.REQUEST);
 
     }
 
     /** Set (or reset) the transformed terms back to the state before any queryTransformers were run.
+     * @param query the query that the transformedTerms map will be constructed from. This should match getQuery()
      */
-    protected final void initialiseTransformedTerms(){
+    protected final void initialiseTransformedTerms(final Query query){
 
         initialQueryTransformer.visit(query.getRootClause());
     }
@@ -305,7 +315,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     // SearchCommand overrides ---------------------------------------------------
 
     public BaseSearchConfiguration getSearchConfiguration() {
-        return (BaseSearchConfiguration) context.getSearchConfiguration();
+        return baseSearchConfiguration;
     }
 
     /**
@@ -422,7 +432,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     protected Collection<String> getReservedWords(){
-        return Collections.emptySet();
+        return Collections.<String>emptySet();
     }
 
     /**
@@ -541,10 +551,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         return datamodel.getPage().getCurrentTab();
                     }
                     public Query getQuery() {
-                        return AbstractSearchCommand.this.getQuery();
+                        return getSearchCommandsQuery();
                     }
                     public String getDisplayQuery(){
-                        return AbstractSearchCommand.this.getTransformedQuerySesamSyntax();
+                        return getTransformedQuerySesamSyntax();
                     }
                 },
                 context
@@ -624,8 +634,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected String getParameter(final String paramName) {
 
-        final Map<String, StringDataObject> parameters = datamodel.getParameters().getValues();
-        return parameters.containsKey(paramName) ? parameters.get(paramName).getString() : null;
+        return datamodelParameters.containsKey(paramName) ? datamodelParameters.get(paramName).getString() : null;
     }
 
     // <-- Query Representation state methods (useful while the inbuilt visitor is in operation)
@@ -662,6 +671,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @param paramName parameter name
      * @return null when array is null
+     *
+     * @deprecated use getParameter(string) instead
      */
     protected final String getSingleParameter(final String paramName) {
 
@@ -683,22 +694,43 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
-     * XXX Very expensive method to call!
+     * Uses QueryParser to create a new Query with all evaluation enabled.
      *
-     * @param queryString
-     * @return
+     * XXX Very expensive method to call! Consider disabling evaluation.
+     *
+     * @param queryString the new query string to parse.
+     * @return newly constructed Query.
      */
     protected final ReconstructedQuery createQuery(final String queryString) {
 
+        return createQuery(queryString, true);
+    }
+
+    /**
+     * Uses QueryParser to create a new Query with the option to disable evaluation.
+     *
+     * XXX Very expensive method to call! It helps to disable evaluation.
+     *
+     * @param queryString the new query string to parse.
+     * @param evaluationEnabled whether to enable evaluation. if false the DeadTokenEvaluationEngineImpl is used.
+     * @return newly constructed Query.
+     */
+    protected final ReconstructedQuery createQuery(final String queryString, final boolean evaluationEnabled) {
+
         LOG.debug("createQuery(" + queryString + ')');
 
-        if (datamodel.getQuery().getQuery().getQueryString().equalsIgnoreCase(queryString)) {
+        ReconstructedQuery reconstructedQuery = null;
+
+        if (datamodel.getQuery().getQuery().getQueryString().trim().equalsIgnoreCase(queryString.trim())) {
 
             // return original query and engine
-            return new ReconstructedQuery(datamodel.getQuery().getQuery(), context.getTokenEvaluationEngine());
+            reconstructedQuery = new ReconstructedQuery(
+                    datamodel.getQuery().getQuery(),
+                    context.getTokenEvaluationEngine());
 
         } else {
 
+            final TokenEvaluationEngine newEngine;
             final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                     TokenEvaluationEngine.Context.class,
                     context,
@@ -714,27 +746,30 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         }
                     }
             );
-
-            // This will among other things perform the initial fast search
-            // for textual analysis.
-            final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            if(evaluationEnabled){
+                // This will among other things perform the evaluator searches - local and remote.
+                newEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            }else{
+                // no evaluators will be called.
+                newEngine = new DeadTokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            }
 
             // queryStr parser
             final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
                 public TokenEvaluationEngine getTokenEvaluationEngine() {
-                    return engine;
+                    return newEngine;
                 }
             });
 
             try {
-                return new ReconstructedQuery(parser.getQuery(), engine);
+                reconstructedQuery = new ReconstructedQuery(parser.getQuery(), engine);
 
             } catch (TokenMgrError ex) {
                 // Errors (as opposed to exceptions) are fatal.
                 LOG.fatal(ERR_PARSING, ex);
             }
         }
-        return null;
+        return reconstructedQuery;
     }
 
 
@@ -769,7 +804,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         if (null != clause.getField()) {
             final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilterMap();
             if (fieldFilters.containsKey(clause.getField())) {
-                field = clause.getField();
+                field = fieldFilters.get(clause.getField());
             } else {
 
                 for (String fieldFilter : fieldFilters.keySet()) {
@@ -783,7 +818,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                                 && getEngine().evaluateTerm(tp, clause.getField());
 
                         if (result) {
-                            field = fieldFilter;
+                            field = fieldFilters.get(fieldFilter);
                             break;
                         }
                     } catch (IllegalArgumentException iae) {
@@ -807,10 +842,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * Returns the query as it is after the query transformers have been applied to it.
      *
+     * It is normalised.
+     *
      * @return
      */
     protected String getTransformedQuerySesamSyntax() {
-        return transformedQuerySesamSyntax;
+
+        // if it's been nulled then return the original query
+        return null != transformedQuerySesamSyntax
+                ? transformedQuerySesamSyntax.replaceAll(" +", " ") // also normalise it
+                : context.getDataModel().getQuery().getString();
     }
 
     protected void updateTransformedQuerySesamSyntax(){
@@ -833,7 +874,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         if (queryParameter != null && queryParameter.length() > 0) {
             // It's not the query we are looking for but a string held in a different parameter.
-            final StringDataObject queryToUse = datamodel.getParameters().getValue(queryParameter);
+            final StringDataObject queryToUse = datamodelParameters.get(queryParameter);
             if (queryToUse != null) {
                 final ReconstructedQuery recon = createQuery(queryToUse.getString());
                 query = recon.getQuery();
@@ -853,6 +894,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             boolean touchedTransformedQuery = false;
 
             final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory(qtfContext);
+
+            final Map<String,Object> junkYard = datamodel.getJunkYard().getValues();
 
             for (QueryTransformerConfig transformerConfig : transformers) {
 
@@ -885,7 +928,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     transformedQuery = getQueryRepresentation();
                 }
 
-                addFilterString(transformer.getFilter(datamodel.getJunkYard().getValues()));
+                addFilterString(transformer.getFilter(junkYard));
                 addFilterString(transformer.getFilter());
 
 
@@ -906,12 +949,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param filter
      */
     protected void addFilterString(final String filter){
-
         if(null != filter && filter.length() > 0){
+            final int pos = filter.indexOf(":");
 
-            final String[] pair = filter.split(":");
-            if(2 == pair.length){
-                filterBuilder.addFilter(pair[0], pair[1]);
+            if(pos > 0){
+                filterBuilder.addFilter(filter.substring(0, pos), filter.substring(pos+1));
             }else{
                 filterBuilder.addFilter(null, filter);
             }
@@ -931,6 +973,23 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private Query getSearchCommandsQuery(){
         return getQuery();
     }
+
+    /** Wrapper around visitXorClause(). Nothing more than a different method signature. **/
+    private void searchCommandsVisitXorClause(final Visitor visitor, final XorClause clause) {
+        visitXorClause(visitor, clause);
+    }
+
+    /** Wrapper around getReservedWords(). Nothing more than a different method signature. **/
+    private String getSearchCommandsFieldFilter(final LeafClause clause) { return getFieldFilter(clause); }
+
+    /** Wrapper around getQuery(). Nothing more than a different method signature. **/
+    private Collection<String> getSearchCommandsReservedWords() { return getReservedWords(); }
+
+    /** Wrapper around escape(). Nothing more than a different method signature. **/
+    private String searchCommandsEscape(final String word) { return escape(word); }
+
+    /** Wrapper around getTransformedTerms(). Nothing more than a different method signature. **/
+    private Map<Clause, String> getSearchCommandsTransformedTerms() { return getTransformedTerms(); }
 
     /**
      *

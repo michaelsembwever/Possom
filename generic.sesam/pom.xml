@@ -77,6 +77,12 @@
                     <include>*.html</include>
                     <include>**/*.vm</include>
                     <include>**/*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/templates</directory>
+                <filtering>false</filtering>
+                <includes>
                     <include>*.jsp</include>
                     <include>**/*.jsp</include>
                 </includes>
@@ -177,11 +183,8 @@
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
 
-                <platefoodURL>localhost</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
-
                 <!--StiteSearch Serve-->
-	              <siteSearchQueryServerURL>localhost:15800</siteSearchQueryServerURL>
+                <siteSearchQueryServerURL>localhost:15800</siteSearchQueryServerURL>
 
                 <!-- Token Evaluator -->
                 <tokenevaluator.host>localhost</tokenevaluator.host>
@@ -225,9 +228,6 @@
                 <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
                 <yahooImageServerPort>8075</yahooImageServerPort>
 
-                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
-
                 <!--StiteSearch Serve-->
 	            <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
 
@@ -269,9 +269,6 @@
 
                 <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
                 <yahooImageServerPort>8075</yahooImageServerPort>
-
-                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
 
                 <!--StiteSearch Serve-->
 	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
@@ -321,9 +318,6 @@
                 <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
                 <yahooImageServerPort>8075</yahooImageServerPort>
 
-                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
-
                 <!--StiteSearch Serve-->
 	            <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
 
@@ -364,9 +358,6 @@
 
                 <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
                 <yahooImageServerPort>8075</yahooImageServerPort>
-
-                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
 
                 <!--StiteSearch Serve-->
 	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
@@ -409,9 +400,6 @@
 
                 <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
                 <yahooImageServerPort>8075</yahooImageServerPort>
-
-                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
 
                 <!--StiteSearch Serve-->
 	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>
@@ -457,9 +445,6 @@
 
                 <yahooImageServer>image.partner.yahoo.com</yahooImageServer>
                 <yahooImageServerPort>8075</yahooImageServerPort>
-
-                <platefoodURL>sch-ppc-mq.osl.basefarm.net</platefoodURL>
-                <platefoodPort>60002</platefoodPort>
 
                 <!--StiteSearch Server , dont know if this is corect for production-->
 	              <siteSearchQueryServerURL>sch-sitesearch.osl.basefarm.net:15100</siteSearchQueryServerURL>

@@ -46,6 +46,8 @@ public class SolrCommandConfig extends CommandConfig {
 
     private final Map<String,String> sort = new HashMap<String,String>();
 
+    private Integer timeout = Integer.MAX_VALUE;
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -115,6 +117,25 @@ public class SolrCommandConfig extends CommandConfig {
         for (String string : sortFields) {
             setSort(string);
         }
+    }
+
+    /** Specified in milliseconds.
+     * Default is Integer.MAX_VALUE.
+     *
+     * Only actived when root log4j logger is set to INFO or higher.
+     * Rationale here is that we don't want timeouts in debugging environments.
+     * @param integer
+     */
+    public void setTimeout(final Integer integer){
+        timeout = integer;
+    }
+
+    /** @see #setTimeout(java.lang.Integer)
+     *
+     * @return
+     */
+    public int getTimeout(){
+        return timeout;
     }
 
     @Override

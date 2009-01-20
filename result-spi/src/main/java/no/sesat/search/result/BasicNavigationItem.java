@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -71,9 +71,11 @@ public class BasicNavigationItem extends BasicResultList<NavigationItem> impleme
     }
 
     public NavigationItem getChildByTitle(String title) {
-        for (NavigationItem navigationItem : getResults()) {
-            if (navigationItem.getTitle().equals(title)) {
-                return navigationItem;
+        if (title != null) {
+            for (NavigationItem navigationItem : getResults()) {
+                if (title.equals(navigationItem.getTitle())) {
+                    return navigationItem;
+                }
             }
         }
         return null;

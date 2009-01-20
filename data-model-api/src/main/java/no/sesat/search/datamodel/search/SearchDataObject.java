@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 package no.sesat.search.datamodel.search;
 
 import no.sesat.search.datamodel.access.AccessAllow;
+import no.sesat.search.datamodel.access.ControlLevel;
 import static no.sesat.search.datamodel.access.ControlLevel.*;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.query.QueryDataObject;
@@ -30,8 +31,7 @@ import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 
-/** Contains Search Command and Result information.
- *
+/** Contains Search Command's manipulated Query and eventual Results information.
  *
  * @version <tt>$Id$</tt>
  */
@@ -42,32 +42,32 @@ public interface SearchDataObject {
 
     void setConfiguration(SearchConfiguration configuration);
 
-    /**
+    /** The command's list of results.
      *
      * @return
      */
     ResultList<ResultItem> getResults();
 
-    /**
+    /** Set the command's list of results.
      *
      * @param results
      */
-    @AccessAllow({})
+    @AccessAllow({ControlLevel.SEARCH_COMMAND_EXECUTION})
     void setResults(ResultList<ResultItem> results);
 
     // QueryDataObject ------------------------------------------------------------
 
-    /**
+    /** The command's query. The command may have altered (in a manner noticalbe to the user) the query.
      *
      * @return
      */
     QueryDataObject getQuery();
 
-    /**
+    /** Set the command's query.
      *
      * @param query
      */
-    @AccessAllow({})
+    @AccessAllow({ControlLevel.SEARCH_COMMAND_EXECUTION})
     void setQuery(QueryDataObject query);
 
 

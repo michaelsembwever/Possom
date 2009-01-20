@@ -29,8 +29,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 import org.apache.log4j.Level;
 
 import no.sesat.Interpreter;
@@ -90,6 +91,7 @@ public final class Site implements Serializable {
     private static final String CORE_CONF_FILE = "core.properties";
     private static final Map<String,Site> INSTANCES = new HashMap<String,Site>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    private static final Map<Locale,String> LOCALE_DISPLAY_NAMES = new ConcurrentHashMap<Locale, String>();
 
     private static volatile boolean constructingDefault = false;
 
@@ -115,22 +117,15 @@ public final class Site implements Serializable {
     */
     private final Site parent;
 
-    private transient final SiteContext siteContext;
+    private transient SiteContext siteContext;
 
-    /** No-argument constructor for deserialization. */
     private Site() {
         siteName = null;
         cxtName = null;
         locale = Locale.getDefault();
         uniqueName = null;
         parent = null;
-
-        final Site thisSite = this;
-        siteContext = new SiteContext() {
-            public Site getSite() {
-                return thisSite;
-            }
-        };
+        init();
     }
 
     /** Creates a new instance of Site.
@@ -152,12 +147,7 @@ public final class Site implements Serializable {
             locale = theLocale;
             uniqueName = getUniqueName(siteName, locale);
 
-            final Site thisSite = this;
-            siteContext = new SiteContext() {
-                public Site getSite() {
-                    return thisSite;
-                }
-            };
+            init();
 
             final String parentSiteName;
             if(null != cxt){
@@ -203,6 +193,20 @@ public final class Site implements Serializable {
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
         }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        init();
+    }
+
+    private void init() {
+        final Site thisSite = this;
+        siteContext = new SiteContext() {
+            public Site getSite() {
+                return thisSite;
+            }
+        };
     }
 
     /**
@@ -377,7 +381,13 @@ public final class Site implements Serializable {
      */
     public static String getUniqueName(final String siteName, final Locale locale) {
 
-        return siteName + '[' + locale.getDisplayName() + ']';
+        String localDisplayName = LOCALE_DISPLAY_NAMES.get(locale);
+        if(null == localDisplayName){
+            localDisplayName = locale.getDisplayName();
+            LOCALE_DISPLAY_NAMES.put(locale, localDisplayName);
+        }
+
+        return siteName + '[' + localDisplayName + ']';
     }
 
     private static String ensureTrailingSlash(final String theSiteName) {
@@ -406,6 +416,7 @@ public final class Site implements Serializable {
                 }
                 return res;
             }
+            @Override
             public String describe() {
                 return "List content of INSTANCES in Site.";
             }

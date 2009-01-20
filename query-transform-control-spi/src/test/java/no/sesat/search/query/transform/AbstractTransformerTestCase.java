@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.Query;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.parser.AbstractQueryParserContext;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.parser.ParseException;
 import no.sesat.search.query.parser.QueryParser;
 import no.sesat.search.query.parser.QueryParserImpl;
@@ -116,7 +116,7 @@ abstract class AbstractTransformerTestCase extends SiteTestCase {
             LOG.debug("Construct " + map.get(clause));
             sb.append(map.get(clause));
         }
-        public void visitImpl(final OperationClause clause) {
+        public void visitImpl(final UnaryClause clause) {
             clause.getFirstClause().accept(this);
         }
         public void visitImpl(final AndClause clause) {
@@ -171,7 +171,7 @@ abstract class AbstractTransformerTestCase extends SiteTestCase {
 
             map.put(clause, fullTerm);
         }
-        public void visitImpl(final OperationClause clause) {
+        public void visitImpl(final UnaryClause clause) {
             clause.getFirstClause().accept(this);
         }
         public void visitImpl(final AndClause clause) {

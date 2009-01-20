@@ -1,10 +1,32 @@
 /*
- * @(#)URLJarFile.java	1.11 06/02/27
+ * Not Copyright (2008) Schibsted Søk AS
+ * Not under the terms of the GNU Affero General Public License
  *
- * Copyright 2006 Sun Microsystems, Inc. All rights reserved.
- * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * PATCHED TO ADDRESS http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774
+ *
+ * Copyright 2001-2006 Sun Microsystems, Inc.  All Rights Reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Sun designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Sun in the LICENSE file that accompanied this code.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
+ * CA 95054 USA or visit www.sun.com if you need additional information or
+ * have any questions.
  */
-
 package no.sesat.search.http.protocol.jar;
 
 import java.io.*;
@@ -16,13 +38,14 @@ import java.util.zip.ZipEntry;
 import java.security.CodeSigner;
 import java.security.cert.Certificate;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 import java.security.PrivilegedActionException;
 import sun.net.www.ParseUtil;
-import sun.net.www.protocol.jar.URLJarFileCallBack;
 
 /* URL jar file is a common JarFile subtype used for JarURLConnection */
 public class URLJarFile extends JarFile {
+
     /*
      * Interface to be able to call retrieve() in plugin if
      * this variable is set.
@@ -35,21 +58,18 @@ public class URLJarFile extends JarFile {
     private static int BUF_SIZE = 2048;
 
     private Manifest superMan;
-
     private Attributes superAttr;
-
     private Map superEntries;
 
     static JarFile getJarFile(URL url) throws IOException {
-        return getJarFile(url, null);
+        return getJarFile(url, null, null);
     }
 
-    static JarFile getJarFile(URL url, JarURLConnection parentConnection) throws IOException {
-        if (isFileURL(url)) {
-            return new URLJarFile(url, parentConnection.factory);
-        }
+    static JarFile getJarFile(URL url, URLJarFileCloseController closeController, final JarURLConnection parentConnection) throws IOException {
+        if (isFileURL(url))
+            return new URLJarFile(url, closeController);
         else {
-            return retrieve(url, parentConnection);
+            return retrieve(url, closeController, parentConnection);
         }
     }
 
@@ -82,9 +102,9 @@ public class URLJarFile extends JarFile {
              * 'file:' URLs can be accessible through ftp.
              */
             String host = url.getHost();
-            if (host == null || host.equals("") || host.equals("~") || host.equalsIgnoreCase("localhost")) {
+            if (host == null || host.equals("") || host.equals("~") ||
+                host.equalsIgnoreCase("localhost"))
                 return true;
-            }
         }
         return false;
     }
@@ -92,7 +112,6 @@ public class URLJarFile extends JarFile {
     /*
      * close the jar file.
      */
-    @Override
     protected void finalize() throws IOException {
         close();
     }
@@ -106,21 +125,19 @@ public class URLJarFile extends JarFile {
      *         <code>null</code> if not found
      * @see java.util.zip.ZipEntry
      */
-    @Override
     public ZipEntry getEntry(String name) {
         ZipEntry ze = super.getEntry(name);
         if (ze != null) {
-            if (ze instanceof JarEntry) {
-                return new URLJarFileEntry((JarEntry) ze);
-            }
-            else {
-                throw new InternalError(super.getClass() + " returned unexpected entry type " + ze.getClass());
-            }
+            if (ze instanceof JarEntry)
+                return new URLJarFileEntry((JarEntry)ze);
+            else
+                throw new InternalError(super.getClass() +
+                                        " returned unexpected entry type " +
+                                        ze.getClass());
         }
         return null;
     }
 
-    @Override
     public Manifest getManifest() throws IOException {
 
         if (!isSuperMan()) {
@@ -129,7 +146,7 @@ public class URLJarFile extends JarFile {
 
         Manifest man = new Manifest();
         Attributes attr = man.getMainAttributes();
-        attr.putAll((Map) superAttr.clone());
+        attr.putAll((Map)superAttr.clone());
 
         // now deep copy the manifest entries
         if (superEntries != null) {
@@ -137,7 +154,7 @@ public class URLJarFile extends JarFile {
             Iterator it = superEntries.keySet().iterator();
             while (it.hasNext()) {
                 Object key = it.next();
-                Attributes at = (Attributes) superEntries.get(key);
+                Attributes at = (Attributes)superEntries.get(key);
                 entries.put(key, at.clone());
             }
         }
@@ -146,10 +163,9 @@ public class URLJarFile extends JarFile {
     }
 
     /* If close controller is set the notify the controller about the pending close */
-    @Override
     public void close() throws IOException {
         if (closeController != null) {
-            closeController.close(this);
+                closeController.close(this);
         }
         super.close();
     }
@@ -165,10 +181,8 @@ public class URLJarFile extends JarFile {
             superAttr = superMan.getMainAttributes();
             superEntries = superMan.getEntries();
             return true;
-        }
-        else {
+        } else
             return false;
-        }
     }
 
     /**
@@ -176,25 +190,26 @@ public class URLJarFile extends JarFile {
      * cached JAR file object.
      */
     private static JarFile retrieve(final URL url) throws IOException {
-        return retrieve(url, null);
+        return retrieve(url, null, null);
     }
 
     /**
      * Given a URL, retrieves a JAR file, caches it to disk, and creates a
      * cached JAR file object.
      */
-    private static JarFile retrieve(
-            final URL url,
-            final JarURLConnection parentConnection) throws IOException {
+     private static JarFile retrieve(final URL url, final URLJarFileCloseController closeController, final JarURLConnection parentConnection) throws IOException {
         /*
          * See if interface is set, then call retrieve function of the class
          * that implements URLJarFileCallBack interface (sun.plugin - to
          * handle the cache failure for JARJAR file.)
          */
-        if (callback != null) {
-            return callback.retrieve(url);
+        if (callback != null)
+        {
+            return callback.retrieve(url, closeController);
+        }
 
-        }else {
+        else
+        {
 
             JarFile result = null;
 
@@ -212,39 +227,39 @@ public class URLJarFile extends JarFile {
             final InputStream in = connection.getInputStream();
 
             try {
-                result = (JarFile) AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                    public Object run() throws IOException {
-                        OutputStream out = null;
-                        File tmpFile = null;
-                        try {
-                            tmpFile = File.createTempFile("jar_cache", null);
-                            tmpFile.deleteOnExit();
-                            out  = new FileOutputStream(tmpFile);
-                            int read = 0;
-                            byte[] buf = new byte[BUF_SIZE];
-                            while ((read = in.read(buf)) != -1) {
-                                out.write(buf, 0, read);
-                            }
-                            out.close();
-                            out = null;
-                            return new URLJarFile(tmpFile, null != parentConnection.factory ? parentConnection.factory : null);
-                        } catch (IOException e) {
-                            if (tmpFile != null) {
-                                tmpFile.delete();
-                            }
-                            throw e;
-                        } finally {
-                            if (in != null) {
-                            in.close();
-                            }
-                            if (out != null) {
-                            out.close();
+                result = (JarFile)
+                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                        public Object run() throws IOException {
+                            OutputStream out = null;
+                            File tmpFile = null;
+                            try {
+                                tmpFile = File.createTempFile("jar_cache", null);
+                                tmpFile.deleteOnExit();
+                                out  = new FileOutputStream(tmpFile);
+                                int read = 0;
+                                byte[] buf = new byte[BUF_SIZE];
+                                while ((read = in.read(buf)) != -1) {
+                                    out.write(buf, 0, read);
+                                }
+                                out.close();
+                                out = null;
+                                return new URLJarFile(tmpFile, closeController);
+                            } catch (IOException e) {
+                                if (tmpFile != null) {
+                                    tmpFile.delete();
+                                }
+                                throw e;
+                            } finally {
+                                if (in != null) {
+                                    in.close();
+                                }
+                                if (out != null) {
+                                    out.close();
+                                }
                             }
                         }
-                    }
-		    });
-
-            }catch (PrivilegedActionException pae) {
+                    });
+            } catch (PrivilegedActionException pae) {
                 throw (IOException) pae.getException();
             }
 
@@ -256,42 +271,40 @@ public class URLJarFile extends JarFile {
      * Set the call back interface to call retrive function in sun.plugin
      * package if plugin is running.
      */
-    public static void setCallBack(URLJarFileCallBack cb) {
+    public static void setCallBack(URLJarFileCallBack cb)
+    {
         callback = cb;
     }
+
 
     private class URLJarFileEntry extends JarEntry {
         private JarEntry je;
 
         URLJarFileEntry(JarEntry je) {
             super(je);
-            this.je = je;
+            this.je=je;
         }
 
-        @Override
         public Attributes getAttributes() throws IOException {
             if (URLJarFile.this.isSuperMan()) {
                 Map e = URLJarFile.this.superEntries;
                 if (e != null) {
-                    Attributes a = (Attributes) e.get(getName());
-                    if (a != null) {
-                        return (Attributes) a.clone();
-                    }
+                    Attributes a = (Attributes)e.get(getName());
+                    if (a != null)
+                        return  (Attributes)a.clone();
                 }
             }
             return null;
         }
 
-        @Override
         public java.security.cert.Certificate[] getCertificates() {
             Certificate[] certs = je.getCertificates();
-            return certs == null ? null : (Certificate[]) certs.clone();
+            return certs == null? null: certs.clone();
         }
 
-        @Override
         public CodeSigner[] getCodeSigners() {
             CodeSigner[] csg = je.getCodeSigners();
-            return csg == null ? null : (CodeSigner[]) csg.clone();
+            return csg == null? null: csg.clone();
         }
     }
 

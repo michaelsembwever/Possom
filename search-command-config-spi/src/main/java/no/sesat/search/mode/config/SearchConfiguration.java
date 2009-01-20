@@ -36,6 +36,11 @@ public interface SearchConfiguration extends Serializable {
     public static final String DEFAULT_PAGING_PARAMETER = "offset";
 
     /**
+     * Default value associated with getUserSortParameter()
+     */
+    public static final String DEFAULT_USER_SORT_PARAMETER = "sort";
+
+    /**
      * @param resultField
      */
     void addResultField(String... resultField);
@@ -92,6 +97,16 @@ public interface SearchConfiguration extends Serializable {
      * @return
      */
     String getPagingParameter();
+
+    /** Return the parameter key that any associated PagingNavigationController for sorting
+     * should use to fetch the offset value.
+     * Defaults to "sort".
+     *
+     * Typically used when multiple sorting PagingNavigationControllers are to be configured on the one mode.
+     *
+     * @return the userSortParameter value
+     */
+    public String getUserSortParameter();
 
     /**
      * @return true if the command should always run.

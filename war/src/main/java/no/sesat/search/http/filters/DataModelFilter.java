@@ -393,7 +393,7 @@ public final class DataModelFilter implements Filter {
         if (null != value && null != queryStringValue) {
             try {
                 final String queryStringValueDecoded = URLDecoder.decode(queryStringValue, "UTF-8");
-                if (!queryStringValueDecoded.equals(value)) {
+                if (!queryStringValueDecoded.equals(value) || value.contains("\ufffd")) {// also check for UTF-8 unknown
                     // We don't think the encoding is utf-8 so go for ISO-8859-1
                     value = URLDecoder.decode(queryStringValue, "ISO-8859-1");
                 }

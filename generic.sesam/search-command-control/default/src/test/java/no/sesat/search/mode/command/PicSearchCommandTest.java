@@ -86,8 +86,18 @@ public class PicSearchCommandTest extends AbstractSearchCommandTest {
     @Test
     public void testSiteRestriction() throws Exception{
 
-        executeTestOfQuery("site:aftonbladet.se banan", "banan", "+site:aftonbladet.se");
-        executeTestOfQuery("banan site:aftonbladet.se", "banan", "+site:aftonbladet.se");
+        assertEquals(
+                "Site filter not found",
+                "aftonbladet.se",
+                executeTestOfQuery("site:aftonbladet.se banan", "banan", "+site:aftonbladet.se")
+                .getFilterBuilder().getFilter("site"));
+
+        assertEquals(
+                "Site filter not found",
+                "aftonbladet.se",
+                executeTestOfQuery("banan site:aftonbladet.se", "banan", "+site:aftonbladet.se")
+                .getFilterBuilder().getFilter("site"));
+
     }
 
     /**
@@ -98,7 +108,7 @@ public class PicSearchCommandTest extends AbstractSearchCommandTest {
      * @param wantedQuery   The expected query.
      * @param wantedFilter  The expected filter.
      */
-    private void executeTestOfQuery(
+    private PicSearchCommand executeTestOfQuery(
             final String query,
             final String wantedQuery,
             final String wantedFilter)  throws SiteKeyedFactoryInstantiationException{
@@ -113,5 +123,6 @@ public class PicSearchCommandTest extends AbstractSearchCommandTest {
         final String generatedQuery = cmd.getQueryRepresentation();
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getFilter());
+        return cmd;
     }
 }

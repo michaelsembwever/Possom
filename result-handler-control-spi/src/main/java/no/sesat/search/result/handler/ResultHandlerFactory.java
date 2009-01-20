@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted Søk AS
+ * Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ package no.sesat.search.result.handler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.result.handler.AbstractResultHandlerConfig.Controller;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.config.SiteClassLoaderFactory;

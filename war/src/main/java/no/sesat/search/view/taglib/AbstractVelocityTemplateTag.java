@@ -89,7 +89,15 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
         if(null != datamodel && null != datamodel.getPage()){
             final SearchTab tab = datamodel.getPage().getCurrentTab();
             final ParametersDataObject params = datamodel.getParameters();
-            final StringDataObject layoutDO = null != params ? params.getValue(RunningQueryImpl.PARAM_LAYOUT) : null;
+
+            StringDataObject layoutDO = null;
+            if (params != null) {
+                layoutDO = params.getValue(RunningQueryImpl.PARAM_LAYOUT);
+                if (layoutDO == null) {
+                    layoutDO = params.getValue(RunningQueryImpl.PARAM_LAYOUT_OLD);
+                }
+            }
+
             layout = null != layoutDO && null != tab && null != tab.getLayouts()
                     ? tab.getLayouts().get(layoutDO.getXmlEscaped())
                     : null != tab ? tab.getDefaultLayout() : null;

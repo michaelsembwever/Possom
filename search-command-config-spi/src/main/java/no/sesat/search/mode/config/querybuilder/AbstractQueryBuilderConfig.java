@@ -165,7 +165,6 @@ public abstract class AbstractQueryBuilderConfig
         supportsNot = supported;
     }
 
-    @Override
     public AbstractQueryBuilderConfig readQueryBuilder(final Element element) {
 
         AbstractDocumentFactory.fillBeanProperty(this, null, "notPrefix", ParseType.String, element, "NOT ");

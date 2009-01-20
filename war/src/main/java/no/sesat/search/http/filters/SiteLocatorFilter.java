@@ -30,9 +30,14 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Stack;
 import java.util.UUID;
 import java.text.MessageFormat;
+import java.util.Deque;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -85,7 +90,8 @@ public final class SiteLocatorFilter implements Filter {
 
     private static final String UNKNOWN = "unknown";
 
-    private static final String USER_REQUEST_STACK = "userRequestStack";
+    private static final String USER_REQUEST_QUEUE = "userRequestQueue";
+    private static final String USER_REQUEST_LOCK = "userRequestSemaphore";
     private static final long WAIT_TIME = 5000;
     private static final int REQUEST_QUEUE_SIZE = 5;
 
@@ -131,6 +137,13 @@ public final class SiteLocatorFilter implements Filter {
 
     // Static --------------------------------------------------------
 
+    static String getRequestId(final ServletRequest servletRequest){
+
+        if(null == servletRequest.getAttribute("UNIQUE_ID")){
+            servletRequest.setAttribute("UNIQUE_ID", UUID.randomUUID().toString());
+        }
+        return (String)servletRequest.getAttribute("UNIQUE_ID");
+    }
 
     // Constructors --------------------------------------------------
 
@@ -385,64 +398,114 @@ public final class SiteLocatorFilter implements Filter {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    private static void doChainFilter(final FilterChain chain, final ServletRequest request,
+
+    private static void doChainFilter(
+            final FilterChain chain,
+            final ServletRequest request,
             final ServletResponse response) throws IOException, ServletException {
+
         if (request instanceof HttpServletRequest) {
-            HttpSession session = ((HttpServletRequest) request).getSession();
-
-            Stack<ServletRequest> stack;
-            synchronized (session) {
-                stack = (Stack<ServletRequest>) session.getAttribute(USER_REQUEST_STACK);
-                if (null == stack) {
-                    stack = new Stack<ServletRequest>();
-                    session.setAttribute(USER_REQUEST_STACK, stack);
-                }
-            }
-
-            if (stack.size() > REQUEST_QUEUE_SIZE) {
-                if (response instanceof HttpServletResponse) {
-                    LOG.warn(" -- response 409 (More then " + REQUEST_QUEUE_SIZE + " request in queue)");
-                    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
-                }
-            } else {
-                long start = System.currentTimeMillis();
-                stack.push(request);
-                synchronized (session) {
-                    try {
-                        long timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
-                        while (stack.peek() != request && timeLeft > 0) {
-                            try {
-                                session.wait(timeLeft);
-                                timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
-                            } catch (InterruptedException e) {
-                                LOG.error(e);
-                                timeLeft = -1;
-                            }
-                        }
-                        if (timeLeft >= 0) {
-                            chain.doFilter(request, response);
-                        } else {
-                            LOG.warn(" -- response 409 (Timeout: Waited " + (WAIT_TIME - timeLeft) + " ms. )");
-                            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_CONFLICT);
-                        }
-                    }
-                    finally {
-                        stack.pop();
-                        session.notifyAll();
-                    }
-                }
-            }
+            doChainFilter(chain, (HttpServletRequest)request, (HttpServletResponse)response);
         } else {
             chain.doFilter(request, response);
         }
     }
 
-    static String getRequestId(final ServletRequest servletRequest){
+    private static void doChainFilter(
+            final FilterChain chain,
+            final HttpServletRequest request,
+            final HttpServletResponse response) throws IOException, ServletException {
 
-        if(null == servletRequest.getAttribute("UNIQUE_ID")){
-            servletRequest.setAttribute("UNIQUE_ID", UUID.randomUUID().toString());
+        final HttpSession session = request.getSession();
+
+        // fetch the user's deque
+        final Deque<ServletRequest> deque = getUsersDeque(session);
+
+        // lock to execute
+        final ReentrantLock lock = (ReentrantLock) session.getAttribute(USER_REQUEST_LOCK);
+
+        // deque has a time limit. start counting.
+        long timeLeft = WAIT_TIME;
+
+        try{
+            // attempt to join deque
+            if (deque.offerFirst(request)) {
+                timeLeft = tryLock(request, deque, lock, timeLeft);
+            }
+
+            if(lock.isHeldByCurrentThread()){
+
+                // waiting is over. and we can execute
+                chain.doFilter(request, response);
+
+            }else{
+                // we failed to execute. return 409 response.
+                if (response instanceof HttpServletResponse) {
+
+                    LOG.warn(" -- response 409 " +
+                            (0 < timeLeft
+                            ? "(More then " + REQUEST_QUEUE_SIZE + " requests already in queue)"
+                            : "(Timeout: Waited " + WAIT_TIME + " ms)"));
+
+                    response.sendError(HttpServletResponse.SC_CONFLICT);
+                }
+            }
+        }finally{
+
+            // take out of deque first
+            deque.remove(request);
+
+            // release the lock, waiting up the next request
+            if(lock.isHeldByCurrentThread()){ lock.unlock(); }
         }
-        return (String)servletRequest.getAttribute("UNIQUE_ID");
+    }
+
+    private static Deque<ServletRequest> getUsersDeque(final HttpSession session){
+
+        @SuppressWarnings("unchecked")
+        Deque<ServletRequest> deque = (BlockingDeque<ServletRequest>) session.getAttribute(USER_REQUEST_QUEUE);
+
+        // construct deque if necessary
+        if (null == deque) {
+            // it may be possible for duplicates across threads to be constructed here
+            deque = new LinkedBlockingDeque<ServletRequest>(REQUEST_QUEUE_SIZE);
+            session.setAttribute(USER_REQUEST_QUEUE, deque);
+            session.setAttribute(USER_REQUEST_LOCK, new ReentrantLock());
+        }
+
+        return deque;
+    }
+
+    private static long tryLock(
+            final HttpServletRequest request,
+            final Deque<ServletRequest> deque,
+            final Lock lock,
+            long timeLeft){
+
+        final long start = System.currentTimeMillis();
+
+        try {
+            do{
+                timeLeft = WAIT_TIME - (System.currentTimeMillis() - start);
+
+                // let's sleep. sleeping too long results in 409 response
+                if(0 >= timeLeft || !lock.tryLock(timeLeft, TimeUnit.MILLISECONDS)){
+                    // we timed out or got the lock. waiting is over
+                    break;
+
+                }else if(deque.peek() != request){
+                    // we've acquired the lock but we're not at front of deque
+                    // release the lock and try again
+                    lock.unlock();
+                }
+            }while(deque.peek() != request);
+
+
+        }catch(InterruptedException ie){
+            LOG.error("Failed using user's lock", ie);
+        }
+
+        return timeLeft;
     }
 
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
@@ -453,13 +516,6 @@ public final class SiteLocatorFilter implements Filter {
         final Site site = getSite(request);
 
         if(null != site){
-
-            final DataModel dataModel = getDataModel(request);
-
-            if (null != dataModel && !dataModel.getSite().getSite().equals(site)) {
-                LOG.warn(WARN_FAULTY_BROWSER + dataModel.getBrowser().getUserAgent().getXmlEscaped());
-                // DataModelFilter will correct it
-            }
 
             request.setAttribute(Site.NAME_KEY, site);
             request.setAttribute("startTime", FindResource.START_TIME);

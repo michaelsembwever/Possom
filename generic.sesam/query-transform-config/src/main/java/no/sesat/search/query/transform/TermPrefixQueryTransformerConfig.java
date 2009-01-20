@@ -132,7 +132,7 @@ public final class TermPrefixQueryTransformerConfig extends AbstractQueryTransfo
      * Set the prefix to be used for EmailClauses.
      * @param prefix The prefix to set.
      */
-    public void setEmaillPrefix(final String prefix) {
+    public void setEmailPrefix(final String prefix) {
         this.emailPrefix = prefix;
     }
 

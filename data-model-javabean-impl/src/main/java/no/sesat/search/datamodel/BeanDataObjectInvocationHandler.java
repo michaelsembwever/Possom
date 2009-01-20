@@ -469,15 +469,28 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler, Serializa
         // try invoking one of our own methods. (Works for example on methods declared by the Object class).
 
         Object result = null;
-        try{
-            result = method.invoke(this, args);
 
-        }catch(IllegalAccessException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(IllegalArgumentException iae){
-            LOG.debug(iae.getMessage());
-        }catch(InvocationTargetException ite){
-            LOG.info(ite.getMessage(), ite);
+        // a quick optimisation is to check if there's any method at all with the same name.
+        final Method[] knownMethods = this.getClass().getMethods();
+        boolean hasSameNameMethod = false;
+        for(Method m : knownMethods){
+            if(m.getName().equals(method.getName())){
+                hasSameNameMethod = true;
+                break;
+            }
+        }
+
+        if(hasSameNameMethod){
+            try{
+                result = method.invoke(this, args);
+
+            }catch(IllegalAccessException iae){
+                LOG.info(iae.getMessage(), iae);
+            }catch(IllegalArgumentException iae){
+                LOG.debug(iae.getMessage());
+            }catch(InvocationTargetException ite){
+                LOG.info(ite.getMessage(), ite);
+            }
         }
         return result;
     }

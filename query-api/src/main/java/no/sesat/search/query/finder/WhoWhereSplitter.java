@@ -30,13 +30,13 @@ import java.util.Set;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.QueryContext;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
 
@@ -103,7 +103,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     private boolean validQuery = true;
 
     private final FullnameOrCompanyFinder fullnameOrCompanyFinder = new FullnameOrCompanyFinder();
-    private final Set<OperationClause> invalidatedPlaces = new HashSet<OperationClause>();
+    private final Set<UnaryClause> invalidatedPlaces = new HashSet<UnaryClause>();
 
     // Static --------------------------------------------------------
 
@@ -151,10 +151,10 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
      */
     protected void visitImpl(final LeafClause clause) {
 
-        final List<OperationClause> parents
+        final List<UnaryClause> parents
                 = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
 
-        final List<OperationClause> validGeoParents = new ArrayList<OperationClause>(parents);
+        final List<UnaryClause> validGeoParents = new ArrayList<UnaryClause>(parents);
         validGeoParents.removeAll(invalidatedPlaces);
 
         boolean geo = clause.getKnownPredicates().contains(Categories.GEOLOCAL)
@@ -209,7 +209,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                 who.append(context.getTransformedTerms().get(clause));
 
                 // invalidate any parent geo term since part of it has now been used in the who field
-                for(OperationClause parent : parents){
+                for(UnaryClause parent : parents){
 
                     if(parent.getKnownPredicates().contains(Categories.GEOLOCAL)
                             || parent.getKnownPredicates().contains(Categories.GEOGLOBAL)){
@@ -225,7 +225,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
      *
      * @param clause
      */
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
         if(validQuery){
             clause.getFirstClause().accept(this);
         }
@@ -235,7 +235,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
      *
      * @param clause
      */
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         if(validQuery){
             clause.getFirstClause().accept(this);
@@ -309,14 +309,14 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             }
         }
 
-        protected void visitImpl(final OperationClause clause) {
+        protected void visitImpl(final UnaryClause clause) {
 
             if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname ){
                 clause.getFirstClause().accept(this);
             }
         }
 
-        protected void visitImpl(final DoubleOperatorClause clause) {
+        protected void visitImpl(final BinaryClause clause) {
 
             if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                 clause.getFirstClause().accept(this);
@@ -326,7 +326,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
 
         protected void visitImpl(final DefaultOperatorClause clause) {
 
-            final List<OperationClause> parents
+            final List<UnaryClause> parents
                     = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
 
             final boolean insideFullname = context.getApplications().contains(Application.WHITE)

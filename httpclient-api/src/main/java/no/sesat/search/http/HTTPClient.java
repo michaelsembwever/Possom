@@ -26,12 +26,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -39,7 +41,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.net.JarURLConnection;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -50,8 +53,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import sun.net.www.protocol.jar.URLJarFile;
-import sun.net.www.protocol.jar.URLJarFileCallBack;
+import no.sesat.search.http.protocol.jar.JarURLConnection;
+import no.sesat.search.http.protocol.jar.URLJarFile;
+import no.sesat.search.http.protocol.jar.URLJarFile.URLJarFileCloseController;
+import no.sesat.search.http.protocol.jar.URLJarFileCallBack;
 
 /**
  * Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
@@ -310,7 +315,7 @@ public final class HTTPClient {
         boolean success = false;
         loadUrlConnection(path);
 
-        if (urlConn instanceof HttpURLConnection  || urlConn instanceof JarURLConnection) {
+        if (urlConn instanceof HttpURLConnection  || urlConn instanceof java.net.JarURLConnection) {
             try {
 
                 if (urlConn instanceof HttpURLConnection) {
@@ -477,7 +482,7 @@ public final class HTTPClient {
                 // EndOfHACK
 
                 // HACK Third solution. Use own URLStreamHandler
-                connection = url.openConnection();//new JarURLConnection(url, null);
+                connection = new JarURLConnection(url, null);
                 // EndOfHACK
 
             } else {
@@ -513,7 +518,7 @@ public final class HTTPClient {
             private int BUF_SIZE = 2048;
 
             @SuppressWarnings(value = "unchecked")
-            public JarFile retrieve(final URL url) throws IOException {
+            public JarFile retrieve(final URL url, final URLJarFileCloseController closeController) throws IOException {
 
                 // next to verbose copy from URLJarFile
                 JarFile result = null;
@@ -528,12 +533,14 @@ public final class HTTPClient {
                 final InputStream in = connection.getInputStream();
 
                 try {
-                    result = (JarFile) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+
+                result = (JarFile)
+                    AccessController.doPrivileged(new PrivilegedExceptionAction() {
                         public Object run() throws IOException {
-                            OutputStream     out = null;
+                            OutputStream out = null;
                             File tmpFile = null;
                             try {
-                                tmpFile = File.createTempFile("jar_cache", null);
+                                tmpFile = File.createTempFile("jar_sesat_cache", null);
                                 tmpFile.deleteOnExit();
                                 out  = new FileOutputStream(tmpFile);
                                 int read = 0;
@@ -543,13 +550,18 @@ public final class HTTPClient {
                                 }
                                 out.close();
                                 out = null;
-                                return new URLJarFile(tmpFile);
-
+                                return new URLJarFile(tmpFile, closeController);
                             } catch (IOException e) {
                                 if (tmpFile != null) {
                                     tmpFile.delete();
                                 }
                                 throw e;
+                            } catch(RuntimeException rte){
+                                if (tmpFile != null) {
+                                    tmpFile.delete();
+                                }
+                                LOG.error("failed writing jar_sesat_cache file", rte);
+                                throw rte;
                             } finally {
                                 if (in != null) {
                                     in.close();

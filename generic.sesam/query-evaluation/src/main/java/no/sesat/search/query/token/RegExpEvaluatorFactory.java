@@ -18,7 +18,7 @@ package no.sesat.search.query.token;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.site.config.DocumentLoader;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
@@ -99,76 +99,77 @@ public final class RegExpEvaluatorFactory extends AbstractEvaluatorFactory{
                 ));
         }
 
-        try{
-            EVALUATORS_LOCK.writeLock().lock();
+        if(null == EVALUATORS.get(site)){
 
-            if(null == EVALUATORS.get(site)){
-                // create map entry for this site
-                EVALUATORS.put(site, new HashMap<TokenPredicate,RegExpTokenEvaluator>());
+            try{
+                EVALUATORS_LOCK.writeLock().lock();
+
+                    // create map entry for this site
+                    EVALUATORS.put(site, new HashMap<TokenPredicate,RegExpTokenEvaluator>());
 
 
-                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setValidating(false);
-                final DocumentBuilder builder = factory.newDocumentBuilder();
-                final DocumentLoader loader
-                        = cxt.newDocumentLoader(cxt, REGEXP_EVALUATOR_XMLFILE, builder);
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setValidating(false);
+                    final DocumentBuilder builder = factory.newDocumentBuilder();
+                    final DocumentLoader loader
+                            = cxt.newDocumentLoader(cxt, REGEXP_EVALUATOR_XMLFILE, builder);
 
-                loader.abut();
-                LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
-                final Document doc = loader.getDocument();
+                    loader.abut();
+                    LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
+                    final Document doc = loader.getDocument();
 
-                assert null != doc : "No document loaded for " + site.getName();
+                    assert null != doc : "No document loaded for " + site.getName();
 
-                final Element root = doc.getDocumentElement();
-                if(null != root){
-                    final NodeList evaluators = root.getElementsByTagName("evaluator");
-                    for (int i = 0; i < evaluators.getLength(); ++i) {
+                    final Element root = doc.getDocumentElement();
+                    if(null != root){
+                        final NodeList evaluators = root.getElementsByTagName("evaluator");
+                        for (int i = 0; i < evaluators.getLength(); ++i) {
 
-                        final Element evaluator = (Element) evaluators.item(i);
+                            final Element evaluator = (Element) evaluators.item(i);
 
-                        final String tokenName = evaluator.getAttribute("token");
-                        LOG.info(" ->evaluator@token: " + tokenName);
+                            final String tokenName = evaluator.getAttribute("token");
+                            LOG.info(" ->evaluator@token: " + tokenName);
 
-                        TokenPredicate token;
-                        try{
-                            token = TokenPredicateUtility.getTokenPredicate(tokenName);
+                            TokenPredicate token;
+                            try{
+                                token = TokenPredicateUtility.getTokenPredicate(tokenName);
 
-                        }catch(IllegalArgumentException iae){
-                            LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
-                            token = TokenPredicateUtility.createAnonymousTokenPredicate(
-                                    tokenName);
+                            }catch(IllegalArgumentException iae){
+                                LOG.debug(tokenName + " does not exist. Will create it. Underlying exception was " + iae);
+                                token = TokenPredicateUtility.createAnonymousTokenPredicate(
+                                        tokenName);
+                            }
+
+                            final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
+                            LOG.info(" ->evaluator@query-dependant: " + queryDep);
+
+                            final Collection<Pattern> compiled = new ArrayList<Pattern>();
+
+                            final NodeList patterns = evaluator.getElementsByTagName("pattern");
+                            for (int j = 0; j < patterns.getLength(); ++j) {
+                                final Element pattern = (Element) patterns.item(j);
+
+                                final String expression = pattern.getFirstChild().getNodeValue();
+                                LOG.info(" --->pattern: " + expression);
+
+                                // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
+                                final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
+                                final String suffix = expression.endsWith("$") ? "" : "(\\:|$|\\s)";
+                                // compile pattern
+                                final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
+                                compiled.add(p);
+                            }
+
+                            final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
+                            EVALUATORS.get(site).put(token, regExpTokenEvaluator);
+
                         }
-
-                        final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
-                        LOG.info(" ->evaluator@query-dependant: " + queryDep);
-
-                        final Collection<Pattern> compiled = new ArrayList<Pattern>();
-
-                        final NodeList patterns = evaluator.getElementsByTagName("pattern");
-                        for (int j = 0; j < patterns.getLength(); ++j) {
-                            final Element pattern = (Element) patterns.item(j);
-
-                            final String expression = pattern.getFirstChild().getNodeValue();
-                            LOG.info(" --->pattern: " + expression);
-
-                            // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
-                            final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
-                            final String suffix = expression.endsWith("$") ? "" : "(\\:|$|\\s)";
-                            // compile pattern
-                            final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
-                            compiled.add(p);
-                        }
-
-                        final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-                        EVALUATORS.get(site).put(token, regExpTokenEvaluator);
-
                     }
-                }
-                LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
-            }
+                    LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
 
-        }finally{
-            EVALUATORS_LOCK.writeLock().unlock();
+            }finally{
+                EVALUATORS_LOCK.writeLock().unlock();
+            }
         }
     }
 

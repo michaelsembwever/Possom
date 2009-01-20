@@ -22,6 +22,8 @@
 
 package no.sesat.search.query.token;
 
+import java.util.Collections;
+import java.util.Set;
 import org.nfunk.jep.JEP;
 import org.nfunk.jep.type.Complex;
 
@@ -111,6 +113,10 @@ public final class JepTokenEvaluator implements TokenEvaluator {
 
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return queryDependant;
+    }
+
+    public Set<String> getMatchValues(final TokenPredicate token, final String term) {
+        return Collections.<String>emptySet();
     }
 
     // Y overrides ---------------------------------------------------

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.token.TokenEvaluator;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
@@ -102,16 +102,26 @@ public abstract class AbstractClause implements Clause {
             final String key,
             final T clause,
             final ReferenceMap<String,T> weakCache) {
-        synchronized(weakCache) {
-            T tmp = weakCache.get(key);
-            if(tmp == null) {
-                weakCache.put(key, clause);
-                return clause;
-            }
-            else {
-                return tmp;
+
+        T inUse = weakCache.get(key);
+
+        if(null == inUse){
+            // clause is not in use
+            inUse = weakCache.put(key, clause);
+
+            if(null != inUse){
+                // weakCache.get(key) is only read volatile so it may be there was another clause already there
+                //  and only the write volatile inside weakCache.put(key.calue) sees through this small window.
+
+                // restore original clause that was in use
+                weakCache.put(key, inUse);
+
+            }else{
+                inUse = clause;
             }
         }
+
+        return inUse;
     }
 
     /**
@@ -180,18 +190,6 @@ public abstract class AbstractClause implements Clause {
         return success;
     }
 
-    /** You must use <CODE>AbstractClause(String, Set&lt;Predicate&gt;, Set&lt;Predicate&gt;)</CODE> instead.
-     * This constructor will throw an IllegalArgumentException.
-     **/
-//    protected AbstractClause() {
-//        throw new IllegalArgumentException(ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR);
-//    }
-    /** We need a no-argument constructor for serialization. */
-    protected AbstractClause() {
-        this.term = null;
-        this.knownPredicates = null;
-        this.possiblePredicates = null;
-    }
     /**
      * Create clause with the given term, known and possible predicates.
      * @param term the term (query string) for this clause.
@@ -236,17 +234,28 @@ public abstract class AbstractClause implements Clause {
     }
 
 
-    /** {@inheritDoc}
-     */
     public void accept(final Visitor visitor) {
         visitor.visit(this);
     }
 
-    /** {@inheritDoc}
-     */
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + getTerm() + ']';
+    }
+
+    /** Provide a replicatable hashCode so the same segment inside the ConcurrentHashMap
+     * is used for any accidently duplicate created clauses.
+     * The ConcurrentHashMap is used in this package's implementation of the flyweight pattern.
+     *
+     * It is intended for equals(..) to use instance reference equality, ie Object.equals(..).
+     *
+     * {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return ((getClass().hashCode() * 37) + term.hashCode()) + 17;
     }
 
 }

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.UUID;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.junkyard.JunkYardDataObject;

@@ -16,10 +16,11 @@
  */
 package no.sesat.search.query.finder;
 
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.parser.*;
 
 
@@ -38,7 +39,7 @@ public final class ChildFinder extends AbstractReflectionVisitor {
      * @param child the child clause.
      * @return Does the child clause exist any depth underneath the parent.
      */
-    public synchronized boolean childExists(final OperationClause parent, final Clause child) {
+    public synchronized boolean childExists(final UnaryClause parent, final Clause child) {
 
         found = false;
         this.child = child;
@@ -46,14 +47,14 @@ public final class ChildFinder extends AbstractReflectionVisitor {
         return found;
     }
 
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
         if (!found) { // still looking
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
     }
 
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
         if (!found ) { // still looking
             clause.getFirstClause().accept(this);
         }

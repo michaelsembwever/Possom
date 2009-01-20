@@ -35,9 +35,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.TokenPredicate;
@@ -113,7 +113,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         LOG.trace("visitImpl(" + clause + ')');
 
@@ -130,10 +130,10 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         for (final TokenPredicate p : getPredicates()) {
 
             final Query query = getContext().getQuery();
-            final List<OperationClause> parents
+            final List<UnaryClause> parents
                     = query.getParentFinder().getParents(query.getRootClause(), clause);
 
-            for(OperationClause oc : parents){
+            for(UnaryClause oc : parents){
                 if(oc.getKnownPredicates().contains(p) || oc.getPossiblePredicates().contains(p)){
                     LOG.debug("adding to matchingPredicates " + p);
                     matchingPredicates.add(p);

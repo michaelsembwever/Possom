@@ -86,8 +86,17 @@ public class PropertiesSearchCommandTest extends AbstractSearchCommandTest {
     @Test
     public void testSiteRestriction() throws Exception{
 
-        executeTestOfQuery("site:aftonbladet.se banan");
-        executeTestOfQuery("banan site:aftonbladet.se");
+        assertEquals(
+                "Site filter not found",
+                "aftonbladet.se",
+                executeTestOfQuery("site:aftonbladet.se banan")
+                .getFilterBuilder().getFilter("site"));
+
+        assertEquals(
+                "Site filter not found",
+                "aftonbladet.se",
+                executeTestOfQuery("banan site:aftonbladet.se")
+                .getFilterBuilder().getFilter("site"));
     }
 
     /**
@@ -98,7 +107,7 @@ public class PropertiesSearchCommandTest extends AbstractSearchCommandTest {
      * @param wantedQuery   The expected query.
      * @param wantedFilter  The expected filter.
      */
-    private void executeTestOfQuery(
+    private PropertiesCommand executeTestOfQuery(
             final String query)  throws SiteKeyedFactoryInstantiationException{
 
         final SearchTab fakeTab = new SearchTab(null, "fake-view", "default-mode", "test", null, null, true,
@@ -110,5 +119,6 @@ public class PropertiesSearchCommandTest extends AbstractSearchCommandTest {
         final PropertiesCommand cmd = new PropertiesCommand(cxt);
         final String generatedQuery = cmd.getQueryRepresentation();
         assertEquals("Generated query does not match wanted query", query.toLowerCase(), generatedQuery.trim());
+        return cmd;
     }
 }

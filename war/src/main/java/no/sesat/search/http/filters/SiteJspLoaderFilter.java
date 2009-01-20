@@ -196,18 +196,24 @@ public final class SiteJspLoaderFilter implements Filter {
                 if(!fileExisted){
                     file.createNewFile();
                 }
-                final RandomAccessFile fileAccess = new RandomAccessFile(file, "rw");
-                final FileChannel channel = fileAccess.getChannel();
 
-                try{
-                    // channel.lock() only synchronises file access between programs, but not between threads inside
-                    //  the current JVM. The latter results in the OverlappingFileLockException.
-                    //  At least this is my current understanding of java.nio.channels
-                    //   It may be that no synchronisation or locking is required at all. A beer to whom answers :-)
-                    // So we must provide synchronisation between our own threads,
-                    //  synchronisation against the file's path (using the JVM's String.intern() functionality)
-                    //  should work. (I can't imagine this string be used for any other synchronisation purposes).
-                    synchronized(file.toString().intern()){
+                // channel.lock() only synchronises file access between programs, but not between threads inside
+                //  the current JVM. The latter results in the OverlappingFileLockException.
+                //  At least this is my current understanding of java.nio.channels
+                //   It may be that no synchronisation or locking is required at all. A beer to whom answers :-)
+                // So we must provide synchronisation between our own threads,
+                //  synchronisation against the file's path (using the JVM's String.intern() functionality)
+                //  should work. (I can't imagine this string be used for any other synchronisation purposes).
+                synchronized(file.toString().intern()){
+
+                    RandomAccessFile fileAccess = null;
+                    FileChannel channel = null;
+
+                    try{
+
+                        fileAccess = new RandomAccessFile(file, "rws");
+                        channel = fileAccess.getChannel();
+
                         channel.lock();
 
                         if(fileExisted){
@@ -222,15 +228,14 @@ public final class SiteJspLoaderFilter implements Filter {
                         if(needsUpdating){
                             // download file from skin
                             channel.write(ByteBuffer.wrap(golden), 0);
-                            channel.force(true);
                             file.deleteOnExit();
-
                         }
-                    }
-                }finally{
-                    channel.close();
-                    LOG.debug("resource created as " + config.getServletContext().getResource(jsp));
+                    }finally{
+                        if(null != channel){ channel.close(); }
+                        if(null != fileAccess){ fileAccess.close(); }
 
+                        LOG.debug("resource created as " + config.getServletContext().getResource(jsp));
+                    }
                 }
 
             }catch (IOException ex) {

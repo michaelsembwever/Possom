@@ -17,8 +17,10 @@
 
 package no.sesat.search.mode.command.querybuilder;
 
+import no.sesat.search.mode.config.SearchConfiguration;
 import no.sesat.search.mode.config.querybuilder.InfixQueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
+import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.XorClause;
 
@@ -39,7 +41,7 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
             "",
             "AND",
             "",
-            "NOT ",
+            "-",
             true,
             false,
             false);
@@ -49,31 +51,79 @@ public class SesamSyntaxQueryBuilder extends InfixQueryBuilder{
 
     // Attributes ----------------------------------------------------
 
+    private final SearchConfiguration searchConf;
 
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
-    public SesamSyntaxQueryBuilder(final Context cxt) {
+    public SesamSyntaxQueryBuilder(final Context cxt, final SearchConfiguration searchConf) {
+
         super(cxt, SESAM_SYNTAX_CONFIG);
+        this.searchConf = searchConf;
     }
 
     // AbstractReflectionVisitor implementation ----------------------------------------------
 
     private boolean insideOr = false;
 
+    /** Avoids writting out fields to terms that
+     * do not come from the original query,  are not possible for the user to use.
+     *
+     * {@inheritDoc}
+     * @param clause {@inheritDoc}
+     */
+    @Override
+    protected void visitImpl(LeafClause clause) {
+
+        if(!isEmptyLeaf(clause)){
+
+            String transformedClause = getEscapedTransformedTerm(clause);
+
+            if(null == clause.getField() && transformedClause.contains(":") && !transformedClause.contains("\\:")){
+
+                final String field = transformedClause.substring(0,transformedClause.indexOf(':'));
+
+                if(!searchConf.getFieldFilterMap().containsValue(field)){
+
+                    // query transformation has prepended the term with fields that are meaningless to the user.
+                    transformedClause = transformedClause.replace(field + ':', "");
+                }
+            }
+
+            appendToQueryRepresentation(transformedClause);
+        }
+    }
+
+    /** Overridden to detect and prevent writing out multiple orGroupOpen and orGroupClose ie ()'s
+     * {@inheritDoc}
+     * @param clause {@inheritDoc}
+     */
     @Override
     protected void visitImpl(final OrClause clause) {
 
-        boolean wasInside = insideOr;
-        if (!insideOr) {
-            appendToQueryRepresentation('(');
-        }
-        insideOr = true;
-        super.visitImpl(clause);
-        insideOr = wasInside;
-        if (!insideOr) {
-            appendToQueryRepresentation(')');
+        if (!isEmptyLeaf(clause)) {
+
+            boolean wasInside = insideOr;
+
+            final boolean unary = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
+            if(!insideOr && getConfig().getOrGrouped() && !unary){
+                appendToQueryRepresentation(getConfig().getOrGroupOpen());
+            }
+
+            insideOr = true;
+            clause.getFirstClause().accept(this);
+            if(!isNextLeafInsideNotClause(clause.getSecondClause()) && !unary){
+                appendToQueryRepresentation(' ' + getConfig().getDefaultInfix() + ' ');
+            }
+            clause.getSecondClause().accept(this);
+            insideOr = wasInside;
+
+            if(!insideOr && getConfig().getOrGrouped() && !unary){
+                appendToQueryRepresentation(getConfig().getOrGroupClose());
+            }
+
         }
     }
 

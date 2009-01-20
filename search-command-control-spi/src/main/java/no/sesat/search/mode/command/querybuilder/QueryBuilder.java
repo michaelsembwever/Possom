@@ -19,7 +19,7 @@ package no.sesat.search.mode.command.querybuilder;
 import java.util.Collection;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.transform.QueryTransformer;
 
 /** QueryBuilder provides a string representation of a Query Tree against of map of "transformed terms".
@@ -40,11 +40,14 @@ public interface QueryBuilder extends Visitor {
          * @return unescaped transformed term
          */
         String getTransformedTerm(Clause clause);
-        /** The collection of words that have special meaning/function within the query string
+        /** The collection of words that have special meaning/function within the query string.
+         *
+         * Each is treated as a regular expressions to match complex words if neccessary.
          *
          * @return collection of reserved words
          */
         Collection<String> getReservedWords();
+        /** the SearchConfiguration for the command we are currently running for. **/
     }
 
     /** The Query String built from the Query's transformed clauses.

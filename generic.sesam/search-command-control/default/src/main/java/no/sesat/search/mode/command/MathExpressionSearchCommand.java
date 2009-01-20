@@ -17,6 +17,8 @@
  */
 package no.sesat.search.mode.command;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import no.sesat.search.query.token.JepTokenEvaluator;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
@@ -24,6 +26,7 @@ import org.apache.log4j.Logger;
 import java.text.NumberFormat;
 import no.sesat.search.query.token.Categories;
 import no.sesat.search.query.token.EvaluationException;
+import no.sesat.search.query.token.TokenEvaluator;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import org.nfunk.jep.type.Complex;
@@ -36,7 +39,7 @@ import org.nfunk.jep.type.Complex;
 public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(MathExpressionSearchCommand.class);
-    private static final String ERR_INTERRUPTED = "Interrupted";
+    private static final String ERR_INTERRUPTED = "Interrupted -- ";
     private static final double ZERO_THREASHOLD = 0.00000001D;
 
     /** Default Constructor.
@@ -56,9 +59,9 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
         final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
         try{
-            final Complex result = ((JepTokenEvaluator)getEngine()
-                    .getEvaluator(Categories.MATH))
-                    .getComplex(getQuery().getQueryString());
+            final TokenEvaluator evaluator = getEngine().getEvaluator(Categories.MATH);
+            final Method getComplex = evaluator.getClass().getMethod("getComplex", String.class);
+            final Complex result = (Complex) getComplex.invoke(evaluator, getQuery().getQueryString());
 
             if (result != null) {
                 final StringBuilder s = new StringBuilder(f.format(result.re()));
@@ -85,7 +88,13 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
             }
 
         }catch(EvaluationException ie){
-            LOG.warn(ERR_INTERRUPTED);
+            LOG.warn(ERR_INTERRUPTED + ie);
+        }catch(NoSuchMethodException nsme){
+            LOG.warn(ERR_INTERRUPTED + nsme);
+        }catch(IllegalAccessException iae){
+            LOG.warn(ERR_INTERRUPTED + iae);
+        }catch(InvocationTargetException ite){
+            LOG.warn(ERR_INTERRUPTED + ite);
         }
         return searchResult;
     }

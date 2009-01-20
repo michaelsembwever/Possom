@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -16,12 +16,13 @@
  */
 package no.sesat.search.query.finder;
 
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import java.io.Serializable;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.parser.*;
 
 
@@ -35,7 +36,7 @@ public final class FirstLeafFinder extends AbstractReflectionVisitor implements 
         return firstLeaf;
     }
 
-    protected void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final UnaryClause clause) {
         if (searching) { // still looking
             clause.getFirstClause().accept(this);
         }

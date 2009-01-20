@@ -17,7 +17,7 @@
 package no.sesat.search.query.token;
 
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 
@@ -25,7 +25,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -109,12 +112,21 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
     private VeryFastTokenEvaluator getFastEvaluator() throws EvaluationException {
 
         try {
-            fastEvaluatorCreator.get();
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                // default timeout is one second. TODO make configuration.
+                fastEvaluatorCreator.get(1000, TimeUnit.MILLISECONDS);
+            }else{
+                fastEvaluatorCreator.get();
+            }
 
         } catch (InterruptedException ex) {
             LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
             throw new EvaluationException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
         } catch (ExecutionException ex) {
+            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
+            throw new EvaluationException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
+        } catch (TimeoutException ex) {
             LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
             throw new EvaluationException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
         }

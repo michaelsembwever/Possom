@@ -20,6 +20,7 @@ package no.sesat.search.query.parser;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.site.SiteTestCase;
 import no.sesat.search.query.token.TokenEvaluationEngineTestContext;
 import no.sesat.search.query.AndNotClause;

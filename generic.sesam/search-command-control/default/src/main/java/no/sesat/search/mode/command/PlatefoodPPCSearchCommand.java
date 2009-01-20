@@ -29,11 +29,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import no.sesat.search.mode.config.PlatefoodPpcCommandConfig;
-import no.sesat.search.query.token.Categories;
-import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
-import no.sesat.search.result.PlatefoodSearchResult;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.SiteConfiguration;
@@ -43,7 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/**
+/** This is largely an example class.
  *
  *
  * @version $Id$
@@ -51,9 +48,6 @@ import org.xml.sax.SAXException;
 public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PlatefoodPPCSearchCommand.class);
-
-    /** Constant that is used as partnerId on the gift page. */
-    private static final String GIFT_PAGE_ID = "wipgift";
 
     /** RegEx pattern used to get a base url from a url. */
     private static final Pattern BASE_URL_PATTERN = Pattern.compile("(https?://)?(.*)");
@@ -82,22 +76,10 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
                         try {
                             url.append("&channelName=" + partnerId);
 
-                            if (partnerId != null && partnerId.equals(GIFT_PAGE_ID)) {
-                                url.append("&searchTerm=");
-                                url.append(URLEncoder.encode("send gave", ppcConfig.getEncoding()));
-
-                                // Finding location, using that as an extra parameter
-                                final String location = PlatefoodPPCSearchCommand.this.getParameter("ywpoststed");
-                                if (location != null && location.length() > 0) {
-                                    url.append("&locationTerm=");
-                                    url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
-                                }
-                            } else {
-                                url.append("&searchTerm=");
-                                url.append(URLEncoder.encode(
-                                        PlatefoodPPCSearchCommand.this.getTransformedQuery(),
-                                        ppcConfig.getEncoding()));
-                            }
+                            url.append("&searchTerm=");
+                            url.append(URLEncoder.encode(
+                                    PlatefoodPPCSearchCommand.this.getTransformedQuery(),
+                                    ppcConfig.getEncoding()));
 
                             url.append("&page=1");
                         }  catch (UnsupportedEncodingException e) {
@@ -107,6 +89,7 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
                         return url.toString();
                     }
             });
+
         final PlatefoodPpcCommandConfig conf = (PlatefoodPpcCommandConfig)cxt.getSearchConfiguration();
 
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
@@ -129,14 +112,9 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         final PlatefoodPpcCommandConfig ppcConfig
             = (PlatefoodPpcCommandConfig) context.getSearchConfiguration();
 
-        // TODO smelling of non-sesat business logic here. AND presentation logic. move out.
-        top = rq.getEngine().evaluateQuery(Categories.LOAN_TRIGGER, rq.getQuery());
-        top |= rq.getEngine().evaluateQuery(Categories.SUDOKU_TRIGGER, rq.getQuery());
-        top &= rq.getEngine().evaluateQuery(TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
-
         try {
             final Document doc = getXmlRestful().getXmlResult();
-            final PlatefoodSearchResult<ResultItem> searchResult = new PlatefoodSearchResult<ResultItem>(top);
+            final BasicResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
             if (doc != null) {
                 final Element elem = doc.getDocumentElement();
@@ -182,8 +160,8 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         final NodeList imageUrl = ppcListing.getElementsByTagName("chan:line1");
         final NodeList phone = ppcListing.getElementsByTagName("chan:phoneNumber");
 
-        final String place = ppcListing.getParentNode().getParentNode()
-                .getAttributes().getNamedItem("id").getNodeValue();
+        final String place
+                = ppcListing.getParentNode().getParentNode().getAttributes().getNamedItem("id").getNodeValue();
 
         LOG.debug("T3X: "+ place);
 
@@ -193,17 +171,6 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
         if (desc1.getLength() > 0) {
             String sDesc1 = desc1.item(0).getFirstChild().getNodeValue();
             if (sDesc1.matches(".*@\\..*")) {
-                String media[] = sDesc1.split("@\\.");
-                if (media.length >= 2 ) {
-                    if(media[1].trim().length()>0) {
-                        item.addField("imageUrl", "http://sesam.se/export/t3/"+media[1].trim());
-                    }
-                    if (media.length >= 4) {
-                        if(media[2].trim().length()>0) {
-                            item.addField("flashUrl", "http://sesam.se/export/t3/"+media[2].trim());
-                        }
-                    }
-                }
                 item.addField("description1", sDesc1.replaceAll("@\\..*@\\.", ""));
             } else {
                 item.addField("description1", sDesc1);
@@ -253,6 +220,11 @@ public class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
             LOG.warn("Failed to get base url from gift url: " + url);
             return null;
         }
+    }
+
+    @Override
+    protected String getParameter(String paramName) {
+        return super.getParameter(paramName);
     }
 
 }

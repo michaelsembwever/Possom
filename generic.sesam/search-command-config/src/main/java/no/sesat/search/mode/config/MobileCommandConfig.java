@@ -23,9 +23,7 @@
 
 package no.sesat.search.mode.config;
 
-import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -35,11 +33,11 @@ import org.w3c.dom.Element;
 @Controller("MobileSearchCommand")
 public final class MobileCommandConfig extends CommandConfig {
 
-    private String source;
-    private String personalizationGroup;
-    private String telenorPersonalizationGroup;
-    private String sortBy;
-    private String filter;
+    private String source = "";
+    private String personalizationGroup = "";
+    private String telenorPersonalizationGroup = "";
+    private String sortBy = "";
+    private String filter = "";
 
     /**
      *

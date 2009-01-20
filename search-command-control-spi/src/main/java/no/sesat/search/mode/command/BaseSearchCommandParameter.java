@@ -22,7 +22,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.mode.config.SearchConfiguration;
 import org.apache.log4j.Logger;
 
 /** A base implementation that provides looking up the value in order from a number of sources.
@@ -37,6 +39,8 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 class BaseSearchCommandParameter implements SearchCommandParameter {
+
+    // Static --------------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(BaseSearchCommandParameter.class);
 
@@ -61,6 +65,8 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
         CUSTOM
     };
 
+    // Attributes ----------------------------------------------------
+
     private final String name;
 
     private final Origin[] lookupOrder;
@@ -68,6 +74,12 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
     private transient Origin origin = null;
 
     private final SearchCommand.Context context;
+
+    private final SearchConfiguration searchConfiguration;
+
+    private final DataModel datamodel;
+
+    // Constructors --------------------------------------------------
 
     BaseSearchCommandParameter(
             final SearchCommand.Context context,
@@ -77,7 +89,11 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
         this.context = context;
         this.name = name;
         this.lookupOrder = Arrays.copyOf(lookupOrder, lookupOrder.length);
+        this.searchConfiguration = context.getSearchConfiguration();
+        this.datamodel = context.getDataModel();
     }
+
+    // Public --------------------------------------------------------
 
     public String getName() {
         return name;
@@ -101,7 +117,7 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
                 switch (origin) {
 
                     case REQUEST:
-                        final StringDataObject sdo = context.getDataModel().getParameters().getValue(name);
+                        final StringDataObject sdo = datamodel.getParameters().getValue(name);
 
                         if (null != sdo) {
                             result = sdo.getString();
@@ -109,14 +125,14 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
                         break;
 
                     case USER:
-                        result = context.getDataModel().getUser().getUser().getUserPropertiesMap().get(name);
+                        result = datamodel.getUser().getUser().getUserPropertiesMap().get(name);
                         break;
 
                     case CONFIGURATION:
 
                         try{
                             final PropertyDescriptor[] properties = Introspector.getBeanInfo(
-                                    context.getSearchConfiguration().getClass())
+                                    searchConfiguration.getClass())
                                     .getPropertyDescriptors();
 
                             for (PropertyDescriptor property : properties) {
@@ -125,7 +141,7 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
                                     if (null != property.getReadMethod()) {
 
                                         result = (String) property.getReadMethod().invoke(
-                                                context.getSearchConfiguration(),
+                                                searchConfiguration,
                                                 new Object[0]);
 
                                         break;
@@ -155,6 +171,10 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
 
     }
 
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
     /** The origin the current value was found from.
      *
      * @return the origin the current value was found from.
@@ -175,4 +195,5 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
         return context;
     }
 
+    // Private -------------------------------------------------------
 }

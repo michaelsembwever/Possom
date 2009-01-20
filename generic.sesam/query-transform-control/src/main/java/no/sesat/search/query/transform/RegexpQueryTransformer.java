@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import org.apache.log4j.Logger;
 
 /**
@@ -80,7 +80,7 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final DoubleOperatorClause clause) {
+    public void visitImpl(final BinaryClause clause) {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
@@ -89,7 +89,7 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final OperationClause clause) {
+    public void visitImpl(final UnaryClause clause) {
         clause.getFirstClause().accept(this);
     }
 

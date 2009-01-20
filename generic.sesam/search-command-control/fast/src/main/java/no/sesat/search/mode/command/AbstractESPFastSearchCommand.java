@@ -35,14 +35,7 @@ import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import java.util.Collection;
 import no.sesat.search.mode.config.EspFastCommandConfig;
-import no.sesat.search.query.AndClause;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OrClause;
-import no.sesat.search.query.UrlClause;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.BasicResultItem;
@@ -53,11 +46,14 @@ import no.sesat.search.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.log4j.Level;
 
 /**
  * Base class for commands querying a FAST EPS Server.
@@ -93,6 +89,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         AND("and"),
         OR("or"),
         ANDNOT("andnot"),
+        NOT("not"),
         MAX("max"),
         MIN("min"),
         ANY("any"),
@@ -110,7 +107,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         ENDS_WITH("ends-with"),
         EQUALS("equals"),
         COUNT("count"),
-        STRING("string");
+        STRING("string"),
+        ESCAPE_REGEXP(".*[<>=].*");
 
         private String word;
 
@@ -122,6 +120,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             return word;
         }
     }
+
+    private static transient Collection<String> RESERVED_WORDS;
 
     // Constructors --------------------------------------------------
 
@@ -195,6 +195,11 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             DUMP.info(query);
 
+            // when the root logger is set to DEBUG do not limit connection times
+            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                query.setParameter(BaseParameter.TIMEOUT, getSearchConfiguration().getTimeout());
+            }
+
             result = searchView.search(query);
 
             return createSearchResult(result);
@@ -202,16 +207,18 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + ' ' + ex.getCause());
             return new BasicResultList<ResultItem>();
-
+        } catch (SocketTimeoutException ex) {
+            LOG.warn(this +" timed out. (Timeout=" + cfg.getTimeout() + "ms)");
+            return new BasicResultList<ResultItem>();
         } catch (IOException ex) {
-            LOG.error(ex.getMessage(), ex);
             throw new SearchCommandException(ex);
         }
     }
 
-    // Z implementation ----------------------------------------------
-
-    // Y overrides ---------------------------------------------------
+    @Override
+    public EspFastCommandConfig getSearchConfiguration() {
+        return (EspFastCommandConfig) super.getSearchConfiguration();
+    }
 
     // Package protected ---------------------------------------------
 
@@ -315,11 +322,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     @Override
     protected Collection<String> getReservedWords() {
 
-        final Collection<String> words = new ArrayList<String>(super.getReservedWords());
-        for (ReservedWord word : ReservedWord.values()) {
-            words.add(word.getWord());
+        if(null == RESERVED_WORDS){
+            final Collection<String> words = new ArrayList<String>(super.getReservedWords());
+            for (ReservedWord word : ReservedWord.values()) {
+                words.add(word.getWord());
+            }
+            RESERVED_WORDS = Collections.unmodifiableCollection(words);
         }
-        return words;
+        return RESERVED_WORDS;
     }
 
     /** In addition to super.escape() also replaces all ? with whitespace.

@@ -93,6 +93,11 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
      */
     private final Map<String,String> fieldFilters = new HashMap<String,String>();
 
+    /**
+     * Name of the sort parameter used in the url.
+     */
+    private String userSortParameter = "sort";
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -150,8 +155,7 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
     }
 
     /**
-     * @param resultFields
-     *            Result fields to add.
+     * @param resultFieldArray Result fields to add.
      */
     public final void addResultFields(final String[] resultFieldArray) {
         for (String resultField : resultFieldArray) {
@@ -242,17 +246,6 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
     public void setAsynchronous(final boolean asynchronous){
         this.asynchronous = asynchronous;
     }
-
-    /**
-     * @param fieldAndFilter
-     *            String containing name of field and filter seperated with ' AS '.
-     */
-    private void setFieldFilter(final String fieldAndFilter) {
-        String parsed[] = fieldAndFilter.trim().split(" AS ");
-        String field = parsed[0].trim();
-        fieldFilters.put(field, (parsed.length > 1) ? parsed[1].trim() : field);
-    }
-
     /**
      * Syntax: field-filters="size, nyhetskilde AS newssource"
      *
@@ -314,11 +307,6 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
         this.pagingParameter = pagingParameter;
     }
 
-
-
-    // Protected --------------------------------------------------------
-
-
     public SearchConfiguration readSearchConfiguration(final Element element, final SearchConfiguration inherit, Context context) {
 
         if(null!=inherit){
@@ -339,7 +327,42 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
         return this;
     }
 
-    /** Currently only used by the fast subclasses but hopefully open to all one day. **/
+    public String toStringLong() {
+        try {
+            return this.getClass().getSimpleName() + " " + BeanUtils.describe(this).toString();
+        } catch (Exception e) {
+            LOG.warn("Failed to do BeanUtils.describe", e);
+        }
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " Id: " + getId();
+    }
+
+    /**
+     * Getter for the userSortParameter property.
+     * @return the userSortParameter value
+     */
+    public String getUserSortParameter() {
+        return userSortParameter;
+    }
+
+    /**
+     * Setter for the userSortParameter property.
+     * @param userSortParameter the new userSortParameter value
+     */
+    public void setUserSortParameter(final String userSortParameter) {
+        this.userSortParameter = userSortParameter;
+    }
+
+    // Protected --------------------------------------------------------
+
+    /** Currently only used by the fast subclasses but hopefully open to all one day. *
+     * @param navsE w3c dom elements to deserialise
+     * @return collection of Navigators
+     */
     protected final Collection<Navigator> parseNavigators(final Element navsE) {
 
             final Collection<Navigator> navigators = new ArrayList<Navigator>();
@@ -377,14 +400,16 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
             return navigators;
         }
 
-    @Override
-    public String toString() {
-        try {
-            return this.getClass().getSimpleName() + " " + BeanUtils.describe(this).toString();
-        } catch (Exception e) {
-            LOG.warn("Failed to do BeanUtils.describe", e);
-        }
-        return this.getClass().getSimpleName();
+    // Private --------------------------------------------------------
+
+    /**
+     * @param fieldAndFilter
+     *            String containing name of field and filter seperated with ' AS '.
+     */
+    private void setFieldFilter(final String fieldAndFilter) {
+        String parsed[] = fieldAndFilter.trim().split(" AS ");
+        String field = parsed[0].trim();
+        fieldFilters.put(field, (parsed.length > 1) ? parsed[1].trim() : field);
     }
 
     // Inner classes -------------------------------------------------

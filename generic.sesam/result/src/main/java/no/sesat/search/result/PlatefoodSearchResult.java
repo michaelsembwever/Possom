@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,11 +23,8 @@
 
 package no.sesat.search.result;
 
-import no.sesat.search.result.*;
-
 /**
- *
- * @param T
+ * @deprecated will be removed soon. has no purpose. properties like "top" should be put in as fields.
  *
  * @version $Id$
  */

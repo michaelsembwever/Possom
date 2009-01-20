@@ -86,13 +86,12 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
         final Layout layout = findLayout(datamodel);
 
-        final String front = null != layout.getFront() && 0 < layout.getFront().length()
-                ? layout.getFront()
-                : null;
+        final String front = (layout!=null && layout.getFront()!=null && layout.getFront().length()>0)?layout.getFront():null;
+        final String main = (layout!=null && layout.getMain()!=null && layout.getMain().length()>0)?layout.getMain():null;
 
         String include = datamodel.getQuery() != null && datamodel.getQuery().getQuery().isBlank() && null != front
                 ? front
-                : layout.getMain();
+                : main;
 
         try{
             if(null != include){

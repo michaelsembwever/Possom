@@ -18,9 +18,6 @@ package no.sesat.search.query.token;
 
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.sesat.search.query.token.AbstractEvaluatorFactory.Context;
+import org.apache.log4j.Level;
 import static no.sesat.search.query.parser.AbstractQueryParser.SKIP_REGEX;
 import static no.sesat.search.query.parser.AbstractQueryParser.OPERATOR_REGEX;
 import org.apache.log4j.Logger;
@@ -61,6 +59,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
     private static final int REFRESH_PERIOD = 60;
     // smaller than usual as each entry can contain up to 600 values!
     private static final int CACHE_QUERY_CAPACITY = 100;
+    private static final int INITIAL_ROWS_TO_FETCH = 25;
 
     private static final String ERR_QUERY_FAILED = "Querying Solr failed on ";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
@@ -79,19 +78,22 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
 
     // Constructors --------------------------------------------------
 
-    /**
+    /** Only possible constructor.
      *
-     * @param cxt
-     * @param factory
-     * @throws EvaluationException
+     * @param cxt the required context
+     * @param factory the factory constructing this.
+     * @throws EvaluationException if the evaluation, request to the solr index, fails.
      */
-    public SolrTokenEvaluator(final Context cxt, final SolrEvaluatorFactory factory) throws EvaluationException{
+    SolrTokenEvaluator(final Context cxt, final SolrEvaluatorFactory factory) throws EvaluationException{
 
         context = cxt;
         this.factory = factory;
 
-        // Remove whitespace (except space itself) and operator characters.
-        analysisResult = query(cleanString(cxt.getQueryString()));
+        // the responsible() method checks if we are responsible for any tokenPredicate at all.
+        // if we are not then the restful request in query(..) is a waste of time and resource.
+        analysisResult = factory.responsible()
+                ? query(cleanString(context.getQueryString()))
+                : Collections.<String, List<TokenMatch>>emptyMap();
     }
 
     // Public --------------------------------------------------------
@@ -100,36 +102,40 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
-        final String[] listnames = factory.getListNames(token);
 
-        if(null != listnames){
-            for(int i = 0; !evaluation && i < listnames.length; ++i){
+        if(!analysisResult.isEmpty()){
 
-                final String listname = listnames[i];
+            final String[] listnames = factory.getListNames(token);
 
-                if (analysisResult.containsKey(listname)) {
-                    if (term == null) {
-                        evaluation = true;
-                    }  else  {
+            if(null != listnames){
+                for(int i = 0; !evaluation && i < listnames.length; ++i){
 
-                        // HACK since DefaultOperatorClause wraps its children in parenthesis
-                        final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
+                    final String listname = listnames[i];
 
-                        for (TokenMatch occurance : analysisResult.get(listname)) {
+                    if (analysisResult.containsKey(listname)) {
+                        if (term == null) {
+                            evaluation = true;
+                        }  else  {
 
-                            final Matcher m = occurance.getMatcher(hackTerm);
-                            evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+                            // HACK since DefaultOperatorClause wraps its children in parenthesis
+                            final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
 
-                            if (evaluation) {
-                                break;
+                            for (TokenMatch occurance : analysisResult.get(listname)) {
+
+                                final Matcher m = occurance.getMatcher(hackTerm);
+                                evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
+
+                                if (evaluation) {
+                                    break;
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
+            }else{
+                LOG.info(context.getSite() + " does not define lists behind the token predicate " + token);
             }
-        }else{
-            LOG.info(context.getSite() + " does not define lists behind the token predicate " + token);
         }
         return evaluation;
     }
@@ -144,27 +150,35 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
      */
     public Set<String> getMatchValues(final TokenPredicate token, final String term) {
 
-        final Set<String> values = new HashSet<String>();
+        final Set<String> values;
 
-        final String[] listnames = factory.getListNames(token);
-        if(null != listnames){
-            for(int i = 0; i < listnames.length; i++){
-                final String listname = listnames[i];
-                if (analysisResult.containsKey(listname)) {
+        if(!analysisResult.isEmpty()){
 
-                    // HACK since DefaultOperatorClause wraps its children in parenthesis
-                    final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
+            values = new HashSet<String>();
 
-                    for (TokenMatch occurance : analysisResult.get(listname)) {
+            final String[] listnames = factory.getListNames(token);
+            if(null != listnames){
+                for(int i = 0; i < listnames.length; i++){
+                    final String listname = listnames[i];
 
-                        final Matcher m = occurance.getMatcher(hackTerm);
+                    if (analysisResult.containsKey(listname)) {
 
-                        if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
-                            values.add(occurance.getValue());
+                        // HACK since DefaultOperatorClause wraps its children in parenthesis
+                        final String hackTerm = cleanString(term.replaceAll("\\(|\\)",""));
+
+                        for (TokenMatch occurance : analysisResult.get(listname)) {
+
+                            final Matcher m = occurance.getMatcher(hackTerm);
+
+                            if (m.find() && m.start() == 0 && m.end() == hackTerm.length()) {
+                                values.add(occurance.getValue());
+                            }
                         }
                     }
                 }
             }
+        }else{
+            values = Collections.<String>emptySet();
         }
         return Collections.unmodifiableSet(values);
     }
@@ -212,39 +226,61 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                     // set up query
                     final SolrQuery solrQuery = new SolrQuery()
                             .setQuery("list_entry_shingle:\"" + token + "\"")
-                            .setRows(Integer.MAX_VALUE);
+                            .setRows(INITIAL_ROWS_TO_FETCH);
 
-                    DUMP.info(solrQuery.toString());
-
-                    // query
-                    final QueryResponse response = factory.getSolrServer().query(solrQuery);
-                    final SolrDocumentList docs = response.getResults();
-
-
-                    // iterate through docs
-                    for(SolrDocument doc : docs){
-
-                        final String name = (String) doc.getFieldValue("list_name");
-                        final String exactname = EXACT_PREFIX + name;
-
-                        // remove words made solely of characters that the parser considers whitespace
-                        final String hit = ((String) doc.getFieldValue("list_entry"))
-                                .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
-
-                        final String synonym = (String) doc.getFieldValue("list_entry_synonym");
-
-                        if(factory.usesListName(name, exactname)){
-
-                            addMatch(name, hit, synonym, query, result);
-
-                            if (hit.equalsIgnoreCase(query.trim())) {
-
-                                addMatch(exactname, hit, synonym, query, result);
-                            }
-                        }
+                    // when the root logger is set to DEBUG do not limit connection times
+                    if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+                        // default timeout is half second. TODO make configuration.
+                        solrQuery.setTimeAllowed(500);
                     }
 
-                    result = Collections.unmodifiableMap(result);
+                    // query for hits
+                    QueryResponse response = factory.getSolrServer().query(solrQuery);
+                    final int numberOfHits = (int)response.getResults().getNumFound();
+
+                    boolean more = false;
+                    do {
+                        DUMP.info(solrQuery.toString());
+
+                        final SolrDocumentList docs = response.getResults();
+
+                        // iterate through docs
+                        for(SolrDocument doc : docs){
+
+                            final String name = (String) doc.getFieldValue("list_name");
+                            final String exactname = EXACT_PREFIX + name;
+
+                            // remove words made solely of characters that the parser considers whitespace
+                            final String hit = ((String) doc.getFieldValue("list_entry"))
+                                    .replaceAll("\\b" + SKIP_REGEX + "+\\b", " ");
+
+                            final String synonym = (String) doc.getFieldValue("list_entry_synonym");
+
+                            if(factory.usesListName(name, exactname)){
+
+                                addMatch(name, hit, synonym, query, result);
+
+                                if (hit.equalsIgnoreCase(query.trim())) {
+
+                                    addMatch(exactname, hit, synonym, query, result);
+                                }
+                            }
+                        }
+
+                        int rest = numberOfHits - INITIAL_ROWS_TO_FETCH;
+                        if (!more && rest > 0) {
+                            more = true;
+                            solrQuery.setStart(INITIAL_ROWS_TO_FETCH);
+                            solrQuery.setRows(rest);
+                            // query
+                            response = factory.getSolrServer().query(solrQuery);
+                        }else {
+                            more = false;
+                        }
+                    }while (more);
+
+
+                    result = Collections.<String,List<TokenMatch>>unmodifiableMap(result);
                     CACHE_QUERY.putInCache(query, result);
                     updatedCache = true;
 
@@ -259,7 +295,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
                 }
             }
         } else {
-            result = Collections.emptyMap();
+            result = Collections.<String, List<TokenMatch>>emptyMap();
         }
         return result;
     }
@@ -302,7 +338,7 @@ public final class SolrTokenEvaluator implements TokenEvaluator{
         // Strip out SKIP characters we are not interested in.
         // Also remove any operator characters. (SEARCH-3883 & SEARCH-3967)
 
-        return string
+        return string.toLowerCase()
                 .replaceAll(" ", "xxKEEPWSxx") // Hack to keep spaces. multiple spaces always normalised.
                 .replaceAll(SKIP_REGEX, " ")
                 .replaceAll("xxKEEPWSxx", " ") // Hack to keep spaces.

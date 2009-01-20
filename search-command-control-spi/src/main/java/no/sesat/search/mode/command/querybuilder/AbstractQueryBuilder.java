@@ -17,19 +17,31 @@
 package no.sesat.search.mode.command.querybuilder;
 
 import java.util.Collection;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.Clause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
-import no.sesat.search.query.Query;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 
 /** Abstract QueryBuilder providing basic support for mantaining context and stringBuilder fields (and related methods).
+ *
+ * <br/><br/>
+ *
+ * Any instance will have getQuery(..) called multiple times.
+ * It is therefore paramount that inside this method state fields are reset before the visitor is visited. <br/>
+ * For example a subclass will override getQuery(..) such:
+ * <pre>
+ *       &#x40;Override
+ *       public String getQueryString() {
+ *           // myVariable needs to be reset before every visit.
+ *           myVariable = 0;
+ *           return super.getQueryString();
+ *       }
+ * </pre>
  *
  * @version $Id$
  */
@@ -101,14 +113,18 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
         for (String word : getWordsToEscape()) {
 
             // Case-insensitive check against word.
-            // Term might already be prefixed by the TermPrefixTransformer.
-            if (string.toLowerCase().endsWith(':' + word.toLowerCase()) || string.equalsIgnoreCase(word)) {
+            // Term might already be prefixed by a field.
 
-                final Pattern p = Pattern.compile(
-                        Matcher.quoteReplacement(word),
-                        Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+            final String regexp = "(.*:)?" + word;
+            if (string.toLowerCase().matches(regexp)) {
 
-                return p.matcher(word).replaceAll(context.escape(string));
+                final Pattern p = Pattern.compile(word, Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+
+                final String term = string.contains(":") && !string.contains("\\:")
+                        ? string.substring(string.indexOf(':') + 1)
+                        : string;
+
+                return p.matcher(string).replaceAll(context.escape(term));
             }
         }
 
@@ -139,12 +155,12 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
         boolean result = false;
 
-        if(clause instanceof DoubleOperatorClause){
-            final DoubleOperatorClause c = (DoubleOperatorClause)clause;
+        if(clause instanceof BinaryClause){
+            final BinaryClause c = (BinaryClause)clause;
             result = isEmptyLeaf(c.getFirstClause()) && isEmptyLeaf(c.getSecondClause());
 
-        }else if(clause instanceof OperationClause){
-            final OperationClause c = (OperationClause)clause;
+        }else if(clause instanceof UnaryClause){
+            final UnaryClause c = (UnaryClause)clause;
             result = isEmptyLeaf(c.getFirstClause());
 
         }else if(clause instanceof LeafClause){
@@ -167,8 +183,8 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
          if(clause instanceof NotClause){
             result = !isEmptyLeaf(clause);
-        }else if(clause instanceof OperationClause){
-            result = isNextLeafInsideNotClause(((OperationClause)clause).getFirstClause());
+        }else if(clause instanceof UnaryClause){
+            result = isNextLeafInsideNotClause(((UnaryClause)clause).getFirstClause());
         }
 
         return result;

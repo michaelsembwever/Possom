@@ -175,6 +175,15 @@ public class StringChopper {
                 res.append(c);
             }
 
+            // remove unclosed tag
+            if (state == State.TAG || state == State.STARTTAG || state == State.ENDTAG) {
+                int pos = res.lastIndexOf("<");
+                res.setLength(pos);
+                if (state == State.STARTTAG) {
+                    stack.pop();
+                }
+            }
+
             // append dots
             if (i < s.length - 1) {
                 if (!chop) {
@@ -197,11 +206,10 @@ public class StringChopper {
             // close all other open tags
             while (!stack.isEmpty()) {
                 int j = stack.pop();
-                char c = s[j];
                 res.append("</");
-                while (s.length > j && c != '>') {
-                    res.append(c);
-                    c = s[++j];
+                while (s.length > j && (s[j] != '>' && s[j] != ' ')) {
+                    res.append(s[j]);
+                    j++;
                 }
                 res.append('>');
             }

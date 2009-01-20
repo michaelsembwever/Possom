@@ -33,8 +33,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.InfrastructureException;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
@@ -103,6 +103,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     // TODO generic parameter key to be put into ParameterDataObject
     public static final String PARAM_LAYOUT = "layout";
+    public static final String PARAM_LAYOUT_OLD = "output"; //FIXME: added since we had problems using the url-rewrite rules.
+
     // TODO generic parameter key to be put into ParameterDataObject
     private static final String PARAM_COMMANDS = "commands";
     // TODO generic parameter key to be put into ParameterDataObject
@@ -114,7 +116,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private static final String ERR_RUN_QUERY = "Failure to run query";
     private static final String ERR_EXECUTION_ERROR = "Failure in a search command.";
-    private static final String ERR_MODE_TIMEOUT = "Timeout running all search commands.";
+    private static final String ERR_MODE_TIMEOUT = "Timeout running search commands.";
     private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
     // Attributes ----------------------------------------------------
@@ -160,29 +162,28 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         };
 
+        final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
+                ContextWrapper.wrap(
+                TokenEvaluationEngine.Context.class,
+                context,
+                new QueryStringContext() {
+                    public String getQueryString() {
+                        return queryStr;
+                    }
+                },
+                new BaseContext() {
+                    public String getUniqueId() {
+                        return datamodel.getParameters().getUniqueId();
+                    }
+                },
+                siteCxt);
+
         if(cxt.getSearchMode().isEvaluation()){
-
-            final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
-                    ContextWrapper.wrap(
-                        TokenEvaluationEngine.Context.class,
-                        context,
-                        new QueryStringContext() {
-                            public String getQueryString() {
-                                return queryStr;
-                            }
-                        },
-                        new BaseContext(){
-                            public String getUniqueId(){
-                                return datamodel.getParameters().getUniqueId();
-                            }
-                        },
-                        siteCxt);
-
             engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
         }else{
             // use a dead token evaluation engine. false and stale evaluation so it is not cached.
-            engine = new DeadTokenEvaluationEngineImpl(queryStr, siteCxt.getSite());
+            engine = new DeadTokenEvaluationEngineImpl(tokenEvalFactoryCxt);
         }
 
         // queryStr parser
@@ -547,8 +548,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                     for(String waitForStr : waitForArr){
                         // using generics on the next line crashes javac
-                        for(Entry/*<Future<ResultList<ResultItem>>,SearchCommand>*/ entry
-                                : results.entrySet()){
+                        for(Entry/*<Future<ResultList<ResultItem>>,SearchCommand>*/ entry : results.entrySet()){
 
                             final String entryName
                                     = ((SearchCommand)entry.getValue()).getSearchConfiguration().getId();
@@ -585,7 +585,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 executor.waitForAll(waitFor, TIMEOUT);
             }
         }catch(TimeoutException te){
-            LOG.error(ERR_MODE_TIMEOUT + te.getMessage());
+            LOG.error(ERR_MODE_TIMEOUT);
         }
 
         // Check that we have atleast one valid execution

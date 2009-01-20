@@ -1,4 +1,4 @@
-/* Copyright (2007) Schibsted Søk AS
+/* Copyright (2007-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ public final class MapDataObjectSupport<V> implements MapDataObject<V>{
 
     // Most MapDataObjectSupport instances only contain an item or two.
     // Max currency in any mode is typically ~20, but unlikely for even two threads to update at the same time.
-    private final Map<String,V> map = new ConcurrentHashMap<String,V>(5, 0.75f, 2){
+    private final Map<String,V> map = new ConcurrentHashMap<String,V>(5, 0.75f, 10){
 
         @Override
         public V put(final String key, final V value){

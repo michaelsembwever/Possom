@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.XorClause;
-import no.sesat.search.query.parser.AbstractReflectionVisitor;
+import no.sesat.commons.visitor.AbstractReflectionVisitor;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.NotClause;
 import no.sesat.search.query.token.TokenPredicate;
@@ -74,7 +74,7 @@ public final class PredicateCollector extends AbstractReflectionVisitor implemen
 
 
     /** TODO comment me. **/
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         clause.getFirstClause().accept(this);
         collect(clause);

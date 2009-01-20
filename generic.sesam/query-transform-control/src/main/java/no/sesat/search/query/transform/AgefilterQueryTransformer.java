@@ -1,4 +1,4 @@
-/*
+/*   Copyright (2008) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
     public String getFilter(final Map parameters) {
 
         String ageSymbol = config.getAgeSymbol();
-        if (config.getAgeSymbol() == null) {
+        if (ageSymbol == null) {
             ageSymbol = parameters.get(AGE_PARAMETER) instanceof String[]
                     ? ((String[]) parameters.get(AGE_PARAMETER))[0]
                     : (String) parameters.get(AGE_PARAMETER);
@@ -78,7 +78,7 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
 
     /**
      * @param ageSymbol
-     * @return
+     * @return Number of seconds that one unit of the ageSymbol represents.
      */
     public int getAgeInSeconds(final String ageSymbol) {
         if (ageSymbol.equals("w")) {

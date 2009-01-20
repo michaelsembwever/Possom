@@ -24,7 +24,7 @@
 
 package no.sesat.search.mode.command;
 
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 
 /**

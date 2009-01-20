@@ -9,6 +9,8 @@
  *  - removed function os_getNamespaces(r)
  *  - add resultTableHtmlPrefix & resultTableHtmlsuffix to allow customisations of popup div
  *  - introduced os_suggest_result_padding to parallel any css override of td.os-suggest-result{padding}
+ *  - in os_eventKeydown fix IE bug where keycode is undefined and prototype.js is also included in page
+ *           (filed upstream as https://bugzilla.wikimedia.org/show_bug.cgi?id=16529 )
  *
  * The results format is unmodified, eg a query on "Open" gives
  * ["Open",["Open","Open (album)","Open (Album)","Open (application)","Open (band)","Open (Blues Image album)","Open (Cowboy Junkies album)","Open (Gotthard album)","Open (magazine)","Open (mathematics)"]]
@@ -662,7 +664,11 @@ function os_eventKeydown(e){
 			
 	os_mouse_moved = false;
 
-	os_cur_keypressed = (window.Event) ? e.which : e.keyCode;
+	//os_cur_keypressed = (window.Event) ? e.which : e.keyCode;
+        if (undefined != e.keyCode)       // sesat change
+            os_cur_keypressed = e.keyCode;// sesat change
+        else                              // sesat change
+            os_cur_keypressed = e.which;  // sesat change
 	os_last_keypress = 0;
 	os_keypressed_count = 0;
 }

@@ -26,9 +26,9 @@ import no.sesat.search.query.AndClause;
 import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.NotClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.query.finder.ChildFinder;
@@ -80,7 +80,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected <T extends DoubleOperatorClause> T leftOpChild(final T clause){
+    protected <T extends BinaryClause> T leftOpChild(final T clause){
 
         final Clause c = leftChild(clause);
         return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
@@ -90,7 +90,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected Clause leftChild(final OperationClause clause) {
+    protected Clause leftChild(final UnaryClause clause) {
 
         final Clause c = clause.getFirstClause();
         LOG.trace("leftChild -->" + c);
@@ -101,7 +101,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected <T extends DoubleOperatorClause> T rightOpChild(final T clause){
+    protected <T extends BinaryClause> T rightOpChild(final T clause){
 
         final Clause c = rightChild(clause);
         return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
@@ -111,7 +111,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param clause
      * @return
      */
-    protected Clause rightChild(final DoubleOperatorClause clause) {
+    protected Clause rightChild(final BinaryClause clause) {
 
         final Clause c = clause.getSecondClause();
         LOG.trace("rightChild -->" + c);
@@ -125,11 +125,11 @@ public abstract class AbstractAlternation implements Alternation{
      * @param child
      * @param root
      */
-    protected <T extends OperationClause> T parent(final T root, final Clause child) {
+    protected <T extends UnaryClause> T parent(final T root, final Clause child) {
 
-        final List<OperationClause> parents = context.getParentFinder().getParents(root, child);
+        final List<UnaryClause> parents = context.getParentFinder().getParents(root, child);
         T result = null;
-        for(OperationClause c : parents){
+        for(UnaryClause c : parents){
             if(root.getClass().isAssignableFrom(c.getClass())){
                 if(null != result){
                     throw new IllegalStateException(ERR_MULTIPLE_POSSIBLE_PARENTS + root.getClass());
@@ -145,7 +145,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param child
      * @return
      */
-    protected <T extends OperationClause> List<T> parents(final T root, final Clause child) {
+    protected <T extends UnaryClause> List<T> parents(final T root, final Clause child) {
 
         return (List<T>) context.getParentFinder().getParents(root, child);
     }
@@ -160,22 +160,22 @@ public abstract class AbstractAlternation implements Alternation{
      * @param originalParent the original parent of the original child. expected to be found under root.
      * @return the root clause where the originalChild has been replaced with the newChild.
      */
-    protected OperationClause replaceDescendant(
-            final DoubleOperatorClause root,
-            final DoubleOperatorClause newChild,
-            final DoubleOperatorClause originalChild,
-            final DoubleOperatorClause originalParent){
+    protected UnaryClause replaceDescendant(
+            final BinaryClause root,
+            final BinaryClause newChild,
+            final BinaryClause originalChild,
+            final BinaryClause originalParent){
 
         // pre-condition check: originalParent must be found under root somewhere
         if(new ChildFinder().childExists(root, originalParent)){
 
-            OperationClause nC = newChild;
-            OperationClause rC = originalChild;
-            OperationClause rCParent = originalParent;
+            UnaryClause nC = newChild;
+            UnaryClause rC = originalChild;
+            UnaryClause rCParent = originalParent;
 
             do{
                 nC = replaceOperatorClause(nC, rC, rCParent);
-                for(OperationClause parent : context.getParentFinder().getParents(root, rC)){
+                for(UnaryClause parent : context.getParentFinder().getParents(root, rC)){
                     if(rCParent == parent){
                         rC = parent;
                         rCParent = root == rCParent
@@ -202,7 +202,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param originalParent
      * @return
      */
-    protected <T extends OperationClause> T replaceOperatorClause(
+    protected <T extends UnaryClause> T replaceOperatorClause(
             final Clause newChild,
             final Clause originalChild,
             final T originalParent) {
@@ -213,11 +213,11 @@ public abstract class AbstractAlternation implements Alternation{
 
         final Clause rightChild;
 
-        if(originalParent instanceof DoubleOperatorClause){
+        if(originalParent instanceof BinaryClause){
 
-            rightChild = rightChild((DoubleOperatorClause)originalParent) == originalChild
+            rightChild = rightChild((BinaryClause)originalParent) == originalChild
                             ? newChild
-                            : rightChild((DoubleOperatorClause)originalParent);
+                            : rightChild((BinaryClause)originalParent);
         }else{
             rightChild = null;
         }
@@ -234,7 +234,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param replacementFor
      * @return
      */
-    protected <T extends OperationClause> T createOperatorClause(
+    protected <T extends UnaryClause> T createOperatorClause(
             final Clause left,
             final Clause right,
             final T replacementFor) {

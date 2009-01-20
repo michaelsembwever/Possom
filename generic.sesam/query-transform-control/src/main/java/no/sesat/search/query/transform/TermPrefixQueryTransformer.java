@@ -24,14 +24,11 @@ import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.EmailClause;
 import no.sesat.search.query.IntegerClause;
 import no.sesat.search.query.LeafClause;
-import no.sesat.search.query.OperationClause;
+import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.OrClause;
 import no.sesat.search.query.PhoneNumberClause;
 import no.sesat.search.query.UrlClause;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
 
 /**
  * @see TermPrefixQueryTransformerConfig
@@ -112,7 +109,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final OperationClause clause) {
+    public void visitImpl(final UnaryClause clause) {
         clause.getFirstClause().accept(this);
     }
 
@@ -144,10 +141,9 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
     }
 
     private void addPrefix(final Clause clause, final String prefix) {
-
         final String term = getTransformedTerms().get(clause);
 
-        if (!(term.equals("") || isAlreadyPrefixed(term, prefix))) {
+        if (term != null && !(term.equals("") || isAlreadyPrefixed(term, prefix))) {
             getTransformedTerms().put(clause, prefix + ':' + term);
         }
     }

@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2008) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ package no.sesat.search.query;
  * @version $Id: OperationClause.java 3359 2006-08-03 08:13:22Z mickw $
  *
  */
-public interface DoubleOperatorClause extends OperationClause {
+public interface BinaryClause extends UnaryClause {
     /**
      * Get the second clause.
      *

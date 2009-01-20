@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
-import no.sesat.search.query.DoubleOperatorClause;
+import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.PhraseClause;
 import no.sesat.search.query.token.TokenEvaluationEngine;
@@ -66,7 +66,7 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
-    protected void visitImpl(final DoubleOperatorClause clause) {
+    protected void visitImpl(final BinaryClause clause) {
 
         clause.getFirstClause().accept(this);
 

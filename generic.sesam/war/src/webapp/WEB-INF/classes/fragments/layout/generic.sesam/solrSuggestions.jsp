@@ -24,6 +24,7 @@
      * See generic.sesam/war/src/main/javascript/external/mwsuggest.js
      * Simple way of manually writing out the json array. Alternative would be to use json-taglib.
     -->
+    <jsp:directive.page contentType="text/plain;charset=UTF-8" />
     <c:if test="${!empty DataModel.navigation.configuration.navigationMap.offset and !empty DataModel.navigation.configuration.navigationMap.offset.navMap.offset}">
         <c:set var="pageSize" value="${DataModel.navigation.configuration.navigationMap.offset.navMap.offset.pageSize}"/>
     </c:if>

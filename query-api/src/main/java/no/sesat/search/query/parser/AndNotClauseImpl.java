@@ -39,7 +39,7 @@ import no.sesat.search.site.Site;
  *
  * @version $Id$
  */
-public final class AndNotClauseImpl extends AbstractOperationClause implements AndNotClause {
+public final class AndNotClauseImpl extends AbstractBinaryClause implements AndNotClause {
 
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
@@ -128,7 +128,6 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
             final Set<TokenPredicate> knownPredicates,
             final Set<TokenPredicate> possiblePredicates) {
 
-        super(term, first, knownPredicates, possiblePredicates);
-
+        super(term, first, second, knownPredicates, possiblePredicates);
     }
 }

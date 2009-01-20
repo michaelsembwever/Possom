@@ -17,7 +17,7 @@
 package no.sesat.search.site.config;
 
 import java.io.Serializable;
-import no.schibstedsok.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.BaseContext;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;

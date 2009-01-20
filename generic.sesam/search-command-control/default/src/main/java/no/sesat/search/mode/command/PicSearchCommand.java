@@ -32,7 +32,7 @@ import java.util.Map;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import no.sesat.search.mode.command.querybuilder.FilterBuilder;
-import no.sesat.search.query.Visitor;
+import no.sesat.commons.visitor.Visitor;
 import no.sesat.search.query.XorClause;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
@@ -174,7 +174,7 @@ public class PicSearchCommand extends AbstractXmlSearchCommand {
         //  Both branches to a XorClause should never be used.
         switch(clause.getHint()){
             case FULLNAME_ON_LEFT:
-                clause.getSecondClause().accept(this);
+                clause.getSecondClause().accept(visitor);
                 break;
             default:
                 super.visitXorClause(visitor, clause);
