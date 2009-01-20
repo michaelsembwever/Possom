@@ -834,6 +834,17 @@
                 <artifactId>commons-log4j</artifactId>
                 <version>1.5-SNAPSHOT</version>
                 <type>jar</type>
+                <exclusions>
+                    <!-- The following require a click-through license. And are never used at runtime. -->
+                    <exclusion>
+                        <groupId>com.sun.jmx</groupId>
+                        <artifactId>jmxri</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.jms</groupId>
+                        <artifactId>jms</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>sesat</groupId>
