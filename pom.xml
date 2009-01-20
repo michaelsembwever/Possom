@@ -1032,4 +1032,15 @@
         </site>
     </distributionManagement>
 
+    <repositories>
+        <!-- Need to duplicate this to make it initially possible to get commons-main's pom.xml -->
+        <repository>
+            <id>Sesat</id>
+            <name>Sesat Repository</name>
+            <url>http://sesat.no/maven2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
