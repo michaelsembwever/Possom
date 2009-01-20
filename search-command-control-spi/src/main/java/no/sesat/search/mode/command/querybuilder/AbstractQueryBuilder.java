@@ -29,6 +29,20 @@ import no.sesat.commons.visitor.AbstractReflectionVisitor;
 
 /** Abstract QueryBuilder providing basic support for mantaining context and stringBuilder fields (and related methods).
  *
+ * <br/><br/>
+ *
+ * Any instance will have getQuery(..) called multiple times.
+ * It is therefore paramount that inside this method state fields are reset before the visitor is visited. <br/>
+ * For example a subclass will override getQuery(..) such:
+ * <pre>
+ *       &#x40;Override
+ *       public String getQueryString() {
+ *           // myVariable needs to be reset before every visit.
+ *           myVariable = 0;
+ *           return super.getQueryString();
+ *       }
+ * </pre>
+ *
  * @version $Id$
  */
 public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor implements QueryBuilder {
