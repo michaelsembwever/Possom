@@ -841,6 +841,10 @@
                         <artifactId>jmxri</artifactId>
                     </exclusion>
                     <exclusion>
+                        <groupId>com.sun.jdmk</groupId>
+                        <artifactId>jmxtools</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>javax.jms</groupId>
                         <artifactId>jms</artifactId>
                     </exclusion>
@@ -1029,6 +1033,21 @@
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
             <scope>compile</scope>
+                <exclusions>
+                    <!-- The following require a click-through license. And are never used at runtime. -->
+                    <exclusion>
+                        <groupId>com.sun.jmx</groupId>
+                        <artifactId>jmxri</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.jdmk</groupId>
+                        <artifactId>jmxtools</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.jms</groupId>
+                        <artifactId>jms</artifactId>
+                    </exclusion>
+                </exclusions>
         </dependency>
         <dependency>
             <groupId>sesat</groupId>
