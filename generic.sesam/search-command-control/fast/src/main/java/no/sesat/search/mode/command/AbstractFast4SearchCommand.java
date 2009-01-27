@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -667,7 +667,8 @@ import no.sesat.search.result.WeightedSuggestion;
 
         soFar.add(nav);
 
-        if (nav.getChildNavigator() != null) {
+        // don't ask for navigators one step beyond anything not selected
+        if (null != nav.getChildNavigator() && null != datamodel.getParameters().getValue(nav.getId())) {
             flattenNavigators(soFar, nav.getChildNavigator());
         }
 
