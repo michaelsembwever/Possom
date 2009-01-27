@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,8 +33,10 @@ import java.util.List;
 import no.sesat.search.view.navigation.FastNavigationConfig;
 import org.apache.log4j.Logger;
 
-/**
+/** The Controller class for navigation items generated from a Faceted Search Command's Modifiers.
+ * This will construct a BasicNavigationItem for every Modifier found in the ResultList.
  *
+ * @todo RENAME to ModifierNavigationController
  */
 public class FastNavigationController implements NavigationController {
 

@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ import no.sesat.search.result.ResultList;
 import no.sesat.search.view.config.SearchTab;
 
 
-/**
- *
+/** The ControllerFactory and Controller class for manually configuration navigators against a command.
+ * The command itself need not be a faceted search command.
  *
  *
  * @version $Id$
