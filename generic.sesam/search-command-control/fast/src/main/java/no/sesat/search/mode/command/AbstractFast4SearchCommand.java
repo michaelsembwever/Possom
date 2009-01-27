@@ -270,6 +270,11 @@ import no.sesat.search.result.WeightedSuggestion;
         }
     }
 
+    /**
+     * @deprecated does nothing. here only to maintain API.
+     */
+    public void addNavigatedTo(final String navigatorKey) {}
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
