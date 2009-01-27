@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted Søk AS
+ * Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ package no.sesat.search.mode.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,7 +183,7 @@ public class FastCommandConfig extends CommandConfig {
      * @return
      */
     public Map<String,String> getSearchParameterMap() {
-        return searchParameters;
+        return Collections.unmodifiableMap(searchParameters);
     }
 
     /**
@@ -264,7 +265,7 @@ public class FastCommandConfig extends CommandConfig {
      * @return
      */
     public Map<String, Navigator> getNavigators() {
-        return navigators;
+        return Collections.unmodifiableMap(navigators);
     }
 
     /**
