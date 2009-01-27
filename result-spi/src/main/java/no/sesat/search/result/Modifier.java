@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,9 +20,12 @@ package no.sesat.search.result;
 import java.io.Serializable;
 import java.util.Comparator;
 
-/**
+/** A Modifier is a abstraction of a navigator model from a faceted search command's result.
+ * The configuration bean to this class is the Navigator class.
  *
- * @version <tt>$Revision$</tt>
+ * A facet item contains a name, a hitcount, and a refernence to the config Navigator bean.
+ *
+ * @version <tt>$Id$</tt>
  */
 public final class Modifier implements Comparable<Modifier>, Serializable {
 
