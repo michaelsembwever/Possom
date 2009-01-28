@@ -85,7 +85,7 @@ public final class Boomerang {
         try {
             host = new java.net.URL(url).getHost();
         } catch (MalformedURLException ex) {
-            LOG.warn("Invalid url in boomerang: " + url, ex);
+            // LOG.warn("Invalid url in boomerang: " + url, ex);
         }
 
         if (host != null) {
