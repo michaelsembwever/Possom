@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 */
 package no.sesat.search.result;
 
+import java.net.MalformedURLException;
 import java.util.StringTokenizer;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.config.SiteConfiguration;
@@ -74,9 +75,23 @@ public final class Boomerang {
         }
 
         // append the original destination url
-        toUrl.append(orgUrl);
+        toUrl.append(punyencode(orgUrl));
 
         return toUrl.toString();
+    }
+
+    private static String punyencode(String url) {
+        String host = null;
+        try {
+            host = new java.net.URL(url).getHost();
+        } catch (MalformedURLException ex) {
+            LOG.warn("Invalid url in boomerang: " + url, ex);
+        }
+
+        if (host != null) {
+            url = url.replace(host, java.net.IDN.toASCII(host));
+        }
+        return url;
     }
 
     // Constructors -------------------------------------------------
