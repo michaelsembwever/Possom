@@ -75,12 +75,12 @@ public final class Boomerang {
         }
 
         // append the original destination url
-        toUrl.append(punyencode(orgUrl));
+        toUrl.append(toIDN(orgUrl));
 
         return toUrl.toString();
     }
 
-    private static String punyencode(String url) {
+    private static String toIDN(String url) {
         String host = null;
         try {
             host = new java.net.URL(url).getHost();
