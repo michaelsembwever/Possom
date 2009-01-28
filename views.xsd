@@ -40,6 +40,9 @@
         <xsd:attribute name='front'/>
         <xsd:attribute name='content-type'/>
         <xsd:attribute name='expires-in-seconds' type="xsd:integer"/>
+		<xsd:attribute name='display-css'/>
+		<xsd:attribute name='css'/>
+		<xsd:attribute name='javascript'/>
     </xsd:complexType>
 	<xsd:complexType name='include'>
         <xsd:attribute name='key'/>
@@ -78,6 +81,7 @@
         <xsd:attribute name='id'/>
         <xsd:attribute name='command-name'/>
         <xsd:attribute name='page-size'/>
+        <xsd:attribute name='multiple-page-size'/>
         <xsd:attribute name='number-of-pages'/>
 		<xsd:attribute name='hitcount-source'/>
     </xsd:complexType>
