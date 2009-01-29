@@ -1,4 +1,4 @@
-/*Copyright (2008) Schibsted Søk AS
+/*Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ public class InfixQueryBuilder extends AbstractQueryBuilder{
                 appendToQueryRepresentation(' ' + getConfig().getDefaultInfix() + ' ');
             }
             clause.getSecondClause().accept(this);
-            if(getConfig().getDefaultGrouped() && !unary){ appendToQueryRepresentation(getConfig().getDefaultGroupOpen()); }
+            if(getConfig().getDefaultGrouped() && !unary){ appendToQueryRepresentation(getConfig().getDefaultGroupClose()); }
         }
     }
 
