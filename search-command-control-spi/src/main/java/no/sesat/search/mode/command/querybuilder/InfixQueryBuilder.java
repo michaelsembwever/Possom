@@ -40,6 +40,8 @@ import no.sesat.search.query.UrlClause;
  * Largely mimics the Query tree layout replacing OperatorClauses with the RESERVED_WORDS.
  * Does not write infixes when the next occurring leaf is inside a NotClause.
  *
+ * @todo grouping doesn't work due to a dependence on the lean of the binary tree.
+ *
  * @version $Id$
  */
 public class InfixQueryBuilder extends AbstractQueryBuilder{
