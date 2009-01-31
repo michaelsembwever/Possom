@@ -72,7 +72,7 @@
             &lt;&lt;
             #if ($nav.backText != "")
                 $nav.backText
-            #else
+            #elseif($datamodel.navigation.getNavigation($nav.getParent().getId()).getResults().size() > 0)
                 $datamodel.navigation.getNavigation($nav.getParent().getId()).getResults().get(0).getTitle()
             #end
             </a>
