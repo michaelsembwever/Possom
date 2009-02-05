@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -460,6 +460,18 @@ class TestUser implements BasicUser {
     }
 
     public boolean isDirty(Date timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getFullName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getProperty(String key) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Set<String> getPropertyKeys() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
