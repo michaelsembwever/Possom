@@ -1,5 +1,5 @@
 /*
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ class BaseSearchCommandParameter implements SearchCommandParameter {
                         break;
 
                     case USER:
-                        result = datamodel.getUser().getUser().getUserPropertiesMap().get(name);
+                        result = datamodel.getUser().getUser().getProperty(name);
                         break;
 
                     case CONFIGURATION:
