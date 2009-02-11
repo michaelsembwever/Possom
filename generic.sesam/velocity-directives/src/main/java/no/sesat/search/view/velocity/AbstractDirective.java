@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -65,7 +65,10 @@ public abstract class AbstractDirective extends Directive {
     }
 
     protected String getArgument(final InternalContextAdapter context, final Node node, final int i){
-        return node.jjtGetChild(i).value(context).toString();
+
+        return null != node.jjtGetChild(i).value(context)
+                ? node.jjtGetChild(i).value(context).toString()
+                : null;
     }
 
     protected Object getObjectArgument(final InternalContextAdapter context, final Node node, final int i){

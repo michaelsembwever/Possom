@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  *
  * @version $Id$
  */
-public final class BoldWordDirective extends Directive {
+public final class BoldWordDirective extends AbstractDirective {
 
     private static final Logger LOG = Logger.getLogger(BoldWordDirective.class);
 
@@ -74,8 +74,8 @@ public final class BoldWordDirective extends Directive {
 
         if (argCount != 1) {
 
-            String text = node.jjtGetChild(0).value(context).toString();
-            final String uquery = node.jjtGetChild(1).value(context).toString();
+            String text = getArgument(context, node, 0);
+            final String uquery = getArgument(context, node, 1);
             String query = org.apache.commons.lang.StringEscapeUtils.unescapeHtml(uquery);
 
             if(text == null) {
@@ -105,7 +105,6 @@ public final class BoldWordDirective extends Directive {
 
             final String msg = '#' + getName() + " - wrong number of arguments";
             LOG.error(msg);
-            rsvc.error(msg);
             return false;
         }
 
