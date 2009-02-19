@@ -33,8 +33,8 @@
             <version>2.18-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.lucene.solr</groupId>
-            <artifactId>solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
         </dependency>
     </dependencies>
 </project>

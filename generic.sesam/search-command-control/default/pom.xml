@@ -113,8 +113,8 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.lucene.solr</groupId>
-            <artifactId>solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
         </dependency>
         
         <!-- testin -->
