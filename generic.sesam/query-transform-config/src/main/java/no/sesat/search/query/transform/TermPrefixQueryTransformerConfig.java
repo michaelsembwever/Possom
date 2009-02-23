@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted Søk AS
+ * Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -32,9 +32,10 @@ import org.w3c.dom.Element;
  *   allows seperate configured prefixes for LeafClauses, IntegerClauses,
  * and PhoneNumberPrefix, UrlClauses, and EmailClauses.
  *
-// * Multiple prefixes can be configured with comma seperation.
-// * EG prefix="site,domain"
-// * By default this writes out (site:term domain:term)
+ * Multiple prefixes can be configured with comma seperation.
+ * EG prefix="site,domain"
+ * By default this writes out (site:term domain:term)
+ * but the joining operator can be configured with #setMultiTermJoin(string)
  *
  * @version $Id$
  */
@@ -46,6 +47,7 @@ public final class TermPrefixQueryTransformerConfig extends AbstractQueryTransfo
     private String phoneNumberPrefix;
     private String numberPrefix;
     private String prefix;
+    private String multiTermJoin;
 
     /**
      * @see #setPrefix(java.lang.String)
@@ -134,6 +136,23 @@ public final class TermPrefixQueryTransformerConfig extends AbstractQueryTransfo
      */
     public void setEmailPrefix(final String prefix) {
         this.emailPrefix = prefix;
+    }
+
+    /**
+     * @see #setMultiTermJoin(java.lang.String)
+     *
+     * @return the multiTermJoin.
+     */
+    public String getMultiTermJoin() {
+        return multiTermJoin;
+    }
+
+    /**
+     * Set the multiTermJoin.
+     * @param multiTermJoin The multiTermJoin.
+     */
+    public void setMultiTermJoin(final String multiTermJoin) {
+        this.multiTermJoin = multiTermJoin;
     }
 
     @Override
