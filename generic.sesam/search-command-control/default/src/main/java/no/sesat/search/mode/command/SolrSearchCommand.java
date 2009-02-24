@@ -1,5 +1,5 @@
 /*
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -24,9 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.sesat.commons.ref.ReferenceMap;
+import no.sesat.search.datamodel.generic.StringDataObject;
+import no.sesat.search.datamodel.request.ParametersDataObject;
+import no.sesat.search.mode.config.FacetedCommandConfig;
 import no.sesat.search.mode.config.SolrCommandConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
+import no.sesat.search.result.Navigator;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.config.SiteConfiguration;
@@ -57,6 +61,7 @@ public class SolrSearchCommand extends AbstractSearchCommand{
     // Attributes ----------------------------------------------------
 
     private SolrServer server;
+    private final FacetToolkit facetToolkit;
 
     // Static --------------------------------------------------------
 
@@ -85,6 +90,8 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         } catch (MalformedURLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
+
+        facetToolkit = new SimpleFacetToolkitImpl();
     }
 
     // Public --------------------------------------------------------
@@ -102,6 +109,8 @@ public class SolrSearchCommand extends AbstractSearchCommand{
                     .setStart(getOffset())
                     .setRows(getSearchConfiguration().getResultsToReturn())
                     .setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
+
+            createFacets(query);
 
             // when the root logger is set to DEBUG do not limit connection times
             if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
@@ -143,6 +152,30 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
     // Protected -----------------------------------------------------
 
+    protected FacetToolkit createFacetToolkit(){
+
+        FacetToolkit toolkit = null;
+        final String toolkitName = getSearchConfiguration().getFacetToolkit();
+        if(null != toolkit){
+            try{
+                final Class<FacetToolkit> cls = (Class<FacetToolkit>) Class.forName(toolkitName);
+                toolkit = cls.newInstance();
+            }catch(ClassNotFoundException cnfe){
+                LOG.error(cnfe.getMessage());
+            }catch(InstantiationException ie){
+                LOG.error(ie.getMessage());
+            }catch(IllegalAccessException iae){
+                LOG.error(iae.getMessage());
+            }
+        }
+        return toolkit;
+    }
+
+    protected final void createFacets(final SolrQuery query){
+        if(null != facetToolkit){
+            facetToolkit.createFacets(context, query);
+        }
+    }
 
     protected BasicResultItem createItem(final SolrDocument doc) {
 
@@ -160,4 +193,55 @@ public class SolrSearchCommand extends AbstractSearchCommand{
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
+
+    /**
+     * Provider to add facets from request to SolrQuery.
+     */
+    public interface FacetToolkit{
+        void createFacets(SearchCommand.Context context, SolrQuery query);
+    }
+
+    /**
+     * Solr's Simple Faceting toolkit.
+     *
+     * {@link http://wiki.apache.org/solr/SolrFacetingOverview}
+     * {@link http://wiki.apache.org/solr/SimpleFacetParameters}
+     */
+    public static class SimpleFacetToolkitImpl implements FacetToolkit{
+
+        public void createFacets(final SearchCommand.Context context, final SolrQuery query) {
+
+            final Map<String,Navigator> facets = getSearchConfiguration(context).getFacets();
+
+            query.setFacet(0 < facets.size());
+
+            // facet counters
+            for(Navigator facet : facets.values()){
+                query.addFacetField(facet.getField());
+            }
+
+            // facet selection
+            for (final Navigator facet : facets.values()) {
+
+                final StringDataObject facetValue = context.getDataModel().getParameters().getValue(facet.getId());
+
+                if (null != facetValue) {
+
+                    // splitting here allows for multiple navigation selections within the one navigation level.
+                    for(String navSingleValue : facetValue.getString().split(",")){
+
+                        final String value =  facet.isBoundaryMatch()
+                                ? "^\"" + navSingleValue + "\"$"
+                                : "\"" + navSingleValue + "\"";
+
+                        query.addFacetQuery(facet.getField() + ':' + value);
+                    }
+                }
+            }
+        }
+
+        private FacetedCommandConfig getSearchConfiguration(final SearchCommand.Context context){
+            return (FacetedCommandConfig) context.getSearchConfiguration();
+        }
+    }
 }

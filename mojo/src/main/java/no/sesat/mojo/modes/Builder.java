@@ -1,5 +1,5 @@
 /*
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -200,6 +200,8 @@ public final class Builder {
 
         final ConfigElement navigators = new ConfigElement("navigators");
         final ConfigElement navigator = new ConfigElement("navigator");
+        final ConfigElement facets = new ConfigElement("facets");
+        final ConfigElement facet = new ConfigElement("facet");
         // TODO replace with introspection
         navigator.getAttributes().add(new ConfigAttribute("id", null, true));
         navigator.getAttributes().add(new ConfigAttribute("name", null, true));
@@ -207,18 +209,22 @@ public final class Builder {
         navigator.getAttributes().add(new ConfigAttribute("display-name", null, true));
         navigator.getAttributes().add(new ConfigAttribute("sort", null, false));
         navigator.getAttributes().add(new ConfigAttribute("boundary-match"));
+        facet.getAttributes().addAll(navigator.getAttributes());
 
         // allow recursive nesting of navigator.
         navigator.addChild(navigator);
-
         // only for fast commands
         navigators.addChild(navigator);
+
+        facet.addChild(facet);
+        facets.addChild(facet);
 
         for (ConfigElement command : commands) {
             command.addChild(queryBuilder);
             command.addChild(resultHandler);
             command.addChild(queryTransform);
             command.addChild(navigators);
+            command.addChild(facets);
         }
 
         final Runnable[] jobs = {new GenerateRelaxNG(modes, outputDir + "modes.rnc", id),

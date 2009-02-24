@@ -23,6 +23,8 @@ import java.io.Serializable;
  *
  * Each facet contains an id, name, displayName, sort definition, boundaryMatch enabled, and children navigators.
  *
+ * @todo rename to Facet
+ *
  * @version <tt>$Id$</tt>
  */
 public final class Navigator implements Serializable {
@@ -37,8 +39,8 @@ public final class Navigator implements Serializable {
 
 
     public enum Sort {
-        COUNT(),
-        YEAR(),
+        COUNT,
+        YEAR,
         MONTH_YEAR(),
         DAY_MONTH_YEAR(),
         DAY_MONTH_YEAR_DESCENDING,

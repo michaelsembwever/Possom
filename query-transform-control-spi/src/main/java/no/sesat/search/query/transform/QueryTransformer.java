@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted Søk AS
+/* Copyright (2006-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ import no.sesat.search.site.config.ResourceContext;
 import org.w3c.dom.Element;
 
 import java.util.Map;
+import no.sesat.search.mode.config.SearchConfiguration;
 
 
 /**
@@ -109,7 +110,9 @@ public interface QueryTransformer extends Visitor{
      * <p/>
      * +docdatetime:>2005-10-28
      *
-     * @param parameters
+     * @deprecated all functionality should be provided by getFilter() with any access to parameters via the datamodel
+     *
+     * @param parameters the datamodel's parameters
      * @return filterstring
      */
     String getFilter(Map parameters);

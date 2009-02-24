@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted Søk AS
+/* Copyright (2006-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -362,6 +362,8 @@ public class CommandConfig implements BaseSearchConfiguration, SearchConfigurati
     /** Currently only used by the fast subclasses but hopefully open to all one day. *
      * @param navsE w3c dom elements to deserialise
      * @return collection of Navigators
+     *
+     * @deprecated Use FacetedCommandConfigUtility.parseNavigators(Element) instead.
      */
     protected final Collection<Navigator> parseNavigators(final Element navsE) {
 
