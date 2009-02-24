@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  *
  * Multiple prefixes can be configured with comma seperation.
  * EG prefix="site,domain"
- * By default this writes out (site:term domain:term)
+ * By default this writes out (site:term  domain:term)
  * but the joining operator can be configured with #setMultiTermJoin(string)
  *
  * @version $Id$
@@ -164,6 +164,7 @@ public final class TermPrefixQueryTransformerConfig extends AbstractQueryTransfo
         AbstractDocumentFactory.fillBeanProperty(this, null, "phoneNumberPrefix", ParseType.String, qt, getNumberPrefix());
         AbstractDocumentFactory.fillBeanProperty(this, null, "urlPrefix", ParseType.String, qt, getPrefix());
         AbstractDocumentFactory.fillBeanProperty(this, null, "emailPrefix", ParseType.String, qt, getPrefix());
+        AbstractDocumentFactory.fillBeanProperty(this, null, "multiTermJoin", ParseType.String, qt, "");
         return this;
     }
 }
