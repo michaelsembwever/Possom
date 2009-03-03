@@ -52,6 +52,8 @@ public class SolrCommandConfig extends CommandConfig implements FacetedCommandCo
 
     private String facetToolkit;
 
+    private String queryType = null;
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -95,6 +97,23 @@ public class SolrCommandConfig extends CommandConfig implements FacetedCommandCo
      */
     public void setFilteringQuery(final String filteringQuery){
         this.filteringQuery = filteringQuery;
+    }
+
+    /** Sets the qt parameter in turn choosing a query handler.
+     * {@link http://wiki.apache.org/solr/CoreQueryParameters}
+     *
+     * @return
+     */
+    public String getQueryType(){
+        return queryType;
+    }
+
+    /** @see #getQueryType()
+     *
+     * @param filteringQuery
+     */
+    public void setQueryType(final String queryType){
+        this.queryType = queryType;
     }
 
     /** @see #setFieldFilters(java.lang.String[])

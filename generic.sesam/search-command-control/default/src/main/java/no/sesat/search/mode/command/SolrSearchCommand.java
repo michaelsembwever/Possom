@@ -17,23 +17,24 @@
  */
 package no.sesat.search.mode.command;
 
+import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.sesat.commons.ioc.BaseContext;
+import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.commons.ref.ReferenceMap;
-import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.datamodel.request.ParametersDataObject;
-import no.sesat.search.mode.config.FacetedCommandConfig;
 import no.sesat.search.mode.config.SolrCommandConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
-import no.sesat.search.result.Navigator;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
+import no.sesat.search.site.Site;
+import no.sesat.search.site.config.SiteClassLoaderFactory;
 import no.sesat.search.site.config.SiteConfiguration;
+import no.sesat.search.site.config.Spi;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -91,7 +92,7 @@ public class SolrSearchCommand extends AbstractSearchCommand{
             LOG.error(ex.getMessage(), ex);
         }
 
-        facetToolkit = new SimpleFacetToolkitImpl();
+        facetToolkit = createFacetToolkit();
     }
 
     // Public --------------------------------------------------------
@@ -101,14 +102,27 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
         final ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
 
+        // @todo make the join between query and filter configurable
+        final String q = getTransformedQuery()
+                + (0 < getFilter().length() ? " (" + getFilter() + ')' : "");
+
         try {
             // set up query
             final SolrQuery query = new SolrQuery()
-                    .setQuery(getTransformedQuery())
+                    .setQuery(q)
                     .setFilterQueries(getSearchConfiguration().getFilteringQuery())
                     .setStart(getOffset())
-                    .setRows(getSearchConfiguration().getResultsToReturn())
-                    .setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
+                    .setRows(getSearchConfiguration().getResultsToReturn());
+
+            // custom query type
+            if(null != getSearchConfiguration().getQueryType() && 0 < getSearchConfiguration().getQueryType().length()){
+                query.setQueryType(getSearchConfiguration().getQueryType());
+            }
+
+            // The request handler may be configured in the index which fields to return in the results
+            if(0 < getSearchConfiguration().getResultFieldMap().size()){
+                query.setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
+            }
 
             createFacets(query);
 
@@ -156,17 +170,8 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
         FacetToolkit toolkit = null;
         final String toolkitName = getSearchConfiguration().getFacetToolkit();
-        if(null != toolkit){
-            try{
-                final Class<FacetToolkit> cls = (Class<FacetToolkit>) Class.forName(toolkitName);
-                toolkit = cls.newInstance();
-            }catch(ClassNotFoundException cnfe){
-                LOG.error(cnfe.getMessage());
-            }catch(InstantiationException ie){
-                LOG.error(ie.getMessage());
-            }catch(IllegalAccessException iae){
-                LOG.error(iae.getMessage());
-            }
+        if(null != toolkitName && 0 < toolkitName.length()){
+            toolkit = FacetToolkitFactory.getInstance(context, toolkitName);
         }
         return toolkit;
     }
@@ -179,11 +184,29 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
     protected BasicResultItem createItem(final SolrDocument doc) {
 
+        Map<String,String> fieldNames;
+        if(0 < getSearchConfiguration().getResultFieldMap().size()){
+            fieldNames = getSearchConfiguration().getResultFieldMap();
+        }else{
+            // The request handler must be configured in the index as to which fields to return in the results
+            fieldNames = new HashMap<String,String>();
+            for(String fieldName : doc.getFieldNames()){
+                fieldNames.put(fieldName, fieldName);
+            }
+        }
+
         BasicResultItem item = new BasicResultItem();
 
-        for (final Map.Entry<String,String> entry : getSearchConfiguration().getResultFieldMap().entrySet()){
+        for (final Map.Entry<String,String> entry : fieldNames.entrySet()){
 
-            item = item.addField(entry.getValue(), (String)doc.getFieldValue(entry.getKey()));
+            final Object value = doc.getFieldValue(entry.getKey());
+            if(value instanceof String){
+                item = item.addField(entry.getValue(), (String)doc.getFieldValue(entry.getKey()));
+            }else if(value instanceof Serializable){
+                item = item.addObjectField(entry.getValue(), (Serializable)doc.getFieldValue(entry.getKey()));
+            }else{
+                LOG.warn("Unable to add to ResultItem this non Serializable object: " + value);
+            }
 
         }
 
@@ -201,47 +224,57 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         void createFacets(SearchCommand.Context context, SolrQuery query);
     }
 
-    /**
-     * Solr's Simple Faceting toolkit.
-     *
-     * {@link http://wiki.apache.org/solr/SolrFacetingOverview}
-     * {@link http://wiki.apache.org/solr/SimpleFacetParameters}
-     */
-    public static class SimpleFacetToolkitImpl implements FacetToolkit{
+    protected static final class FacetToolkitFactory {
 
-        public void createFacets(final SearchCommand.Context context, final SolrQuery query) {
+        // Constructors --------------------------------------------------
 
-            final Map<String,Navigator> facets = getSearchConfiguration(context).getFacets();
+        /** Not possible to create a new instance of FacetToolkitFactory */
+        private FacetToolkitFactory() {
+        }
 
-            query.setFacet(0 < facets.size());
+        // Public --------------------------------------------------------
 
-            // facet counters
-            for(Navigator facet : facets.values()){
-                query.addFacetField(facet.getField());
-            }
+        /** Factory call to instiantate a FacetToolkit.
+         *
+         * @param context context providing Resource
+         * @param name the name of the class implementing FacetToolkit
+         * @return
+         */
+        public static FacetToolkit getInstance(
+                final Context context,
+                final String name){
 
-            // facet selection
-            for (final Navigator facet : facets.values()) {
+            try{
+                final Site site = context.getDataModel().getSite().getSite();
 
-                final StringDataObject facetValue = context.getDataModel().getParameters().getValue(facet.getId());
+                final SiteClassLoaderFactory.Context ctlContext = ContextWrapper.wrap(
+                        SiteClassLoaderFactory.Context.class,
+                        new BaseContext() {
+                            public Spi getSpi() {
+                                return Spi.SEARCH_COMMAND_CONTROL;
+                            }
+                            public Site getSite(){
+                                return site;
+                            }
+                        },
+                        context
+                    );
 
-                if (null != facetValue) {
+                final ClassLoader ctlLoader = SiteClassLoaderFactory.instanceOf(ctlContext).getClassLoader();
 
-                    // splitting here allows for multiple navigation selections within the one navigation level.
-                    for(String navSingleValue : facetValue.getString().split(",")){
+                @SuppressWarnings("unchecked")
+                final Class<? extends FacetToolkit> cls = (Class<? extends FacetToolkit>)ctlLoader.loadClass(name);
 
-                        final String value =  facet.isBoundaryMatch()
-                                ? "^\"" + navSingleValue + "\"$"
-                                : "\"" + navSingleValue + "\"";
+                return cls.newInstance();
 
-                        query.addFacetQuery(facet.getField() + ':' + value);
-                    }
-                }
+            } catch (ClassNotFoundException ex) {
+                throw new IllegalArgumentException(ex);
+            } catch (InstantiationException ex) {
+                throw new IllegalArgumentException(ex);
+            } catch (IllegalAccessException ex) {
+                throw new IllegalArgumentException(ex);
             }
         }
 
-        private FacetedCommandConfig getSearchConfiguration(final SearchCommand.Context context){
-            return (FacetedCommandConfig) context.getSearchConfiguration();
-        }
     }
 }
