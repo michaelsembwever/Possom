@@ -29,12 +29,12 @@ import java.io.Serializable;
  */
 public final class Navigator implements Serializable {
 
+    private String id;
     private String name;
     private String field;
     private Navigator childNavigator;
     private String displayName;
     private Sort sort;
-
     private final boolean boundaryMatch;
 
 
@@ -52,10 +52,14 @@ public final class Navigator implements Serializable {
         NONE
     }
 
-    /**
-     *
+    /** Constructor with preset values.
      */
-    public Navigator(final String name, final String field, final String displayName, final Sort sort, final boolean boundaryMatch) {
+    public Navigator(
+            final String name,
+            final String field,
+            final String displayName,
+            final Sort sort,
+            final boolean boundaryMatch) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;
@@ -63,9 +67,7 @@ public final class Navigator implements Serializable {
         this.boundaryMatch = boundaryMatch;
     }
 
-    /**
-     *
-     */
+    /** Default Constructor. **/
     public Navigator() {
         boundaryMatch = false;
     }
@@ -86,6 +88,7 @@ public final class Navigator implements Serializable {
         this.name = name;
     }
 
+    @Override
     public String toString() {
         return name;
     }
@@ -114,11 +117,6 @@ public final class Navigator implements Serializable {
     public final Sort getSort() {
         return this.sort;
     }
-
-    /**
-     * Holds value of property id.
-     */
-    private String id;
 
     /**
      * Getter for property id.
