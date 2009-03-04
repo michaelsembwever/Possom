@@ -29,6 +29,9 @@ import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.mode.config.SolrCommandConfig;
 import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
+import no.sesat.search.result.FacetedSearchResult;
+import no.sesat.search.result.FacetedSearchResultImpl;
+import no.sesat.search.result.Navigator;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.Site;
@@ -100,42 +103,18 @@ public class SolrSearchCommand extends AbstractSearchCommand{
     @Override
     public ResultList<ResultItem> execute() {
 
-        final ResultList<ResultItem> searchResult = new BasicResultList<ResultItem>();
-
-        // @todo make the join between query and filter configurable
-        final String q = getTransformedQuery()
-                + (0 < getFilter().length() ? " (" + getFilter() + ')' : "");
+        final ResultList<ResultItem> searchResult = null != facetToolkit
+                ? new FacetedSearchResultImpl<ResultItem>()
+                : new BasicResultList<ResultItem>();
 
         try {
             // set up query
             final SolrQuery query = new SolrQuery()
-                    .setQuery(q)
-                    .setFilterQueries(getSearchConfiguration().getFilteringQuery())
+                    .setQuery(getTransformedQuery())
                     .setStart(getOffset())
                     .setRows(getSearchConfiguration().getResultsToReturn());
 
-            // custom query type
-            if(null != getSearchConfiguration().getQueryType() && 0 < getSearchConfiguration().getQueryType().length()){
-                query.setQueryType(getSearchConfiguration().getQueryType());
-            }
-
-            // The request handler may be configured in the index which fields to return in the results
-            if(0 < getSearchConfiguration().getResultFieldMap().size()){
-                query.setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
-            }
-
-            createFacets(query);
-
-            // when the root logger is set to DEBUG do not limit connection times
-            if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
-                query.setTimeAllowed(getSearchConfiguration().getTimeout());
-            }
-
-            final Map<String,String> sortMap = getSearchConfiguration().getSortMap();
-            for(Map.Entry<String,String> entry : sortMap.entrySet()){
-                final SolrQuery.ORDER order = SolrQuery.ORDER.valueOf(entry.getValue());
-                query.addSortField(entry.getKey(), order);
-            }
+            modifyQuery(query);
 
             DUMP.info(query.toString());
 
@@ -147,9 +126,10 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
             // iterate through docs
             for(SolrDocument doc : docs){
-
                 searchResult.addResult(createItem(doc));
             }
+
+            collectFacets(response, searchResult);
 
         } catch (SolrServerException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -166,6 +146,56 @@ public class SolrSearchCommand extends AbstractSearchCommand{
 
     // Protected -----------------------------------------------------
 
+    /** Override this to set additional parameters in the SolrQuery.
+     * Crucial for any override to call super.modifyQuery(query)
+     **/
+    protected void modifyQuery(final SolrQuery query){
+
+        // @XXX does this ruin solr caching
+        query.set("uniqueId", context.getDataModel().getParameters().getUniqueId());
+
+        // add any filtering query
+        if(0 < getSearchConfiguration().getFilteringQuery().length()){
+            query.setFilterQueries(getSearchConfiguration().getFilteringQuery());
+        }
+
+        // also add any filter
+        if(0 < getFilter().length()){
+            query.addFilterQuery(getFilter());
+        }
+
+        // custom query type
+        if(null != getSearchConfiguration().getQueryType() && 0 < getSearchConfiguration().getQueryType().length()){
+            query.setQueryType(getSearchConfiguration().getQueryType());
+        }
+
+        // The request handler may be configured in the index which fields to return in the results
+        if(0 < getSearchConfiguration().getResultFieldMap().size()){
+            query.setFields(getSearchConfiguration().getResultFieldMap().keySet().toArray(new String[]{}));
+        }
+
+        createFacets(query);
+
+        // when the root logger is set to DEBUG do not limit connection times
+        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+            query.setTimeAllowed(getSearchConfiguration().getTimeout());
+        }
+
+        // sorting
+        if(isUserSortable()){
+            final String sort = getUserSortBy();
+            if(null != sort){
+                final String[] sortSplit = sort.split(" ");
+                query.addSortField(sortSplit[0], SolrQuery.ORDER.valueOf(sortSplit[1]));
+            }
+        }
+        final Map<String,String> sortMap = getSearchConfiguration().getSortMap();
+        for(Map.Entry<String,String> entry : sortMap.entrySet()){
+            final SolrQuery.ORDER order = SolrQuery.ORDER.valueOf(entry.getValue());
+            query.addSortField(entry.getKey(), order);
+        }
+    }
+
     protected FacetToolkit createFacetToolkit(){
 
         FacetToolkit toolkit = null;
@@ -179,6 +209,13 @@ public class SolrSearchCommand extends AbstractSearchCommand{
     protected final void createFacets(final SolrQuery query){
         if(null != facetToolkit){
             facetToolkit.createFacets(context, query);
+        }
+    }
+
+    protected final void collectFacets(final QueryResponse response, final ResultList<ResultItem> searchResult){
+
+        if(null != facetToolkit && searchResult instanceof FacetedSearchResult){
+            facetToolkit.collectFacets(context, response, (FacetedSearchResult<? extends ResultItem>)searchResult);
         }
     }
 
@@ -221,7 +258,12 @@ public class SolrSearchCommand extends AbstractSearchCommand{
      * Provider to add facets from request to SolrQuery.
      */
     public interface FacetToolkit{
+
         void createFacets(SearchCommand.Context context, SolrQuery query);
+        void collectFacets(
+                SearchCommand.Context context,
+                QueryResponse response,
+                FacetedSearchResult<? extends ResultItem> searchResult);
     }
 
     protected static final class FacetToolkitFactory {

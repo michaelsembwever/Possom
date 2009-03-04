@@ -20,8 +20,13 @@ package no.sesat.search.mode.command;
 import java.util.Map;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.mode.config.FacetedCommandConfig;
+import no.sesat.search.result.FacetedSearchResult;
+import no.sesat.search.result.Modifier;
 import no.sesat.search.result.Navigator;
+import no.sesat.search.result.ResultItem;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 /**
  * Solr's Simple Faceting toolkit.
@@ -31,30 +36,61 @@ import org.apache.solr.client.solrj.SolrQuery;
  */
 public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolkit {
 
+    // Constructors --------------------------------------------------
+
+    // Public --------------------------------------------------------
+
     public void createFacets(final SearchCommand.Context context, final SolrQuery query) {
 
         final Map<String, Navigator> facets = getSearchConfiguration(context).getFacets();
         query.setFacet(0 < facets.size());
 
-        // facet counters
-        for (Navigator facet : facets.values()) {
-            query.addFacetField(facet.getField());
-        }
-
-        // facet selection
+        // facet counters || selection
         for (final Navigator facet : facets.values()) {
-            final StringDataObject facetValue = context.getDataModel().getParameters().getValue(facet.getId());
+            createFacet(context, facet, query);
+        }
+    }
 
-            if (null != facetValue) {
-                // splitting here allows for multiple navigation selections within the one navigation level.
-                for (String navSingleValue : facetValue.getString().split(",")) {
+    public void collectFacets(
+            final SearchCommand.Context context,
+            final QueryResponse response,
+            final FacetedSearchResult<? extends ResultItem> searchResult) {
 
-                    final String value = facet.isBoundaryMatch()
-                            ? "^\"" + navSingleValue + "\"$"
-                            : "\"" + navSingleValue + "\"";
-
-                    query.addFacetQuery(facet.getField() + ':' + value);
+        final Map<String, Navigator> facets = getSearchConfiguration(context).getFacets();
+        for (final Navigator facet : facets.values()) {
+            final FacetField field = response.getFacetField(facet.getId());
+            // facet counters
+            if(null != field && null != field.getValues()){
+                for (FacetField.Count c : field.getValues()){
+                    final Modifier mod = new Modifier(c.getName(), (int)c.getCount(), facet);
+                    searchResult.addModifier(facet.getId(), mod);
                 }
+            }
+        }
+    }
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+
+    private void createFacet(final SearchCommand.Context context, final Navigator facet, final SolrQuery query){
+
+        // we want the facet count
+        query.addFacetField(facet.getField());
+
+        final StringDataObject facetValue = context.getDataModel().getParameters().getValue(facet.getId());
+
+        if (null != facetValue) {
+            // splitting here allows for multiple navigation selections within the one navigation level.
+            for (String navSingleValue : facetValue.getString().split(",")) {
+
+                final String value = facet.isBoundaryMatch()
+                        ? "^\"" + navSingleValue + "\"$"
+                        : "\"" + navSingleValue + "\"";
+
+                query.addFilterQuery(facet.getField() + ':' + value);
             }
         }
     }
@@ -62,4 +98,7 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
     private FacetedCommandConfig getSearchConfiguration(final SearchCommand.Context context) {
         return (FacetedCommandConfig) context.getSearchConfiguration();
     }
+
+    // Inner classes -------------------------------------------------
+
 }
