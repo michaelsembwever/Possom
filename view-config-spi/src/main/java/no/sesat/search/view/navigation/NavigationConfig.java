@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -437,7 +437,13 @@ public final class NavigationConfig implements Serializable {
                     + '}';
         }
 
-
+        /** Automatically select a child when only one child exists.
+         * This repeats down to a level where the user actually has a choice of navigators to pick from.
+         * For this to work any model level navigators must exist down each level,
+         * eg defining fast navigators in a hierarchical way in modes.xml prevents the next level of navigators down
+         * from being selected there autoNavigation will not work.
+         * @return true if autoNavigation is enabled
+         */
         public boolean isAutoNavigation() {
             return autoNavigation;
         }

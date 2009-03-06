@@ -1,5 +1,5 @@
 /**
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ public class TreeUrlGenerator extends AbstractUrlGenerator {
      */
     public static String generateUrlParameter(final String name, final String value) {
         if (null != value && value.length() > 0) {
-            return enc(name) + "=" + value + "&amp;";
+            return enc(name) + "=" + enc(value) + "&amp;";
         }
         return "";
     }

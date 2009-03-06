@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -389,7 +389,7 @@ public abstract class AbstractResourceLoader
                         final Properties newProps = new Properties();
                         newProps.load(is);
 
-                        props.put(context.getSite().getName(), url);
+                        props.put(context.getSite().getName(), url.toString());
 
                         for(Object p : newProps.keySet()){
 

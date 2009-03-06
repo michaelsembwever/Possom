@@ -1,4 +1,4 @@
-/*Copyright (2008) Schibsted Søk AS
+/*Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -39,6 +39,8 @@ import no.sesat.search.query.UrlClause;
  * It blanks out valid filters.
  * Largely mimics the Query tree layout replacing OperatorClauses with the RESERVED_WORDS.
  * Does not write infixes when the next occurring leaf is inside a NotClause.
+ *
+ * @todo grouping doesn't work due to a dependence on the lean of the binary tree.
  *
  * @version $Id$
  */
@@ -168,7 +170,7 @@ public class InfixQueryBuilder extends AbstractQueryBuilder{
                 appendToQueryRepresentation(' ' + getConfig().getDefaultInfix() + ' ');
             }
             clause.getSecondClause().accept(this);
-            if(getConfig().getDefaultGrouped() && !unary){ appendToQueryRepresentation(getConfig().getDefaultGroupOpen()); }
+            if(getConfig().getDefaultGrouped() && !unary){ appendToQueryRepresentation(getConfig().getDefaultGroupClose()); }
         }
     }
 

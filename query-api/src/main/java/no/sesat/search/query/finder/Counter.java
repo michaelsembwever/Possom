@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -36,15 +36,18 @@ public final class Counter extends AbstractReflectionVisitor implements Serializ
 
     private Integer termCount = null;
 
-    /**
-     *
-     * @param root
-     * @return
+    private Clause root = null;
+
+    /** Get the count of leaves under this clause.
+     * Subsequent calls with the same argument will return a cached result.
+     * @param root the clause to count leaves within
+     * @return the number of LeafClauses found under the root clause.
      */
     public synchronized int getTermCount(final Clause root) {
 
-        if( termCount == null ){
+        if(root != this.root){
             termCount = 0;
+            this.root = root;
             visit(root);
         }
         return termCount;

@@ -1,4 +1,4 @@
-/* Copyright (2008) Schibsted Søk AS
+/* Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import no.sesat.search.mode.SearchModeFactory.Context;
 import no.sesat.search.mode.config.CommandConfig.Controller;
+import no.sesat.search.result.Navigator;
 import org.w3c.dom.Element;
 
 /** Searching against a Solr index using the Solrj client.
@@ -33,8 +34,7 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 @Controller("SolrSearchCommand")
-public class SolrCommandConfig extends CommandConfig {
-
+public class SolrCommandConfig extends CommandConfig implements FacetedCommandConfig {
 
     // Constants -----------------------------------------------------
 
@@ -47,6 +47,12 @@ public class SolrCommandConfig extends CommandConfig {
     private final Map<String,String> sort = new HashMap<String,String>();
 
     private Integer timeout = Integer.MAX_VALUE;
+
+    private final Map<String, Navigator> facets = new HashMap<String,Navigator>();
+
+    private String facetToolkit;
+
+    private String queryType = null;
 
     // Static --------------------------------------------------------
 
@@ -91,6 +97,23 @@ public class SolrCommandConfig extends CommandConfig {
      */
     public void setFilteringQuery(final String filteringQuery){
         this.filteringQuery = filteringQuery;
+    }
+
+    /** Sets the qt parameter in turn choosing a query handler.
+     * {@link http://wiki.apache.org/solr/CoreQueryParameters}
+     *
+     * @return
+     */
+    public String getQueryType(){
+        return queryType;
+    }
+
+    /** @see #getQueryType()
+     *
+     * @param filteringQuery
+     */
+    public void setQueryType(final String queryType){
+        this.queryType = queryType;
     }
 
     /** @see #setFieldFilters(java.lang.String[])
@@ -138,6 +161,33 @@ public class SolrCommandConfig extends CommandConfig {
         return timeout;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Navigator> getFacets() {
+        return facets;
+    }
+
+    /**
+     *
+     * @param navigatorKey
+     * @return
+     */
+    @Override
+    public Navigator getFacet(final String navigatorKey) {
+        return facets.get(navigatorKey);
+    }
+
+    public String getFacetToolkit() {
+        return facetToolkit;
+    }
+
+    public void setFacetToolkit(final String toolkit){
+        this.facetToolkit = toolkit;
+    }
+
     @Override
     public SearchConfiguration readSearchConfiguration(
             final Element element,
@@ -155,6 +205,8 @@ public class SolrCommandConfig extends CommandConfig {
                clearSort();
             }
         }
+
+        FacetedSearchConfigurationDeserializer.readNavigators(element, this, inherit, facets);
 
         return this;
     }

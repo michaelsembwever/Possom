@@ -1,5 +1,5 @@
 /*
- * Copyright (2006-2007) Schibsted Søk AS
+ * Copyright (2006-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,6 +31,8 @@ import no.sesat.search.query.OrClause;
 import no.sesat.search.query.UrlClause;
 
 /** QueryBuilder prefixing terms depending on their inclusion/exclusion.
+ *
+ * @todo grouping doesn't work due to a dependence on the lean of the binary tree.
  *
  * @version $Id$
  */

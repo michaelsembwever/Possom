@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted Søk AS
+/* Copyright (2006-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -19,29 +19,28 @@ package no.sesat.search.result;
 
 import java.io.Serializable;
 
-/** Configuration within a CommandConfig used for manipulating the command's navigation results.
+/** Configuration within a CommandConfig used to define facets for any facet supporting search command.
  *
+ * Each facet contains an id, name, displayName, sort definition, boundaryMatch enabled, and children navigators.
  *
- * @version <tt>$Revision: 3361 $</tt>
+ * @todo rename to Facet
+ *
+ * @version <tt>$Id$</tt>
  */
 public final class Navigator implements Serializable {
 
-    /**
-     * The serialVersionUID
-     */
-    private static final long serialVersionUID = -3135641813818854457L;
+    private String id;
     private String name;
     private String field;
     private Navigator childNavigator;
     private String displayName;
     private Sort sort;
-
     private final boolean boundaryMatch;
 
 
     public enum Sort {
-        COUNT(),
-        YEAR(),
+        COUNT,
+        YEAR,
         MONTH_YEAR(),
         DAY_MONTH_YEAR(),
         DAY_MONTH_YEAR_DESCENDING,
@@ -53,10 +52,14 @@ public final class Navigator implements Serializable {
         NONE
     }
 
-    /**
-     *
+    /** Constructor with preset values.
      */
-    public Navigator(final String name, final String field, final String displayName, final Sort sort, final boolean boundaryMatch) {
+    public Navigator(
+            final String name,
+            final String field,
+            final String displayName,
+            final Sort sort,
+            final boolean boundaryMatch) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;
@@ -64,72 +67,44 @@ public final class Navigator implements Serializable {
         this.boundaryMatch = boundaryMatch;
     }
 
-    /**
-     *
-     */
+    /** Default Constructor. **/
     public Navigator() {
         boundaryMatch = false;
     }
 
-    /**
-     *
-     */
     public Navigator getChildNavigator() {
         return childNavigator;
     }
 
-    /**
-     *
-     */
     public void setChildNavigator(final Navigator childNavigator) {
         this.childNavigator = childNavigator;
     }
 
-    /**
-     *
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     *
-     */
     public void setName(final String name) {
         this.name = name;
     }
 
-    /**
-     *
-     */
+    @Override
     public String toString() {
         return name;
     }
 
-    /**
-     *
-     */
     public String getField() {
         return field;
     }
 
-    /**
-     *
-     */
     public void setField(final String field) {
         this.field = field;
     }
 
-    /**
-     *
-     */
     public String getDisplayName() {
         return displayName;
     }
 
-    /**
-     *
-     */
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
@@ -142,11 +117,6 @@ public final class Navigator implements Serializable {
     public final Sort getSort() {
         return this.sort;
     }
-
-    /**
-     * Holds value of property id.
-     */
-    private String id;
 
     /**
      * Getter for property id.

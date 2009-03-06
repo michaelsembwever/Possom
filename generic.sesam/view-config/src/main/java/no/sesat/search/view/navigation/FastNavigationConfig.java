@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -23,10 +23,9 @@ import static no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
 import no.sesat.search.view.navigation.NavigationConfig.Nav.ControllerFactory;
 import org.w3c.dom.Element;
 
-/**
+/** The configuration bean for navigation items generated from a Faceted Search Command's Modifiers.
  *
- *
- *
+ * @todo RENAME to ModifierNavigationConfig
  */
 @ControllerFactory("no.sesat.search.view.navigation.fast.FastNavigationControllerFactory")
 public class FastNavigationConfig extends NavigationConfig.Nav {

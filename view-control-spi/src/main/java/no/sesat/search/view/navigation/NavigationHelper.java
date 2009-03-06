@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -38,20 +38,29 @@ import no.sesat.search.result.NavigationItem;
 public final class NavigationHelper {
 
     // Constants -----------------------------------------------------
+
+    // Static --------------------------------------------------------
+
     public static String removeQuery(final String url) {
         return url.replaceAll("(&amp;)?q=[^&]*", "");
     }
 
-    /**
-     * @todo move into domain? (NavigationItem & BasicNavigationItem)
+    /** Drill down the navigation hierarchy and find the first Nav that hasn't yet been selected.
+     * Any Nav that has autoNavigation and has only one child will be automatically selected,
+     *      (as along as the child has a corresponding NavigationItem).
+     * @param dm the datamodel
+     * @param nav the current nav
+     * @return the first non-selected nav inside the current nav given
      */
     public static NavigationConfig.Nav getFirstNotSelected(DataModel dm, NavigationConfig.Nav nav) {
+
+        NavigationConfig.Nav result = null;
 
         if (dm.getParameters().getValue(nav.getId()) != null
                 && !nav.getChildNavs().isEmpty()
                 && !nav.getChildNavs().get(0).isVirtual()) {
 
-            return getFirstNotSelected(dm, nav.getChildNavs().get(0));
+            result = getFirstNotSelected(dm, nav.getChildNavs().get(0));
 
         } else {
 
@@ -61,6 +70,8 @@ public final class NavigationHelper {
                     ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
                     : 0;
 
+            if(1 == navResultSize && !nav.getChildNavs().isEmpty() && (nav.isAutoNavigation() || isOslo(dm, nav))){
+
 // TODO: Specification is a mess, so this becomes ugly. See history in prio-198 & SEARCH-3320.
 // TODO: Haven't found a general way to solve this. Special case for Oslo.
 // TODO: New JIRA created to resolve this: SEARCH-3451
@@ -69,10 +80,15 @@ public final class NavigationHelper {
 //                    : nav;
 
 
-            return 1 == navResultSize && !nav.getChildNavs().isEmpty() && (nav.isAutoNavigation() || isOslo(dm, nav))
-                    ? getFirstNotSelected(dm, nav.getChildNavs().get(0))
-                    : nav;
+                // don't go automatically selecting any navigator we haven't built a NavigationItem for
+                final NavigationItem childNavItem = dm.getNavigation().getNavigation(nav.getChildNavs().get(0).getId());
+                if(null != childNavItem && 0 < childNavItem.getResults().size()){
+
+                    result = getFirstNotSelected(dm, nav.getChildNavs().get(0));
+                }
+            }
         }
+        return null != result ? result : nav;
     }
 
     public static NavigationItem getSingleNavigationItem(DataModel dm, final String navId, final String value) {
@@ -91,9 +107,16 @@ public final class NavigationHelper {
         }
     }
 
-    public String getResetUrl(final DataModel dm, final String navId) {
+    public static String getResetUrl(final DataModel dm, final String navId) {
         return dm.getNavigation().getNavigation("reset_" + navId).getUrl();
     }
+
+    // Constructors --------------------------------------------------
+
+    /** Velocity templates need an instance to put into the context just to call the static methods. **/
+    public NavigationHelper(){}
+
+    // Private -------------------------------------------------------
 
     /** Checks if navigation is "oslo".
      *

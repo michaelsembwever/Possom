@@ -1,4 +1,4 @@
-/* Copyright (2007-2008) Schibsted Søk AS
+/* Copyright (2007-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -47,7 +47,8 @@ import org.apache.log4j.Logger;
  * Responsible for Persistent User Login. Or "Remember Me" functionality. Based off
  * http://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice
  *
- *
+ * The user's manual logging in with username and password
+ *  must be performed in a separate application that fronts to UserService.
  *
  * @version <tt>$Id$</tt>
  */
@@ -201,9 +202,14 @@ public final class UserFilter implements Filter {
                 // Updates the login cookie.
                 UserCookieUtil.setUserLoginCookie(response, user.getNextLoginKey());
             }
-        } catch (final InvalidTokenException e) {
-            // TODO: Give message to user?
+        } catch (InvalidTokenException e) {
+            // TODO: Give message to user? eg "You were logged out for security reasons"
             LOG.warn("Invalid token in login key: " + loginKey);
+            datamodel.getUser().setUser(null);
+            UserCookieUtil.setUserLoginCookieDefault(response);
+        } catch (Throwable e) {
+            // TODO: Give message to user?  eg "You were logged out for security reasons"
+            LOG.warn("Unknown throwable: " + e.getMessage());
             datamodel.getUser().setUser(null);
             UserCookieUtil.setUserLoginCookieDefault(response);
         }

@@ -72,7 +72,7 @@
             &lt;&lt;
             #if ($nav.backText != "")
                 $nav.backText
-            #else
+            #elseif($datamodel.navigation.getNavigation($nav.getParent().getId()).getResults().size() > 0)
                 $datamodel.navigation.getNavigation($nav.getParent().getId()).getResults().get(0).getTitle()
             #end
             </a>
@@ -109,7 +109,7 @@
             </div>
         #else
             <div class="cellHold">
-                <div class="cellLeft"><span class="subText${branch.depth}">#newsSimpleNavigationLink($branch '')</div>
+                <div class="cellLeft"><span class="subText${branch.depth}">#simpleNavigationLink($branch '')</div>
                 <div class="liner"></div>
             </div>
         #end
@@ -124,7 +124,7 @@
     #foreach($branch in $top.getSelectedBranch())
         #if($branch.isChildSelected())
             <div class="cellHold">
-                <div class="cellLeft">$aImg #newsSimpleNavigationLink($branch '')</div>
+                <div class="cellLeft">$aImg #simpleNavigationLink($branch '')</div>
                 <div class="liner"></div>
             </div>
         #else
@@ -138,8 +138,12 @@
 
     #foreach($leaf in $top.results)
         <div class="cellHold">
-            <div class="cellLeft">#newsSimpleNavigationLink($leaf '')</div>
+            <div class="cellLeft">#simpleNavigationLink($leaf '')</div>
             <div class="liner"></div>
         </div>
     #end
+#end
+
+#macro(simpleNavigationLink $extendedNavigator $subcategory)
+   <a href="$boomerang.getUrl($datamodel.site.site,"$extendedNavigator.url", "category:navigation;subcategory:$subcategory")">#htmlescape($extendedNavigator.title)</a>
 #end

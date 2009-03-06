@@ -1,0 +1,5 @@
+#if($request.getParameter('jsonp'))##
+$request.getParameter('jsonp')(#jsonDataModel())##
+#else##
+#jsonDataModel()##
+#end##

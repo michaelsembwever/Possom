@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted Søk AS
+/* Copyright (2006-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -24,13 +24,14 @@ package no.sesat.search.view.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import no.sesat.search.site.config.AbstractDocumentFactory;
 import no.sesat.search.view.navigation.NavigationConfig;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -48,7 +49,7 @@ public final class SearchTab implements Serializable{
 
     public static final String PARAMETER_KEY = "c";
 
-    private static final Logger LOG = Logger.getLogger(SearchTab.class);
+    //private static final Logger LOG = Logger.getLogger(SearchTab.class);
 
     // Attributes ----------------------------------------------------
 
@@ -299,6 +300,8 @@ public final class SearchTab implements Serializable{
     /**
      * Getter for property displayCss
      * @return
+     *
+     * @deprecated css definitions belong against the layout.
      */
     public boolean isDisplayCss() {
         return displayCss;
@@ -369,6 +372,8 @@ public final class SearchTab implements Serializable{
     /**
      * Getter for property css.
      * @return Value of property css.
+     *
+     * @deprecated css definitions belong against the layout.
      */
     public List<String> getCss() {
         return Collections.unmodifiableList(css);
@@ -377,6 +382,8 @@ public final class SearchTab implements Serializable{
     /**
      * Getter for property javascript.
      * @return Value of property javascript.
+     *
+     * @deprecated javascript definitions belong against the layout.
      */
     public List<String> getJavascript() {
         return Collections.unmodifiableList(javascript);
@@ -546,10 +553,16 @@ public final class SearchTab implements Serializable{
         private Map<String,String> properties;
         private String contentType;
         private int expires = -1;
+        private boolean displayCss;
+        private final List<String> css = new ArrayList<String>();
+        private final List<String> javascript = new ArrayList<String>();
 
         private Layout(){}
 
-        /**
+        /** Copy constructor. Used when inheriting from another Layout.
+         *
+         * Two fields cannot be inherited, id and origin.
+         * These must be explicitly set on each instance.
          *
          * @param inherit
          */
@@ -563,27 +576,22 @@ public final class SearchTab implements Serializable{
                 properties = inherit.properties;
                 contentType = inherit.contentType;
                 expires = inherit.expires;
+                displayCss = inherit.displayCss;
+                css.addAll(inherit.css);
+                javascript.addAll(inherit.javascript);
             }
         }
 
-        /**
-         *
-         * @return
-         */
         public String getId(){
             return id;
         }
 
-        /**
-         *
-         * @return
-         */
         public Map<String,String> getIncludes(){
 
             return includes;
         }
 
-        /**
+        /** Get the include with the given key.
          *
          * @param key
          * @return
@@ -593,15 +601,11 @@ public final class SearchTab implements Serializable{
             return includes.get(key);
         }
 
-        /**
-         *
-         * @return
-         */
         public Map<String,String> getProperties(){
             return properties;
         }
 
-        /**
+        /** Get the property with the given key
          *
          * @param key
          * @return
@@ -612,23 +616,16 @@ public final class SearchTab implements Serializable{
 
         /**
          * @return
-         @deprecated **/
+         * @deprecated no need to use this anymore.
+         **/
         public String getOrigin(){
             return origin;
         }
 
-        /**
-         *
-         * @return
-         */
         public String getMain(){
             return main;
         }
 
-        /**
-         *
-         * @return
-         */
         public String getFront(){
             return front;
         }
@@ -650,6 +647,30 @@ public final class SearchTab implements Serializable{
        public int getExpiresInSeconds() {
            return expires;
        }
+
+        /**
+         * Getter for property displayCss
+         * @return
+         */
+        public boolean isDisplayCss() {
+            return displayCss;
+        }
+
+        /**
+         * Getter for property css.
+         * @return Value of property css.
+         */
+        public List<String> getCss() {
+            return Collections.unmodifiableList(css);
+        }
+
+        /**
+         * Getter for property javascript.
+         * @return Value of property javascript.
+         */
+        public List<String> getJavascript() {
+            return Collections.unmodifiableList(javascript);
+        }
 
         /** Will return null when the element argument is null.
          * Otherwise returns the Layout object deserialised from the contents of the Element.
@@ -678,6 +699,22 @@ public final class SearchTab implements Serializable{
                 if(0 < element.getAttribute("expires-in-seconds").length()){
                     expires = Integer.parseInt(element.getAttribute("expires-in-seconds"));
                 }
+                if(0 < element.getAttribute("display-css").length()){
+                    displayCss = Boolean.parseBoolean(element.getAttribute("display-css"));
+                }
+
+                final String allCss = AbstractDocumentFactory.parseString(element.getAttribute("css"), null);
+                final String[] cssArr = allCss != null ? allCss.split(",") : new String[]{};
+
+                css.addAll(Arrays.asList(cssArr));
+
+                final String allJavascript
+                        = AbstractDocumentFactory.parseString(element.getAttribute("javascript"), null);
+                final String[] jsArr = allJavascript != null ? allJavascript.split(",") : new String[]{};
+
+
+                javascript.addAll(Arrays.asList(jsArr));
+
                 includes = readMap(includes, element.getElementsByTagName("include"), "key", "template");
                 properties = readMap(properties, element.getElementsByTagName("property"), "key", "value");
             }

@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ import no.sesat.search.result.ResultList;
 import no.sesat.search.view.config.SearchTab;
 
 
-/**
- *
+/** The ControllerFactory and Controller class for manually configuration navigators against a command.
+ * The command itself need not be a faceted search command.
  *
  *
  * @version $Id$
@@ -54,22 +54,26 @@ public class OptionNavigationController
     }
 
     public NavigationItem getNavigationItems(Context context) {
-        final ResultList<ResultItem> searchResult = commandName != null
-                ? context.getDataModel().getSearch(commandName).getResults()
+
+        final DataModel dm = context.getDataModel();
+
+        final ResultList<ResultItem> searchResult = commandName != null && null != dm.getSearch(commandName)
+                ? dm.getSearch(commandName).getResults()
                 : null;
 
-        if (! config.getOptionsToKeep().isEmpty()) {
-            removeAllBut(config.getOptionsToKeep(), searchResult, context.getDataModel());
+        if (!config.getOptionsToKeep().isEmpty()) {
+            removeAllBut(config.getOptionsToKeep(), searchResult, dm);
         }
 
-        removeAll(config.getOptionsToDelete(), context.getDataModel());
-        addAll(config.getOptionsToAdd(), context.getDataModel(), context);
+        removeAll(config.getOptionsToDelete(), dm);
+        addAll(config.getOptionsToAdd(), dm, context);
 
         // Only modifies the result of the parent. Return null.
         return null;
     }
 
     private void removeAll(final Collection<OptionsNavigationConfig.Option> options, final DataModel dataModel) {
+
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         for (final Iterator<NavigationItem> iterator = parentResult.getResults().iterator(); iterator.hasNext();) {
             final NavigationItem item = iterator.next();
@@ -85,6 +89,7 @@ public class OptionNavigationController
             final Collection<OptionsNavigationConfig.Option> optionsToKeep,
             final ResultList<ResultItem> searchResult,
             final DataModel dataModel) {
+
         final NavigationItem parentResult = dataModel.getNavigation().getNavigation(config.getParent().getId());
         final List<NavigationItem> toRemove = new ArrayList<NavigationItem>();
         StringDataObject selectedValue = dataModel.getParameters().getValue(config.getParent().getField());
@@ -131,7 +136,8 @@ public class OptionNavigationController
 
         for (final OptionsNavigationConfig.Option option : optionsToAdd) {
 
-            final ResultList<ResultItem> searchResult = option.getCommandName() != null
+            final String cmdName = option.getCommandName();
+            final ResultList<ResultItem> searchResult = null != cmdName && null != dataModel.getSearch(cmdName)
                     ? dataModel.getSearch(option.getCommandName()).getResults()
                     : null;
 
@@ -164,8 +170,8 @@ public class OptionNavigationController
                     selectionDone = true;
                 }
 
-                if (option.isUseHitCount() && option.getCommandName() != null) {
-                    navigator.setHitCount(dataModel.getSearch(option.getCommandName()).getResults().getHitCount());
+                if (option.isUseHitCount() && searchResult != null) {
+                    navigator.setHitCount(searchResult.getHitCount());
                 }
             }
         }

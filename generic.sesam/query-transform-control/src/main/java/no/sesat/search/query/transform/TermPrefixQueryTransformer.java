@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted Søk AS
+ * Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -141,10 +141,21 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
     }
 
     private void addPrefix(final Clause clause, final String prefix) {
+
         final String term = getTransformedTerms().get(clause);
 
         if (term != null && !(term.equals("") || isAlreadyPrefixed(term, prefix))) {
-            getTransformedTerms().put(clause, prefix + ':' + term);
+            final String[] prefixArr = prefix.split(",");
+            final StringBuilder builder = new StringBuilder();
+            if(1 < prefixArr.length){ builder.append('('); }
+            for(String p : prefixArr){
+                builder.append(p + ':' + term);
+                if(!p.equals(prefixArr[prefixArr.length-1])){
+                    builder.append(' ' + config.getMultiTermJoin() + ' ');
+                }
+            }
+            if(1 < prefixArr.length){ builder.append(')'); }
+            getTransformedTerms().put(clause, builder.toString());
         }
     }
 

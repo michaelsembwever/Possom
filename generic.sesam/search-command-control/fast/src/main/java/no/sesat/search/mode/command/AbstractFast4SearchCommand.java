@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted Søk AS
+/* Copyright (2005-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,7 +75,11 @@ import no.sesat.search.result.ResultList;
 import no.sesat.search.result.WeightedSuggestion;
 
 /**
- * Handles the basic implementation of the Simple FAST search.
+ * Handles the basic implementation of the FAST 4 search.
+ *
+ * Includes support for
+ *  - faceted search (modifiers or navigators),
+ *  - relevant queries, proper name and spelling suggestions.
  *
  * @version $Id$
  */
@@ -92,14 +97,16 @@ import no.sesat.search.result.WeightedSuggestion;
     private static final String COLLAPSE_PARAMETER = "collapse";
 
     // Attributes ----------------------------------------------------
-    private final Map<String, Navigator> navigatedTo = new HashMap<String, Navigator>();
+    private final Map<String, Navigator> navigators;
     // Deprecated code. I cannot see how anybody is using it. Much related below is also commented out.
 //    private final Map<String, String[]> navigatedValues = new HashMap<String, String[]>();
 
     private final String queryServerUrl;
 
     // Static --------------------------------------------------------
-    private static final Map<String, IFastSearchEngine> SEARCH_ENGINES = new ConcurrentHashMap<String, IFastSearchEngine>();
+    private static final Map<String, IFastSearchEngine> SEARCH_ENGINES
+            = new ConcurrentHashMap<String, IFastSearchEngine>();
+
     private static transient IFastSearchEngineFactory engineFactory;
 
     static {
@@ -126,6 +133,7 @@ import no.sesat.search.result.WeightedSuggestion;
         final FastCommandConfig conf = (FastCommandConfig) cxt.getSearchConfiguration();
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         queryServerUrl = siteConf.getProperty(conf.getQueryServerUrl());
+        navigators = conf.getNavigators();
     }
 
     // Public --------------------------------------------------------
@@ -139,7 +147,7 @@ import no.sesat.search.result.WeightedSuggestion;
      */
     public Collection<String> createNavigationFilterStrings() {
 
-        final Collection<String> filterStrings = new ArrayList<String>();
+        Collection<String> filterStrings = new ArrayList<String>();
 
 //        for (final Iterator iterator = navigatedValues.keySet().iterator(); iterator.hasNext();) {
 //            final String field = (String) iterator.next();
@@ -156,28 +164,9 @@ import no.sesat.search.result.WeightedSuggestion;
 //            }
 //        }
 
-        for (final Navigator navigator : getSearchConfiguration().getNavigators().values()) {
+        for (final Navigator navigator : getNavigators().values()) {
 
-            final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
-
-            if (navigatedValue != null) {
-
-                // TODO this test should be encapsulated with the delegated filterBuilder
-                final StringBuilder filter
-                        = new StringBuilder("adv".equals(getSearchConfiguration().getFiltertype()) ? " AND (" : " +(");
-
-                // splitting here allows for multiple navigation selections within the one navigation level.
-                for(String navSingleValue : navigatedValue.getString().split(",")){
-
-                    final String value =  navigator.isBoundaryMatch()
-                            ? "^\"" + navSingleValue + "\"$"
-                            : "\"" + navSingleValue + "\"";
-
-                    filter.append(' ' + navigator.getField() + ':'  + value);
-                }
-
-                filterStrings.add(filter.append(" )").toString());
-            }
+            filterStrings = createNavigationFilterStrings(filterStrings, navigator);
         }
 
         return filterStrings;
@@ -189,14 +178,6 @@ import no.sesat.search.result.WeightedSuggestion;
      */
     public static void setSearchEngineFactory(final IFastSearchEngineFactory factory) {
         engineFactory = factory;
-    }
-
-    /**
-     * Add to the navigatedTo map the navigator (from SearchConfiguration) by the name "navigatorKey".
-     * @param navigatorKey name of Navigator to add
-     */
-    public void addNavigatedTo(final String navigatorKey) {
-        navigatedTo.put(navigatorKey, getNavigators().get(navigatorKey));
     }
 
     // Z implementation ----------------------------------------------
@@ -214,13 +195,6 @@ import no.sesat.search.result.WeightedSuggestion;
     public ResultList<ResultItem> execute() {
 
         try {
-            if (getNavigators() != null) {
-                for (String navigatorKey : getNavigators().keySet()) {
-
-                    addNavigatedTo(navigatorKey);
-                }
-            }
-
             final IFastSearchEngine engine = getSearchEngine();
 
             final IQuery fastQuery = createQuery();
@@ -296,6 +270,11 @@ import no.sesat.search.result.WeightedSuggestion;
         }
     }
 
+    /**
+     * @deprecated does nothing. here only to maintain API.
+     */
+    public void addNavigatedTo(final String navigatorKey) {}
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
@@ -306,7 +285,7 @@ import no.sesat.search.result.WeightedSuggestion;
      */
     protected Map<String, Navigator> getNavigators() {
 
-        return getSearchConfiguration().getNavigators();
+        return navigators;
     }
 
 
@@ -508,7 +487,7 @@ import no.sesat.search.result.WeightedSuggestion;
 
         if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
 
-            Collection navStrings = createNavigationFilterStrings();
+            final Collection<String> navStrings = createNavigationFilterStrings();
             filter.append(' ');
             filter.append(' ').append(StringUtils.join(navStrings.iterator(), " "));
         }
@@ -646,28 +625,22 @@ import no.sesat.search.result.WeightedSuggestion;
 
     private String getNavigatorsString() {
 
-        if (getNavigators() != null) {
+        final Collection<Navigator> allFlattened = new ArrayList<Navigator>();
 
+        for (Navigator navigator : getNavigators().values()) {
 
-            Collection<Navigator> allFlattened = new ArrayList<Navigator>();
-
-
-            for (Navigator navigator : getNavigators().values()) {
-
-                allFlattened.addAll(flattenNavigators(new ArrayList<Navigator>(), navigator));
-            }
-
-            return StringUtils.join(allFlattened.iterator(), ',');
-        } else {
-            return "";
+            allFlattened.addAll(flattenNavigators(new ArrayList<Navigator>(), navigator));
         }
+
+        return StringUtils.join(allFlattened.iterator(), ',');
     }
 
     private Collection<Navigator> flattenNavigators(Collection<Navigator> soFar, Navigator nav) {
 
         soFar.add(nav);
 
-        if (nav.getChildNavigator() != null) {
+        // don't ask for navigators one step beyond anything not selected
+        if (null != nav.getChildNavigator() && null != datamodel.getParameters().getValue(nav.getId())) {
             flattenNavigators(soFar, nav.getChildNavigator());
         }
 
@@ -676,29 +649,28 @@ import no.sesat.search.result.WeightedSuggestion;
 
     private void collectModifiers(IQueryResult result, FastSearchResult<ResultItem> searchResult) {
 
-        for (String navigatorKey : navigatedTo.keySet()) {
+        for (Navigator nav : getNavigators().values()) {
 
-            collectModifier(navigatorKey, result, searchResult);
+            collectModifier(nav, result, searchResult);
         }
-
     }
 
-    protected void collectModifier(
-            final String navigatorKey,
+    private void collectModifier(
+            final Navigator nav,
             final IQueryResult result,
             final FastSearchResult<ResultItem> searchResult) {
 
-        final Navigator nav = navigatedTo.get(navigatorKey);
+        final String navigatorKey = nav.getId();
 
         final INavigator navigator = result.getNavigator(nav.getName());
 
         if (null != navigator) {
 
-            final Iterator modifers = navigator.modifiers();
+            final Iterator iterator = navigator.modifiers();
 
-            while (modifers.hasNext()) {
+            while (iterator.hasNext()) {
 
-                final IModifier modifier = (IModifier) modifers.next();
+                final IModifier modifier = (IModifier) iterator.next();
 
                 if (!"unknown".equals(modifier.getName())) {
 
@@ -708,25 +680,28 @@ import no.sesat.search.result.WeightedSuggestion;
                 }
             }
 
-            if (searchResult.getModifiers(navigatorKey) != null) {
+            // live copy of list!
+            final List<Modifier> modifiers = searchResult.getModifiers(navigatorKey);
+
+            if (null != modifiers) {
                 switch (nav.getSort()) {
                     case DAY_MONTH_YEAR:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR);
+                        Collections.sort(modifiers, ModifierDateComparator.DAY_MONTH_YEAR);
                         break;
                     case DAY_MONTH_YEAR_DESCENDING:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR_DESCENDING);
+                        Collections.sort(modifiers, ModifierDateComparator.DAY_MONTH_YEAR_DESCENDING);
                         break;
                     case YEAR_MONTH_DAY_DESCENDING:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH_DAY_DESCENDING);
+                        Collections.sort(modifiers, ModifierDateComparator.YEAR_MONTH_DAY_DESCENDING);
                         break;
                     case YEAR:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR);
+                        Collections.sort(modifiers, ModifierDateComparator.YEAR);
                         break;
                     case MONTH_YEAR:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.MONTH_YEAR);
+                        Collections.sort(modifiers, ModifierDateComparator.MONTH_YEAR);
                         break;
                     case CUSTOM:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), getModifierComparator(nav));
+                        Collections.sort(modifiers, getModifierComparator(nav));
                         break;
                     case NONE:
                         // Use the sorting the index returns
@@ -734,12 +709,15 @@ import no.sesat.search.result.WeightedSuggestion;
                     case COUNT:
                         /* Fall through */
                     default:
-                        Collections.sort(searchResult.getModifiers(navigatorKey));
+                        Collections.sort(modifiers);
                         break;
                 }
-
             }
 
+            // include any child
+            if(null != nav.getChildNavigator()){
+                collectModifier(nav.getChildNavigator(), result, searchResult);
+            }
         }
     }
 
@@ -809,6 +787,39 @@ import no.sesat.search.result.WeightedSuggestion;
             }
         }
     }
+
+
+    private Collection<String> createNavigationFilterStrings(
+             final Collection<String> filterStrings,
+             final Navigator navigator) {
+
+         final StringDataObject navigatedValue = datamodel.getParameters().getValue(navigator.getId());
+
+         if(null != navigatedValue){
+
+             // TODO this test should be encapsulated with the delegated filterBuilder
+             final StringBuilder filter = new StringBuilder("adv".equals(getSearchConfiguration().getFiltertype())
+                     ? " AND ("
+                     : " +(");
+
+             // splitting here allows for multiple navigation selections within the one navigation level.
+             for (String navSingleValue : navigatedValue.getString().split(",")) {
+
+                 final String value = navigator.isBoundaryMatch()
+                         ? "^\"" + navSingleValue + "\"$"
+                         : "\"" + navSingleValue + "\"";
+
+                 filter.append(' ' + navigator.getField() + ':' + value);
+             }
+
+             filterStrings.add(filter.append(" )").toString());
+        }
+
+         // include any children (if parent is selected)
+         return null != navigatedValue && null != navigator.getChildNavigator()
+                 ? createNavigationFilterStrings(filterStrings, navigator.getChildNavigator())
+                 : filterStrings;
+     }
 
     // Inner classes -------------------------------------------------
 
