@@ -1,4 +1,4 @@
-/** Copyright (2005-2008) Schibsted Søk AS
+/** Copyright (2005-2009) Schibsted Søk AS
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -169,7 +169,7 @@ Clause parse() : {
   Clause clause;
   LOG.info("parsing: "+context.getQueryString());
 }{
-        (clause = rootPrecedence()) 
+        (clause = rootPrecedence())
  {
         LOG.info("parsing of " + context.getQueryString() + " resulted in: " + clause);
         return clause;
@@ -339,7 +339,8 @@ Clause fieldedLeaf(final Token field) :{
                 final PhoneNumberClause phClause = context.createPhoneNumberClause(term, f);
 
                 // Create a XorClause
-                final QueryParserImpl p = new QueryParserImpl(createContext(token.image), PHONE_NUMBER_DISABLED);
+                final String fieldNterm = null == field ? token.image : f + ':' + token.image;
+                final QueryParserImpl p = new QueryParserImpl(createContext(fieldNterm), PHONE_NUMBER_DISABLED);
                 final Clause altClause = p.parse();
                 return context.createXorClause(phClause, altClause, XorClause.Hint.PHONE_NUMBER_ON_LEFT);
 
@@ -355,7 +356,8 @@ Clause fieldedLeaf(final Token field) :{
                 final NumberGroupClause orgClause = context.createNumberGroupClause(term, f);
 
                 // Create a XorClause
-                final QueryParserImpl p = new QueryParserImpl(createContext(token.image), NUMBER_GROUP_DISABLED);
+                final String fieldNterm = null == field ? token.image : f + ':' + token.image;
+                final QueryParserImpl p = new QueryParserImpl(createContext(fieldNterm), NUMBER_GROUP_DISABLED);
                 final Clause altClause = p.parse();
                 return context.createXorClause(orgClause, altClause, XorClause.Hint.NUMBER_GROUP_ON_LEFT);
 
@@ -411,10 +413,12 @@ Clause fieldedQuote(final Token field) :{
                 final PhraseClause phClause = context.createPhraseClause(token.image, f );
 
                 // Create unphrased query. also strip all operator and skip characters out. SKER4723.
+                final String spaceNfield = null == f ? "" : ' ' + f;
                 final String term = token.image
                                         .replaceAll("\"","")
                                         .replaceAll(SKIP_REGEX, " ")
                                         .replaceAll(OPERATOR_REGEX, " ")
+                                        .replaceAll(" +", spaceNfield)
                                         .trim();
 
                 try { // if we can parse the content again, then make an xorclause

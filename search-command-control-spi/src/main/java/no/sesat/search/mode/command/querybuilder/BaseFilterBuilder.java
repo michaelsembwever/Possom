@@ -1,5 +1,5 @@
 /*
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -43,8 +43,6 @@ import org.apache.log4j.Logger;
  *
  * The " +" is defined as the deliminator, and is provided by getDelim() if a subclass wishes to alter just this.
  *
- * @todo add correct handling of NotClause and AndNotClause.
- * This also needs to be added to the query builder visitor above.
  *
  * @todo design for polymorphism and push out fast specifics to appropriate subclass.
  *
@@ -56,11 +54,14 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
 
     private static final Logger LOG = Logger.getLogger(BaseFilterBuilder.class);
 
-    private static final String DELIM = " +";
+    private static final String DELIM_INCLUSIVE = " +";
+    private static final String DELIM_EXCLUSIVE = " -";
 
     // Attributes ----------------------------------------------------
 
     private final StringBuilder additionalFilters = new StringBuilder();
+
+    private boolean insideNot = false;
 
     // Static --------------------------------------------------------
 
@@ -91,6 +92,7 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
 
     public String getFilterString() {
 
+        insideNot = false;
         return getQueryString()
                 + (additionalFilters.length() > 0 ? ' ' : "")
                 + additionalFilters.toString();
@@ -158,9 +160,19 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
     }
 
     protected void visitImpl(final NotClause clause) {
+
+        final boolean wasInsideNot = insideNot;
+        insideNot = true;
+        clause.getFirstClause().accept(this);
+        insideNot = wasInsideNot;
     }
 
     protected void visitImpl(final AndNotClause clause) {
+
+        final boolean wasInsideNot = insideNot;
+        insideNot = true;
+        clause.getFirstClause().accept(this);
+        insideNot = wasInsideNot;
     }
 
     protected void appendFilter(final LeafClause clause) {
@@ -188,7 +200,7 @@ public class BaseFilterBuilder extends AbstractQueryBuilder implements FilterBui
     }
 
     protected String getDelim(){
-        return DELIM;
+        return insideNot ? DELIM_EXCLUSIVE : DELIM_INCLUSIVE;
     }
 
     // Private -------------------------------------------------------

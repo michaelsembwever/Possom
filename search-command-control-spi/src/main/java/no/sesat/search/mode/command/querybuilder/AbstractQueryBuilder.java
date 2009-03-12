@@ -1,4 +1,4 @@
-/* Copyright (2008) Schibsted Søk AS
+/* Copyright (2008-2009) Schibsted Søk AS
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -155,6 +155,8 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
         boolean result = false;
 
+        // FIXME handle XorClause to call isEmptyLeaf on only the child that getContext().visitXorClause(..) does.
+        // if(clause instanceof XorClause){}else{
         if(clause instanceof BinaryClause){
             final BinaryClause c = (BinaryClause)clause;
             result = isEmptyLeaf(c.getFirstClause()) && isEmptyLeaf(c.getSecondClause());
