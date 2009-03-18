@@ -327,7 +327,7 @@
                 <tokenevaluator.port>15200</tokenevaluator.port>
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
-                <schibstedsok_remote_service_url>sch-hamysql01.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <schibstedsok_remote_service_url>sch-hamysql.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
 
             </properties>
@@ -411,7 +411,7 @@
                 <tokenevaluator.port>15200</tokenevaluator.port>
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
-                <schibstedsok_remote_service_url>sch-hamysql01.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <schibstedsok_remote_service_url>sch-hamysql.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
 
             </properties>
@@ -456,7 +456,7 @@
                 <tokenevaluator.port>15200</tokenevaluator.port>
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
-                <schibstedsok_remote_service_url>sch-hamysql01.osl.basefarm.net:1099</schibstedsok_remote_service_url>
+                <schibstedsok_remote_service_url>sch-hamysql.osl.basefarm.net:1099</schibstedsok_remote_service_url>
                 <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
 
             </properties>
