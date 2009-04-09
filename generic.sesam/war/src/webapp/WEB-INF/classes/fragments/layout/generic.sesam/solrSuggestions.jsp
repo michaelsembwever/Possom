@@ -3,7 +3,7 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
     <!--
-     * Copyright (2008) Schibsted Søk AS
+     * Copyright (2008) Schibsted ASA
      *   This file is part of SESAT.
      *
      *   SESAT is free software: you can redistribute it and/or modify

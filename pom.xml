@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (2007) Schibsted Søk AS
+<!-- Copyright (2007) Schibsted ASA
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@
             <id>ssenrogn</id>
             <name>Endre</name>
             <email>endre@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
+            <organization>Schibsted ASA</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
@@ -46,35 +46,35 @@
             <name>Mick Semb Wever</name>
             <email>mick@semb.wever.org</email>
             <url>http://www.wever.org</url>
-            <organization>Schibsted Søk AS</organization>
+            <organization>Schibsted ASA</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
             <id>ssthkjer</id>
             <name>Thomas Kjærstad</name>
             <email>itthkjer@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
+            <organization>Schibsted ASA</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
             <id>ssmaeklu</id>
             <name>Magnus Eklund</name>
             <email>magnus.eklund@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
+            <organization>Schibsted ASA</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
             <id>ssanjamt</id>
             <name>Anders Johan Jamtli</name>
             <email>anders.johan.jamtli@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
+            <organization>Schibsted ASA</organization>
             <timezone>+1</timezone>
         </developer>
         <developer>
             <id>ssmathyr</id>
             <name>Magne Thyrhaug</name>
             <email>magne@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
+            <organization>Schibsted ASA</organization>
             <timezone>+1</timezone>
         </developer>
     </developers>
@@ -86,7 +86,7 @@
         </license>
     </licenses>
     <organization>
-        <name>Schibsted Søk AS</name>
+        <name>Schibsted ASA</name>
         <url>http://sesat.no/</url>
     </organization>
      <mailingLists>
