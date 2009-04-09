@@ -1,5 +1,5 @@
 /*
- * Not Copyright (2008) Schibsted Søk AS
+ * Not Copyright (2008) Schibsted ASA
  * Not under the terms of the GNU Affero General Public License
  *
  * PATCHED TO ADDRESS http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6270774

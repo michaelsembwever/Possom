@@ -1,5 +1,5 @@
 /*
- * Not Copyright (2008) Schibsted Søk AS
+ * Not Copyright (2008) Schibsted ASA
  * Not under the terms of the GNU Affero General Public License
  *
  * Copyright 2001 Sun Microsystems, Inc.  All Rights Reserved.

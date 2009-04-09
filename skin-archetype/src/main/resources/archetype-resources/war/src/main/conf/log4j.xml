@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <!--
-Copyright (2006) Schibsted Søk AS
+Copyright (2006) Schibsted ASA
 $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
 -->
 <log4j:configuration

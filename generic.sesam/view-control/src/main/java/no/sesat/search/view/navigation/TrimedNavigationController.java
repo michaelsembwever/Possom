@@ -1,4 +1,4 @@
-/** Copyright (2007-2008) Schibsted Søk AS
+/** Copyright (2007-2008) Schibsted ASA
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify

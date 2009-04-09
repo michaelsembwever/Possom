@@ -8,7 +8,7 @@
  <jsp:directive.page contentType="text/html" />
  
  <!--
- * Copyright (2008) Schibsted Søk AS
+ * Copyright (2008) Schibsted ASA
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@
             For more information, please contact us:</p>
 
         <p style="padding-left: 50px; margin-top:20px;">
-                <b>Schibsted Søk AS</b><br />
+                <b>Schibsted ASA</b><br />
                 Postboks 277 Sentrum<br />
                 0103 Oslo<br />
                 Norway<br/><br />
