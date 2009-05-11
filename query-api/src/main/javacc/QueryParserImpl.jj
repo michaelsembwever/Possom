@@ -413,7 +413,7 @@ Clause fieldedQuote(final Token field) :{
                 final PhraseClause phClause = context.createPhraseClause(token.image, f );
 
                 // Create unphrased query. also strip all operator and skip characters out. SKER4723.
-                final String spaceNfield = null == f ? "" : ' ' + f;
+                final String spaceNfield = null == f ? " " : ' ' + f;
                 final String term = token.image
                                         .replaceAll("\"","")
                                         .replaceAll(SKIP_REGEX, " ")
