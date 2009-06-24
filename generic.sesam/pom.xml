@@ -193,7 +193,7 @@
 
                 <!-- Login -->
                 <schibstedsok_remote_service_url>localhost:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
                 <!-- Log4j -->
                 <log.level>INFO</log.level>
@@ -239,7 +239,7 @@
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
             </properties>
         </profile>
@@ -281,7 +281,7 @@
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
             </properties>
         </profile>
@@ -328,7 +328,7 @@
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-hamysql.osl.basefarm.net:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
             </properties>
         </profile>
@@ -370,7 +370,7 @@
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-admin01.dev.osl.basefarm.net:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
             </properties>
         </profile>
@@ -412,7 +412,7 @@
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-hamysql.osl.basefarm.net:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
             </properties>
         </profile>
@@ -457,7 +457,7 @@
                 <tokenevaluator.solr.serverUrl>http://sch-fast-query.osl.basefarm.net:8180/solr/</tokenevaluator.solr.serverUrl>
 
                 <schibstedsok_remote_service_url>sch-hamysql.osl.basefarm.net:1099</schibstedsok_remote_service_url>
-                <user_service_jndi_name>sesat-user/BasicUserServiceImpl/remote</user_service_jndi_name>
+                <user_service_jndi_name>sesat-user/BasicUserService/remote</user_service_jndi_name>
 
             </properties>
         </profile>

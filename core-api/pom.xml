@@ -205,11 +205,6 @@
             <type>jar</type>
             <version>4.0.5</version>
         </dependency>
-        <dependency>
-            <groupId>sesat</groupId>
-            <artifactId>sesat-user-service</artifactId>
-            <type>ejb-client</type>
-        </dependency>
 
         <!-- Testin -->
         <dependency>
