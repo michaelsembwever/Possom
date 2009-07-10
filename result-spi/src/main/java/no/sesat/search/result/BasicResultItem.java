@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -89,6 +89,7 @@ public class BasicResultItem implements ResultItem {
      */
     public String getField(final String field) {
 
+        assert fields.get(field) instanceof String :  field + " is not a String. Use instead getObjectField";
         final String fieldValue = (String) fields.get(field);
         return fieldValue != null && fieldValue.trim().length() > 0 ? fieldValue : null;
     }
@@ -130,6 +131,7 @@ public class BasicResultItem implements ResultItem {
      */
     public Integer getInteger(final String field) {
 
+        assert fields.get(field) instanceof Integer :  field + " is not a Integer. Use instead getObjectField?";
         final String fieldValue = (String) fields.get(field);
         return null != fieldValue ? Integer.parseInt(fieldValue) : null;
     }
@@ -142,6 +144,7 @@ public class BasicResultItem implements ResultItem {
      */
     public String getField(final String field, final int maxLength) {
 
+        assert fields.get(field) instanceof String :  field + " is not a String. Use instead getObjectField?";
         final String fieldValue = (String) fields.get(field);
 
         return fieldValue != null && fieldValue.trim().length() > 0
@@ -165,6 +168,7 @@ public class BasicResultItem implements ResultItem {
      */
     public Collection<String> getMultivaluedField(final String field) {
 
+        assert fields.get(field) instanceof Collection :  field + " is not a Collection. Use instead getObjectField?";
         return (Collection<String>) fields.get(field);
     }
 
