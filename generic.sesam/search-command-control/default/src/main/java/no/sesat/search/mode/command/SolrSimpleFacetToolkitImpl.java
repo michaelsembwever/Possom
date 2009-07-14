@@ -58,7 +58,7 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
 
         final Map<String, Navigator> facets = getSearchConfiguration(context).getFacets();
         for (final Navigator facet : facets.values()) {
-            final FacetField field = response.getFacetField(facet.getId());
+            final FacetField field = response.getFacetField(facet.getField());
             // facet counters
             if(null != field && null != field.getValues()){
                 for (FacetField.Count c : field.getValues()){
