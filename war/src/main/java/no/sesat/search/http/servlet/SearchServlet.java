@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted ASA
+ * Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -108,8 +108,6 @@ public final class SearchServlet extends  HttpServlet {
 
     // Public --------------------------------------------------------
 
-    /** {@inheritDoc}
-     */
     @Override
     public void destroy() {
         super.destroy();
@@ -215,14 +213,11 @@ public final class SearchServlet extends  HttpServlet {
 
                 } else {
                     performSearch(request, response, genericCxt, searchTab, stopWatch);
+                    getServletContext().getRequestDispatcher("/WEB-INF/jsp/start.jsp").forward(request, response);
                 }
-
             }else{
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
-
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/jsp/start.jsp");
-            dispatcher.forward(request, response);
 
         }finally{
 
