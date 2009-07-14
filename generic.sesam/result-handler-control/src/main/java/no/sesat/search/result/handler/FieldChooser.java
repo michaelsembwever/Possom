@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,6 +27,8 @@ import no.sesat.search.result.ResultList;
 
 /** Copies the first found value in the list of from fields into the target field.
  *
+ * Will copy objects [using addField(.., getObjectField(..))] if the field's value is not a string.
+ * For fields with a string value addObjectField(.., getField(..)) will still be used.
  *
  * @version <tt>$Id$</tt>
  */
@@ -34,13 +36,8 @@ public final class FieldChooser implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(FieldChooser.class);
 
-    private final ClassLoader cl = FieldChooserResultHandlerConfig.class.getClassLoader();
     private final FieldChooserResultHandlerConfig config;
 
-    /**
-     *
-     * @param config
-     */
     public FieldChooser(final ResultHandlerConfig config) {
         final ClassLoader cl = config.getClass().getClassLoader();
         this.config = (FieldChooserResultHandlerConfig) config;
@@ -55,20 +52,24 @@ public final class FieldChooser implements ResultHandler {
 
     private void chooseField(final ResultList<ResultItem> searchResult, final Collection<String> fields) {
 
-        if (searchResult != null) {
+        if (null != searchResult) {
 
             for (ResultItem i : searchResult.getResults()) {
 
                 ResultItem item = i;
 
                 for (String field : fields) {
-                    if (item.getField(field) != null) {
-                        item = item.addField(config.getTarget(), item.getField(field));
+                    if (null != item.getObjectField(field)) {
+                        if(item.getObjectField(field) instanceof String){
+                            item = item.addField(config.getTarget(), item.getField(field));
+                        }else{
+                            item = item.addObjectField(config.getTarget(), item.getObjectField(field));
+                        }
                         break;
                     }
                 }
 
-                if (config.getDefaultValue() != null && item.getField(config.getTarget()) == null) {
+                if (null != config.getDefaultValue() && null == item.getField(config.getTarget())) {
                     item = item.addField(config.getTarget(), config.getDefaultValue());
                 }
 
