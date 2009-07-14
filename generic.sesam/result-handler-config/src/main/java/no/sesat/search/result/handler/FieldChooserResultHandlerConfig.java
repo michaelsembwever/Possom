@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -75,10 +75,12 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
         this.defaultValue = defaultValue;
     }
 
+    /** @deprecated not used anywhere. **/
     public String getRecursiveField() {
         return recursiveField;
     }
 
+    /** @deprecated not used anywhere. **/
     public void setRecursiveField(String recursiveField) {
         this.recursiveField = recursiveField;
     }
