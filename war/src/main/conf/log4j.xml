@@ -24,7 +24,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         debug="false">
 
     <appender name="LOG_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.log"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.log"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -39,7 +39,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
     
     <appender name="ACCESS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.access"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.access"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -55,7 +55,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
 
     <appender name="DUMP_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.dump"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.dump"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -70,7 +70,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
     
     <appender name="SALES_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.sales"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.sales"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -86,7 +86,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
 
     <appender name="MARKETING_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.marketing"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.marketing"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -102,7 +102,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
 
     <appender name="PRODUCT_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.product"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.product"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -118,7 +118,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
 
     <appender name="STATISTICS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.statistics"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.statistics"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -134,7 +134,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
     
     <appender name="ANALYSIS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.analysis"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.analysis"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
@@ -150,7 +150,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </appender>
     
     <appender name="INITIALISATION_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@log.file@.initialisations"/>
+        <param name="File" value="${sesat.log.dir}/@log.file@.initialisations"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="INFO"/>
