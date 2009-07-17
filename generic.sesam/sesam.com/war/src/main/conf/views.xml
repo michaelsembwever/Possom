@@ -39,6 +39,7 @@
         </navigation>
         <layout main="sesam.com/main.jsp" front="sesam.com/index.jsp">
             <include key="head-element" template="sesam.com/head.jsp"/>
+            <include key="head-element-extra" template="sesam.com/mwsuggest.jsp"/>
             <include key="top-col-one" template="sesam.com/searchbar-top.jsp"/>
             <include key="main-col-three" template="sesam.com/globalSearch.jsp"/>
             <include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
