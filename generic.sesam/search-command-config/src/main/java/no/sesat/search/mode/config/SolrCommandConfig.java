@@ -198,7 +198,7 @@ public class SolrCommandConfig extends CommandConfig implements FacetedCommandCo
             sort.putAll(((SolrCommandConfig)inherit).getSortMap());
         }
 
-        ModesSearchConfigurationDeserializer.readSearchConfiguration(this, element, inherit);
+        super.readSearchConfiguration(element, inherit, context);
 
         if (element.hasAttribute("sort")) {
             if (element.getAttribute("sort").length() == 0) {
