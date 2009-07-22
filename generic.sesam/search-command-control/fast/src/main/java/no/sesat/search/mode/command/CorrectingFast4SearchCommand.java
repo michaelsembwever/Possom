@@ -75,9 +75,11 @@ public class CorrectingFast4SearchCommand extends Fast4SearchCommand implements 
     @Override
     public ResultList<ResultItem> call() {
 
+        final boolean wasInCall = inCall;
         try{
             inCall = true;
-            return inCall
+
+            return wasInCall
                     ? super.call()
                     : CorrectingSearchCommandUtility.doCall(this, context);
         }finally{
