@@ -697,7 +697,6 @@
             <properties>
                 <sesam.site.generic>generic.alpha.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/alpha.test.sesam.no</serverDeployLocation>
                 <tag.on.deploy>false</tag.on.deploy>
             </properties>
             <build>
@@ -716,7 +715,6 @@
             <properties>
                 <sesam.site.generic>generic.nuclei.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/nuclei.test.sesam.no</serverDeployLocation>
                 <tag.on.deploy>false</tag.on.deploy>
             </properties>
             <build>
@@ -735,7 +733,6 @@
             <properties>
                 <sesam.site.generic>generic.beta.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/beta.test.sesam.no</serverDeployLocation>
                 <tag.on.deploy>false</tag.on.deploy>
             </properties>
             <build>
@@ -755,7 +752,6 @@
                 <sesam.site.generic>generic.electron.test.sesam</sesam.site.generic>
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <tag.on.deploy>false</tag.on.deploy>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok/electron.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -774,7 +770,6 @@
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <!-- IMPORTANT: production cannot handle writing to sesam.log at a lower threshold -->
                 <log.level>WARN</log.level>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/gamma.test.sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -793,7 +788,6 @@
                 <sesam.site.default>${sesam.site.generic}</sesam.site.default>
                 <!-- IMPORTANT: production cannot handle writing to sesam.log at a lower threshold -->
                 <log.level>WARN</log.level>
-                <serverDeployLocation>scpexe://sch-login01.osl.basefarm.net/www/schibstedsok-prod/sesam.no</serverDeployLocation>
             </properties>
             <build>
                 <plugins>
@@ -813,12 +807,7 @@
                 <artifactId>sesat-user-api</artifactId>
                 <type>jar</type>
                 <version>1.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>sesat</groupId>
-                <artifactId>sesat-user-service</artifactId>
-                <type>ejb-client</type>
-                <version>1.1-SNAPSHOT</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>sesat</groupId>

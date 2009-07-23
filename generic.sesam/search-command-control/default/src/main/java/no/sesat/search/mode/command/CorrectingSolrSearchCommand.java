@@ -1,4 +1,4 @@
-/* Copyright (2006-2009) Schibsted ASA
+/* Copyright (2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,41 +17,33 @@
 package no.sesat.search.mode.command;
 
 
-import no.sesat.search.mode.config.CorrectingFast4CommandConfig;
+import no.sesat.search.mode.config.CorrectingSolrCommandConfig;
 import no.sesat.search.query.Query;
-import org.apache.log4j.Logger;
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Map;
-import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
-import no.sesat.search.result.WeightedSuggestion;
+import org.apache.log4j.Logger;
 
-/** Supplements CorrectingSearchCommand behaviour to the Fast4SearchCommand.
+/** Supplements CorrectingSearchCommand behaviour to the SolrSearchCommand.
  *
  * correctQuery(..) delegates to CorrectingSearchCommandUtility.correctQueryFromSpellingSuggestions(results, q)
- *  and the spelling suggestions returned from the fast index.
+ *  and the spelling suggestions returned from the solr index.
  *
  * @version $Id$
  */
-public class CorrectingFast4SearchCommand extends Fast4SearchCommand implements CorrectingSearchCommand {
+public class CorrectingSolrSearchCommand extends SolrSearchCommand implements CorrectingSearchCommand {
 
     // Constants -----------------------------------------------------
 
-    public static final String CORRECTION_COUNT = "correctionCount";
-
-    private static final String ERR_CANNOT_CREATE_COMMAND = "Unable to create command to rerun.";
-
-    private static final Logger LOG = Logger.getLogger(CorrectingFast4SearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(CorrectingSolrSearchCommand.class);
 
     // Attributes ----------------------------------------------------
-    private volatile boolean inCall = false;
 
     private int correctionCount = 0;
 
     // XXX couldn't we re-use functionality given by overriding AbstractSearchCommand.getQuery()
     private ReconstructedQuery correctedQuery;
+
+    private volatile boolean inCall = false;
 
     // Static --------------------------------------------------------
 
@@ -61,16 +53,11 @@ public class CorrectingFast4SearchCommand extends Fast4SearchCommand implements 
      *
      * @param cxt Search command context.
      */
-    public CorrectingFast4SearchCommand(final Context cxt) {
+    public CorrectingSolrSearchCommand(final Context cxt) {
         super(cxt);
     }
 
     // Public --------------------------------------------------------
-
-    @Override
-    public final Query getQuery() {
-        return correctedQuery != null ? correctedQuery.getQuery() : super.getQuery();
-    }
 
     @Override
     public ResultList<ResultItem> call() {
@@ -88,14 +75,13 @@ public class CorrectingFast4SearchCommand extends Fast4SearchCommand implements 
     }
 
     @Override
-    public CorrectingFast4CommandConfig getSearchConfiguration() {
-        return (CorrectingFast4CommandConfig)super.getSearchConfiguration();
+    public final Query getQuery() {
+        return correctedQuery != null ? correctedQuery.getQuery() : super.getQuery();
     }
 
     @Override
-    public String correctQuery(final ResultList<ResultItem> results, String q) {
-
-        return CorrectingSearchCommandUtility.correctQueryFromSpellingSuggestions(results, q);
+    public CorrectingSolrCommandConfig getSearchConfiguration() {
+        return (CorrectingSolrCommandConfig)super.getSearchConfiguration();
     }
 
     @Override
@@ -116,6 +102,12 @@ public class CorrectingFast4SearchCommand extends Fast4SearchCommand implements 
     }
 
     @Override
+    public String correctQuery(final ResultList<ResultItem> results, String q) {
+
+        return CorrectingSearchCommandUtility.correctQueryFromSpellingSuggestions(results, q);
+    }
+
+    @Override
     public CorrectingSearchCommand initialiseNewCommand(final  CorrectingSearchCommand command){
         return command;
     }
@@ -123,6 +115,7 @@ public class CorrectingFast4SearchCommand extends Fast4SearchCommand implements 
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
+
 
     protected final void setCorrectedQuery(final ReconstructedQuery query){
 

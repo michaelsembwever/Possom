@@ -1,5 +1,5 @@
 /*
- * Copyright (2007) Schibsted ASA
+ * Copyright (2007-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -87,6 +87,8 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
     private static final String TAG_ON_DEPLOY = "tag.on.deploy";
 
     private static final String DRY_RUN = "sesat.mojo.dryRun";
+
+    private static final String SERVER_DEPLOY_LOCATION = "sesat.mojo.serverDeployLocation";
 
     // Attributes ----------------------------------------------------
 
@@ -465,7 +467,9 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
             if(null != profile){
 
-                final String serverDeployLocation = project.getProperties().getProperty("serverDeployLocation");
+                final String serverDeployLocation = System.getProperty(
+                        SERVER_DEPLOY_LOCATION,
+                        project.getProperties().getProperty("serverDeployLocation"));
 
                 final String protocol = serverDeployLocation.substring(0, serverDeployLocation.indexOf(':'));
 

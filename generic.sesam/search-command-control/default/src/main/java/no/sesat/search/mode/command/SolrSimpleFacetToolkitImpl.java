@@ -58,14 +58,7 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
 
         final Map<String, Navigator> facets = getSearchConfiguration(context).getFacets();
         for (final Navigator facet : facets.values()) {
-            final FacetField field = response.getFacetField(facet.getId());
-            // facet counters
-            if(null != field && null != field.getValues()){
-                for (FacetField.Count c : field.getValues()){
-                    final Modifier mod = new Modifier(c.getName(), (int)c.getCount(), facet);
-                    searchResult.addModifier(facet.getId(), mod);
-                }
-            }
+            collectFacet(context, response, searchResult, facet);
         }
     }
 
@@ -91,6 +84,30 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
                         : "\"" + navSingleValue + "\"";
 
                 query.addFilterQuery(facet.getField() + ':' + value);
+            }
+            // request children facets of any selected facet
+            if(null != facet.getChildNavigator()){
+                createFacet(context, facet.getChildNavigator(), query);
+            }
+        }
+    }
+
+    private void collectFacet(
+            final SearchCommand.Context context,
+            final QueryResponse response,
+            final FacetedSearchResult<? extends ResultItem> searchResult,
+            final Navigator facet){
+
+        final FacetField field = response.getFacetField(facet.getField());
+        // facet counters
+        if(null != field && null != field.getValues()){
+            for (FacetField.Count c : field.getValues()){
+                final Modifier mod = new Modifier(c.getName(), (int)c.getCount(), facet);
+                searchResult.addModifier(facet.getId(), mod);
+            }
+            // collect children facets
+            if(null != facet.getChildNavigator()){
+               collectFacet(context, response, searchResult, facet.getChildNavigator());
             }
         }
     }

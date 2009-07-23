@@ -22,14 +22,14 @@ package no.sesat.search.mode.config;
 import no.sesat.search.mode.config.CommandConfig.Controller;
 
 
-/** Configure a Correcting Fast 4 search command.
+/** Configure a Correcting Solr search command.
  *
  * @version <tt>$Id$</tt>
  */
-@Controller("CorrectingFast4SearchCommand")
-public class CorrectingFast4CommandConfig extends FastCommandConfig implements CorrectingCommandConfig{
+@Controller("CorrectingSolrSearchCommand")
+public class CorrectingSolrCommandConfig extends SolrCommandConfig implements CorrectingCommandConfig{
 
-    //private static final Logger LOG = Logger.getLogger(CorrectingFast4CommandConfig.class);
+    //private static final Logger LOG = Logger.getLogger(CorrectingSolrCommandConfig.class);
 
     private int correctingLimit = 1;
 

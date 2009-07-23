@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,6 +21,8 @@ import no.sesat.search.result.handler.AbstractResultHandlerConfig.Controller;
 
 
 /**
+ * @deprecated Sesam.no katalog specific. Will be removed soon.
+ * Use FieldChooser instead with from="yphovedtelefon,ypandretelefoner,ypmobiltelefon" target="ypanynumber".
  *
  * @version <tt>$Revision: 4510 $</tt>
  */

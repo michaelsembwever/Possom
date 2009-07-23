@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -357,7 +357,7 @@ public final class SyndicationGenerator {
         final StringDataObject value = context.getDataModel().getParameters().getValue(parameterName);
 
         if (value != null) {
-            return value.toString();
+            return value.getUtf8UrlEncoded();
         } else {
             return "";
         }

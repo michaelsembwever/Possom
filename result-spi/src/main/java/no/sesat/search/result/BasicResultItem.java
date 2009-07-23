@@ -1,4 +1,4 @@
-/* Copyright (2006-2007) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -89,6 +89,10 @@ public class BasicResultItem implements ResultItem {
      */
     public String getField(final String field) {
 
+        assert null == fields.get(field) || fields.get(field) instanceof String
+                :  field + " is not a String. It is a "
+                + (null != fields.get(field) ? fields.get(field).getClass().getSimpleName() : "null");
+
         final String fieldValue = (String) fields.get(field);
         return fieldValue != null && fieldValue.trim().length() > 0 ? fieldValue : null;
     }
@@ -130,8 +134,15 @@ public class BasicResultItem implements ResultItem {
      */
     public Integer getInteger(final String field) {
 
-        final String fieldValue = (String) fields.get(field);
-        return null != fieldValue ? Integer.parseInt(fieldValue) : null;
+        assert null == fields.get(field) || fields.get(field) instanceof Integer || fields.get(field) instanceof String
+                :  field + " is not a Integer (or String). It is a "
+                + (null != fields.get(field) ? fields.get(field).getClass().getSimpleName() : "null");
+
+        return null != fields.get(field)
+                ? fields.get(field) instanceof Integer
+                    ? (Integer)fields.get(field)
+                    : Integer.parseInt((String) fields.get(field))
+                : null;
     }
 
     /**
@@ -141,6 +152,10 @@ public class BasicResultItem implements ResultItem {
      * @return
      */
     public String getField(final String field, final int maxLength) {
+
+        assert null == fields.get(field) || fields.get(field) instanceof String
+                :  field + " is not a String. It is a "
+                + (null != fields.get(field) ? fields.get(field).getClass().getSimpleName() : "null");
 
         final String fieldValue = (String) fields.get(field);
 
@@ -160,12 +175,20 @@ public class BasicResultItem implements ResultItem {
 
     /** Returns a live copy of the field's collection.
      *
+     * If field is of String type, it is wrapped in a collection as a single entry.
+     *
      * @param field
      * @return
      */
     public Collection<String> getMultivaluedField(final String field) {
 
-        return (Collection<String>) fields.get(field);
+        assert null == fields.get(field) || fields.get(field) instanceof Collection || fields.get(field) instanceof String
+                :  field + " is not a Collection (or String). It is a "
+                + (null != fields.get(field) ? fields.get(field).getClass().getSimpleName() : "null");
+
+        return fields.get(field) instanceof Collection
+                ? (Collection<String>) fields.get(field)
+                : Collections.singletonList((String)fields.get(field));
     }
 
     /**
@@ -192,7 +215,6 @@ public class BasicResultItem implements ResultItem {
         if( obj instanceof ResultItem ){
             final ResultItem other = (ResultItem) obj;
 
-            // FIXME very specific undocumented stuff here
             if (other.getField("recordid") != null && getField("recordid") != null) {
                 result = getField("recordid").equals(other.getField("recordid"));
             }else{

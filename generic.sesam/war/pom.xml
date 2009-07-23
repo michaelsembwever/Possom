@@ -171,6 +171,10 @@
             <version>0.4.1</version>
         </dependency>
         <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+        </dependency>
+        <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-resourcefeed</artifactId>
             <version>${sesat.version}</version>

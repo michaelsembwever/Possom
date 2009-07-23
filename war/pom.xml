@@ -193,6 +193,11 @@
             <groupId>axis</groupId>
             <artifactId>axis-saaj</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>sesat</groupId>
+            <artifactId>sesat-user-api</artifactId>
+        </dependency>
         
       <dependency>
         <groupId>org.jboss</groupId>
