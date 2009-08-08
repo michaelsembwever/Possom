@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -53,9 +53,32 @@ import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.run.handler.RunHandlerConfig;
 
-/** Controlling class around the deserialisation of modes.xml into all the SearchModes.
- *  This in turn deserialises all SearchConfigurations, QueryTransformers, QueryBuilders, and ResultHandlers.
+/**<p>
+ * Controlling class around the deserialisation of modes.xml into all the SearchModes.
+ *  This in turn deserialises all SearchConfigurations, QueryTransformers, QueryBuilders, and ResultHandlers.</p><p>
  *
+ * Deserialisation of xml elements to configuration classes works through each implementation of AbstractDocumentFactory
+ * These being: <br/>
+ *  mode --> SearchModeFactory<br/>
+ *  *-commands --> SearchModeFactory.SearchCommandFactory</br>
+ *  query-builder --> QueryBuilderFactory<br/>
+ *  query-transformers --> QueryTransformerFactory<br/>
+ *  result-handlers --> ResultHandlerFactory<br/>
+ *  run-handlers --> RunHandlerFactory<br/></p><p>
+ *
+ * The lookup of configuration classname from the xml element name generally follows the pattern provided by the
+ *  @see #xmlToBeanName(java.lang.String) method.
+ * But each AbstractDocumentFactory.findClass(..) provides the final implementations with details of which package to
+ *  look in and any static Prefix and Suffixes to the classname.</p><p>
+ * For search configuration classes the implementation is such:<br/>
+ *  1) to be found in the no.sesat.search.mode.config package<br/>
+ *  2) the first character always becomes uppercase (to suit java standards for naming classes)<br/>
+ *  3) the suffix "Config" is added.<br/>
+ * For example &lt;solr-command id="abc" .../&gt; becomes "SolrCommandConfig".
+ * </p><p>
+ *  The lookup from configuration class to control class happens via the value of the Controller annotation.
+ *  (There's discussion in moving this annotation to a normal string attribute in the configuration bean).
+ * </p>
  * @version <tt>$Id$</tt>
  */
 public final class SearchModeFactory extends AbstractDocumentFactory implements SiteKeyedFactory {
