@@ -1,5 +1,5 @@
 /*
- * Copyright (2008) Schibsted ASA
+ * Copyright (2008-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ import org.xml.sax.SAXException;
  */
 public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
 
+    // Constants -----------------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(YahooWebSearchCommand.class);
     private static final String ERR_FAILED_CREATING_URL = "Failed to create command url";
 
@@ -56,6 +58,12 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String TOTALHITS_ATTRIBUTE ="totalResultsAvailable";
     private static final String RESULT_ELEMENT = "Result";
+
+    // Attributes ----------------------------------------------------
+
+    // Static --------------------------------------------------------
+
+    // Constructors --------------------------------------------------
 
     /**
      * Create new command.
@@ -102,6 +110,8 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
                     }
             });
     }
+
+    // Public --------------------------------------------------------
 
     public ResultList<ResultItem> execute() {
 
@@ -157,6 +167,21 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
         return (YahooWebCommandConfig)super.getSearchConfiguration();
     }
 
+    @Override
+    public String getTransformedQuery() {
+        final String tq = super.getTransformedQuery();
+        if(tq == null) {
+            LOG.debug("transformedQuery is null, using \"\"");
+            return "";
+        }
+        return tq;
+    }
+
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
     /**
      *
      * @param result
@@ -178,13 +203,21 @@ public class YahooWebSearchCommand extends AbstractYahooSearchCommand {
     }
 
     @Override
-    public String getTransformedQuery() {
-        final String tq = super.getTransformedQuery();
-        if(tq == null) {
-            LOG.debug("transformedQuery is null, using \"\"");
-            return "";
-        }
-        return tq;
+    protected String getFilter() {
+        return super.getFilter();
     }
 
+    @Override
+    protected int getOffset() {
+        return super.getOffset();
+    }
+
+    @Override
+    protected String getParameter(String paramName) {
+        return super.getParameter(paramName);
+    }
+
+    // Private -------------------------------------------------------
+
+    // Inner classes -------------------------------------------------
 }
