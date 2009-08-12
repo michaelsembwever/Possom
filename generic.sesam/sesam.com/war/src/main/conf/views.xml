@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+You<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (2008) Schibsted ASA
  *   This file is part of SESAT.
  *
@@ -45,7 +45,7 @@
             <include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
             <include key="bottom-col-three" template="sesam.com/footer.jsp"/>
             <include key="bottom-col-two" template="sesam.com/searchbar-bottom.jsp"/>
-            <include key="offsetPagerLogo" template="sesam.com/offsetPagerYahooLogo.jsp"/>          
+            <include key="offsetPagerLogo" template=""/>          
             <include key="no-hits" template="sesam.com/no-hits.jsp"/>   
         </layout>
     </tab>
