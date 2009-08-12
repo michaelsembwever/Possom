@@ -45,7 +45,7 @@
             <include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
             <include key="bottom-col-three" template="sesam.com/footer.jsp"/>
             <include key="bottom-col-two" template="sesam.com/searchbar-bottom.jsp"/>
-            <include key="offsetPagerLogo" template="sesam.com/offsetPagerYahooLogo.jsp"/>          
+            <include key="offsetPagerLogo" template=""/>          
             <include key="no-hits" template="sesam.com/no-hits.jsp"/>   
         </layout>
     </tab>
