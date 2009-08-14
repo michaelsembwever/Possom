@@ -958,6 +958,23 @@
                 <artifactId>newsadmin-services</artifactId>
                 <version>1.5</version>
                 <type>ejb-client</type>
+                <!-- news commands are meant more as an example within sesat-kernel. don't go importing transitive dependencies. especially these outdated artifacts.
+                  - If you want to use news-admin-services you need to provide the ejb3 remoting libraries yourself (eg from http://repository.jboss.org/maven2 )
+                  - or run Sesat-Kernel in a EJB3 container like JBoss-5 -->
+                <exclusions>
+                    <exclusion>
+                        <artifactId>jbossall-client</artifactId>
+                        <groupId>org.jboss</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jboss-aop-jdk50-client</artifactId>
+                        <groupId>org.jboss</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jboss-aspect-jdk50-client</artifactId>
+                        <groupId>org.jboss</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
@@ -983,26 +1000,14 @@
                 <version>2.2.3</version>
                 <classifier>jdk15</classifier>
             </dependency>
-            <!-- old duplicate jboss ejb3 client libraries that get sucked in transitively @todo fix + remove -->
-            <dependency>
-              <groupId>jboss-client</groupId>
-              <artifactId>jboss-ejb3</artifactId>
-              <version>4.0.5</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jboss-client</groupId>
-              <artifactId>jboss-ejb3x</artifactId>
-              <version>4.0.5</version>
-              <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-              <groupId>jboss-client</groupId>
-              <artifactId>jboss-annotations-ejb3</artifactId>
-              <version>4.0.5</version>
-              <scope>provided</scope>
-            </dependency>
+            
+            <!-- EJB3 client -->
+        <dependency>
+            <groupId>org.jboss.javaee</groupId>
+            <artifactId>jboss-ejb-api</artifactId>
+            <type>jar</type>
+            <version>3.0.0.CR1</version>
+        </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -1041,6 +1046,15 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <!-- TODO move up when we replace org.jboss:jbossall-client with org.jboss.remoting:jboss-remoting -->
+        <repository>
+          <id>jboss</id>
+          <name>JBoss Repository for Maven2</name>
+          <url>http://repository.jboss.org/maven2</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
         </repository>
         <repository>
             <!-- Troublesome repository! Comment out locally if it hangs as it often does -->

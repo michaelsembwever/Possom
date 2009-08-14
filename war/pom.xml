@@ -198,38 +198,17 @@
             <groupId>sesat</groupId>
             <artifactId>sesat-user-api</artifactId>
         </dependency>
-        
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jbossall-client</artifactId>
-        <type>jar</type>
-        <version>4.0.5</version>
-      </dependency>
 
-      <!-- 
-        Need to use the same version as on server cause of this bug:
-        https://jira.jboss.org/jira/browse/EJBTHREE-749
-      -->
+        <dependency>
+            <groupId>org.jboss.javaee</groupId>
+            <artifactId>jboss-ejb-api</artifactId>
+            <type>jar</type>
+        </dependency>
       <dependency>
-        <groupId>org.jboss</groupId>
-        <!-- artifactId>jboss-ejb3-client</artifactId -->
-        <artifactId>jboss-ejb3</artifactId>
+        <groupId>org.jboss.remoting</groupId>
+        <artifactId>jboss-remoting</artifactId>
         <type>jar</type>
-        <version>4.0.5</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-aspect-jdk50-client</artifactId>
-        <type>jar</type>
-        <version>4.0.5</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-aop-jdk50-client</artifactId>
-        <type>jar</type>
-        <version>4.0.5</version>
+        <version>2.4.0.CR2</version>
       </dependency>
 
       <dependency>
