@@ -84,7 +84,7 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
     private static final String[] ENVIRONMENTS = new String[]{"alpha","nuclei","beta","electron","gamma","production"};
 
-    private static final String TAG_ON_DEPLOY = "tag.on.deploy";
+    private static final String TAG_ON_DEPLOY = "sesat.mojo.tagOnDeploy";
 
     private static final String DRY_RUN = "sesat.mojo.dryRun";
 
@@ -344,9 +344,11 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
                             : project.getBuild().getFinalName();
 
                     // tag the code
-                    if(Boolean.parseBoolean(project.getProperties().getProperty(TAG_ON_DEPLOY))
-                            && !Boolean.getBoolean(DRY_RUN)){
+                    final boolean tagOnDeploy = Boolean.parseBoolean(System.getProperty(
+                            TAG_ON_DEPLOY,
+                            project.getProperties().getProperty("tag.on.deploy")));
 
+                    if(tagOnDeploy && !Boolean.getBoolean(DRY_RUN)){
                         tagDeploy();
                     }
 
