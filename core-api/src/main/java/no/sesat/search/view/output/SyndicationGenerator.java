@@ -63,7 +63,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
-import javax.resource.NotSupportedException;
 import no.sesat.search.result.BasicResultList;
 
 /**
