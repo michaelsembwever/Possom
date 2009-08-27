@@ -40,7 +40,7 @@ public class PrefixQueryBuilder extends AbstractQueryBuilder{
 
     // Constants -----------------------------------------------------
 
-    private enum PrefixState {
+    protected enum PrefixState {
         AND, NOT, OR, DEFAULT
     };
 
@@ -171,6 +171,12 @@ public class PrefixQueryBuilder extends AbstractQueryBuilder{
         }
     }
 
+    protected PrefixState getPrefixState(){
+        return state;
+    }
+
+    // Private -------------------------------------------------------
+
     private void insertClauseStatePrefix(){
 
 
@@ -190,8 +196,6 @@ public class PrefixQueryBuilder extends AbstractQueryBuilder{
                 break;
         }
     }
-
-    // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
 }
