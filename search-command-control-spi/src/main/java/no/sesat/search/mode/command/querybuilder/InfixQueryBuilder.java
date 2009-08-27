@@ -19,11 +19,9 @@ package no.sesat.search.mode.command.querybuilder;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import no.sesat.search.mode.config.querybuilder.InfixQueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.AndClause;
-import no.sesat.search.query.AndNotClause;
 import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.EmailClause;
 import no.sesat.search.query.LeafClause;
@@ -77,9 +75,9 @@ public class InfixQueryBuilder extends AbstractQueryBuilder{
 
         final Collection<String> words = new HashSet<String>(super.getWordsToEscape());
 
-        words.add(getConfig().getAndInfix());
-        words.add(getConfig().getNotPrefix());
-        words.add(getConfig().getOrInfix());
+        if(!getConfig().getAndInfix().isEmpty()){  words.add(getConfig().getAndInfix()); }
+        if(!getConfig().getNotPrefix().isEmpty()){ words.add(getConfig().getNotPrefix()); }
+        if(!getConfig().getOrInfix().isEmpty()){   words.add(getConfig().getOrInfix()); }
 
         return words;
     }

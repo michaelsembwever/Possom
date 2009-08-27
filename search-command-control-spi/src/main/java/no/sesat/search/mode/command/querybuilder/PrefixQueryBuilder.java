@@ -22,7 +22,6 @@ import java.util.HashSet;
 import no.sesat.search.mode.config.querybuilder.PrefixQueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.query.AndClause;
-import no.sesat.search.query.Clause;
 import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.EmailClause;
 import no.sesat.search.query.LeafClause;
@@ -79,9 +78,9 @@ public class PrefixQueryBuilder extends AbstractQueryBuilder{
 
         final Collection<String> words = new HashSet<String>(super.getWordsToEscape());
 
-        words.add(getConfig().getAndPrefix());
-        words.add(getConfig().getNotPrefix());
-        words.add(getConfig().getOrPrefix());
+        if(!getConfig().getAndPrefix().isEmpty()){ words.add(getConfig().getAndPrefix()); }
+        if(!getConfig().getNotPrefix().isEmpty()){ words.add(getConfig().getNotPrefix()); }
+        if(!getConfig().getOrPrefix().isEmpty()){  words.add(getConfig().getOrPrefix()); }
 
         return words;
     }
