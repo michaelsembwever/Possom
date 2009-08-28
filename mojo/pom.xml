@@ -130,17 +130,17 @@
     <distributionManagement>
         <site>
           <id>Sesat</id>
-          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
+          <url>scp://sesat.no:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
         </site>
         <repository>
           <id>Sesat</id>
           <name>Sesat Repository</name>
-          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
+          <url>scp://sesat.no:/var/www/sesat.no/htdocs/maven2</url>
         </repository>
         <snapshotRepository>
           <id>Sesat</id>
           <name>Sesat Snapshot</name>
-          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/maven2</url>
+          <url>scp://sesat.no:/var/www/sesat.no/htdocs/maven2</url>
           <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
