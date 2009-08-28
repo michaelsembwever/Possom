@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ public enum Spi {
     /** */
     VIEW_CONTROL("view-control", VIEW_CONFIG),
     /** */
-    RUN_HANDLER_CONFIG("run-handler-config"),
+    RUN_HANDLER_CONFIG("run-handler-config", RESULT),
     /** */
     RUN_HANDLER_CONTROL("run-handler-control", RUN_HANDLER_CONFIG),
     /** */
