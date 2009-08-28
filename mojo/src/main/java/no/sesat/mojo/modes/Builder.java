@@ -120,6 +120,8 @@ public final class Builder {
         final List<ConfigElement> queryBuilders = new ArrayList<ConfigElement>();
         final List<ConfigElement> resultHandlers = new ArrayList<ConfigElement>();
         final List<ConfigElement> queryTransformers = new ArrayList<ConfigElement>();
+        final List<ConfigElement> runHandlers = new ArrayList<ConfigElement>();
+        final List<ConfigElement> runTransformers = new ArrayList<ConfigElement>();
         {
             final ClassDoc[] classes = root.classes();
             for (int i = 0; i < classes.length; i++) {
@@ -164,6 +166,24 @@ public final class Builder {
                         }
 
                         queryTransformers.add(element);
+                    } else if (name.endsWith("RunTransformerConfig")) {
+                        element.applyNameFilter(new NameFilter() {
+                            public String filter(final String name) {
+                                return toXmlName(name.substring(0, name.lastIndexOf("RunTransformerConfig")));
+                            }
+                        });
+                        if (!element.getName().isEmpty()) {
+                            runTransformers.add(element);
+                        }
+                    } else if (name.endsWith("RunHandlerConfig")) {
+                        element.applyNameFilter(new NameFilter() {
+                            public String filter(final String name) {
+                                return toXmlName(name.substring(0, name.lastIndexOf("RunHandlerConfig")));
+                            }
+                        });
+                        if (!element.getName().isEmpty()) {
+                            runHandlers.add(element);
+                        }
                     } else {
                         System.out.println("Lost: " + element.getName()); // (authorized)
                         System.out.println(                          // (authorized)
@@ -198,6 +218,14 @@ public final class Builder {
         final ConfigElement queryTransform = new ConfigElement("query-transformers");
         queryTransform.addChildren(queryTransformers);
 
+        final ConfigElement runHandler = new ConfigElement("run-handlers");
+        runHandler.addChildren(runHandlers);
+        mode.addChild(runHandler);
+
+        final ConfigElement runTransformer = new ConfigElement("run-transformers");
+        runTransformer.addChildren(runTransformers);
+        mode.addChild(runTransformer);
+
         final ConfigElement navigators = new ConfigElement("navigators");
         final ConfigElement navigator = new ConfigElement("navigator");
         final ConfigElement facets = new ConfigElement("facets");
@@ -230,6 +258,7 @@ public final class Builder {
         final Runnable[] jobs = {new GenerateRelaxNG(modes, outputDir + "modes.rnc", id),
                 new GenerateXSD(modes, outputDir + "modes.xsd", id),
                 new GenerateDTD(modes, outputDir + "modes.dtd", id)};
+
         final int jobCount = 5;
         for (int i = 0; i < (jobs.length + jobCount - 1); i++) {
 
