@@ -47,10 +47,11 @@
         
     </mode>
     
-    <mode id="international" inherit="default-mode">
+    <mode id="international" inherit="default-mode" evaluation="false">
 
-        <yahoo-idp-command id="globalSearch" inherit="default-yahoo-idp-command"/>
+        <!--yahoo-idp-command id="globalSearch" inherit="default-yahoo-idp-command"/-->
         <!--yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/-->
+        <yahoo-boss-command id="globalSearch" inherit="default-yahoo-boss-command"/>
 
         <!--solr-command id="globalSearch" inherit="default-command"
                            result-fields="list_name AS title,list_entry AS body"

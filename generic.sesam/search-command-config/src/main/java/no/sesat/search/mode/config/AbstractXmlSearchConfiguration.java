@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,116 +21,23 @@
 
 package no.sesat.search.mode.config;
 
-import no.sesat.search.mode.SearchModeFactory.Context;
-import no.sesat.search.site.config.AbstractDocumentFactory;
-import no.sesat.search.site.config.AbstractDocumentFactory.ParseType;
-import org.w3c.dom.Element;
-
 /**
  *
  *
  * @version $Id$
  */
-public abstract class AbstractXmlSearchConfiguration extends CommandConfig {
+public abstract class AbstractXmlSearchConfiguration extends AbstractRestfulSearchConfiguration {
 
 
     // Constants -----------------------------------------------------
 
     // Attributes ----------------------------------------------------
 
-    /**
-     * Holds value of property key for host.
-     */
-    private String host = "";
-
-    /**
-     * Holds value of property encoding.
-     */
-    private String encoding = "";
-
-    /**
-     * Holds value of property key for port.
-     */
-    private String port = "";
-
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
     // Public --------------------------------------------------------
-
-    /**
-     * Getter for property host.
-     * @return Value of property host.
-     */
-    public String getHost() {
-        return this.host;
-    }
-
-    /**
-     * Setter for property host.
-     * @param host New value of property host.
-     */
-    public void setHost(final String host) {
-        this.host = host;
-    }
-
-
-
-    /**
-     * Getter for property encoding.
-     * @return Value of property encoding.
-     */
-    public String getEncoding() {
-        return this.encoding;
-    }
-
-    /**
-     * Setter for property encoding.
-     * @param encoding New value of property encoding.
-     */
-    public void setEncoding(final String encoding) {
-        this.encoding = encoding;
-    }
-
-
-
-    /**
-     * Getter for property port.
-     * @return Value of property port.
-     */
-    public String getPort() {
-        return this.port;
-    }
-
-    /**
-     * Setter for property port.
-     * @param port New value of property port.
-     */
-    public void setPort(final String port) {
-        this.port = port;
-    }
-
-    /**
-     * Holds value of property hostHeader.
-     */
-    private String hostHeader = "";
-
-    /**
-     * Getter for property hostHeader.
-     * @return Value of property hostHeader.
-     */
-    public String getHostHeader() {
-        return this.hostHeader;
-    }
-
-    /**
-     * Setter for property hostHeader.
-     * @param hostHeader New value of property hostHeader.
-     */
-    public void setHostHeader(String hostHeader) {
-        this.hostHeader = hostHeader;
-    }
 
     // Z implementation ----------------------------------------------
 

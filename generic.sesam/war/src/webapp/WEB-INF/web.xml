@@ -21,7 +21,7 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <description>Handles serving of configuration files.</description>
-    <display-name>Schibsted Søk Configuration</display-name>
+    <display-name>Sesat's default base Configuration</display-name>
 
     <servlet>
         <servlet-name>Log</servlet-name>
@@ -38,7 +38,8 @@
         <servlet-class>no.sesat.commons.resourcefeed.ResourceServlet</servlet-class>
         <init-param>
             <param-name>ipaddresses.allowed</param-name>
-            <param-value>80.91.33.,193.90.148.58</param-value>
+            <!-- By default allow everybody to read the private resources (generic.sesam is open sourced afterall) -->
+            <param-value>0,1,2,3,4,5,6,7,8,9</param-value>
         </init-param>
         <init-param>
             <param-name>resources.restricted</param-name>
