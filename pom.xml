@@ -198,7 +198,6 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0-beta-6</version>
                     <configuration>
                         <generateReleasePom>false</generateReleasePom>
                         <testmode>false</testmode>
@@ -1002,12 +1001,12 @@
             </dependency>
             
             <!-- EJB3 client -->
-        <dependency>
-            <groupId>org.jboss.javaee</groupId>
-            <artifactId>jboss-ejb-api</artifactId>
-            <type>jar</type>
-            <version>3.0.0.CR1</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.javaee</groupId>
+                <artifactId>jboss-ejb-api</artifactId>
+                <type>jar</type>
+                <version>3.0.0.CR1</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -1033,7 +1032,7 @@
     <distributionManagement>
         <site>
           <id>Sesat</id>
-          <url>scp://sch-sesat01.dev.osl.basefarm.net:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
+          <url>scp://sesat.no:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
         </site>
     </distributionManagement>
 
