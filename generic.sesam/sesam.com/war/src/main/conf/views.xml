@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (2008) Schibsted ASA
+<!-- Copyright (2008-2009) Schibsted ASA
  *   This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
     <!-- The one vertical we have. -->
     <tab id="international" inherit="default-sesam-com"
             key="g"
-            mode="international" 
+            mode="international"
             page-size="10"
             rss-result-name="globalSearch">
         <navigation>
@@ -39,14 +39,16 @@
         </navigation>
         <layout main="sesam.com/main.jsp" front="sesam.com/index.jsp">
             <include key="head-element" template="sesam.com/head.jsp"/>
-            <include key="head-element-extra" template="sesam.com/mwsuggest.jsp"/>
+            <!-- Uncomment to enable type-ahead suggestion using mediawiki's library -->
+            <!--include key="head-element-extra" template="sesam.com/mwsuggest.jsp"/-->
             <include key="top-col-one" template="sesam.com/searchbar-top.jsp"/>
             <include key="main-col-three" template="sesam.com/globalSearch.jsp"/>
             <include key="bottom-col-one" template="sesam.com/offsetPager.jsp"/>
             <include key="bottom-col-three" template="sesam.com/footer.jsp"/>
-            <include key="bottom-col-two" template="sesam.com/searchbar-bottom.jsp"/>
-            <include key="offsetPagerLogo" template=""/>          
-            <include key="no-hits" template="sesam.com/no-hits.jsp"/>   
+            <!-- Uncomment following to add search box under search results -->
+            <!--include key="bottom-col-two" template="sesam.com/searchbar-bottom.jsp"/-->
+            <include key="offsetPagerLogo" template=""/>
+            <include key="no-hits" template="sesam.com/no-hits.jsp"/>
         </layout>
     </tab>
 </views>
