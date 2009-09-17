@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted ASA
+ * Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import no.sesat.commons.ioc.BaseContext;
 import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.query.Clause;
 import no.sesat.search.query.Query;
@@ -89,6 +88,7 @@ public class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     // Public -----------------------------------------------------
 
+    @Override
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException {
 
         TokenEvaluator result = null;
@@ -137,86 +137,94 @@ public class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         return result;
     }
 
+    @Override
     public String getQueryString() {
         return context.getQueryString();
     }
 
+    @Override
     public Site getSite() {
         return context.getSite();
     }
 
-    public synchronized boolean evaluateTerm(final TokenPredicate predicate, final String term) {
+    @Override
+    public synchronized boolean evaluateTerm(
+            final TokenPredicate predicate,
+            final String term) throws EvaluationException{
 
         return evaluateInAnyThread(predicate, new EvaluationState(term, Collections.EMPTY_SET, Collections.EMPTY_SET));
     }
 
-    public synchronized boolean evaluateClause(final TokenPredicate predicate, final Clause clause) {
+    @Override
+    public synchronized boolean evaluateClause(
+            final TokenPredicate predicate,
+            final Clause clause) throws EvaluationException{
 
         return evaluateInAnyThread(predicate, new EvaluationState(clause));
     }
 
-    public synchronized boolean evaluateQuery(final TokenPredicate predicate, final Query query) {
+    @Override
+    public synchronized boolean evaluateQuery(
+            final TokenPredicate predicate,
+            final Query query) throws EvaluationException{
 
         return evaluateInAnyThread(predicate, query.getEvaluationState());
     }
 
-    public boolean evaluate(final TokenPredicate token){
+    @Override
+    public boolean evaluate(final TokenPredicate token) throws EvaluationException{
 
         // process
         if(Thread.currentThread() != getOwningThread()){
             throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
         }
 
-        try{
+        // check that the evaluation hasn't already been done
+        // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
+        //  the evaluation is for the building of the known and possible predicate list
+        //    (during query parsing)(in which
+        //  case we could perform the check) or if we are scoring and need to know if the
+        //    possible predicate is really
+        //  applicable now (in the context of the whole query).
+        final Set<TokenPredicate> knownPredicates = getState().getKnownPredicates();
+        if(null != knownPredicates && knownPredicates.contains(token)){
+            return true;
+        }
 
-            // check that the evaluation hasn't already been done
-            // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
-            //  the evaluation is for the building of the known and possible predicate list
-            //    (during query parsing)(in which
-            //  case we could perform the check) or if we are scoring and need to know if the
-            //    possible predicate is really
-            //  applicable now (in the context of the whole query).
-            final Set<TokenPredicate> knownPredicates = getState().getKnownPredicates();
-            if(null != knownPredicates && knownPredicates.contains(token)){
-                return true;
-            }
+        final TokenEvaluator evaluator = getEvaluator(token);
 
-            final TokenEvaluator evaluator = getEvaluator(token);
+        if(null != getState().getTerm()){
 
-            if(null != getState().getTerm()){
+            // Single term or clause evaluation
+            return evaluator.evaluateToken(token, getState().getTerm(), getQueryString());
 
-                // Single term or clause evaluation
-                return evaluator.evaluateToken(token, getState().getTerm(), getQueryString());
+        }else if(null != getState().getQuery()){
 
-            }else if(null != getState().getQuery()){
+            // Whole query evaluation
+            return getState().getPossiblePredicates().contains(token)
+                    && evaluator.evaluateToken(token, null, getQueryString());
 
-                // Whole query evaluation
-                return getState().getPossiblePredicates().contains(token)
-                        && evaluator.evaluateToken(token, null, getQueryString());
-
-            }
-
-        }catch(EvaluationException ie){
-            // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
-            //  so we must sneak the VeryFastListQueryException through as a run-time exception.
-            throw new EvaluationRuntimeException(ie);
         }
 
         throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
 
 
+    @Override
     public State getState() {
         return state;
     }
 
+    @Override
     public void setState(final State state) {
         this.state = state;
     }
 
     // private -----------------------------------------------------
 
-    private boolean evaluateInAnyThread(final TokenPredicate predicate, final State state) {
+    private boolean evaluateInAnyThread(
+            final TokenPredicate predicate,
+            final State state) throws EvaluationException{
 
         final Thread origThread = owningThread;
         try{

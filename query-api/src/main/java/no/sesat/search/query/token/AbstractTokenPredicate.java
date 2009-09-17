@@ -1,4 +1,4 @@
-/* Copyright (2008) Schibsted ASA
+/* Copyright (2008-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ public abstract class AbstractTokenPredicate implements TokenPredicate {
 
     // Static --------------------------------------------------------
 
-    static boolean evaluate(final TokenPredicate token, final Object evalFactory) {
+    static boolean evaluate(final TokenPredicate token, final Object evalFactory) throws EvaluationException{
 
         if (!(evalFactory instanceof TokenEvaluationEngine)) {
             throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
@@ -65,9 +65,16 @@ public abstract class AbstractTokenPredicate implements TokenPredicate {
         return name();
     }
 
-    public boolean evaluate(final Object evalFactory) {
+    @Override
+    public boolean evaluate(final Object evalFactory)/* throws EvaluationRuntimeException*/{
 
-        return evaluate(this, evalFactory);
+        try{
+            return evaluate(this, evalFactory);
+        }catch(EvaluationException ie){
+            // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
+            //  so we must sneak the VeryFastListQueryException through as a run-time exception.
+            throw new EvaluationRuntimeException(ie);
+        }
     }
 
     // Public --------------------------------------------------------

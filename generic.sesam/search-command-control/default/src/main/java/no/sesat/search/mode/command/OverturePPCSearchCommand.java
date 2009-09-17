@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted ASA
+ * Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,10 +21,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
-
 import no.sesat.search.mode.config.OverturePpcCommandConfig;
-import no.sesat.search.query.AndNotClause;
-import no.sesat.search.query.NotClause;
+import no.sesat.search.query.token.EvaluationException;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.result.BasicResultList;
@@ -32,7 +30,6 @@ import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.OvertureSearchResult;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,8 +46,6 @@ import org.xml.sax.SAXException;
 public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String OVERTURE_PPC_ELEMENT = "Listing";
-    /** @deprecated Old school sitesearches **/
-    private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_imp2";
 
     private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
 
@@ -67,6 +62,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         setXmlRestful(
                 new AbstractXmlRestful(cxt) {
+                    @Override
                     public String createRequestURL() {
 
                         final OverturePpcCommandConfig ppcConfig
@@ -112,13 +108,20 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      *
      * @return the search result
      */
+    @Override
     public ResultList<ResultItem> execute() {
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
         final ReconstructedQuery rq = createQuery(getTransformedQuery());
+        final TokenPredicate predicate = TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer();
+        try {
+            top = rq.getEngine()
+                    .evaluateQuery(predicate, rq.getQuery());
 
-        top = rq.getEngine().evaluateQuery(TokenPredicateUtility.getTokenPredicate("PPCTOPLIST").exactPeer(), rq.getQuery());
+        } catch (EvaluationException ex) {
+            LOG.error("failed to check predicate" + predicate +" with evaluateQuery " + rq.getQuery());
+        }
 
         try {
             final Document doc = getXmlRestful().getXmlResult();
@@ -156,6 +159,7 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
+    @Override
     protected BasicResultItem createItem(final Element ppcListing) {
 
         final BasicResultItem item = new BasicResultItem();
@@ -170,17 +174,6 @@ public class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
 
         return item;
-    }
-
-    @Override
-    protected String getPartnerId(){
-
-        // FIXME. When the site searches have their own context
-        // remove this and use the property partnerId of OverturePPCConfiguration
-        // instead.
-        return null != getParameter("ss")
-                ? SITE_SEARCH_OVERTURE_PARTNER_ID
-                : super.getPartnerId();
     }
 
     @Override
