@@ -40,6 +40,7 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
 
     // Public --------------------------------------------------------
 
+    @Override
     public void createFacets(final SearchCommand.Context context, final SolrQuery query) {
 
         final Map<String, Navigator> facets = getSearchConfiguration(context).getFacets();
@@ -51,6 +52,7 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
         }
     }
 
+    @Override
     public void collectFacets(
             final SearchCommand.Context context,
             final QueryResponse response,
@@ -76,8 +78,13 @@ public class SolrSimpleFacetToolkitImpl implements SolrSearchCommand.FacetToolki
         final StringDataObject facetValue = context.getDataModel().getParameters().getValue(facet.getId());
 
         if (null != facetValue) {
+
             // splitting here allows for multiple navigation selections within the one navigation level.
-            for (String navSingleValue : facetValue.getString().split(",")) {
+            final String[] arr = getSearchConfiguration(context).getFacetSeparator().isEmpty()
+                    ? new String[]{facetValue.getString()}
+                    : facetValue.getString().split(getSearchConfiguration(context).getFacetSeparator());
+
+            for (String navSingleValue : arr) {
 
                 final String value = facet.isBoundaryMatch()
                         ? "^\"" + navSingleValue + "\"$"
