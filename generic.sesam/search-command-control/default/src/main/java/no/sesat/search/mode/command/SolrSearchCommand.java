@@ -20,6 +20,8 @@ package no.sesat.search.mode.command;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +33,6 @@ import no.sesat.search.result.BasicResultItem;
 import no.sesat.search.result.BasicResultList;
 import no.sesat.search.result.FacetedSearchResult;
 import no.sesat.search.result.FacetedSearchResultImpl;
-import no.sesat.search.result.Navigator;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
 import no.sesat.search.site.Site;
@@ -248,6 +249,16 @@ public class SolrSearchCommand extends AbstractSearchCommand{
         }
 
         return item;
+    }
+
+    @Override
+    protected Collection<String> getReservedWords() {
+
+        final Collection<String> words = new ArrayList<String>(super.getReservedWords());
+        // ampersand is treated as parameter separator just like in the restful URLs
+        words.add("&");
+
+        return words;
     }
 
     // Private -------------------------------------------------------
