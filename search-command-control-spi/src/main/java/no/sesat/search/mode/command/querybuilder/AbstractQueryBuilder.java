@@ -69,6 +69,7 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
     // Public --------------------------------------------------------
 
+    @Override
     public String getQueryString() {
 
         final Clause root = context.getQuery().getRootClause();
@@ -112,6 +113,7 @@ public abstract class AbstractQueryBuilder extends AbstractReflectionVisitor imp
 
         for (String word : getWordsToEscape()) {
 
+            word = Pattern.quote(word);
             // Case-insensitive check against word.
             // Term might already be prefixed by a field.
 
