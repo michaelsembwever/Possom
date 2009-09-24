@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
 
         final PageContext cxt = (PageContext) getJspContext();
         final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
-        final Layout layout = findLayout(datamodel);
+        final Layout layout = findLayout(cxt);
 
         final String front = (layout!=null && layout.getFront()!=null && layout.getFront().length()>0)?layout.getFront():null;
         final String main = (layout!=null && layout.getMain()!=null && layout.getMain().length()>0)?layout.getMain():null;
