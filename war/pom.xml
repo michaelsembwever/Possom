@@ -197,6 +197,7 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-user-api</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -230,6 +231,10 @@
       </dependency-->
     </dependencies>
 
+    <properties>
+        <log.file>sesam</log.file>
+    </properties>
+
     <profiles>
         <profile>
             <id>development</id>
@@ -245,90 +250,32 @@
                     <goals><goal>deploy</goal></goals>
                 </execution></executions>
             </plugin></plugins></build>
-            <properties>
-                <msearch.configuration.url>http://mobil:8080/mobil/conf/msearch-client.properties</msearch.configuration.url>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>false</linkpulse.enable>
-            </properties>
         </profile>
        <profile>
             <id>alpha</id>
             <activation />
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
         </profile>
        <profile>
             <id>nuclei</id>
             <activation />
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
         </profile>
        <profile>
             <id>beta</id>
             <activation />
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
         </profile>
        <profile>
             <id>electron</id>
             <activation />
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
         </profile>
        <profile>
             <id>gamma</id>
             <activation />
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
         </profile>
         <profile>
             <id>production</id>
             <activation />
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
         </profile>
     </profiles>
 
 </project>
+
