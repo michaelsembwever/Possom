@@ -50,7 +50,7 @@
 <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" ><![CDATA[&nbsp;]]></link>
 
 <!-- OpenSearch -->
-<jsp:text><![CDATA[<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&amp;c=${tab.key}&amp;output=opensearch">&nbsp;</link>]]></jsp:text>
+<jsp:text><![CDATA[<link rel="search" type="application/opensearchdescription+xml" title="Sesam.com" href="/search/?q=*&amp;c=${tab.key}&amp;layout=opensearch">&nbsp;</link>]]></jsp:text>
 
 <!-- JavaScript -->
 <c:set var="js_link"><search:findResource url="/javascript/common.js"/></c:set>
