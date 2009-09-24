@@ -54,11 +54,19 @@ import no.sesat.search.view.config.SearchTab;
  */
 public final class NavigationConfig implements Serializable {
 
+    // Constants -----------------------------------------------------
+
     public static final String USER_SORT_KEY = SearchConfiguration.DEFAULT_USER_SORT_PARAMETER;
+
+    // Attributes ----------------------------------------------------
 
     private final Map<String, Nav> navMap = new HashMap<String, Nav>();
     private final Map<String, Navigation> navigationMap = new HashMap<String, Navigation>();
     private final List<Navigation> navigationList = new ArrayList<Navigation>();
+
+    // Static --------------------------------------------------------
+
+    // Constructors --------------------------------------------------
 
     public NavigationConfig(final NavigationConfig inherit) {
 
@@ -69,6 +77,8 @@ public final class NavigationConfig implements Serializable {
             navigationList.addAll(inherit.getNavigationList());
         }
     }
+
+    // Public --------------------------------------------------------
 
     public Map<String, Nav> getNavMap() {
         return Collections.unmodifiableMap(navMap);
@@ -99,6 +109,10 @@ public final class NavigationConfig implements Serializable {
         navigationList.add(navigation);
     }
 
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+
     private static List<Element> getDirectChildren(final Element element, final String elementName) {
 
         final List<Element> children = new ArrayList<Element>();
@@ -114,6 +128,7 @@ public final class NavigationConfig implements Serializable {
         return children;
     }
 
+    // Inner classes -------------------------------------------------
 
     public static final class Navigation implements Serializable {
 
@@ -439,9 +454,11 @@ public final class NavigationConfig implements Serializable {
 
         /** Automatically select a child when only one child exists.
          * This repeats down to a level where the user actually has a choice of navigators to pick from.
-         * For this to work any model level navigators must exist down each level,
+         *  For this to work any model level navigators must exist down each level,
          * eg defining fast navigators in a hierarchical way in modes.xml prevents the next level of navigators down
          * from being selected there autoNavigation will not work.
+         *  It is also required that the child navigation URLs can work
+         * without the auto-navigated parameter values being explicit in the URL.
          * @return true if autoNavigation is enabled
          */
         public boolean isAutoNavigation() {

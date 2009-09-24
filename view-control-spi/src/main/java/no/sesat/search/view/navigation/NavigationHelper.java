@@ -70,7 +70,7 @@ public final class NavigationHelper {
                     ? dm.getNavigation().getNavigation(nav.getId()).getResults().size()
                     : 0;
 
-            if(1 == navResultSize && !nav.getChildNavs().isEmpty() && (nav.isAutoNavigation() || isOslo(dm, nav))){
+            if(1 == navResultSize && !nav.getChildNavs().isEmpty() && nav.isAutoNavigation()){
 
 // TODO: Specification is a mess, so this becomes ugly. See history in prio-198 & SEARCH-3320.
 // TODO: Haven't found a general way to solve this. Special case for Oslo.
@@ -118,17 +118,4 @@ public final class NavigationHelper {
 
     // Private -------------------------------------------------------
 
-    /** Checks if navigation is "oslo".
-     *
-     * @deprecated {@link http://sesat.no/scarab/issues/id/SKER5009} A general solution is required here
-     *  that everybody can benefit from.
-     *  Or documentation of how to avoid this in the index.
-     *
-     * @param dm datamodel
-     * @param nav navigation to check
-     * @return true if title == "oslo"
-     */
-    private static boolean isOslo(DataModel dm, NavigationConfig.Nav nav) {
-        return dm.getNavigation().getNavigation(nav.getId()).getResults().get(0).getTitle().equalsIgnoreCase("oslo");
-    }
 }
