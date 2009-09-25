@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted ASA
+/* Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -40,15 +40,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.DocumentLoader;
-
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.query.token.AbstractEvaluatorFactory.Context;
 import static no.sesat.search.query.parser.AbstractQueryParser.SKIP_REGEX;
 import static no.sesat.search.query.parser.AbstractQueryParser.OPERATOR_REGEX;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
-
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -139,6 +136,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
 
     // Public --------------------------------------------------------
 
+    @Override
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
@@ -180,6 +178,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return evaluation;
     }
 
+    @Override
     public Set<String> getMatchValues(final TokenPredicate token, final String term) {
 
         final Set<String> values;
@@ -214,6 +213,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         return Collections.unmodifiableSet(values);
     }
 
+    @Override
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
@@ -239,7 +239,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
         }
     }
 
-    static void initImpl(final Context cxt) throws ParserConfigurationException  {
+    static boolean initImpl(final Context cxt) throws ParserConfigurationException  {
 
         final Site site = cxt.getSite();
         final Site parent = site.getParent();
@@ -259,6 +259,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             initImpl(ContextWrapper.wrap(
                     AbstractEvaluatorFactory.Context.class,
                     new SiteContext(){
+                        @Override
                         public Site getSite(){
                             return parent;
                         }
@@ -318,14 +319,31 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                                 Arrays.sort(listNameArr, null);
                                 listNames.put(token, listNameArr);
                             }
-
-
                         }
                     }
                     LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
             }finally{
                 LIST_NAMES_LOCK.writeLock().unlock();
             }
+        }
+        try{
+            LIST_NAMES_LOCK.readLock().lock();
+
+            Site s = site;
+            boolean evaluatorUsedAnywhere = false;
+
+            while(!evaluatorUsedAnywhere && null != s){
+
+                evaluatorUsedAnywhere |= 0 < LIST_NAMES.get(s).values().size();
+                if(!evaluatorUsedAnywhere){
+                    // prepare to go to parent
+                    s = s.getParent();
+                }
+            }
+            return evaluatorUsedAnywhere;
+
+        }finally{
+            LIST_NAMES_LOCK.readLock().unlock();
         }
     }
 
