@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -22,9 +22,7 @@ import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactory;
 import org.apache.log4j.Logger;
-
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -117,15 +115,18 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
 
     /**
      * Get all the properties. A defensive copy of the map is returned.
-     * Uses clone() as Collections.unmodifableMap(properties) gives an awkward to use Map<Object,Object>
-     * So is a relatively expensive method to use.
+     * Is a relatively expensive method to use.
      *
      * @return defensive copy of the map is returned.
      */
     public Properties getProperties() {
 
         // new Properties(properties) does not work.
-        return (Properties) properties.clone();
+        // TOO SLOW (especially on a cold container) return (Properties) properties.clone();
+        // alternative approach that breaks synchronisation into smaller blocks
+        final Properties copy = new Properties();
+        copy.putAll(properties);
+        return copy;
     }
 
     /**
@@ -178,14 +179,14 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
 
         // SiteConfiguration.Context for this site & UrlResourceLoader.
         final SiteConfiguration stc = SiteConfiguration.instanceOf(new SiteConfiguration.Context() {
+            @Override
             public Site getSite() {
                 return site;
             }
-
             public boolean doesResourceExist(final String resource) {
                 return UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(resource, site));
             }
-
+            @Override
             public PropertiesLoader newPropertiesLoader(
                     final SiteContext siteCxt,
                     final String resource,
@@ -197,6 +198,7 @@ public final class SiteConfiguration implements SiteKeyedFactory,Serializable {
         return stc;
     }
 
+    @Override
     public boolean remove(final Site site) {
 
         try {
