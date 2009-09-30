@@ -1,5 +1,5 @@
 /*
- * Copyright (2008) Schibsted ASA
+ * Copyright (2008-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,6 +27,8 @@ package no.sesat.search.query.token;
  */
 public final class DeadTokenEvaluationEngineImpl extends TokenEvaluationEngineImpl {
 
+    private static final String DEAD_EXCEPTION_TITLE = "DEAD_EVALUATOR";
+
     public DeadTokenEvaluationEngineImpl(final Context cxt) {
         super(cxt);
     }
@@ -38,8 +40,13 @@ public final class DeadTokenEvaluationEngineImpl extends TokenEvaluationEngineIm
 
     @Override
     public boolean evaluate(final TokenPredicate token) {
-        throw new EvaluationRuntimeException(
-                new EvaluationException("DEAD_EVALUATOR", null));
+        throw new DeadEvaluationRuntimeException();
+    }
+
+    public static final class DeadEvaluationRuntimeException extends EvaluationRuntimeException{
+        DeadEvaluationRuntimeException(){
+            super(new EvaluationException(DEAD_EXCEPTION_TITLE, null));
+        }
     }
 
 }

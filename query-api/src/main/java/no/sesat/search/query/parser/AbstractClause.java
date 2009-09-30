@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted ASA
+/* Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ import java.util.Set;
 import no.sesat.commons.ref.ReferenceMap;
 import no.sesat.search.query.Clause;
 import no.sesat.commons.visitor.Visitor;
+import no.sesat.search.query.token.DeadTokenEvaluationEngineImpl.DeadEvaluationRuntimeException;
 import no.sesat.search.query.token.TokenEvaluator;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
@@ -180,6 +181,9 @@ public abstract class AbstractClause implements Clause {
                     success = false;
                     LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
                 }
+            }catch(DeadEvaluationRuntimeException dere){
+                success |= false;
+                // don't log this as it is intentional evaluation failure
             }catch(EvaluationRuntimeException ee){
                 if(success){
                     success = false;
@@ -211,6 +215,7 @@ public abstract class AbstractClause implements Clause {
      * Does not include any field values (eg "firstname:").
      * @return the term for this clause.
      */
+    @Override
     public String getTerm() {
         return term;
     }
@@ -220,6 +225,7 @@ public abstract class AbstractClause implements Clause {
      * The set is unmodifiable.
      * @return set of knownPredicates.
      */
+    @Override
     public Set<TokenPredicate> getKnownPredicates() {
         return knownPredicates;
     }
@@ -229,11 +235,13 @@ public abstract class AbstractClause implements Clause {
      * The set is unmodifiable.
      * @return set of possiblePredicates.
      */
+    @Override
     public Set<TokenPredicate> getPossiblePredicates() {
         return possiblePredicates;
     }
 
 
+    @Override
     public void accept(final Visitor visitor) {
         visitor.visit(this);
     }

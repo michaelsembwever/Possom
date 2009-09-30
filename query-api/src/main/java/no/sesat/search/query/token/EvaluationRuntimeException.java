@@ -1,4 +1,4 @@
-/* Copyright (2008) Schibsted ASA
+/* Copyright (2008-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ package no.sesat.search.query.token;
  * Note that a similar named EvaluationException exists within this package.
  * @version $Id$
  */
-public final class EvaluationRuntimeException extends RuntimeException {
+public class EvaluationRuntimeException extends RuntimeException {
     public EvaluationRuntimeException(final EvaluationException vflqe) {
         super(vflqe);
     }
