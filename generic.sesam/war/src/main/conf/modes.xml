@@ -225,25 +225,12 @@ Copyright (2006-2008) Schibsted ASA
             </query-transformers>
         </stock-command>
 
-         <!-- TODO rename to more appropriate. only sweden uses it. -->
-        <yahoo-idp-command id="default-web-command" inherit="default-yahoo-command">
-
-            <query-transformers>
-                <token-mask position="prefix"
-                            predicates="WIKIPEDIA_MAGIC,CATALOGUE_MAGIC,YELLOW_MAGIC,WHITE_MAGIC,PICTURE_MAGIC,NEWS_MAGIC"/>
-            </query-transformers>
-        </yahoo-idp-command>
-
-         <!-- TODO rename to more appropriate. only sweden uses it. -->
-        <yahoo-idp-command id="default-web-counter-only" results-to-return="0" inherit="default-web-command"/>
-
-        <yahoo-web-command id="default-yahoo-web-command"
-                           appid="YahooDemo"
+        <yahoo-boss-command id="default-yahoo-boss-command"
                            field-filters="site"
-                           host="yahooWebHost"
+                           host="yahooBossHost"
                            language="en"
-                           port="yahooWebPort"
-                           result-fields="Title AS title,Summary AS body,Url AS url,ClickUrl AS clickurl"
+                           port="yahooBossPort"
+                           result-fields="title,abstract AS body,url,clickurl"
                            results-to-return="10"
                            inherit="default-command">
            <query-builder>
@@ -253,7 +240,7 @@ Copyright (2006-2008) Schibsted ASA
                 <field-chooser target="title" fields="title,url"/>
                 <regexp field="url" target="site" regexp="http://([^/]*)/?"/>
             </result-handlers>
-        </yahoo-web-command>
+        </yahoo-boss-command>
 
         <youtube-command id="default-youtube-command"
                          inherit="default-command"

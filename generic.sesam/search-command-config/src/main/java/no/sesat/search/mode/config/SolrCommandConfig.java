@@ -54,6 +54,8 @@ public class SolrCommandConfig extends CommandConfig implements FacetedCommandCo
 
     private String queryType = null;
 
+    private String facetSeperator = ",";
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -186,6 +188,15 @@ public class SolrCommandConfig extends CommandConfig implements FacetedCommandCo
 
     public void setFacetToolkit(final String toolkit){
         this.facetToolkit = toolkit;
+    }
+
+    @Override
+    public String getFacetSeparator(){
+        return facetSeperator;
+    }
+
+    public void setFacetSeparator(final String facetSeperator){
+        this.facetSeperator = facetSeperator;
     }
 
     @Override

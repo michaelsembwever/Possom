@@ -458,6 +458,13 @@
     </profiles>
 
     <dependencies>
+          <!-- Anything that bundles with Sesat-Kernel's ROOT.war should be scope=provided in skins. -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <scope>provided</scope>
+        </dependency>
+            <!-- Same goes for our own sesat-kernel artifact already bundled in ROOT.war -->
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-site-spi</artifactId>
@@ -481,6 +488,7 @@
             <artifactId>commons-ioc</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- Other dependencies -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -556,6 +564,7 @@
 
     <dependencyManagement>
       <dependencies>
+          <!-- FAST libraries need to be manually put into classpath, if needed -->
         <dependency>
             <groupId>fast</groupId>
             <artifactId>dsapi</artifactId>

@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -40,12 +40,13 @@ import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.UnaryClause;
 import no.sesat.search.query.Query;
 import no.sesat.search.query.token.Categories;
+import no.sesat.search.query.token.EvaluationException;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.query.token.TokenPredicateUtility;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * @todo move out to generic.sesam/query-transform-control
  *
  * @version $Id$
  */
@@ -173,11 +174,16 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         for (TokenPredicate predicate : getPredicates()) {
 
             boolean applicable = clause.getKnownPredicates().contains(predicate);
-            // possible predicates depend on placement of terms within the query.
-            //  this state can't be assigned to the terms as they are immutable and
-            //   re-used across multiple queries at any given time.
-            applicable |= clause.getPossiblePredicates().contains(predicate)
-                    && getContext().getTokenEvaluationEngine().evaluateTerm(predicate, clause.getTerm());
+            try{
+                // possible predicates depend on placement of terms within the query.
+                //  this state can't be assigned to the terms as they are immutable and
+                //   re-used across multiple queries at any given time.
+                applicable |= clause.getPossiblePredicates().contains(predicate)
+                        && getContext().getTokenEvaluationEngine().evaluateTerm(predicate, clause.getTerm());
+
+            }catch(EvaluationException ie){
+                LOG.error("failed to check possible predicate" + predicate +" with evaluateTerm " + clause.getTerm());
+            }
 
             if (applicable) {
 

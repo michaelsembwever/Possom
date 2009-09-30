@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted ASA
+ * Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -56,12 +56,15 @@ public interface TokenEvaluationEngine {
      * Evaluator that will return false under all circumstances.
      */
     static final TokenEvaluator ALWAYS_FALSE_EVALUATOR = new TokenEvaluator() {
+        @Override
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return false;
         }
+        @Override
         public boolean isQueryDependant(final TokenPredicate predicate) {
             return false;
         }
+        @Override
         public Set<String> getMatchValues(final TokenPredicate token, final String term) {
             return Collections.<String>emptySet();
         }
@@ -71,12 +74,15 @@ public interface TokenEvaluationEngine {
      * Evaluator that will return true under all circumstances.
      */
     static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator() {
+        @Override
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return true;
         }
+        @Override
         public boolean isQueryDependant(final TokenPredicate predicate) {
             return false;
         }
+        @Override
         public Set<String> getMatchValues(final TokenPredicate token, final String term) {
             return Collections.<String>emptySet();
         }
@@ -86,13 +92,16 @@ public interface TokenEvaluationEngine {
      * Evaluator that will throws an EvaluationException under all circumstances.
      */
     static final TokenEvaluator DEAD_EVALUATOR = new TokenEvaluator() {
+        @Override
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             throw new EvaluationRuntimeException(
                     new EvaluationException("DEAD_EVALUATOR", null));
         }
+        @Override
         public boolean isQueryDependant(final TokenPredicate predicate) {
             return false;
         }
+        @Override
         public Set<String> getMatchValues(final TokenPredicate token, final String term) {
             return Collections.<String>emptySet();
         }
@@ -148,7 +157,7 @@ public interface TokenEvaluationEngine {
      * @param token
      * @return
      */
-    boolean evaluate(TokenPredicate token);
+    boolean evaluate(TokenPredicate token) throws EvaluationException;
 
     /** Utility method to perform one-off evaluations on terms from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
@@ -157,7 +166,7 @@ public interface TokenEvaluationEngine {
      * @param term
      * @return
      */
-    boolean evaluateTerm(TokenPredicate predicate, String term);
+    boolean evaluateTerm(TokenPredicate predicate, String term) throws EvaluationException;
 
     /** Utility method to perform one-off evaluations on clauses from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
@@ -166,7 +175,7 @@ public interface TokenEvaluationEngine {
      * @param clause
      * @return
      */
-    boolean evaluateClause(TokenPredicate predicate, Clause clause);
+    boolean evaluateClause(TokenPredicate predicate, Clause clause) throws EvaluationException;
 
     /** Utility method to perform one-off evaluations on queries from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
@@ -175,7 +184,7 @@ public interface TokenEvaluationEngine {
      * @param query
      * @return
      */
-    boolean evaluateQuery(TokenPredicate predicate, Query query);
+    boolean evaluateQuery(TokenPredicate predicate, Query query) throws EvaluationException;
 
     /**
      * Getter for property state.

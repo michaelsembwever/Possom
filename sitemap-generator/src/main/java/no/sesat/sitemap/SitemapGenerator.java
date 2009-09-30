@@ -1,3 +1,20 @@
+/*
+ * Copyright (2007-2009) Schibsted ASA
+ * This file is part of SESAT.
+ *
+ *   SESAT is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Affero General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SESAT is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Affero General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Affero General Public License
+ *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package no.sesat.sitemap;
 
 import no.sesat.search.sitemap.PageProvider;
@@ -104,6 +121,9 @@ public final class SitemapGenerator {
     public SitemapGenerator(final URI site, final File dest, final URI url) throws IOException {
 
         this(new ArrayList<PageProvider>(), dest, url);
+
+        // HACK add site into system properties, a la the global context
+        System.setProperty("no.sesat.sitemap.SitemapGenerator.site", site.toString());
 
         for (PageProvider provider : ServiceLoader.load(PageProvider.class, getClassLoader(site))) {
             LOG.info("Found " + provider.getName());

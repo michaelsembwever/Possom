@@ -40,4 +40,12 @@ public interface FacetedCommandConfig extends SearchConfiguration{
      * @return
      */
     Map<String, Navigator> getFacets();
+
+    /** Facet values (facets selected by the user) can be multi-valued using the specificated separator.
+     * A blank string will disable any ability to select multiple facet values.
+     *
+     * The default separator is "," unless sepcified by implementation.
+     * @return
+     */
+    String getFacetSeparator();
 }

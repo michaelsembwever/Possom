@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -74,6 +74,7 @@ import no.sesat.search.mode.command.querybuilder.SesamSyntaxQueryBuilder;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig;
 import no.sesat.search.mode.config.querybuilder.QueryBuilderConfig.Controller;
 import no.sesat.search.query.token.DeadTokenEvaluationEngineImpl;
+import no.sesat.search.query.token.EvaluationException;
 import no.sesat.search.query.token.TokenPredicateUtility;
 import no.sesat.search.site.config.SiteClassLoaderFactory;
 import no.sesat.search.site.config.Spi;
@@ -175,9 +176,11 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
 
         // A simple context for QueryTransformerFactory.Context
         qtfContext = new QueryTransformerFactory.Context() {
+                @Override
                 public Site getSite() {
                     return context.getDataModel().getSite().getSite();
                 }
+                @Override
                 public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
                     return context.newBytecodeLoader(site, name, jar);
                 }
@@ -186,26 +189,33 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
         // Little more complicated context for QueryBuilder.Context (can be used for QueryTransformer.Context too)
         // dont use ContextWrapper.wrap(..) here as this context really gets hammered and we want to avoid reflection
         queryBuilderContext = new QueryBuilder.Context(){
+                @Override
                 public Site getSite() {
                     return datamodel.getSite().getSite();
                 }
                 /** @deprecated {@inheritDoc} **/
+                @Override
                 public String getTransformedQuery() {
                     return transformedQuery;
                 }
+                @Override
                 public Query getQuery() {
                     // Important that initialiseQuery() has been called first
                     return getSearchCommandsQuery();
                 }
+                @Override
                 public TokenEvaluationEngine getTokenEvaluationEngine() {
                     return engine;
                 }
+                @Override
                 public void visitXorClause(final Visitor visitor, final XorClause clause) {
                     searchCommandsVisitXorClause(visitor, clause);
                 }
+                @Override
                 public String getFieldFilter(final LeafClause clause) {
                     return getSearchCommandsFieldFilter(clause);
                 }
+                @Override
                 public String getTransformedTerm(final Clause clause) {
 
                     // unable to delegate to getTransformedTerm as it escapes reserved words
@@ -213,26 +223,33 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                     final String transformedTerm = transformedTerms.get(clause);
                     return null != transformedTerm ? transformedTerm : clause.getTerm();
                 }
+                @Override
                 public Collection<String> getReservedWords() {
 
                     return getSearchCommandsReservedWords();
                 }
+                @Override
                 public String escape(final String word) {
 
                     return searchCommandsEscape(word);
                 }
+                @Override
                 public Map<Clause, String> getTransformedTerms() {
                     return getSearchCommandsTransformedTerms();
                 }
+                @Override
                 public DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder) {
                     return cxt.newDocumentLoader(siteCxt, resource, builder);
                 }
+                @Override
                 public PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties) {
                     return cxt.newPropertiesLoader(siteCxt, resource, properties);
                 }
+                @Override
                 public BytecodeLoader newBytecodeLoader(SiteContext siteContext, String className, String jarFileName) {
                     return cxt.newBytecodeLoader(siteContext, className, jarFileName);
                 }
+                @Override
                 public DataModel getDataModel() {
                     return cxt.getDataModel();
                 }
@@ -314,6 +331,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
 
     // SearchCommand overrides ---------------------------------------------------
 
+    @Override
     public BaseSearchConfiguration getSearchConfiguration() {
         return baseSearchConfiguration;
     }
@@ -323,6 +341,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
      *
      * @return
      */
+    @Override
     public ResultList<ResultItem> call() {
 
         MDC.put(Site.NAME_KEY, datamodel.getSite().getSite().getName());
@@ -384,6 +403,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
      *  Inserts an "-1" result list. And does the result handling on it.
      * Returns true if cancellation action was taken.
      */
+    @Override
     public synchronized boolean handleCancellation() {
 
         if (!completed) {
@@ -403,6 +423,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
     /** Has the command been cancelled.
      * Calling this method only makes sense once the call() method has been.
      **/
+    @Override
     public synchronized boolean isCancelled(){
         return null == thread && !completed;
     }
@@ -601,6 +622,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                 : 0;
     }
 
+    @Override
     public boolean isPaginated(){
 
         return offsetParameter.isActive();
@@ -620,6 +642,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
         return userSortByParameter.getValue();
     }
 
+    @Override
     public boolean isUserSortable(){
 
         return userSortByParameter.isActive();
@@ -756,6 +779,7 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
 
             // queryStr parser
             final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+                @Override
                 public TokenEvaluationEngine getTokenEvaluationEngine() {
                     return newEngine;
                 }
@@ -821,6 +845,9 @@ public abstract class AbstractSearchCommand implements SearchCommand, Serializab
                             field = fieldFilters.get(fieldFilter);
                             break;
                         }
+
+                    }catch(EvaluationException ie){
+                        LOG.error("failed to check possible predicate with term " + clause.getField());
                     } catch (IllegalArgumentException iae) {
                         LOG.trace(TRACE_NOT_TOKEN_PREDICATE + fieldFilter);
                     }

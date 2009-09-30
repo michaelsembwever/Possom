@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ import no.sesat.search.query.DefaultOperatorClause;
 import no.sesat.search.query.BinaryClause;
 import no.sesat.search.query.LeafClause;
 import no.sesat.search.query.PhraseClause;
+import no.sesat.search.query.token.EvaluationException;
 import no.sesat.search.query.token.TokenEvaluationEngine;
 import no.sesat.search.query.token.TokenPredicate;
 import no.sesat.search.query.transform.TokenMaskQueryTransformerConfig.Mask;
@@ -137,10 +138,13 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
             final TokenEvaluationEngine engine = getContext().getTokenEvaluationEngine();
 
             for (TokenPredicate predicate : config.getPredicates()) {
-
-                if (engine.evaluateClause(predicate, clause)) {
-                    transform = true;
-                    break;
+                try{
+                    if (engine.evaluateClause(predicate, clause)) {
+                        transform = true;
+                        break;
+                    }
+                }catch(EvaluationException ie){
+                    LOG.error("failed to check predicate" + predicate +" with evaluateClause " + clause);
                 }
             }
         }
@@ -164,10 +168,13 @@ public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
                 // if the field is the token then mask the field and include the term.
 
                 if(null != clause.getField()){
-
-                    if(engine.evaluateTerm(predicate, clause.getField())){
-                        transform = true;
-                        break;
+                    try{
+                        if(engine.evaluateTerm(predicate, clause.getField())){
+                            transform = true;
+                            break;
+                        }
+                    }catch(EvaluationException ie){
+                        LOG.error("failed to check predicate" + predicate +" with evaluateTerm " + clause.getField());
                     }
                 }
             }

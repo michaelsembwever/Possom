@@ -1,4 +1,4 @@
-/* Copyright (2008) Schibsted ASA
+/* Copyright (2008-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -549,11 +549,19 @@ public enum Categories implements TokenPredicate {
         TokenPredicateImpl.TOKENS.add(this);
     }
 
-    public boolean evaluate(final Object evalFactory) {
+    @Override
+    public boolean evaluate(final Object evalFactory)/* throws EvaluationRuntimeException*/{
 
-        return AbstractTokenPredicate.evaluate(this, evalFactory);
+        try{
+            return AbstractTokenPredicate.evaluate(this, evalFactory);
+        }catch(EvaluationException ie){
+            // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
+            //  so we must sneak the VeryFastListQueryException through as a run-time exception.
+            throw new EvaluationRuntimeException(ie);
+        }
     }
 
+    @Override
     public TokenPredicate exactPeer() {
 
         return impl.exactPeer();

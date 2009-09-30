@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted ASA
+/* Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@ package no.sesat.search.query.token;
 
 import javax.xml.parsers.ParserConfigurationException;
 import no.sesat.commons.ioc.ContextWrapper;
-import no.sesat.search.site.Site;
-import no.sesat.search.site.SiteContext;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,6 +50,10 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
 
     // Attributes -----------------------------------------------------
 
+    /** Because LIST_NAMES is encapsulated inside the VeryFastTokenEvaluator
+     * we keep a hint here in knowing if isReponsible() can simply and quickly always return false.
+     */
+    private final boolean everApplicable;
     private final Future fastEvaluatorCreator;
     private VeryFastTokenEvaluator fastEvaluator;
 
@@ -63,7 +64,7 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
         super(cxt);
 
         try {
-            VeryFastTokenEvaluator.initImpl(cxt);
+            everApplicable = VeryFastTokenEvaluator.initImpl(cxt);
 
         }catch (ParserConfigurationException ex) {
             throw new SiteKeyedFactoryInstantiationException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
@@ -72,6 +73,7 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
         fastEvaluatorCreator = EXECUTOR.submit(new FastEvaluatorCreator(cxt));
     }
 
+    @Override
     public TokenEvaluator getEvaluator(final TokenPredicate token) throws EvaluationException{
 
         final Context cxt = getContext();
@@ -98,7 +100,7 @@ public final class FastQueryMatchingEvaluatorFactory extends AbstractEvaluatorFa
 
         try {
 
-            return getFastEvaluator().isResponsibleFor(token);
+            return everApplicable && getFastEvaluator().isResponsibleFor(token);
 
         }catch (EvaluationException ex) {
             LOG.error("failed using VeryFastTokenEvaluator", ex);

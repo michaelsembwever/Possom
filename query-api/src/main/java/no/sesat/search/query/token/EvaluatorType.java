@@ -1,4 +1,4 @@
-/* Copyright (2008) Schibsted ASA
+/* Copyright (2008-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -63,10 +63,11 @@ public final class EvaluatorType implements BaseContext, Serializable {
         return clsName;
     }
 
+    private static final Set<EvaluatorType> INSTANCES_SET
+            = Collections.unmodifiableSet(new HashSet<EvaluatorType>(INSTANCES.values()));
+
     public static Set<EvaluatorType> getInstances() {
-        synchronized (INSTANCES) {
-            return Collections.unmodifiableSet(new HashSet<EvaluatorType>(INSTANCES.values()));
-        }
+        return INSTANCES_SET;
     }
 
     public static EvaluatorType instanceOf(final String name){
