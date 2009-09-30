@@ -1,5 +1,5 @@
 /*
- * Copyright (2006-2008) Schibsted ASA
+ * Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  *
  * @version $Id$
  */
-public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand{
+public abstract class AbstractXmlSearchCommand extends AbstractRestfulSearchCommand{
 
 
     // Constants -----------------------------------------------------
@@ -57,13 +57,6 @@ public abstract class AbstractXmlSearchCommand extends AbstractSearchCommand{
     }
 
     // Public --------------------------------------------------------
-
-    public String createRequestURL() {
-
-        return restful.createRequestURL();
-    }
-
-
 
     // Protected -----------------------------------------------------
 

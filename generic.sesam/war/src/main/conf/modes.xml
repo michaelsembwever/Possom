@@ -89,6 +89,16 @@ Copyright (2006-2008) Schibsted ASA
            </query-builder>
         </esp-fast-command>
 
+        <google-command id="default-google-command" host="googleHost" port="googlePort" results-to-return="8" inherit="default-command"/>
+        <google-command id="default-google-web-command" path="googleWebPath" inherit="default-google-command"/>
+        <google-command id="default-google-local-command" path="googleLocalPath" inherit="default-google-command"/>
+        <google-command id="default-google-video-command" path="googleVideoPath" inherit="default-google-command"/>
+        <google-command id="default-google-blogs-command" path="googleBlogsPath" inherit="default-google-command"/>
+        <google-command id="default-google-news-command" path="googleNewsPath" inherit="default-google-command"/>
+        <google-command id="default-google-book-command" path="googleBookPath" inherit="default-google-command"/>
+        <google-command id="default-google-image-command" path="googleImagePath" inherit="default-google-command"/>
+        <google-command id="default-google-patent-command" path="googlePatentPath" inherit="default-google-command"/>
+
         <math-command id="default-math-command" inherit="default-command"/>
 
         <!-- when overriding this command, remember to adjust partnerid according to this:

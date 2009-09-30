@@ -17,36 +17,25 @@
  */
 package no.sesat.search.mode.command;
 
-import java.io.IOException;
-import java.io.BufferedReader;
-
-import no.sesat.search.http.HTTPClient;
-import no.sesat.search.mode.command.SearchCommand.Context;
-import no.sesat.search.mode.config.AbstractXmlSearchConfiguration;
-import no.sesat.search.site.config.SiteConfiguration;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 /**
- * Base implementation for search commands that are RESTful and have XML responses.
+ * Helper base implementation for search commands that are RESTful.
  *
  * The RESTful server is defined through:
- * host: AbstractXmlSearchConfiguration.getHost()
- * port: AbstractXmlSearchConfiguration.getPort()
+ * host: AbstractRestfulSearchConfiguration.getHost()
+ * port: AbstractRestfulSearchConfiguration.getPort()
  *
  * @version $Id$
  */
-public abstract class AbstractXmlRestful extends AbstractRestful implements XmlRestful{
+public abstract class AbstractRestfulSearchCommand extends AbstractSearchCommand{
 
 
     // Constants -----------------------------------------------------
 
     //private static final Logger LOG = Logger.getLogger(AbstractXmlSearchCommand.class);
-    private static final Logger DUMP = Logger.getLogger("no.sesat.search.Dump");
 
     // Attributes ----------------------------------------------------
+
+    private Restful restful;
 
     // Static --------------------------------------------------------
 
@@ -54,23 +43,31 @@ public abstract class AbstractXmlRestful extends AbstractRestful implements XmlR
 
 
     /**
-     * Create new XmlRestful
+     * Create new xml based command.
      *
      * @param cxt The context to execute in.
      */
-    public AbstractXmlRestful(final Context cxt) {
-
+    protected AbstractRestfulSearchCommand(final Context cxt) {
         super(cxt);
     }
 
     // Public --------------------------------------------------------
 
-    @Override
-    public final Document getXmlResult() throws IOException, SAXException {
+    public String createRequestURL() {
 
-        final String url = createRequestURL();
-        DUMP.info("Using " + url);
-        return getClient().getXmlDocument(url);
+        return restful.createRequestURL();
+    }
+
+
+
+    // Protected -----------------------------------------------------
+
+    protected final Restful getRestful(){
+        return restful;
+    }
+
+    protected final void setRestful(final Restful restful){
+        this.restful = restful;
     }
 
     // Private -------------------------------------------------------

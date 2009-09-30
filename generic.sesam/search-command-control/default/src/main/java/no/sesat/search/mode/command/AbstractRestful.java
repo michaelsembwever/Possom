@@ -1,5 +1,5 @@
 /*
- * Copyright (2006-2009) Schibsted ASA
+ * Copyright (2006-2007) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -17,29 +17,19 @@
  */
 package no.sesat.search.mode.command;
 
-import java.io.IOException;
 import java.io.BufferedReader;
-
+import java.io.IOException;
 import no.sesat.search.http.HTTPClient;
 import no.sesat.search.mode.command.SearchCommand.Context;
-import no.sesat.search.mode.config.AbstractXmlSearchConfiguration;
+import no.sesat.search.mode.config.AbstractRestfulSearchConfiguration;
 import no.sesat.search.site.config.SiteConfiguration;
-
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
- * Base implementation for search commands that are RESTful and have XML responses.
- *
- * The RESTful server is defined through:
- * host: AbstractXmlSearchConfiguration.getHost()
- * port: AbstractXmlSearchConfiguration.getPort()
  *
  * @version $Id$
  */
-public abstract class AbstractXmlRestful extends AbstractRestful implements XmlRestful{
-
+public abstract class AbstractRestful implements Restful{
 
     // Constants -----------------------------------------------------
 
@@ -48,29 +38,52 @@ public abstract class AbstractXmlRestful extends AbstractRestful implements XmlR
 
     // Attributes ----------------------------------------------------
 
+    private final Context context;
+
+    private final transient HTTPClient client;
+
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
-
     /**
-     * Create new XmlRestful
+     * Create new restful
      *
      * @param cxt The context to execute in.
      */
-    public AbstractXmlRestful(final Context cxt) {
+    public AbstractRestful(final Context cxt) {
 
-        super(cxt);
+        context = cxt;
+
+        final AbstractRestfulSearchConfiguration conf = (AbstractRestfulSearchConfiguration)cxt.getSearchConfiguration();
+
+        final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
+        final String host = siteConf.getProperty(conf.getHost());
+        final int port = null != siteConf.getProperty(conf.getPort())
+                ? Integer.parseInt(siteConf.getProperty(conf.getPort()))
+                : 80; // defaults to normal http port
+
+        client = HTTPClient.instance(conf.getHostHeader().length() > 0 ? conf.getHostHeader() : host, port, host);
     }
 
     // Public --------------------------------------------------------
 
-    @Override
-    public final Document getXmlResult() throws IOException, SAXException {
+    public Context getContext() {
+        return context;
+    }
 
+    @Override
+    public final BufferedReader getHttpReader(final String encoding) throws IOException {
         final String url = createRequestURL();
-        DUMP.info("Using " + url);
-        return getClient().getXmlDocument(url);
+        AbstractRestful.DUMP.info("Using " + url);
+        return client.getBufferedReader(url, encoding);
+    }
+
+
+    // Protected -------------------------------------------------------
+
+    protected HTTPClient getClient(){
+        return client;
     }
 
     // Private -------------------------------------------------------
