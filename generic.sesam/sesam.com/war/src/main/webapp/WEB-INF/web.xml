@@ -38,7 +38,8 @@
         <servlet-class>no.sesat.commons.resourcefeed.ResourceServlet</servlet-class>
         <init-param>
             <param-name>ipaddresses.allowed</param-name>
-            <param-value>80.91.33.</param-value>
+            <!-- By default allow everybody to read the private resources (generic.sesam is open sourced afterall) -->
+            <param-value>0,1,2,3,4,5,6,7,8,9</param-value>
         </init-param>
         <init-param>
             <param-name>resources.restricted</param-name>
