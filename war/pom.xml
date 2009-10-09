@@ -197,7 +197,6 @@
         <dependency>
             <groupId>sesat</groupId>
             <artifactId>sesat-user-api</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
