@@ -281,10 +281,12 @@ public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextua
 
     /** {@inheritDoc}
      */
+    @Override
     public void execute() throws MojoExecutionException{
 
-        // only ever interested in war projects. silently ignore other projects.
-        if("war".equals(project.getPackaging())){
+        // only ever interested in war and ear projects. silently ignore other projects.
+        final String ext = project.getPackaging();
+        if("war".equals(ext) || "ear".equals(ext)){
 
             pushFields();
 
