@@ -79,6 +79,7 @@ public final class UserFilter implements Filter {
      * @exception IOException Thrown if an input/output error occurs
      * @exception ServletException Thrown if a servlet error occurs
      */
+    @Override
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
@@ -95,6 +96,7 @@ public final class UserFilter implements Filter {
     /**
      * Destroy method for this filter.
      */
+    @Override
     public void destroy() {
     }
 
@@ -104,6 +106,7 @@ public final class UserFilter implements Filter {
      *
      * @param filterConfig the filter configuration
      */
+    @Override
     public void init(final FilterConfig filterConfig) {
     }
 
@@ -127,14 +130,15 @@ public final class UserFilter implements Filter {
         final BasicUserService basicUserService = getBasicUserService(datamodel);
 
         if (null != basicUserService) {
-
+            final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
             final String loginKey = UserCookieUtil.getUserLoginCookie(request);
             final boolean isLegalLoginKey = basicUserService.isLegalLoginKey(loginKey);
 
             final BasicUser user = datamodel.getUser().getUser();
             final Date updateTimestamp = UserCookieUtil.getUserUpdateCookie(request);
 
-            final boolean actionLogout = "logout".equals(request.getParameter("action"));
+            final boolean actionLogout = "logout".equals(request.getParameter("action"))
+                    && !Boolean.parseBoolean(siteConf.getProperty("sesat.user.logout.disabled"));
 
             if (user == null && isLegalLoginKey) {
 
@@ -148,30 +152,21 @@ public final class UserFilter implements Filter {
 
                 // Remove the logout from the url to prevent problems with sesamBackUrl.
                 if (actionLogout) {
+
                     final String strippedUrl = request.getRequestURL() + "?"
                             + request.getQueryString().substring(0, request.getQueryString().indexOf("&action"));
+
                     redirect(strippedUrl, response);
                 }
 
-            } else if (user != null && isLegalLoginKey) {
-                if (!isLoginKeyLegalForUser(loginKey, user)) {
-
-                    // Check if the logged in user is the one found in the login key
-                    logout(datamodel, basicUserService, response);
-                    loginUsingCookie(loginKey, datamodel, basicUserService, response);
-
-                } else if (user.isDirty(updateTimestamp)) {
+            } else if (null != user && isLegalLoginKey && user.isDirty(updateTimestamp)) {
 
                     // Check if the user object is dirty, refresh if needed.
-                    LOG.info("Logged in user dirty, refreshes: " + user.getUsername());
+                    LOG.info("Logged in user dirty, refreshes: " + user.getFullName());
                     datamodel.getUser().setUser(basicUserService.refreshUser(user));
-                }
             }
-
         }else{
-
             LOG.debug("Couldn't find the basic user service.");
-            return;
         }
     }
 
@@ -227,7 +222,7 @@ public final class UserFilter implements Filter {
             final HttpServletResponse response) {
 
         final BasicUser user = datamodel.getUser().getUser();
-        LOG.info("Logout: " + user.getUsername());
+        LOG.info("Logout: " + user.getFullName());
 
         if (userService.isLegalLoginKey(user.getNextLoginKey())) {
             userService.invalidateLogin(user.getNextLoginKey());
@@ -251,13 +246,6 @@ public final class UserFilter implements Filter {
             // Place the cookie, so we can test that cookies are enabled.
             UserCookieUtil.setUserLoginCookieDefault(response);
         }
-    }
-
-    private static boolean isLoginKeyLegalForUser(final String loginKey, final BasicUser user) {
-
-        // The user id in the login key must be the same as in the user object.
-        return user.getUserId().toString().equals(
-            loginKey.substring(0, loginKey.indexOf(BasicUserService.LOGIN_KEY_SEPARATOR)));
     }
 
     private static void redirect(final String url, final HttpServletResponse response) {
