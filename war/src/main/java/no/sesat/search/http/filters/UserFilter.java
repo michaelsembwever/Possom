@@ -49,6 +49,8 @@ import org.apache.log4j.Logger;
  * The user's manual logging in with username and password
  *  must be performed in a separate application that fronts to UserService.
  *
+ * @xxx it may be more appropriate that this class belongs in sesat-user project?
+ *
  * @version <tt>$Id$</tt>
  */
 public final class UserFilter implements Filter {
@@ -56,6 +58,10 @@ public final class UserFilter implements Filter {
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(UserFilter.class);
+
+    private static final String DISABLE_LOGOUT = "sesat.user.logout.disabled";
+    private static final String ACTION_PARAMETER = "action";
+    private static final String LOGOUT_PARAMETER_VALUE = "logout";
 
     // Attributes ----------------------------------------------------
 
@@ -90,7 +96,9 @@ public final class UserFilter implements Filter {
             performAutomaticLogin((HttpServletRequest) request, (HttpServletResponse) response);
 
         }
-        chain.doFilter(request, response);
+        if(!response.isCommitted()){
+            chain.doFilter(request, response);
+        }
     }
 
     /**
@@ -130,15 +138,13 @@ public final class UserFilter implements Filter {
         final BasicUserService basicUserService = getBasicUserService(datamodel);
 
         if (null != basicUserService) {
-            final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
             final String loginKey = UserCookieUtil.getUserLoginCookie(request);
             final boolean isLegalLoginKey = basicUserService.isLegalLoginKey(loginKey);
 
             final BasicUser user = datamodel.getUser().getUser();
             final Date updateTimestamp = UserCookieUtil.getUserUpdateCookie(request);
 
-            final boolean actionLogout = "logout".equals(request.getParameter("action"))
-                    && !Boolean.parseBoolean(siteConf.getProperty("sesat.user.logout.disabled"));
+            final boolean actionLogout = LOGOUT_PARAMETER_VALUE.equals(request.getParameter(ACTION_PARAMETER));
 
             if (user == null && isLegalLoginKey) {
 
@@ -153,10 +159,10 @@ public final class UserFilter implements Filter {
                 // Remove the logout from the url to prevent problems with sesamBackUrl.
                 if (actionLogout) {
 
-                    final String strippedUrl = request.getRequestURL() + "?"
-                            + request.getQueryString().substring(0, request.getQueryString().indexOf("&action"));
+                    final String queryString = request.getQueryString()
+                            .replaceFirst("&?" + ACTION_PARAMETER + '=' + LOGOUT_PARAMETER_VALUE, "");
 
-                    redirect(strippedUrl, response);
+                    redirect(request.getRequestURL() + "?" + queryString, response);
                 }
 
             } else if (null != user && isLegalLoginKey && user.isDirty(updateTimestamp)) {
@@ -211,6 +217,14 @@ public final class UserFilter implements Filter {
 
     /**
      * Method used to reset a session totally.
+     * It removes the user object from the datamodel, calls basicUserService.invalidateLogin(loginKey)
+     *  and resets the loginKey cookie to its default value.
+     *
+     * The invalidateLogin(..) call and cookie reset can be disabled by setting in the skin's configuration.properties
+     * sesat.user.logout.disabled=true
+     *
+     * but the user will always be removed from the datamodel,
+     *  and expected to be re-inserted on the next loginUsingCookie(..) call.
      *
      * @param datamodel the datamodel
      * @param userService the user service
@@ -221,14 +235,19 @@ public final class UserFilter implements Filter {
             final BasicUserService userService,
             final HttpServletResponse response) {
 
-        final BasicUser user = datamodel.getUser().getUser();
-        LOG.info("Logout: " + user.getFullName());
+        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
 
-        if (userService.isLegalLoginKey(user.getNextLoginKey())) {
-            userService.invalidateLogin(user.getNextLoginKey());
+        if(!Boolean.parseBoolean(siteConf.getProperty(DISABLE_LOGOUT))){
+
+            final BasicUser user = datamodel.getUser().getUser();
+            LOG.info("Logout: " + user.getFullName());
+
+            if (userService.isLegalLoginKey(user.getNextLoginKey())) {
+                userService.invalidateLogin(user.getNextLoginKey());
+            }
+
+            UserCookieUtil.setUserLoginCookieDefault(response);
         }
-
-        UserCookieUtil.setUserLoginCookieDefault(response);
         datamodel.getUser().setUser(null);
     }
 
