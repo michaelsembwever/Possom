@@ -242,6 +242,8 @@ public class SolrSearchCommand extends AbstractSearchCommand{
                 item = item.addField(entry.getValue(), (String)doc.getFieldValue(entry.getKey()));
             }else if(value instanceof Serializable){
                 item = item.addObjectField(entry.getValue(), (Serializable)doc.getFieldValue(entry.getKey()));
+            }else if(null == value) {
+                LOG.debug("Unable to add to ResultItem, field " + entry.getKey() + " does not exist");
             }else{
                 LOG.warn("Unable to add to ResultItem this non Serializable object: " + value);
             }

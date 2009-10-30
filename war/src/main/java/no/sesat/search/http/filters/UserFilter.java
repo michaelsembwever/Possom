@@ -49,6 +49,8 @@ import org.apache.log4j.Logger;
  * The user's manual logging in with username and password
  *  must be performed in a separate application that fronts to UserService.
  *
+ * @xxx it may be more appropriate that this class belongs in sesat-user project?
+ *
  * @version <tt>$Id$</tt>
  */
 public final class UserFilter implements Filter {
@@ -56,6 +58,10 @@ public final class UserFilter implements Filter {
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(UserFilter.class);
+
+    private static final String DISABLE_LOGOUT = "sesat.user.logout.disabled";
+    private static final String ACTION_PARAMETER = "action";
+    private static final String LOGOUT_PARAMETER_VALUE = "logout";
 
     // Attributes ----------------------------------------------------
 
@@ -79,6 +85,7 @@ public final class UserFilter implements Filter {
      * @exception IOException Thrown if an input/output error occurs
      * @exception ServletException Thrown if a servlet error occurs
      */
+    @Override
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
@@ -89,12 +96,15 @@ public final class UserFilter implements Filter {
             performAutomaticLogin((HttpServletRequest) request, (HttpServletResponse) response);
 
         }
-        chain.doFilter(request, response);
+        if(!response.isCommitted()){
+            chain.doFilter(request, response);
+        }
     }
 
     /**
      * Destroy method for this filter.
      */
+    @Override
     public void destroy() {
     }
 
@@ -104,6 +114,7 @@ public final class UserFilter implements Filter {
      *
      * @param filterConfig the filter configuration
      */
+    @Override
     public void init(final FilterConfig filterConfig) {
     }
 
@@ -127,14 +138,13 @@ public final class UserFilter implements Filter {
         final BasicUserService basicUserService = getBasicUserService(datamodel);
 
         if (null != basicUserService) {
-
             final String loginKey = UserCookieUtil.getUserLoginCookie(request);
             final boolean isLegalLoginKey = basicUserService.isLegalLoginKey(loginKey);
 
             final BasicUser user = datamodel.getUser().getUser();
             final Date updateTimestamp = UserCookieUtil.getUserUpdateCookie(request);
 
-            final boolean actionLogout = "logout".equals(request.getParameter("action"));
+            final boolean actionLogout = LOGOUT_PARAMETER_VALUE.equals(request.getParameter(ACTION_PARAMETER));
 
             if (user == null && isLegalLoginKey) {
 
@@ -148,30 +158,21 @@ public final class UserFilter implements Filter {
 
                 // Remove the logout from the url to prevent problems with sesamBackUrl.
                 if (actionLogout) {
-                    final String strippedUrl = request.getRequestURL() + "?"
-                            + request.getQueryString().substring(0, request.getQueryString().indexOf("&action"));
-                    redirect(strippedUrl, response);
+
+                    final String queryString = request.getQueryString()
+                            .replaceFirst("&?" + ACTION_PARAMETER + '=' + LOGOUT_PARAMETER_VALUE, "");
+
+                    redirect(request.getRequestURL() + "?" + queryString, response);
                 }
 
-            } else if (user != null && isLegalLoginKey) {
-                if (!isLoginKeyLegalForUser(loginKey, user)) {
-
-                    // Check if the logged in user is the one found in the login key
-                    logout(datamodel, basicUserService, response);
-                    loginUsingCookie(loginKey, datamodel, basicUserService, response);
-
-                } else if (user.isDirty(updateTimestamp)) {
+            } else if (null != user && isLegalLoginKey && user.isDirty(updateTimestamp)) {
 
                     // Check if the user object is dirty, refresh if needed.
-                    LOG.info("Logged in user dirty, refreshes: " + user.getUsername());
+                    LOG.info("Logged in user dirty, refreshes: " + user.getFullName());
                     datamodel.getUser().setUser(basicUserService.refreshUser(user));
-                }
             }
-
         }else{
-
             LOG.debug("Couldn't find the basic user service.");
-            return;
         }
     }
 
@@ -216,6 +217,14 @@ public final class UserFilter implements Filter {
 
     /**
      * Method used to reset a session totally.
+     * It removes the user object from the datamodel, calls basicUserService.invalidateLogin(loginKey)
+     *  and resets the loginKey cookie to its default value.
+     *
+     * The invalidateLogin(..) call and cookie reset can be disabled by setting in the skin's configuration.properties
+     * sesat.user.logout.disabled=true
+     *
+     * but the user will always be removed from the datamodel,
+     *  and expected to be re-inserted on the next loginUsingCookie(..) call.
      *
      * @param datamodel the datamodel
      * @param userService the user service
@@ -226,14 +235,19 @@ public final class UserFilter implements Filter {
             final BasicUserService userService,
             final HttpServletResponse response) {
 
-        final BasicUser user = datamodel.getUser().getUser();
-        LOG.info("Logout: " + user.getUsername());
+        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
 
-        if (userService.isLegalLoginKey(user.getNextLoginKey())) {
-            userService.invalidateLogin(user.getNextLoginKey());
+        if(!Boolean.parseBoolean(siteConf.getProperty(DISABLE_LOGOUT))){
+
+            final BasicUser user = datamodel.getUser().getUser();
+            LOG.info("Logout: " + user.getFullName());
+
+            if (userService.isLegalLoginKey(user.getNextLoginKey())) {
+                userService.invalidateLogin(user.getNextLoginKey());
+            }
+
+            UserCookieUtil.setUserLoginCookieDefault(response);
         }
-
-        UserCookieUtil.setUserLoginCookieDefault(response);
         datamodel.getUser().setUser(null);
     }
 
@@ -251,13 +265,6 @@ public final class UserFilter implements Filter {
             // Place the cookie, so we can test that cookies are enabled.
             UserCookieUtil.setUserLoginCookieDefault(response);
         }
-    }
-
-    private static boolean isLoginKeyLegalForUser(final String loginKey, final BasicUser user) {
-
-        // The user id in the login key must be the same as in the user object.
-        return user.getUserId().toString().equals(
-            loginKey.substring(0, loginKey.indexOf(BasicUserService.LOGIN_KEY_SEPARATOR)));
     }
 
     private static void redirect(final String url, final HttpServletResponse response) {
