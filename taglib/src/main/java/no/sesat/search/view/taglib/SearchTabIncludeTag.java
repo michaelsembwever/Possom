@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -26,10 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.run.RunningQueryImpl;
-import no.sesat.search.view.config.SearchTab;
 import no.sesat.search.view.config.SearchTab.Layout;
 import org.apache.log4j.Logger;
 
@@ -92,7 +88,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
         if(null != layout.getInclude(include) && layout.getInclude(include).length() > 0 ){
 
             try{
-                cxt.getOut().println("<!-- " + include + " -->");
+                cxt.getOut().println("<!-- " + include + " -->"); // (authorized)
             }catch(IOException ioe){
                 LOG.warn("Failed to write include comment", ioe);
             }
@@ -122,7 +118,7 @@ public final class SearchTabIncludeTag extends AbstractVelocityTemplateTag {
 
         }else{
             // could not find include
-            cxt.getOut().write("<!-- " + include + " not found -->");
+            cxt.getOut().write("<!-- " + include + " not found -->"); // (authorized)
         }
     }
 

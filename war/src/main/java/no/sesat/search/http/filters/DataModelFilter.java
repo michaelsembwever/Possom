@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *   SESAT is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,6 @@ import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -36,8 +35,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -47,24 +44,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
+import no.sesat.search.datamodel.DataModelUtility;
 import no.sesat.search.datamodel.access.ControlLevel;
-import no.sesat.search.datamodel.generic.DataObject;
-import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.datamodel.junkyard.JunkYardDataObject;
-import no.sesat.search.datamodel.request.BrowserDataObject;
 import no.sesat.search.datamodel.request.ParametersDataObject;
-import no.sesat.search.datamodel.site.SiteDataObject;
-import no.sesat.search.datamodel.user.UserDataObject;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
 import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.UrlResourceLoader;
-
 import no.sesat.search.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
@@ -95,9 +85,11 @@ public final class DataModelFilter implements Filter {
 
     // Public --------------------------------------------------------
 
+    @Override
     public void init(final FilterConfig config) throws ServletException {
     }
 
+    @Override
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
@@ -112,10 +104,11 @@ public final class DataModelFilter implements Filter {
             final DataModelFactory factory;
             try{
                 factory = DataModelFactory.instanceOf(new DataModelFactory.Context(){
+                    @Override
                     public Site getSite() {
                         return site;
                     }
-
+                    @Override
                     public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
                                                                 final String resource,
                                                                 final Properties properties) {
@@ -136,7 +129,11 @@ public final class DataModelFilter implements Filter {
                 datamodel.setParameters(parametersDO);
 
                 if(null == datamodel.getSite() || !datamodel.getSite().getSite().equals(site)){
-                    datamodel.setSite(getSiteDO(request, factory, datamodel));
+                    datamodel.setSite(DataModelUtility.getSiteDO(
+                            factory,
+                            datamodel,
+                            (Site) request.getAttribute(Site.NAME_KEY),
+                            (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY)));
                 }
 
                 // DataModel's ControlLevel will be REQUEST_CONSTRUCTION (from getDataModel(..))
@@ -156,7 +153,7 @@ public final class DataModelFilter implements Filter {
         }
     }
 
-
+    @Override
     public void destroy() {
     }
 
@@ -184,71 +181,20 @@ public final class DataModelFilter implements Filter {
 
     private static DataModel createDataModel(final DataModelFactory factory, final HttpServletRequest request){
 
-        final DataModel datamodel = factory.instantiate();
-
-        final SiteDataObject siteDO = getSiteDO(request, factory, datamodel);
-
-        final StringDataObject userAgentDO = factory.instantiate(
-                StringDataObject.class,
-                datamodel,
-                new DataObject.Property("string", request.getHeader("User-Agent")));
-
-        final StringDataObject remoteAddrDO = factory.instantiate(
-                StringDataObject.class,
-                datamodel,
-                new DataObject.Property("string", request.getAttribute("REMOTE_ADDR")));
-
-        final StringDataObject forwardedForDO = factory.instantiate(
-                StringDataObject.class,
-                datamodel,
-                new DataObject.Property("string", request.getHeader("x-forwarded-for")));
-
         final List<Locale> locales = new ArrayList<Locale>();
         for(@SuppressWarnings("unchecked") Enumeration<Locale> en = request.getLocales(); en.hasMoreElements();){
             locales.add(en.nextElement());
         }
 
-        final BrowserDataObject browserDO = factory.instantiate(
-                BrowserDataObject.class,
-                datamodel,
-                new DataObject.Property("userAgent", userAgentDO),
-                new DataObject.Property("remoteAddr", remoteAddrDO),
-                new DataObject.Property("forwardedFor", forwardedForDO),
-                new DataObject.Property("locale", request.getLocale()),
-                new DataObject.Property("supportedLocales", locales));
-
-        final UserDataObject userDO = factory.instantiate(
-                UserDataObject.class,
-                datamodel,
-                new DataObject.Property("user", null));
-
-        final JunkYardDataObject junkYardDO = factory.instantiate(
-                JunkYardDataObject.class,
-                datamodel,
-                new DataObject.Property("values", new ConcurrentHashMap<String,Object>(5, 0.75f, 2)));
-
-        datamodel.setSite(siteDO);
-        datamodel.setBrowser(browserDO);
-        datamodel.setUser(userDO);
-        datamodel.setJunkYard(junkYardDO);
-        //datamodel.setSearches(new ConcurrentHashMap<String,SearchDataObject>());
-
-        return datamodel;
-    }
-
-    private static SiteDataObject getSiteDO(
-            final ServletRequest request,
-            final DataModelFactory factory,
-            final DataModel datamodel) {
-
-        final Site site = (Site) request.getAttribute(Site.NAME_KEY);
-        final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
-
-        return factory.instantiate(
-                SiteDataObject.class,
-                datamodel,
-                new DataObject.Property("site", site),
-                new DataObject.Property("siteConfiguration", siteConf));
+        return DataModelUtility.createDataModel(
+                factory,
+                (Site) request.getAttribute(Site.NAME_KEY),
+                (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY),
+                request.getHeader("User-Agent"),
+                (String) request.getAttribute("REMOTE_ADDR"),
+                request.getHeader("x-forwarded-for"),
+                request.getLocale(),
+                locales);
     }
 
     /** Update the request elements in the datamodel.
@@ -259,56 +205,35 @@ public final class DataModelFilter implements Filter {
             final DataModel datamodel,
             final HttpServletRequest request){
 
-        // Note that we do not support String[] parameter values! this is different to pre SESAT days
-        final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
-
+        final Map<String,Map<String,String>> paramMaps = new HashMap<String,Map<String,String>>();
         try{
+            final Map<String,String> urlParameters = new HashMap<String,String>();
+            paramMaps.put("Url", urlParameters);
             for(@SuppressWarnings("unchecked")
                     Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
 
                 final String key = e.nextElement();
-                values.put(key, factory.instantiate(
-                    StringDataObject.class,
-                    datamodel,
-                    new DataObject.Property("string", getParameterSafely(request, key))));
-
-                // meta-data noting this is a parameter from the url
-                values.put(key + "-isUrl", factory.instantiate(
-                        StringDataObject.class,
-                        datamodel,
-                        new DataObject.Property("string", "true")));
+                urlParameters.put(key, getParameterSafely(request, key));
             }
-
-            // Adding all cookies into parameters.
             if (null != request.getCookies()) {
-                for (Cookie cookie : request.getCookies()) {
-
-                    // the cookie key-value
-                    values.put(cookie.getName(), factory.instantiate(
-                            StringDataObject.class,
-                            datamodel,
-                            new DataObject.Property("string", cookie.getValue())));
-
-                    // meta-data noting this is a parameter from cookie
-                    values.put(cookie.getName() + "-isCookie", factory.instantiate(
-                            StringDataObject.class,
-                            datamodel,
-                            new DataObject.Property("string", "true")));
+                final Map<String,String> cookieParameters = new HashMap<String,String>();
+                paramMaps.put("Cookie", cookieParameters);
+                for(Cookie cookie : request.getCookies()){
+                    cookieParameters.put(cookie.getName(), cookie.getValue());
                 }
             }
+
         }catch(Exception e){
             // maybe the client disconnected.
             LOG.warn("failed to read parameters/cookies: " + e.getMessage());
         }
 
-        final ParametersDataObject parametersDO = factory.instantiate(
-                ParametersDataObject.class,
+        return DataModelUtility.updateDataModelForRequest(
+                factory,
                 datamodel,
-                new DataObject.Property("values", values),
-                new DataObject.Property("contextPath", request.getContextPath()),
-                new DataObject.Property("uniqueId", SiteLocatorFilter.getRequestId(request)));
-
-        return parametersDO;
+                request.getContextPath(),
+                paramMaps,
+                SiteLocatorFilter.getRequestId(request));
     }
 
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/

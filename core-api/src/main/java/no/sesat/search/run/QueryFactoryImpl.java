@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ public final class QueryFactoryImpl extends QueryFactory {
      * @return instance of RunningQuery
      * @throws SiteKeyedFactoryInstantiationException
      */
+    @Override
     public RunningQuery createQuery(
             final RunningQuery.Context cxt,
             final HttpServletRequest request,
@@ -62,23 +63,6 @@ public final class QueryFactoryImpl extends QueryFactory {
 
         final RunningQueryImpl query = new RunningWebQuery(cxt, qParam, request, response);
 
-        final String cParam = cxt.getSearchTab().getKey();
-
-
-         /** TODO Replace the code in createQuery with a RunningQueryTransformer sub-module that is
-           * configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
-          **/
-        if ("nm".equals(cParam)) {
-            final Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("myNews".equals(cookie.getName().trim())) {
-                        LOG.debug("Adding cookie: " + cookie.getName() + "=" + cookie.getValue());
-                        datamodel.getJunkYard().getValues().put("myNews", cookie.getValue());
-                    }
-                }
-            }
-        }
         return query;
     }
 }

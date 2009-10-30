@@ -132,7 +132,7 @@ public final class SearchTabMainTag extends AbstractVelocityTemplateTag {
                     || Boolean.TRUE == cxt.getAttribute("Missing_" + include.replaceAll("/","") + "_Template")){
 
                 LOG.error(MISSING);
-                cxt.getOut().println(MISSING);
+                cxt.getOut().println(MISSING); // (authorized)
                 cxt.setAttribute(MISSING, Boolean.TRUE);
             }
         }catch(IOException ioe){

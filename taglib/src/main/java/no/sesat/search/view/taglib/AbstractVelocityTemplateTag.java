@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.generic.StringDataObject;
 import no.sesat.search.datamodel.request.ParametersDataObject;
-import no.sesat.search.http.filters.SiteLocatorFilter;
 import no.sesat.search.run.RunningQueryImpl;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.config.SiteConfiguration;
@@ -125,14 +124,15 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
     }
 
     protected final Site getSiteManually(final PageContext cxt) {
-        Site site = null;
-        try {
-         site = SiteLocatorFilter.getSite(cxt.getRequest());
-        }catch (Exception e) {
-            LOG.error("Failed to fetch site manually, failing back to '" + Site.DEFAULT.getName() + "': " + e, e);
-            site = Site.DEFAULT;
-        }
-        return site;
+// Removed functionality in 2.19 since SiteLocatorFilter is hardcoded against UrlResourceLoader
+//        Site site = null;
+//        try {
+//         site = SiteLocatorFilter.getSite(cxt.getRequest());
+//        }catch (Exception e) {
+//            LOG.error("Failed to fetch site manually, failing back to '" + Site.DEFAULT.getName() + "': " + e, e);
+//            site = Site.DEFAULT;
+//        }
+        return Site.DEFAULT;
     }
 
     /** Imports the specified jsp.
@@ -195,7 +195,6 @@ public abstract class AbstractVelocityTemplateTag extends SimpleTagSupport {
 
             final Site site = null != datamodel && null != datamodel.getSite()
                     ? datamodel.getSite().getSite()
-                    // we haven't gone through the SiteLocatorFilter so get site manually
                     : getSiteManually(cxt);
 
             assert null != site : "doTag() got null Site";

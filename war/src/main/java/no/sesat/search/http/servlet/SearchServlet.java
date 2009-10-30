@@ -20,29 +20,25 @@ package no.sesat.search.http.servlet;
 
 import java.io.IOException;
 import java.util.Properties;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
-
 import no.sesat.commons.ioc.BaseContext;
 import no.sesat.commons.ioc.ContextWrapper;
 import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.datamodel.DataModelFactory;
 import no.sesat.search.datamodel.access.ControlLevel;
-import no.sesat.search.datamodel.generic.DataObject;
 import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.datamodel.page.PageDataObject;
 import no.sesat.search.datamodel.request.ParametersDataObject;
 import no.sesat.search.http.servlet.FactoryReloads.ReloadArg;
 import no.sesat.search.mode.SearchMode;
 import no.sesat.search.mode.SearchModeFactory;
 import no.sesat.search.run.QueryFactory;
 import no.sesat.search.run.RunningQuery;
+import no.sesat.search.run.RunningQueryUtility;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
@@ -52,9 +48,7 @@ import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.site.config.SiteConfiguration;
 import no.sesat.search.site.config.TextMessages;
 import no.sesat.search.site.config.UrlResourceLoader;
-import no.sesat.search.view.SearchTabFactory;
 import no.sesat.search.view.config.SearchTab;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Level;
@@ -80,7 +74,6 @@ public final class SearchServlet extends  HttpServlet {
     private static final Logger ACCESS_LOG = Logger.getLogger("no.sesat.Access");
     private static final Logger STATISTICS_LOG = Logger.getLogger("no.sesat.Statistics");
 
-    private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
     private static final String ERR_MISSING_MODE = "No existing implementation for mode ";
 
 
@@ -151,7 +144,7 @@ public final class SearchServlet extends  HttpServlet {
             public BytecodeLoader newBytecodeLoader(SiteContext context, String className, final String jar) {
                 return UrlResourceLoader.newBytecodeLoader(context, className, jar);
             }
-
+            @Override
             public Site getSite() {
                 return site;
             }
@@ -175,9 +168,14 @@ public final class SearchServlet extends  HttpServlet {
                     ? parametersDO.getValue(SearchTab.PARAMETER_KEY).getString()
                     : null;
 
-            final SearchTab searchTab = updateSearchTab(cParameter, request, dmFactory, genericCxt);
+            final SearchTab searchTab = RunningQueryUtility
+                    .findSearchTabByKey(datamodel, cParameter, dmFactory, genericCxt);
 
             if (null!= searchTab) {
+
+                // this is legacy. shorter to write in templates than $datamodel.page.currentTab
+                request.setAttribute("tab", searchTab);
+
                 LOG.debug("Character encoding ="  + request.getCharacterEncoding());
 
                 final StopWatch stopWatch = new StopWatch();
@@ -273,72 +271,13 @@ public final class SearchServlet extends  HttpServlet {
         request.setAttribute("text",TextMessages.valueOf(ContextWrapper.wrap(
                 TextMessages.Context.class,
                 rqCxt,new SiteContext(){
+                @Override
                 public Site getSite() {
                     return datamodel.getSite().getSite();
                 }
         })));
         request.setAttribute("no.sesat.Statistics", new StringBuffer());
 
-    }
-
-    private static SearchTab updateSearchTab(
-            final String cParameter,
-            final HttpServletRequest request,
-            final DataModelFactory dmFactory,
-            final BaseContext genericCxt){
-
-        // determine the c parameter.
-        //  default comes from SiteConfiguration unless there exists a page parameter when it becomes 'i'.
-        final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
-        final ParametersDataObject parametersDO = datamodel.getParameters();
-        final StringDataObject page = parametersDO.getValue("page");
-        final String defaultSearchTabKey
-                = datamodel.getSite().getSiteConfiguration().getProperty(SiteConfiguration.DEFAULTTAB_KEY);
-
-        final String searchTabKey = null != cParameter && 0 < cParameter.length()
-                ? cParameter
-                : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : defaultSearchTabKey;
-
-        LOG.info("searchTabKey:" +searchTabKey);
-
-        SearchTab result = null;
-        try{
-            final SearchTabFactory stFactory = SearchTabFactory.instanceOf(
-                ContextWrapper.wrap(
-                    SearchTabFactory.Context.class,
-                    genericCxt));
-
-            result = stFactory.getTabByKey(searchTabKey);
-
-            if(null == datamodel.getPage()){
-
-                final PageDataObject pageDO = dmFactory.instantiate(
-                        PageDataObject.class,
-                        datamodel,
-                        new DataObject.Property("tabs", stFactory.getTabsByName()),
-                        new DataObject.Property("currentTab", result));
-
-                datamodel.setPage(pageDO);
-            }else{
-                datamodel.getPage().setCurrentTab(result);
-            }
-
-            // this is legacy. shorter to write in templates than $datamodel.page.currentTab
-            request.setAttribute("tab", datamodel.getPage().getCurrentTab());
-
-        }catch(AssertionError ae){
-            // it's not normal to catch assert errors but we really want a 404 not 500 response error.
-            LOG.error("Caught Assertion: " + ae);
-        }
-        if(null==result){
-            LOG.error(ERR_MISSING_TAB + searchTabKey);
-            // first going to fallback to defaultSearchTabKey in preference to the pending 404 response error.
-            if(!defaultSearchTabKey.equals(searchTabKey)){
-                //parametersDO.setValue(SearchTab.PARAMETER_KEY, new StringDataObjectSupport(defaultSearchTabKey));
-                result = updateSearchTab(defaultSearchTabKey, request, dmFactory, genericCxt);
-            }
-        }
-        return result;
     }
 
     private static void performSearch(

@@ -1,4 +1,4 @@
-/* Copyright (2005-2008) Schibsted ASA
+/* Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import java.text.MessageFormat;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * A quicker replacement for {@link org.apache.velocity.runtime.resource.ResourceManagerImpl} that avoids
+ * A faster replacement for {@link org.apache.velocity.runtime.resource.ResourceManagerImpl} that avoids
  * doing resource loading and parsing while holding a global exclusive lock. This implementation creates new resource
  * instances instead of updating existing ones and loads and parses them in the background. This removes the need for
  * locking and the only synchronization done is whatever synchronization measures the cache is taking. Resources not yet
@@ -46,8 +46,8 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private static final String RESOURCE_NOT_FOUND = "ResourceManager :'{0}'' not found in any resource loader.";
-    private static final String RESOURCE_PARSE_EXCEPTION = "ResourceManager.getResource() parse exception";
-    private static final String RESOURCE_EXCEPTION = "ResourceManager.getResource() exception new";
+    private static final String RESOURCE_PARSE_EXCEPTION = "ResourceManager.getResource() parse exception on ";
+    private static final String RESOURCE_EXCEPTION = "ResourceManager.getResource() exception on ";
     private static final String LOADED_VELOCITY_RESOURCE = "Loaded velocity resource {0} in {1}";
     private static final String CHECKED_MODIFICATION = "Checked modification of velocity resource {0} in {1}";
 
@@ -147,21 +147,21 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
                     return oldResource;
                 }
             } catch (ResourceNotFoundException rnfe) {
-                log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
+                LOG.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
                 throw rnfe;
             } catch (ParseErrorException pee) {
-                log.error(RESOURCE_PARSE_EXCEPTION, pee);
+                LOG.error(RESOURCE_PARSE_EXCEPTION + name, pee);
                 throw pee;
             } catch (RuntimeException re) {
                 throw re;
             } catch (Exception e) {
-                log.error(RESOURCE_EXCEPTION, e);
+                LOG.error(RESOURCE_EXCEPTION + name, e);
                 throw e;
             } finally {
 
                 stopWatch.stop();
 
-                if (oldResource != null && LOG.isInfoEnabled()) {
+                if (null != oldResource && LOG.isInfoEnabled()) {
                     LOG.info(MessageFormat.format(CHECKED_MODIFICATION, key, stopWatch.toSplitString()));
                 }
                 if (modified && LOG.isDebugEnabled()) {
@@ -173,19 +173,20 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
         /**
          * Loads resource if it has been modified since it was last loaded.
          */
+        @Override
         public void run() {
 
             try {
                 load();
 
             }  catch (ResourceNotFoundException rnfe) {
-                log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
+                LOG.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
             } catch (ParseErrorException pee) {
-                log.error(RESOURCE_PARSE_EXCEPTION, pee);
+                LOG.error(RESOURCE_PARSE_EXCEPTION + name, pee);
             } catch (RuntimeException re) {
                 throw re;
             } catch (Exception e) {
-                log.error(RESOURCE_EXCEPTION, e);
+                LOG.error(RESOURCE_EXCEPTION + name, e);
             }
         }
     }

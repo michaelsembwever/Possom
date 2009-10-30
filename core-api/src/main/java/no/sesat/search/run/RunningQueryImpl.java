@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2008) Schibsted ASA
+ * Copyright (2005-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -19,77 +19,33 @@
 package no.sesat.search.run;
 
 
-import no.sesat.search.query.token.DeadTokenEvaluationEngineImpl;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
-import javax.xml.parsers.DocumentBuilder;
 import no.sesat.commons.ioc.BaseContext;
 import no.sesat.commons.ioc.ContextWrapper;
-import no.sesat.search.InfrastructureException;
 import no.sesat.search.datamodel.DataModel;
-import no.sesat.search.datamodel.DataModelFactory;
-import no.sesat.search.datamodel.access.ControlLevel;
-import no.sesat.search.datamodel.generic.DataObject;
-import no.sesat.search.datamodel.generic.MapDataObject;
-import no.sesat.search.datamodel.generic.MapDataObjectSupport;
 import no.sesat.search.datamodel.generic.StringDataObject;
-import no.sesat.search.datamodel.navigation.NavigationDataObject;
-import no.sesat.search.datamodel.query.QueryDataObject;
-import no.sesat.search.query.Clause;
 import no.sesat.search.query.analyser.AnalysisRule;
 import no.sesat.search.query.analyser.AnalysisRuleFactory;
-import no.sesat.search.query.QueryStringContext;
-import no.sesat.search.query.token.EvaluationException;
-import no.sesat.search.query.token.TokenEvaluationEngine;
-import no.sesat.search.query.token.TokenEvaluationEngineImpl;
 import no.sesat.search.mode.command.SearchCommand;
-import no.sesat.search.mode.SearchCommandFactory;
-import no.sesat.search.mode.config.BaseSearchConfiguration;
 import no.sesat.search.mode.config.SearchConfiguration;
-import no.sesat.search.mode.executor.SearchCommandExecutor;
-import no.sesat.search.mode.executor.SearchCommandExecutorFactory;
-import no.sesat.search.query.parser.AbstractQueryParserContext;
-import no.sesat.search.query.Query;
-import no.sesat.search.query.parser.QueryParser;
-import no.sesat.search.query.parser.QueryParserImpl;
-import no.sesat.search.query.token.TokenEvaluationEngineContext;
-import no.sesat.search.query.token.TokenEvaluator;
-import no.sesat.search.query.token.TokenPredicate;
-import no.sesat.search.result.NavigationItem;
 import no.sesat.search.result.ResultItem;
 import no.sesat.search.result.ResultList;
-import no.sesat.search.run.handler.NavigationRunHandlerConfig;
-import no.sesat.search.run.handler.RunHandler;
-import no.sesat.search.run.handler.RunHandlerConfig;
-import no.sesat.search.run.handler.RunHandlerFactory;
-import no.sesat.search.run.transform.RunTransformer;
-import no.sesat.search.run.transform.RunTransformerConfig;
-import no.sesat.search.run.transform.RunTransformerFactory;
 import no.sesat.search.site.Site;
 import no.sesat.search.site.SiteContext;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
-import no.sesat.search.site.config.BytecodeLoader;
-import no.sesat.search.site.config.DocumentLoader;
-import no.sesat.search.site.config.PropertiesLoader;
 import no.sesat.search.view.config.SearchTab.EnrichmentHint;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 
 /**
- * Central controlling class around the individual search commands executed in any query search.
- *
- *
+ * A RunningQuery implementing
+ *      - Query Analysis,
+ *      - Enrichments, and
+ *      - RSS support.
  *
  * @version <tt>$Id$</tt>
  */
@@ -97,42 +53,22 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
    // Constants -----------------------------------------------------
 
-    private static final int TIMEOUT = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)
-            ? 10000
-            : Integer.MAX_VALUE;
-
-    // TODO generic parameter key to be put into ParameterDataObject
-    public static final String PARAM_LAYOUT = "layout";
-    public static final String PARAM_LAYOUT_OLD = "output"; //FIXME: added since we had problems using the url-rewrite rules.
-
-    // TODO generic parameter key to be put into ParameterDataObject
-    private static final String PARAM_COMMANDS = "commands";
-    // TODO generic parameter key to be put into ParameterDataObject
-    private static final String PARAM_WAITFOR = "waitFor";
+    //FIXME: added since we had problems using the url-rewrite rules.
+    public static final String PARAM_LAYOUT_OLD = "output";
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.sesat.search.analyzer.Analysis");
-    private static final Logger PRODUCT_LOG = Logger.getLogger("no.sesat.Product");
-
-    private static final String ERR_RUN_QUERY = "Failure to run query";
-    private static final String ERR_EXECUTION_ERROR = "Failure in a search command.";
-    private static final String ERR_MODE_TIMEOUT = "Timeout running search commands.";
-    private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
     // Attributes ----------------------------------------------------
 
     private final AnalysisRuleFactory rules;
 
-    /** have all search commands been cancelled.
-     * implementation details allowing web subclasses to send correct error to client. **/
-    protected boolean allCancelled = false;
     /** */
     protected final DataModel datamodel;
-    /** */
-    protected final TokenEvaluationEngine engine;
-    private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
     private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
+
+    private final StringBuilder analysisReport;
 
     // Static --------------------------------------------------------
 
@@ -149,329 +85,132 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             final Context cxt,
             final String query) throws SiteKeyedFactoryInstantiationException {
 
-        super(cxt);
+        super(cxt, query);
         this.datamodel = cxt.getDataModel();
 
         LOG.trace("RunningQuery(cxt," + query + ')');
 
-        final String queryStr = truncate(trimDuplicateSpaces(query));
-
-        final SiteContext siteCxt = new SiteContext(){
-            public Site getSite() {
-                return datamodel.getSite().getSite();
-            }
-        };
-
-        final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
-                ContextWrapper.wrap(
-                TokenEvaluationEngine.Context.class,
-                context,
-                new QueryStringContext() {
-                    public String getQueryString() {
-                        return queryStr;
-                    }
-                },
-                new BaseContext() {
-                    public String getUniqueId() {
-                        return datamodel.getParameters().getUniqueId();
-                    }
-                },
-                siteCxt);
-
-        if(cxt.getSearchMode().isEvaluation()){
-            engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-
-        }else{
-            // use a dead token evaluation engine. false and stale evaluation so it is not cached.
-            engine = new DeadTokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-        }
-
-        // queryStr parser
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return engine;
-            }
-        });
-
-        final DataModelFactory factory
-                = DataModelFactory.instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt, siteCxt));
-
-        final QueryDataObject queryDO = factory.instantiate(
-                QueryDataObject.class,
-                datamodel,
-                new DataObject.Property("string", queryStr),
-                new DataObject.Property("query", parser.getQuery()));
-
-        final MapDataObject<NavigationItem> navigations
-                = new MapDataObjectSupport<NavigationItem>(Collections.<String, NavigationItem>emptyMap());
-        final NavigationDataObject navDO = factory.instantiate(
-                NavigationDataObject.class,
-                datamodel,
-                new DataObject.Property("configuration", context.getSearchTab().getNavigationConfiguration()),
-                new DataObject.Property("navigation",navigations),
-                new DataObject.Property("navigations", navigations)); // TODO bug that both single and mapped needed
-
-        datamodel.setQuery(queryDO);
-        datamodel.setNavigation(navDO);
-
         rules = AnalysisRuleFactory.instanceOf(ContextWrapper.wrap(
                 AnalysisRuleFactory.Context.class,
                 context,
-                siteCxt,
+                new SiteContext(){
+                    @Override
+                    public Site getSite() {
+                        return datamodel.getSite().getSite();
+                    }
+                },
                 new BaseContext(){
                     public String getUniqueId(){
                         return datamodel.getParameters().getUniqueId();
                     }
             }));
 
+        analysisReport = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
     }
 
     // Public --------------------------------------------------------
-
-    /**
-     * Thread run. Guts of the logic behind this class.
-     * XXX long method. Divide & Conquer.
-     *
-     * @throws InterruptedException
-     */
-    public void run() throws InterruptedException {
-
-        LOG.debug("run()");
-        final StringBuilder analysisReport
-                = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
-
-        final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
-
-        try {
-
-            final DataModelFactory dataModelFactory =  DataModelFactory
-                    .instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, context, new SiteContext(){
-                        public Site getSite(){
-                            return datamodel.getSite().getSite();
-                        }
-                    }));
-
-            // DataModel's ControlLevel will be RUNNING_QUERY_CONSTRUCTION
-            //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
-            dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_CONSTRUCTION);
-
-            final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
-
-            final SearchCommandFactory.Context scfContext = new SearchCommandFactory.Context() {
-                public Site getSite() {
-                    return context.getDataModel().getSite().getSite();
-                }
-                public BytecodeLoader newBytecodeLoader(final SiteContext site, final String name, final String jar) {
-                    return context.newBytecodeLoader(site, name, jar);
-                }
-            };
-
-            final SearchCommandFactory searchCommandFactory = new SearchCommandFactory(scfContext);
-
-            for (SearchConfiguration searchConfiguration : applicableSearchConfigurations()) {
-
-                final SearchConfiguration config = searchConfiguration;
-                final String confName = config.getId();
-
-                try{
-
-                    hits.put(confName, Integer.valueOf(0));
-
-                    final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
-                            SearchCommand.Context.class,
-                            context,
-                            new BaseContext() {
-                                public SearchConfiguration getSearchConfiguration() {
-                                    return config;
-                                }
-                                public RunningQuery getRunningQuery() {
-                                    return RunningQueryImpl.this;
-                                }
-                                public Query getQuery() {
-                                    return datamodel.getQuery().getQuery();
-                                }
-                                public TokenEvaluationEngine getTokenEvaluationEngine() {
-                                    return engine;
-                                }
-                            }
-                    );
-
-                    final EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(confName);
-                    if (eHint != null && !datamodel.getQuery().getQuery().isBlank()) {
-
-                        // search command marked as an enrichment
-                        if(useEnrichment(eHint, config, searchCmdCxt, analysisReport)){
-                            commands.add(searchCommandFactory.getController(searchCmdCxt));
-                        }
-
-                    }else{
-
-                        // normal search command
-                        commands.add(searchCommandFactory.getController(searchCmdCxt));
-                    }
-                }catch(RuntimeException re){
-                    LOG.error("Failed to add command " + confName, re);
-                }
-            }
-            ANALYSIS_LOG.info(analysisReport.toString() + " </analyse>");
-
-            LOG.info(INFO_COMMAND_COUNT + commands.size());
-
-            // mark state that we're about to execute the sub threads
-            allCancelled = commands.size() > 0;
-            boolean hitsToShow = false;
-
-
-            // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
-            //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
-            dataModelFactory.assignControlLevel(datamodel, ControlLevel.SEARCH_COMMAND_EXECUTION);
-
-            final Map<Future<ResultList<ResultItem>>,SearchCommand> results
-                    = executeSearchCommands(commands);
-
-            // DataModel's ControlLevel will be SEARCH_COMMAND_CONSTRUCTION
-            //  Increment it onwards to RUNNING_QUERY_RESULT_HANDLING.
-            dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_HANDLING);
-
-            if( !allCancelled ){
-
-                final StringBuilder noHitsOutput = new StringBuilder();
-
-                for (Future<ResultList<ResultItem>> task : results.keySet()) {
-
-                    if (task.isDone() && !task.isCancelled()) {
-
-                        try{
-                            final ResultList<ResultItem> searchResult = task.get();
-                            if (searchResult != null) {
-
-                                // Information we need about and for the enrichment
-                                final SearchCommand command = results.get(task);
-                                final SearchConfiguration config = command.getSearchConfiguration();
-
-                                final String name = config.getId();
-                                final EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
-
-                                final float score = scores.get(name) != null
-                                        ? scores.get(name) * eHint.getWeight()
-                                        : 0;
-
-                                // update hit status
-                                hitsToShow |= searchResult.getHitCount() > 0;
-                                hits.put(name, searchResult.getHitCount());
-
-                                if( searchResult.getHitCount() <= 0 && command.isPaginated() ){
-                                    noHitsOutput.append("<command id=\"" + config.getId()
-                                            + "\" name=\""  + config.getStatisticalName()
-                                            + "\" type=\"" + config.getClass().getSimpleName()
-                                            + "\"/>");
-                                }
-
-                                // score
-                                if(eHint != null && searchResult.getHitCount() > 0 && score >= eHint.getThreshold()) {
-
-                                    searchResult.addField(EnrichmentHint.NAME_KEY, name);
-                                    searchResult.addObjectField(EnrichmentHint.SCORE_KEY, score);
-                                    searchResult.addObjectField(EnrichmentHint.HINT_KEY, eHint);
-                                    for(Map.Entry<String,String> property : eHint.getProperties().entrySet()){
-                                        searchResult.addObjectField(property.getKey(), property.getValue());
-                                    }
-                                }
-                            }
-                        }catch(ExecutionException ee){
-                            LOG.error(ERR_EXECUTION_ERROR, ee);
-                        }
-                    }
-                }
-
-                performHandlers();
-
-                if (!hitsToShow) {
-                    handleNoHits(noHitsOutput, parameters);
-                }
-            }
-
-        } catch (Exception e) {
-            LOG.error(ERR_RUN_QUERY, e);
-            throw new InfrastructureException(e);
-
-        }
-    }
 
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
-    /**
-     *
-     * @return
-     */
-    protected Map<String,Integer> getHits(){
-        return Collections.unmodifiableMap(hits);
+    @Override
+    protected Collection<SearchCommand> buildCommands(){
+
+        final Collection<SearchCommand> commands = super.buildCommands();
+        ANALYSIS_LOG.info(analysisReport.toString() + " </analyse>");
+        return commands;
     }
 
-    /** Intentionally overridable. Would be nice if run-transform-spi could have influence on the result here.
-     *
-     * @return collection of SearchConfigurations applicable to this running query.
-     */
-    protected Collection<SearchConfiguration> applicableSearchConfigurations(){
+    @Override
+    protected boolean addCommand(final SearchCommand.Context searchCmdCxt){
 
-        final Collection<SearchConfiguration> applicableSearchConfigurations = new ArrayList<SearchConfiguration>();
+        boolean result = false;
 
-        final String[] explicitCommands = null != datamodel.getParameters().getValue(PARAM_COMMANDS)
-                ? datamodel.getParameters().getValue(PARAM_COMMANDS).getString().split(",")
-                : new String[0];
+        final SearchConfiguration conf = searchCmdCxt.getSearchConfiguration();
+        final EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(conf.getId());
+        if (eHint != null && !datamodel.getQuery().getQuery().isBlank()) {
 
-        for (SearchConfiguration conf : context.getSearchMode().getSearchConfigurations()) {
-
-            // everything on by default
-            boolean applicable = (0 == explicitCommands.length);
-
-            // check for specified list of commands to run in url
-            for(String explicitCommand : explicitCommands){
-                applicable |= explicitCommand.equalsIgnoreCase(conf.getId());
+            // search command marked as an enrichment
+            if(useEnrichment(eHint, searchCmdCxt, analysisReport)){
+                result = true;
             }
+        }else{
+            // normal search command
+            result = super.addCommand(searchCmdCxt);
+        }
+        return result;
+    }
 
-            // check output is rss, only run the command(s) that will produce the rss output.
-            applicable &= !isRss()
-                    || Arrays.asList(context.getSearchTab().getRssCommands()).contains(conf.getId().intern());
+    @Override
+    protected boolean postProcessTask(
+            final Future<ResultList<ResultItem>> task,
+            final Map<Future<ResultList<ResultItem>>,SearchCommand> results)
+            throws ExecutionException, InterruptedException {
 
-            // check for alwaysRun or for a possible enrichment (since its scoring will be the final indicator)
-            applicable &= conf.isAlwaysRun() ||
-                    (null != context.getSearchTab().getEnrichmentByCommand(conf.getId())
-                    && !datamodel.getQuery().getQuery().isBlank());
+        final ResultList<ResultItem> searchResult = task.get();
+        // Information we need about and for the enrichment
+        final SearchCommand command = results.get(task);
+        final SearchConfiguration config = command.getSearchConfiguration();
 
-            // add search configuration if applicable
-            if(applicable){
-                applicableSearchConfigurations.add(conf);
+        final String name = config.getId();
+        final EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
+
+        final float score = scores.get(name) != null
+                ? scores.get(name) * eHint.getWeight()
+                : 0;
+
+        // score
+        if(eHint != null && searchResult.getHitCount() > 0 && score >= eHint.getThreshold()) {
+
+            searchResult.addField(EnrichmentHint.NAME_KEY, name);
+            searchResult.addObjectField(EnrichmentHint.SCORE_KEY, score);
+            searchResult.addObjectField(EnrichmentHint.HINT_KEY, eHint);
+            for(Map.Entry<String,String> property : eHint.getProperties().entrySet()){
+                searchResult.addObjectField(property.getKey(), property.getValue());
             }
         }
 
-        return performTransformers(applicableSearchConfigurations);
+        return super.postProcessTask(task, results);
+    }
+
+    /** Overridden to also include enrichment searches.
+     *
+     * @return collection of SearchConfigurations applicable to this running query.
+     */
+    @Override
+    protected Collection<SearchConfiguration> applicableSearchConfigurations(){
+
+        final Collection<SearchConfiguration> applicableSearchConfigurations = super.applicableSearchConfigurations();
+
+        if(!isRss() && null == datamodel.getParameters().getValue(PARAM_COMMANDS)){
+            for (SearchConfiguration conf : context.getSearchMode().getSearchConfigurations()) {
+
+                // check for alwaysRun or for a possible enrichment (since its scoring will be the final indicator)
+                boolean applicable = !conf.isAlwaysRun()
+                        && (null != context.getSearchTab().getEnrichmentByCommand(conf.getId())
+                        && !datamodel.getQuery().getQuery().isBlank());
+
+                // add search configuration if applicable
+                if(applicable){
+                    applicableSearchConfigurations.add(conf);
+                }
+            }
+        }
+
+        return applicableSearchConfigurations;
     }
 
     // Private -------------------------------------------------------
 
-    /** Truncates string to an acceptable length. **/
-    private String truncate(final String query){
-
-        // generic.sesam defines a default value of 256
-        final int length = Integer.parseInt(
-                context.getDataModel().getSite().getSiteConfiguration().getProperty("sesat.query.characterLimit"));
-
-        return length < query.length()
-                ? query.substring(0, length)
-                : query;
-    }
-
     private boolean useEnrichment(
             final EnrichmentHint eHint,
-            final SearchConfiguration config,
-            final TokenEvaluationEngineContext tokenEvaluationEngineContext,
+            final SearchCommand.Context searchCmdCxt,
             final StringBuilder analysisReport){
 
         boolean result = false;
 
+        final SearchConfiguration config = searchCmdCxt.getSearchConfiguration();
         final Map<String,StringDataObject> parameters = datamodel.getParameters().getValues();
 
         // TODO 'collapse' is not a sesat standard. standardise or move out.
@@ -501,7 +240,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                         return analysisRuleReport;
                                     }
                                 },
-                                tokenEvaluationEngineContext));
+                                searchCmdCxt));
 
                     scoresByRule.put(eHint.getRule(), score);
                     analysisReport.append(analysisRuleReport);
@@ -522,195 +261,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return config.isAlwaysRun() || result;
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<Future<ResultList<ResultItem>>,SearchCommand> executeSearchCommands(
-            final Collection<SearchCommand> commands) throws InterruptedException, TimeoutException, ExecutionException{
-
-        Map<Future<ResultList<ResultItem>>,SearchCommand> results = Collections.EMPTY_MAP;
-
-        try{
-            final SearchCommandExecutor executor = SearchCommandExecutorFactory
-                    .getController(context.getSearchMode().getExecutor());
-
-            try{
-                results = executor.invokeAll(commands);
-
-            }finally{
-
-                final Map<Future<ResultList<ResultItem>>,SearchCommand> waitFor;
-
-                if(null != datamodel.getParameters().getValue(PARAM_WAITFOR)){
-
-                    waitFor = new HashMap<Future<ResultList<ResultItem>>,SearchCommand>();
-
-                    final String[] waitForArr
-                            = datamodel.getParameters().getValue(PARAM_WAITFOR).getString().split(",");
-
-                    for(String waitForStr : waitForArr){
-                        // using generics on the next line crashes javac
-                        for(Entry/*<Future<ResultList<ResultItem>>,SearchCommand>*/ entry : results.entrySet()){
-
-                            final String entryName
-                                    = ((SearchCommand)entry.getValue()).getSearchConfiguration().getId();
-
-                            if(waitForStr.equalsIgnoreCase(entryName)){
-
-                                waitFor.put(
-                                        (Future<ResultList<ResultItem>>)entry.getKey(),
-                                        (SearchCommand)entry.getValue());
-                                break;
-                            }
-                        }
-                    }
-
-                }else if(null != datamodel.getParameters().getValue(PARAM_COMMANDS)){
-
-                    // wait on everything explicitly asked for
-                    waitFor = results;
-
-                }else{
-
-                    // do not wait on asynchronous commands
-                    waitFor = new HashMap<Future<ResultList<ResultItem>>,SearchCommand>();
-                    // using generics on the next line crashes javac
-                    for(Entry/*<Future<ResultList<ResultItem>>,SearchCommand>*/ entry : results.entrySet()){
-                        if(!((SearchCommand)entry.getValue()).getSearchConfiguration().isAsynchronous()){
-
-                            waitFor.put(
-                                    (Future<ResultList<ResultItem>>)entry.getKey(),
-                                    (SearchCommand)entry.getValue());
-                        }
-                    }
-                }
-                executor.waitForAll(waitFor, TIMEOUT);
-            }
-        }catch(TimeoutException te){
-            LOG.error(ERR_MODE_TIMEOUT);
-        }
-
-        // Check that we have atleast one valid execution
-        for(SearchCommand command : commands){
-            allCancelled &= (null != datamodel.getParameters().getValue(PARAM_COMMANDS)
-                    || !command.getSearchConfiguration().isAsynchronous());
-            allCancelled &= command.isCancelled();
-        }
-
-        return results;
-    }
-
-    private Collection<SearchConfiguration> performTransformers(final Collection<SearchConfiguration> applicableSearchConfigurations) {
-        final RunTransformer.Context transformerContext = new RunTransformer.Context() {
-                    public Collection<SearchConfiguration>getApplicableSearchConfigurations() {
-                        return applicableSearchConfigurations;
-                    }
-
-                    public DataModel getDataModel() {
-                        return datamodel;
-                    }
-
-                    public DocumentLoader newDocumentLoader(final SiteContext siteContext, final String resource, final DocumentBuilder builder) {
-                        return context.newDocumentLoader(siteContext, resource, builder);
-                    }
-
-                    public PropertiesLoader newPropertiesLoader(final SiteContext siteContext, final String resource, final Properties properties) {
-                        return context.newPropertiesLoader(siteContext, resource, properties);
-                    }
-
-                    public BytecodeLoader newBytecodeLoader(final SiteContext siteContext, final String className, final String jarFileName) {
-                        return context.newBytecodeLoader(siteContext, className, jarFileName);
-                    }
-
-                    public Site getSite() {
-                        return datamodel.getSite().getSite();
-                    }
-        };
-
-        final List<RunTransformerConfig> rtcList = context.getSearchMode().getRunTransformers();
-
-        for (final RunTransformerConfig rtc : rtcList) {
-            final RunTransformer rt = RunTransformerFactory.getController(transformerContext, rtc);
-            rt.transform(transformerContext);
-        }
-
-        return applicableSearchConfigurations;
-    }
-
-    private void performHandlers(){
-
-        final RunHandler.Context handlerContext = ContextWrapper.wrap(
-                RunHandler.Context.class,
-                new SiteContext(){
-                    public Site getSite() {
-                        return datamodel.getSite().getSite();
-                    }
-                },
-                context);
-
-        final List<RunHandlerConfig> rhcList
-                = new ArrayList<RunHandlerConfig>(context.getSearchMode().getRunHandlers());
-
-        /* Adding NavigationRunHandler to all search modes. TODO move into modes.xml */
-        rhcList.add(new NavigationRunHandlerConfig());
-
-        for (final RunHandlerConfig rhc : rhcList) {
-            final RunHandler rh = RunHandlerFactory.getController(handlerContext, rhc);
-
-            LOG.debug("executing " + rh);
-            rh.handleRunningQuery(handlerContext);
-        }
-    }
-
     private boolean isRss() {
 
         final StringDataObject outputParam = datamodel.getParameters().getValue(PARAM_LAYOUT);
         return null != outputParam && "rss".equals(outputParam.getString());
-    }
-
-    private void handleNoHits(final StringBuilder noHitsOutput, final Map<String,StringDataObject> parameters)
-            throws SiteKeyedFactoryInstantiationException, InterruptedException{
-
-        // there were no hits for any of the search tabs!
-        noHitsOutput.append("<absolute/>");
-
-        if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0
-                && !"NOCOUNT".equals(parameters.get("IGNORE"))){
-
-            final String layout = null != parameters.get(PARAM_LAYOUT)
-                    ? parameters.get(PARAM_LAYOUT).getString()
-                    : null;
-
-            noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
-                    + (null != layout ? "\" layout=\"" + layout : "") + "\">"
-                    + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
-            noHitsOutput.append("</no-hits>");
-            PRODUCT_LOG.info(noHitsOutput.toString());
-        }
-
-        // maybe we can modify the query to broaden the search
-        // replace all DefaultClause with an OrClause
-        //  [simply done with wrapping the query string inside ()'s ]
-        final String queryStr = datamodel.getQuery().getString();
-
-        if (!queryStr.startsWith("(") && !queryStr.endsWith(")")
-                && datamodel.getQuery().getQuery().getTermCount() > 1
-                && context.getSearchMode().isAutoBroadening()) {
-
-            // DataModel's ControlLevel will be RUNNING_QUERY_CONSTRUCTION
-            //  Increment it onwards to SEARCH_COMMAND_CONSTRUCTION.
-            final DataModelFactory dataModelFactory =  DataModelFactory
-                    .instanceOf(ContextWrapper.wrap(DataModelFactory.Context.class, context, new SiteContext(){
-                        public Site getSite(){
-                            return datamodel.getSite().getSite();
-                        }
-                    }));
-            dataModelFactory.assignControlLevel(datamodel, ControlLevel.RUNNING_QUERY_CONSTRUCTION);
-
-            // create and run a new RunningQueryImpl
-            new RunningQueryImpl(context, '(' + queryStr + ')').run();
-
-            // TODO put in some sort of feedback to user that query has been changed.
-        }
-
     }
 
     // Inner classes -------------------------------------------------

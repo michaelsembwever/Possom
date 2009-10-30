@@ -1,4 +1,4 @@
-/* Copyright (2005-2007) Schibsted ASA
+/* Copyright (2005-2009) Schibsted ASA
  *   This file is part of SESAT.
  *   SESAT is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Affero General Public License as published by
@@ -53,6 +53,25 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
     private static final int CACHE_CAPACITY = 1000;
 
+    /** An application using the URLResourceLoader can make use this. **/
+    public static final Site.Context SITE_CONTEXT = new Site.Context(){
+            @Override
+            public String getParentSiteName(final SiteContext siteContext) {
+                // we have to do this manually instead of using SiteConfiguration,
+                //  because SiteConfiguration relies on the parent site that we haven't get initialised.
+                // That is, the PARENT_SITE_KEY property MUST be explicit in the site's configuration.properties.
+                final Properties props = new Properties();
+                final PropertiesLoader loader
+                        = UrlResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
+
+                loader.abut();
+                final String parentName = props.getProperty(Site.PARENT_SITE_KEY);
+                if(null == parentName && 0 == props.size()){
+                    throw new IllegalArgumentException("Invalid site " + siteContext.getSite());
+                }
+                return parentName;
+            }
+        };
 
     // Attributes ----------------------------------------------------
 
@@ -62,6 +81,35 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
 
     // Static --------------------------------------------------------
+
+    /** Creates a SiteConfiguration.Context based off the given site and delegating all Resource handling to this.
+     * The returned object also implements ResourceContext **/
+    public static SiteConfiguration.Context newSiteConfigurationContext(final Site site){
+        return new SiteConfiguration.Context(){
+            @Override
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt,
+                    final String resource,
+                    final Properties properties) {
+
+                return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+            }
+            public DocumentLoader newDocumentLoader(
+                        final SiteContext siteCxt,
+                        final String resource,
+                        final DocumentBuilder builder) {
+
+                return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className, final String jar) {
+                return UrlResourceLoader.newBytecodeLoader(context, className, jar);
+            }
+            @Override
+            public Site getSite() {
+                return site;
+            }
+        };
+    }
 
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.

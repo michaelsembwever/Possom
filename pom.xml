@@ -140,6 +140,7 @@
         <module>generic.sesam</module>
         <!-- sitemap-generator must be after generic.sesam-search-command-control because they both use assembly -->
         <module>sitemap-generator</module>
+        <module>taglib</module>
         <module>war</module>
     </modules>
 

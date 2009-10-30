@@ -1,4 +1,4 @@
-/* Copyright (2006-2008) Schibsted ASA
+/* Copyright (2006-2009) Schibsted ASA
  * This file is part of SESAT.
  *
  *   SESAT is free software: you can redistribute it and/or modify
@@ -20,15 +20,10 @@ package no.sesat.search.run;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import no.sesat.search.datamodel.DataModel;
 import no.sesat.search.site.SiteKeyedFactoryInstantiationException;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -161,7 +156,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         super.run();
 
-        if( allCancelled ){
+        if( isAllCancelled() ){
 
             try {
 
