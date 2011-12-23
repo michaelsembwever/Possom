@@ -650,7 +650,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>           
+                </plugins>
             </build>
         </profile>
         <profile>
@@ -681,7 +681,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>           
+                </plugins>
             </build>
             <dependencies>
                 <dependency>
@@ -1000,7 +1000,7 @@
                 <version>2.2.3</version>
                 <classifier>jdk15</classifier>
             </dependency>
-            
+
             <!-- EJB3 client -->
             <dependency>
                 <groupId>org.jboss.javaee</groupId>
@@ -1051,7 +1051,7 @@
         <repository>
           <id>jboss</id>
           <name>JBoss Repository for Maven2</name>
-          <url>http://repository.jboss.org/maven2</url>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
@@ -1060,7 +1060,7 @@
             <!-- Troublesome repository! Comment out locally if it hangs as it often does -->
             <id>ibiblio</id>
             <name>Ibiblio</name>
-            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+            <url>http://mirrors.ibiblio.org/maven2/</url>
         </repository>
     </repositories>
 </project>

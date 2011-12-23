@@ -15,31 +15,31 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<web-app version="2.4" 
-xmlns="http://java.sun.com/xml/ns/j2ee" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<web-app version="2.4"
+xmlns="http://java.sun.com/xml/ns/j2ee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <description>HTML front to Schibsted Søk</description>
     <display-name>Schibsted Søk</display-name>
 
     <!-- Filters -->
-    
+
     <filter>
         <filter-name>SiteLocatorFilter</filter-name>
         <filter-class>no.sesat.search.http.filters.SiteLocatorFilter</filter-class>
     </filter>
-    
+
     <filter>
         <filter-name>UrlSkinRewriteFilter</filter-name>
         <filter-class>no.sesat.search.http.filters.UrlRewriteFilter</filter-class>
     </filter>
-    
+
     <filter>
         <filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
     </filter>
-    
+
     <filter>
         <filter-name>DataModelFilter</filter-name>
         <filter-class>no.sesat.search.http.filters.DataModelFilter</filter-class>
@@ -62,17 +62,18 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
             <param-value>application</param-value>
         </init-param>
     </filter>
-    
+
     <filter>
         <filter-name>SiteJspLoaderFilter</filter-name>
         <filter-class>no.sesat.search.http.filters.SiteJspLoaderFilter</filter-class>
     </filter>
-    
+
+    <!-- Disabled by default. Enable it to plug in the user-api sesat modules.
     <filter>
         <filter-name>UserFilter</filter-name>
         <filter-class>no.sesat.search.http.filters.UserFilter</filter-class>
-    </filter>
-    
+    </filter-->
+
     <!-- Filter Mappings -->
     <!--filter-mapping>
         <filter-name>CacheFilter</filter-name>
@@ -96,13 +97,14 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
+    <!-- Disabled by default. Enable it to plug in the user-api sesat modules.
     <filter-mapping>
         <filter-name>UserFilter</filter-name>
         <url-pattern>/search/*</url-pattern>
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
+    </filter-mapping-->
     <filter-mapping>
         <filter-name>md5ProtectParameters</filter-name>
         <url-pattern>/search/*</url-pattern>
@@ -143,7 +145,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         </init-param>
         <load-on-startup>3</load-on-startup>
     </servlet>
-    
+
     <servlet>
         <servlet-name>Log</servlet-name>
         <servlet-class>no.schibstedsok.log4j.LoggingServlet</servlet-class>
@@ -162,8 +164,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <servlet-name>SendMail</servlet-name>
         <servlet-class>no.sesat.search.http.servlet.SendMailServlet</servlet-class>
     </servlet>
-    
-    <!-- Uncomment to enable DWR. 
+
+    <!-- Uncomment to enable DWR.
       -  The dwr dependency in the pom.xml and code in DataModelWrapper.java will also need to be uncommented.   -->
     <!--servlet>
       <servlet-name>dwr-invoker</servlet-name>
@@ -183,17 +185,17 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <servlet-name>VelocityDebug</servlet-name>
         <url-pattern>/servlet/VelocityDebug</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>search servlet</servlet-name>
         <url-pattern>/search/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>Log</servlet-name>
         <url-pattern>/servlet/Log</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <!-- Ceremonial boomerangs -->
         <servlet-name>Boomerang</servlet-name>
@@ -210,7 +212,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <servlet-name>SendMail</servlet-name>
         <url-pattern>/servlet/sendMail.do</url-pattern>
     </servlet-mapping>
-    
+
     <!-- Misc -->
 
     <welcome-file-list>
@@ -247,6 +249,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
         <location>/WEB-INF/jsp/503.jsp</location>
     </error-page>
 
-    
+
 
     </web-app>
