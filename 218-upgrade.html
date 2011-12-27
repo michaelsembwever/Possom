@@ -1,0 +1,494 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>2.18 Upgrade</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="upgrade-guides.html" title="Upgrade Guides">Upgrade Guides</A>&nbsp;&gt;&nbsp;<A href="" title="2.18 Upgrade">2.18 Upgrade</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <DIV class="panelMacro"><TABLE class="noteMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>&quot;2.18 not 100&amp; API-stable branch&quot;</B><BR>Ongoing development in sesat-user (part of sesat-admin) is creating some small api breakages along the way. It is otherwise stable and production ready.</TD></TR></TABLE></DIV>
+
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1254399688972 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1254399688972 ul {margin-left: 0px;padding-left: 5;}
+div.rbtoc1254399688972 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1254399688972">
+<UL>
+    <LI><A href="#2.18Upgrade-Compatibilitychanges">Compatibility changes</A></LI>
+<UL>
+    <LI><A href="#2.18Upgrade-Sortingparameteronlyapplicabletosearchcommandwithsortingnavigator%252826thMay%252708%2529">Sorting parameter only applicable to search command with sorting navigator (26th May '08)</A></LI>
+    <LI><A href="#2.18Upgrade-SearchConfigurationsubclassesmustmeetjavabeanspecification%252826thJune%252708%2529">SearchConfiguration subclasses must meet javabean specification (26th June '08)</A></LI>
+    <LI><A href="#2.18Upgrade-TokenEvaluatorSPI%25287thJuly%252708%2529">Token Evaluator SPI (7th July '08)</A></LI>
+    <LI><A href="#2.18Upgrade-sesatuserapiexpanded%252Csesatuserserviceremoved%252824thJune%252709%2529">sesat-user-api expanded, sesat-user-service removed (24th June '09)</A></LI>
+    <LI><A href="#2.18Upgrade-CorrectingSearchCommandbehaviourformalised%252822thJun%252709%2529">CorrectingSearchCommand behaviour formalised (22th Jun '09)</A></LI>
+</UL>
+    <LI><A href="#2.18Upgrade-NewFeatures">New Features</A></LI>
+<UL>
+    <LI><A href="#2.18Upgrade-Selectingcontenttypeinlayoutelementinviews.xml%25282ndJuly%252708%2529">Selecting content type in layout element in views.xml (2nd July '08)</A></LI>
+    <LI><A href="#2.18Upgrade-Sesatiseandstandardisedecorators%25282ndJuly%252708%2529">Sesat-ise and standardise decorators (2nd July '08)</A></LI>
+    <LI><A href="#2.18Upgrade-SolrSearchCommand%252815thSeptember%252708%2529">Solr Search Command (15th September '08)</A></LI>
+    <LI><A href="#2.18Upgrade-SolrTokenEvaluation%252815thSeptember%252708%2529">Solr Token Evaluation (15th September '08)</A></LI>
+    <LI><A href="#2.18Upgrade-YoutubeSearchCommand%252826thSeptember%252708%2529">Youtube Search Command (26th September '08)</A></LI>
+    <LI><A href="#2.18Upgrade-FieldSplitterresulthandler%252827thSeptember%252708%2529">Field Splitter result handler (27th September '08)</A></LI>
+    <LI><A href="#2.18Upgrade-Clusteringhitcountresulthandler%252827thSeptember%252708%2529">Clustering hit count result handler (27th September '08)</A></LI>
+    <LI><A href="#2.18Upgrade-AnInterpretertohelpdebugandinspectSesat.">An Interpreter to help debug and inspect Sesat.</A></LI>
+    <LI><A href="#2.18Upgrade-GeneratingXMLSchemafilesforthemodes.xmlconfigurationfiles">Generating XML Schema files for the modes.xml configuration files</A></LI>
+</UL>
+    <LI><A href="#2.18Upgrade-Requirements">Requirements</A></LI>
+<UL>
+    <LI><A href="#2.18Upgrade-SiteMeshisnolongerarequirement%25282ndJuly%252708%2529">SiteMesh is no longer a requirement (2nd July '08)</A></LI>
+</UL>
+</UL></DIV>
+<P>There also exits a <A href="218-upgrade.data/Sesat-Kernel-2.18-Whats-New.odp">presentation</A> running through the new features in 2.18.</P>
+
+<H1><A name="2.18Upgrade-Compatibilitychanges"></A>Compatibility changes</H1>
+
+
+<H6><A name="2.18Upgrade-Sortingparameteronlyapplicabletosearchcommandwithsortingnavigator%2826thMay%2708%29"></A>Sorting parameter only applicable to search command with sorting navigator (26th May '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4750" rel="nofollow">SKER4750 - Only main search should use sort order set in the URL</A><BR>
+Implemented behavior similar to SearchCommand.isPaginated() &amp; AbstractSearchCommand.getOffset()<BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>SearchCommand.isUserSortable() returns true for search command's that have an applicable navigator, ie id=&quot;sort&quot;</LI>
+	<LI>AbstractSearchCommand.getUserSortBy() returns the userSortBy parameter if true == isUserSortable()<BR>
+It's now mandatory that the sort navigator defines the search command applicable via the command-name attribute.</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-SearchConfigurationsubclassesmustmeetjavabeanspecification%2826thJune%2708%29"></A>SearchConfiguration subclasses must meet javabean specification (26th June '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4404" rel="nofollow">Issue SKER4404: (Automatically assign config settings in readSearchConfiguration where there is a setter)</A><BR>
+<INS>Changed API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>no.sesat.search.query.transform.AgefilterQueryTransformerConfig's config attribute changed from field to age-field.</LI>
+	<LI>no.sesat.search.mode.config.SearchConfiguration's getResultFields changed to getResultFieldMap.</LI>
+	<LI>no.sesat.search.mode.config.SearchConfiguration's getFieldFilters changed to getFieldFilterMap.</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-TokenEvaluatorSPI%287thJuly%2708%29"></A>Token Evaluator SPI (7th July '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER3540" rel="nofollow">SKER3540 - Token Evaluator SPI</A><BR>
+TokenPredicate exploded into more stable objects. Evaluators no longer hardcoded into kernel.<BR>
+Evaluators are loaded through their corresponding AbstractEvaluatorFactory implementation.<BR>
+Factories are registered via configuration.properties, and answer whether they are responsible for a TokenPredicate through isResponsibleFor(tokenPredicate).<BR>
+The TokenEvaluator is fetched through the factory as well through getEvaluator(tokenPredicate). The factory encapsulates whether the one evaluator can be used for all queries, and/or for all tokens.<BR>
+The skin's project for evaluator implementations is query-evaluation, and the kernel loads classes through Spi.QUERY_EVALUATION.</P>
+
+<P><INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>new class AbstractEvaluatorFactory</LI>
+	<LI>factory implementations JepEvaluatorFactory, FastQueryMatchingEvaluatorFactory, and RegexpEvaluatorFactory added</LI>
+	<LI>new class AbstractTokenPredicate (solid equals and hashCode overrides to satisfy interface constraint that name is unique across all implememtations - allowing exactPeer() to be used more exactly)</LI>
+	<LI>AbstractEvaluatorFactory.Context requires method &quot;String getUniqueId()&quot; as datamodel.parameters.uniqueId is not available. This contextual addition creeps back through TokenEvaluationEngine.Context and AnalysisRulesFactory.Context</LI>
+</UL>
+
+
+<P><INS>Changed API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>TokenPredicate.Categories moved out to own class as Categories</LI>
+	<LI>TokenPredicate.Type moved out to own class as EvaluatorType</LI>
+	<LI>TokenPredicate.TokenPredicateImpl moved out to own class as TokenPredicateImpl</LI>
+	<LI>TokenPredicate.ExactTokenPredicateImpl moved out to own class as ExactTokenPredicateImpl</LI>
+	<LI>TokenPredicate.EvaluationException moved out to own class as EvaluationRuntimeException (remaining an unchecked exception)</LI>
+	<LI>TokenPredicate.Static moved out to own class as TokenPredicateUtility</LI>
+	<LI>Categories.EXACT_WIKI renamed to EXACT_WIKIPEDIA (to match non-exact peer)</LI>
+	<LI>Categories.EXACT_FIRST renamed to EXACT_FIRSTNAME (to match non-exact peer)</LI>
+	<LI>VeryFastEvaluationException renamed to EvaluationException (remaining a checked exception)</LI>
+</UL>
+
+
+<P><INS>Removed API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>TokenPredicate.getType() [ TokenPredicate no longer references TokenEvaluator in any manner ]</LI>
+	<LI>TokenPredicate.Static.getTokenPredicates(type) [ AbstractEvaluatorFactory responsible now for relationship ]</LI>
+	<LI>TokenPredicate.Static.getMagicTokenPredicates() [ magic tokens a sesam.no concept, not sesat ]</LI>
+	<LI>TokenPredicate.Static.getTriggerTokenPredicates() [ trigger tokens a sesam.no concept, not sesat ]</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-sesatuserapiexpanded%2Csesatuserserviceremoved%2824thJune%2709%29"></A>sesat-user-api expanded, sesat-user-service removed (24th June '09)</H6>
+
+<BLOCKQUOTE>
+<P><INS>Changed API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>sesat-user.jar is no longer bundled with ROOT.war. Therefore it must be manually deployed or put into classpath.</LI>
+	<LI>sesat-service is no longer a dependency and is completely removed from the sesat stack (sesat-user-service-impl will be introduced with a default BasicUserService implementation).</LI>
+	<LI>...more to come...</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-CorrectingSearchCommandbehaviourformalised%2822thJun%2709%29"></A>CorrectingSearchCommand behaviour formalised (22th Jun '09)</H6>
+
+<BLOCKQUOTE>
+<P>Refactor out the Correcting search behaviour from CorrectingFast4SearchCommand into its own interface &quot;CorrectingSearchCommand&quot;  and moving a lot of the existing functionality into the helper utility CorrectingSearchCommandUtility making it easy to share through delegation.</P>
+
+<P>The only compatibility breakage here is for subclasses of CorrectingFast4SearchCommand.</P>
+
+<P>Also implement this behaviour on top of the SolrSearchCommand w/ CorrectingSolrSearchCommand.<BR>
+<INS>Changed API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>CorrectingFast4CommandConfig now implements CorrectingCommandConfig</LI>
+	<LI>CorrectingFast4SearchCommand now implements CorrectingSearchCommand</LI>
+	<LI>CorrectingFast4SearchCommand.correctQuery(..) now public (implementing CorrectingSearchCommand)</LI>
+	<LI>CorrectingFast4SearchCommand.getCorrectionCount() now public (implementing CorrectingSearchCommand)</LI>
+	<LI>CorrectingFast4SearchCommand.setCorrectionCount(..) now public (implementing CorrectingSearchCommand)</LI>
+	<LI>CorrectingFast4SearchCommand.initalise(..) added (implementing CorrectingSearchCommand)</LI>
+</UL>
+
+
+<P><INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>CorrectingCommandConfig &amp; CorrectingSearchCommand interfaces</LI>
+	<LI>CorrectingSearchCommandUtility helper class</LI>
+	<LI>CorrectingSolrCommandConfig + CorrectingSolrSearchCommand implementations</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H1><A name="2.18Upgrade-NewFeatures"></A>New Features</H1>
+
+
+<H6><A name="2.18Upgrade-Selectingcontenttypeinlayoutelementinviews.xml%282ndJuly%2708%29"></A>Selecting content type in layout element in views.xml (2nd July '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SEARCH-4183" rel="nofollow">SKER4919 - Configurable content types </A><BR>
+In views.xml//views/tab/layout you can now define the attribute content-type.<BR>
+Example: &lt;layout main=&quot;main&quot; front=&quot;index&quot; content-type=&quot;text/xml; charset=utf-8&quot;/&gt;<BR>
+For further flexibility use a jsp page with setContentType(..) in scriptlet code.<BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>SearchTab.Layout.contentType &amp; SearchTab.Layout.getContentType()</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-Sesatiseandstandardisedecorators%282ndJuly%2708%29"></A>Sesat-ise and standardise decorators (2nd July '08)</H6>
+
+<BLOCKQUOTE>
+<P> <A href="http://sesat.no/scarab/issues/id/SKER4182" rel="nofollow">SKER4182 - Sesat-ise and standardise decorators</A><BR>
+The output parameter was used to select decorators like the rss, og vcard. This is a bit more configurable now. The output parameter has been renamed to layout and refers to the id attribute in the layout element in views.xml.</P>
+
+<P>Example: &lt;layout id=&quot;opensearch&quot; main=&quot;opensearchDecorator.jsp&quot;/&gt; This will let you use layout=opensearch, and you get forwarded to the opensearchDecorator. If you put this in a views.xml early in the chain, then all pages will have this ability.</P>
+
+<P>For backward compatibility output=xyz rewrites to layout=xyz (see urlrewrite.xml)</P></BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-SolrSearchCommand%2815thSeptember%2708%29"></A>Solr Search Command (15th September '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4949" rel="nofollow">SKER4949: (Solr SearchCommand implementation)</A><BR>
+Searching can now be configured against a Solr index. Example configuration available commented out in generic.sesam/sesam.com/war/src/main/src/main/conf/modes.xml<BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>SolrCommandConfig</LI>
+	<LI>SolrSearchCommand</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-SolrTokenEvaluation%2815thSeptember%2708%29"></A>Solr Token Evaluation (15th September '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4952" rel="nofollow">SKER4952:  (Solr TokenEvaluator)</A><BR>
+Query evaluation (or Query matching) can now be configured against a Solr index.<BR>
+Full tutorial on setup and configing exists at <A href="http://confluence.finn.no/pages/createpage.action?spaceKey=SESAT&title=Setting%20up%20Sesat's%20Query%20Evaluation%20with%20a%20Solr%20index&linkCreation=true&fromPageId=12255301" class="createlink">Setting up Sesat's Query Evaluation with a Solr index</A><BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>SolrEvaluatorFactory</LI>
+	<LI>SolrTokenEvaluator</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-YoutubeSearchCommand%2826thSeptember%2708%29"></A>Youtube Search Command (26th September '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4753" rel="nofollow">SKER4753: (Promote YoutubeSearchCommand (from Schibsted S&oslash;k AS))</A><BR>
+Searching can now be configured against Youtube.<BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>YoutubeCommandConfig</LI>
+	<LI>YoutubeSearchCommand</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-FieldSplitterresulthandler%2827thSeptember%2708%29"></A>Field Splitter result handler (27th September '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4752" rel="nofollow">SKER4752: (Promote FieldSplitter result handler (from Schibsted S&oslash;k AS))</A><BR>
+Searching can now be configured against Youtube.<BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>FieldSplitterResultHandlerConfig</LI>
+	<LI>FieldSplitter</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-Clusteringhitcountresulthandler%2827thSeptember%2708%29"></A>Clustering hit count result handler (27th September '08)</H6>
+
+<BLOCKQUOTE>
+<P><A href="http://sesat.no/scarab/issues/id/SKER4781" rel="nofollow">SKER4781: (Promote ClusteringHitCountResultHandler (from Schibsted S&oslash;k AS) )</A><BR>
+Searching can now be configured against Youtube.<BR>
+<INS>Added API:</INS></P>
+<UL class="alternate" type="square">
+	<LI>ClusteringHitCountResultHandlerConfig</LI>
+	<LI>ClusteringHitCountResultHandler</LI>
+</UL>
+</BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-AnInterpretertohelpdebugandinspectSesat."></A>An Interpreter to help debug and inspect Sesat.</H6>
+
+<BLOCKQUOTE>
+<P>See the page below for info.<BR>
+<A href="sesat-interpreter.html" title="Sesat-Interpreter">Sesat&#45;Interpreter</A></P></BLOCKQUOTE>
+
+<H6><A name="2.18Upgrade-GeneratingXMLSchemafilesforthemodes.xmlconfigurationfiles"></A>Generating XML Schema files for the modes.xml configuration files</H6>
+
+<BLOCKQUOTE>
+<P>We are now generating XML Schema files for the modes.xml files. And validating against these files during build.</P>
+
+<P>See the page below for info.<BR>
+<A href="search-modes-schema-generator.html" title="Search modes schema generator">Search modes schema generator</A></P></BLOCKQUOTE>
+
+<H1><A name="2.18Upgrade-Requirements"></A>Requirements</H1>
+
+
+<H6><A name="2.18Upgrade-SiteMeshisnolongerarequirement%282ndJuly%2708%29"></A>SiteMesh is no longer a requirement (2nd July '08)</H6>
+
+<BLOCKQUOTE>
+<P>SiteMesh was removed by work done in <A href="http://sesat.no/scarab/issues/id/SKER4182" rel="nofollow">SKER4182 - Sesat-ise and standardise decorators</A>.</P></BLOCKQUOTE>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

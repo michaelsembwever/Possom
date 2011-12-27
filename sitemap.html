@@ -1,0 +1,258 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Sitemap</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="about.html" title="About">About</A>&nbsp;&gt;&nbsp;<A href="" title="Sitemap">Sitemap</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD>A monolithic PDF can be read <A href="http://sesat.no/monolithic.pdf" rel="nofollow">here</A></TD></TR></TABLE></DIV>
+
+<P>The following is a sitemap of the wiki pages in this site. It excludes content from hudson/, mailman/, maven2/, projects/, source/, and svn/.</P>
+
+<UL><LI><A href="about.html" title="About">About</A><UL><LI><A href="free-software-license.html" title="Free Software License">Free Software License</A></LI><LI><A href="project.html" title="Project">Project</A></LI><LI><A href="" title="Sitemap">Sitemap</A></LI></UL></LI><LI><A href="docs-support.html" title="Docs + Support">Docs + Support</A><UL><LI><A href="apache.html" title="Apache">Apache</A></LI><LI><A href="architecture-overview.html" title="Architecture Overview">Architecture Overview</A><UL><LI><A href="design-proposals.html" title="Design Proposals">Design Proposals</A><UL><LI><A href="new-design-proposal-for-searchcommand-and-abstractsearchcommand.html" title="New design proposal for SearchCommand and AbstractSearchCommand">New design proposal for SearchCommand and AbstractSearchCommand</A><UL><LI><A href="querybuilder-code-example.html" title="QueryBuilder code example">QueryBuilder code example</A></LI><LI><A href="searchcommandparameter-code-example.html" title="SearchCommandParameter code example">SearchCommandParameter code example</A></LI><LI><A href="stream-manipulation-code-examples.html" title="Stream manipulation code examples">Stream manipulation code examples</A></LI></UL></LI></UL></LI><LI><A href="personalization-architecture.html" title="Personalization architecture">Personalization architecture</A></LI></UL></LI><LI><A href="debugging.html" title="Debugging">Debugging</A><UL><LI><A href="debugging-velocity-templates.html" title="Debugging Velocity Templates">Debugging Velocity Templates</A></LI><LI><A href="logging-logfiles-and-statistics.html" title="Logging, Logfiles, and Statistics">Logging, Logfiles, and Statistics</A></LI><LI><A href="sesat-interpreter.html" title="Sesat-Interpreter">Sesat-Interpreter</A></LI></UL></LI><LI><A href="development-guidelines.html" title="Development Guidelines">Development Guidelines</A><UL><LI><A href="building-with-fast.html" title="Building with FAST">Building with FAST</A></LI><LI><A href="kernel-operations.html" title="Kernel Operations">Kernel Operations</A></LI><LI><A href="requirements.html" title="Requirements">Requirements</A></LI></UL></LI><LI><A href="development-platform-architecture.html" title="Development platform architecture">Development platform architecture</A><UL><LI><A href="hardware-requirements.html" title="Hardware Requirements">Hardware Requirements</A></LI><LI><A href="software-requirements.html" title="Software Requirements">Software Requirements</A></LI></UL></LI><LI><A href="development-using-the-apis.html" title="Development using the APIs">Development using the APIs</A></LI><LI><A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A><UL><LI><A href="developing-a-quick-and-simple-enrichment-tutorial.html" title="Developing a quick and simple Enrichment tutorial">Developing a quick and simple Enrichment tutorial</A></LI><LI><A href="developing-using-css.html" title="Developing using CSS">Developing using CSS</A></LI><LI><A href="howto-develop-a-runhandler.html" title="HOWTO develop a RunHandler">HOWTO develop a RunHandler</A></LI><LI><A href="navigation-documentation.html" title="Navigation documentation">Navigation documentation</A></LI><LI><A href="search-modes-schema-generator.html" title="Search modes schema generator">Search modes schema generator</A></LI><LI><A href="tutorial-ajax-examples.html" title="Tutorial - Ajax examples">Tutorial - Ajax examples</A></LI><LI><A href="tutorial-building-sesamcom.html" title="Tutorial - Building Sesam.com">Tutorial - Building Sesam.com</A></LI></UL></LI><LI><A href="faq.html" title="faq">faq</A></LI><LI><A href="howto-solr-query-evaluation.html" title="HowTo Solr Query Evaluation">HowTo Solr Query Evaluation</A></LI><LI><A href="moving-from-fast-to-solr-review.html" title="Moving from FAST to Solr review">Moving from FAST to Solr review</A><UL><LI><A href="documentprocessor.html" title="documentprocessor">documentprocessor</A></LI></UL></LI><LI><A href="upgrade-guides.html" title="Upgrade Guides">Upgrade Guides</A><UL><LI><A href="216-upgrade.html" title="2.16 Upgrade">2.16 Upgrade</A></LI><LI><A href="217-upgrade.html" title="2.17 Upgrade">2.17 Upgrade</A></LI><LI><A href="218-upgrade.html" title="2.18 Upgrade">2.18 Upgrade</A></LI><LI><A href="writing-upgrade-guide-guidelines.html" title="Writing Upgrade Guide guidelines">Writing Upgrade Guide guidelines</A></LI></UL></LI></UL></LI><LI><A href="external.html" title="External">External</A><UL><LI><A href="external-fast.html" title="External - FAST">External - FAST</A></LI><LI><A href="external-integration-platforms.html" title="External - Integration Platforms">External - Integration Platforms</A></LI></UL></LI><LI><A href="features.html" title="Features">Features</A><UL><LI><A href="kernel-feature-list.html" title="Kernel Feature list">Kernel Feature list</A></LI><LI><A href="kernel-roadmap.html" title="Kernel Roadmap">Kernel Roadmap</A></LI><LI><A href="product-description.html" title="Product Description">Product Description</A><UL><LI><A href="product-description-business-managers-business-developers.html" title="Product Description - Business Managers & Business Developers">Product Description - Business Managers &amp; Business Developers</A></LI></UL></LI><LI><A href="product-whitepaper.html" title="Product Whitepaper">Product Whitepaper</A></LI><LI><A href="showcases-sesamno.html" title="Showcases - Sesam.no">Showcases - Sesam.no</A></LI><LI><A href="technical-feature-matrix.html" title="Technical Feature Matrix">Technical Feature Matrix</A></LI></UL></LI><LI><A href="getting-help.html" title="Getting Help">Getting Help</A></LI><LI><A href="home.html" title="Home">Home</A><UL><LI><A href="download.html" title="download">download</A></LI></UL></LI></UL>
+
+<H6><A name="Sitemap-Newsitems"></A>News items</H6>
+<TABLE width="99%" cellspacing="0" class="grid">
+    <TR>
+        <TH width="70%">Title</TH>
+        <TH>Author</TH>
+        <TH>Date Posted</TH>
+    </TR>
+
+</TABLE>
+
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

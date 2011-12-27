@@ -1,0 +1,623 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Technical Feature Matrix</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="features.html" title="Features">Features</A>&nbsp;&gt;&nbsp;<A href="" title="Technical Feature Matrix">Technical Feature Matrix</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H1><A name="TechnicalFeatureMatrix-FeatureMatrix"></A>Feature Matrix</H1>
+<P>We keep an up to date and detailed <A href="kernel-feature-list.html" title="Kernel Feature list">Kernel Feature list</A> <A href="kernel-feature-list.html" title="Kernel Feature list">here</A>.</P>
+
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> Feature </TH>
+<TH class="confluenceTh"> Description  </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Installation and environment</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Linux flavours </TD>
+<TD class="confluenceTd"> All of course, but tested on CentOS, RedHat, Ubuntu and Debian. Works well on local Windows installations (not recommended for heavy production sites) </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Application Servers Supported </TD>
+<TD class="confluenceTd"> Tomcat 6.0+, JBoss 4.2.0+ </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Apache front-end proxying supported with mod_cache and mod_jk </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Runs on same server as client application </TD>
+<TD class="confluenceTd"> No need for separate server(s). SESAT is deployed directly on the Java Application Server </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Supports Java 1.6 </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Multiple Sites in the same JVM </TD>
+<TD class="confluenceTd"> Yes, with properties and templates inheritance for (sub)sites (e.g. vg.sesam.no can inherit properties and settings from sesam.no) </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Easy configuration of each defined site/application </TD>
+<TD class="confluenceTd"> Yes, currently by XML-files, but with GUI-administration module under development. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Scalability </TD>
+<TD class="confluenceTd"> Scales linearly with number of servers using HW load balancing with sticky sessions.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Automated Deployment </TD>
+<TD class="confluenceTd"> Deployment scripts included for deployment of both SESAT and client applications.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Source Code</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Full access to Source Code </TD>
+<TD class="confluenceTd"> yes, from Subversion </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Permissions to apply own patches </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Special functionality built upon request </TD>
+<TD class="confluenceTd"> Yes, contribute it yourself or persuade the developers.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Site GUI Development</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Search Portal Framework </TD>
+<TD class="confluenceTd"> Yes. SESAT is both federating search middleware and a search application framework.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Development Environment </TD>
+<TD class="confluenceTd"> Anything you want. We recommend both NetBeans and Eclipse. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Development OS </TD>
+<TD class="confluenceTd"> Linux, Mac OS X and Windows </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Client application building </TD>
+<TD class="confluenceTd"> Maven2-based generation of .war deployment files </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Content formats supported </TD>
+<TD class="confluenceTd"> HTML, XHTML, XML, VCF, VML, RSS, etc. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Site inheritance </TD>
+<TD class="confluenceTd"> SESAT allows for sites to inherit layout and configuration from parent sites.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Example templates included </TD>
+<TD class="confluenceTd"> Yes, extensive stack of templates based on several real-life sites. (Velocity or JSP) </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Easy development environment setup </TD>
+<TD class="confluenceTd"> Yes. Supports ssh-tunnels to data sources. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Search result access method </TD>
+<TD class="confluenceTd"> The Search Result Object is directly available from the template system. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Normalised search result </TD>
+<TD class="confluenceTd"> The Search Result Object presents the result in a normalised and uniform way, independent of the underlying index technology. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Templating System </TD>
+<TD class="confluenceTd"> Velocity and JavaServerPages are standard, support for adding any other Java-based templating systems. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Ajax-support </TD>
+<TD class="confluenceTd"> Search Result Object is connected to user sessionID to provide asynchronous information access. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Support for Java Faces </TD>
+<TD class="confluenceTd"> Not as standard yet, but can easily be implemented by client. Near-future versions of SESAT will have working examples of Java Faces. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Full flexibility for templating framework </TD>
+<TD class="confluenceTd"> Yes. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Query Analysis</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Configurable business logic </TD>
+<TD class="confluenceTd"> Yes, through the rules engine and administrative tools. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Rules-engine based Query Analysis </TD>
+<TD class="confluenceTd"> Yes, with rules managed by own module in SESAT ADM </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Automatic search-phrase highlighting </TD>
+<TD class="confluenceTd"> Yes, for FAST-indexes. Highlightning independent of index type will be released in the near future.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Specification and administration of trigger-words </TD>
+<TD class="confluenceTd"> Yes, triggers may change ranking order of individual indexes in the search result. For example, &quot;<B>fact</B> oslo&quot; may boost content from a Wikipedia index before content from a global crawled web index.</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Administrative back-end for rules engine </TD>
+<TD class="confluenceTd"> Yes, SESAT ADM Text Analysis providing automatic detection of full-names, geographical names etc. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Search term categorisation based on lookup-lists</TD>
+<TD class="confluenceTd">  yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Phrase-search support </TD>
+<TD class="confluenceTd"> yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Standard Search Operator support </TD>
+<TD class="confluenceTd"> yes, all functionality is inherited from the underlying index motor </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Easter-eggs support </TD>
+<TD class="confluenceTd"> yes, of course! </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> In-built calculator </TD>
+<TD class="confluenceTd"> Yes, queries can be mathematically evaluated </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Result Handling</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Result Object </TD>
+<TD class="confluenceTd"> Comprehensive, easily accessible object model </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Simple Flat Result List </TD>
+<TD class="confluenceTd"> Search result represented as java object </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Result persistence </TD>
+<TD class="confluenceTd"> Yes, attached to user SessionID, configurable duration </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Handle both generic and specific index results </TD>
+<TD class="confluenceTd"> Yes - user configurable and extendable </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Enrichments Support</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Enrichments ranking based on rules </TD>
+<TD class="confluenceTd"> yes  </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Easy creation and definition of enrichments </TD>
+<TD class="confluenceTd"> Yes, you can use any search command as an enrichment that will be displayed and ranked according to initial search analysis. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Unlimited number of enrichments </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Ad Systems Support</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Yahoo PPC </TD>
+<TD class="confluenceTd"> yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> AdMomentum </TD>
+<TD class="confluenceTd"> yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Google AdWords </TD>
+<TD class="confluenceTd"> yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Easy to add new Ad Systems </TD>
+<TD class="confluenceTd"> Easy for user to implement Ad Systems by creating new, simple search commands </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Data Stores Support</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Default Data Index Support </TD>
+<TD class="confluenceTd"> Default Search Command implementations for Fast-4 Simple search, Fast-4 Advanced search, Fast-5 ESP search, generic XML search, Web Services seach, Blending (FAST) search, Clustering (FAST) search, Correcting (FAST) search, Mathematical/Calculator search, Overture PPC search, PicSearch search, Platefood PPC search, Sensis search, Solr (Lucene) search, Stock market search, Yahoo IDP search, Yahoo Media search, and Youtube search. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Support for external data stores </TD>
+<TD class="confluenceTd"> Yes, through HTTP, WebServices, JDBC. Easy to add own data sources using the SPIs. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Roadmap Data Source/Index Support </TD>
+<TD class="confluenceTd"> Lucene, Google, SharePoint, other sources we may need to search in</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Reference Search Command implementations</TD>
+<TD class="confluenceTd"> Blinkx Video search, Blocket search, Finn search, GeoData Map search, HittaMap search, Hitta search, HittaWeather search, Prisjakt search, Storm Weather Blinkx Video search, Tasteline search, TV-guide (FAST) search, Whitepages (FAST) search, Yellow Pages (FAST) search </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Support for Custom Search Commands </TD>
+<TD class="confluenceTd"> <IMG class="emoticon" src="http://confluence.finn.no/images/icons/emoticons/check.gif" height="16" width="16" align="absmiddle" alt="" border="0"> Easy to develop using inbuilt SPI </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Core Application Extensibility</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Available SPIs (Service Provider Interfaces) for extending core functionality </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Full access to source code </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Independent release-cycles of minor kernel upgrades vs. client code </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Backwards-compability </TD>
+<TD class="confluenceTd"> Complete <A href="upgrade-guides.html" title="Upgrade Guides">Upgrade Guides</A> kept up to date. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>APIs</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> WebServices/XML support </TD>
+<TD class="confluenceTd"> Any search result is available through XML interfaces. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> SOA-enabled interfaces </TD>
+<TD class="confluenceTd"> Yes, through WebServices </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Search Logging Support</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Logging of requests to underlying search engines </TD>
+<TD class="confluenceTd"> Yes, everything can be logged with timestamp and result information (no. of hits) </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Logging of client information </TD>
+<TD class="confluenceTd"> Yes, user environment, browser characteristics </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Search context logging </TD>
+<TD class="confluenceTd"> Referer-domain, &quot;skin&quot; (client site from which the user is searching), navigational elements. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> User navigation tracking </TD>
+<TD class="confluenceTd"> Yes, using SESAT's <B>Boomerang</B> component, you can track user behaviour on your site, and also any access to external sites. Also, any asynchronous access activities can be logged by Boomerang. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Administrative tool for reading logs </TD>
+<TD class="confluenceTd"> Yes, part of SESAT ADM </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Automatic anonymisation of IP-address </TD>
+<TD class="confluenceTd"> Yes, configurable part of the statistics parser. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> System behaviour logging </TD>
+<TD class="confluenceTd"> For each search, SESAT logs search execution times (on a per-index basis), zero-hitcount search results (on a per-index basis), enrichments, slow responding indexes</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Monitoring/Surveillance Logging Support</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Slow index/non-responding index detection </TD>
+<TD class="confluenceTd"> Yes, logged to own surveillance log </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Personalisation</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Basic personalisation support </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Persistence storages supported </TD>
+<TD class="confluenceTd"> MySql currently supported, but other databases available from JDBC </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Security </TD>
+<TD class="confluenceTd"> user session keys generated at each request </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Sample code </TD>
+<TD class="confluenceTd"> Yes, working example of personalisation provided </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> User credentials storage </TD>
+<TD class="confluenceTd"> OpenLDAP </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> <B>Specific Index Functionality: FAST</B> </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Full navigator support </TD>
+<TD class="confluenceTd"> Yes, through Result Object and template system </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Full support for rank profiles </TD>
+<TD class="confluenceTd"> Yes, the profile can be specified in the search command. </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Full support for collections </TD>
+<TD class="confluenceTd"> Yes </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> Robust Error-handling for common FAST-errors </TD>
+<TD class="confluenceTd"> Yes, for example query matching failures/downtime </TD>
+</TR>
+</TBODY></TABLE>
+
+
+
+
+
+
+
+
+
+
+
+
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

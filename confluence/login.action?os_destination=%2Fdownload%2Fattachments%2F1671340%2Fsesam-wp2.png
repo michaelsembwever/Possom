@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+            <title>Login - Confluence</title>
+                    
+    <script language="javascript">
+        var contextPath = '/confluence';
+        var i18n = [];
+    </script>
+
+                            <link rel="stylesheet" href="/confluence/s/1112/1/5/_/styles/main-action.css" type="text/css" />
+            
+            <meta name="robots" content="noindex,nofollow">
+        <meta name="robots" content="noarchive">
+                <meta name="confluence-request-time" content="1214999682231">
+        <link rel="shortcut icon" href="/confluence/images/icons/favicon.ico">
+    <link rel="icon" type="image/png" href="/confluence/images/icons/favicon.png">
+        
+            <script type="text/javascript" src="/confluence/s/1112/1/_/decorators/effects.js"></script>
+    
+
+            
+</head>
+
+            <body onload="placeFocus()">
+    
+
+
+    <script type="text/javascript">
+        function hideMessage(messageId)
+        {
+            var message = document.getElementById(messageId)
+            message.style.display = "none";
+            setCookie(messageId, true);
+        }
+    </script>
+
+        
+<div id="PageContent">
+
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+                <tr class="topBar">
+            <td align="left">
+                &nbsp;
+                <span class="topBarDiv">      </span>
+            </td>
+
+            <td align="right" valign="middle" style="white-space:nowrap">
+                    <form id="quickSearch" method="POST" action="/confluence/dosearchsite.action" name="searchForm">
+        <input type="hidden" name="quickSearch" value="true" />
+        
+        <input type="hidden" name="searchQuery.spaceKey" value="conf_global" />
+        <input type="text" accessKey="s" name="searchQuery.queryString" size="25"/>
+        <input type="submit" value="Search"/>
+    </form>
+            </td>
+        </tr>
+        
+                <tr>
+            <td style="padding: 5px" colspan="2">
+            <table style="padding: 0px; margin: 0px 5px; width: 100%;" cellspacing="0" cellpadding="1" border="0">
+                <tr>
+										<td rowspan="2" valign="bottom" width="1%"><a href="/confluence/homepage.action"><img src="/confluence/download/userResources/logo" align="absmiddle" border="0"></a></td>
+										<td valign="bottom" align="left" width="1%" nowrap>&nbsp;
+                        <span class="logoSpaceLink">            &nbsp;
+    </span>
+                    </td>
+                    <td align="right" valign="top" width="98%">
+                                                    
+    <span class="smalltext" id="userNavBar">
+                    
+
+            <a href="/confluence/login.action">Log In</a>
+
+                                            &nbsp;
+                        </span>
+    
+						        <a href="/confluence/login.action?os_destination=%2Fdownload%2Fattachments%2F1671340%2Fsesam-wp2.png&decorator=printable" rel="nofollow"><img src="/confluence/images/icons/print_16.gif" width="16" height="16" hspace="1" vspace="1" align="absmiddle" border="0" alt="View a printable version of the current page." title="View a printable version of the current page."/></a>
+
+                                                        
+                                                                                &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td height="22" align="left" colspan="2">&nbsp;
+                        <span class="pagetitle" style="line-height: 1; margin: 0px; text-decoration: none">
+                                        Login To Confluence
+                            </span>
+                    </td>
+                </tr>
+            </table>
+            </td>
+        </tr>
+            </table>
+
+        <form method="POST" action="login.action" name="loginform">
+                <div align="center"><div style="width: 500px;"><div style="text-align: left;">
+
+                    <div class="form-header">
+                        <p>
+                            Enter your account details below to login to Confluence.
+                        </p>
+                    </div>
+                    
+                    <div class="form-block">
+                        <p>
+                            <div class="steplabel" style="width: 150px;"><u>U</u>sername: </div><input type="text" name="os_username" tabindex="1" accesskey="U" size="30"><br/>
+                        </p>
+                        <p>
+                            <div class="steplabel" style="width: 150px;"><u>P</u>assword: </div><input type="password" name="os_password" tabindex="2" accesskey="P" size="30"><br/>
+                        </p>
+
+                        <p>
+                            <div class="steplabel" style="width: 150px;"><input type="checkbox" name="os_cookie" id="os_cookie_id" value="true" tabindex="3"/></div>
+                            <label for="os_cookie_id" accesskey="r"><u>R</u>emember my login on this computer</label>
+                        </p>
+                    </div>
+
+                                        
+                    <div class="form-buttons">
+                        <input id="loginButton" name="login" type="submit" value="Log In" tabindex="4"/>
+                    </div>
+
+                                            <input type="hidden" name="os_destination" value="/download/attachments/1671340/sesam-wp2.png"/>
+                    
+                    <div class="form-block">
+                                                    <div style="float:right;">
+                                <p>
+                                <a href="/confluence/forgotuserpassword.action">Forgot password?</a>
+                                </p>
+                            </div>
+                                                                        </div>
+
+                </div></div></div>
+            </form>
+
+    </div>
+
+  	                                <div class="bottomshadow"></div>
+  	<div id="poweredby" class="smalltext">
+		Powered by <a href="http://www.atlassian.com/software/confluence" class="smalltext">Atlassian Confluence</a> 2.7.1, the <a href="http://www.atlassian.com/software/confluence" class="smalltext">Enterprise Wiki</a>.
+		<a href="http://jira.atlassian.com/secure/BrowseProject.jspa?id=10470" class="smalltext">Bug/feature request</a>
+		-
+		<a href="http://www.atlassian.com/about/connected.jsp?s_kwcid=Confluence-stayintouch" class="smalltext">Atlassian news</a>
+		-
+		<a href="/confluence/administrators.action">Contact administrators</a>
+        <br/>
+	</div>
+
+<!-- delay the loading of large javascript files to the end so that they don't interfere with the loading of page content -->
+<span style="display: none"></span>
+
+
+</body>
+</html>

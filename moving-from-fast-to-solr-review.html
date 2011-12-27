@@ -1,0 +1,616 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Moving from FAST to Solr review</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="" title="Moving from FAST to Solr review">Moving from FAST to Solr review</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1258126547101 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1258126547101 ul {margin-left: 0px;padding-left: 8px;}
+div.rbtoc1258126547101 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1258126547101">
+<UL>
+    <LI><A href="#MovingfromFASTtoSolrreview-Abstract">Abstract</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-ReasonsformovingtoSolr">Reasons for moving to Solr</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-Problemsresolved">Problems resolved</A></LI>
+<UL>
+    <LI><A href="#MovingfromFASTtoSolrreview-3.Indexprofile">3. Index-profile</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-4.Hiddenrecall">4. Hidden recall</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-5.Phoneticmatching%2528notsolved%2529">5. Phonetic matching (not solved)</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-6.Geographicalfiltering">6. Geographical filtering</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-7.Directmatchlist">7. Direct match list</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-8.Addingnavigators">8. Adding navigators</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-9.Geographicalsearches">9. Geographical searches</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-10.Boundarymatching">10. Boundary matching</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-11.Namesearching">11. Name searching</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-12Phoneticnumbermatching">12 Phonetic number matching</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-13.Replication">13. Replication</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-14.Deployreplicationconfiguration">14. Deploy replication configuration</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-15.Directmatching.">15. Direct matching.</A></LI>
+</UL>
+    <LI><A href="#MovingfromFASTtoSolrreview-Statistics">Statistics</A></LI>
+<UL>
+    <LI><A href="#MovingfromFASTtoSolrreview-yellowfirstfeed">yellow first feed</A></LI>
+    <LI><A href="#MovingfromFASTtoSolrreview-whitefirstfeed">white first feed</A></LI>
+</UL>
+    <LI><A href="#MovingfromFASTtoSolrreview-Testing">Testing</A></LI>
+</UL></DIV>
+<H2><A name="MovingfromFASTtoSolrreview-Abstract"></A>Abstract </H2>
+
+<P>This is an article about moving two big complex collections of search documents from FAST to Solr, the problems encountered during the move, and how they were tackled.<BR>
+These FAST FDS 4.1 collections where the company (yellow) and person (white) catalogues for Sesam.no from Norway. </P>
+
+<H2><A name="MovingfromFASTtoSolrreview-ReasonsformovingtoSolr"></A>Reasons for moving to Solr</H2>
+
+<P>We where going to move from one hosting provider to another. Moving the old FAST 4 installation over was not an option. Upgrading to FAST ESP5 was an option, but it was also a good time to experiment with Solr. While FAST was really good for real-time search (eg news search with clustering) for big static collections like our yellow and white indexes Solr looked like an ideal candidate.</P>
+
+<H2><A name="MovingfromFASTtoSolrreview-Problemsresolved"></A>Problems resolved</H2>
+<P>1. Document Processing</P>
+
+<P>The new <A href="documentprocessor.html" title="documentprocessor">Sesat document processing framework</A> written, now <A href="documentprocessor.html" title="documentprocessor">released under the LGPLv3 license</A>, is compatible with the FAST document processing framework. Porting FAST's document processor is easily done by, copying each file, and runing a script to fix minor things like imports and some special fetching of config files. The pipeline configuration file (pipeline-config.xml) from the FAST installation can also be largely reused. It is not wholly supported in the new document processing framework where functionality can be taken out of the pipeline process and provided by Solr itself. <BR>
+The most prominent examples to this being:</P>
+<UL class="alternate" type="square">
+	<LI>removing all references to proprietary FAST pipeline steps,</LI>
+	<LI>removing all tokenization, lemmatization and stemming as these are handled with the field types in Solr (given you're planning to use the default Solr tokenizers, and snowball for lemmatization and stemming),</LI>
+	<LI>the default FAST specific pipeline steps needs to be removed as they are not needed (RowsetXML, FASTXML, DocInit, FIXML).</LI>
+</UL>
+
+
+<P>2. Data-import disadvantages</P>
+
+<P>Solved with the Sesat document processing framework.</P>
+
+<P>Not being able to use the data-import handler for various reasons, and not wanting to find out how to use it with the homegrown document processing, we made a simple django import handler. That took about 3-4 hours to complete. Copying the data-import handler functionality was relatively easy and cronjobs were used to schedule the imports. </P>
+
+<H3><A name="MovingfromFASTtoSolrreview-3.Indexprofile"></A>3. Index-profile</H3>
+<P>Replicating FAST's index profile was largely about rewriting it into Solr's schema.xml and solrconfig.xml<BR>
+The schema.xml does a large amount of what the index-profile does. Field specification is done there, but also the filter and tokenization parts of the pipeline from FAST. </P>
+
+<P>Most fields where easy to convert, here is a general mapping: </P>
+
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> FAST field type </TH>
+<TH class="confluenceTh"> Solr field type </TH>
+<TH class="confluenceTh"> comment </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> list with separator </TD>
+<TD class="confluenceTd"> field is multiValued </TD>
+<TD class="confluenceTd"> need to make a list in the pipeline before adding to Solr </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> int32 </TD>
+<TD class="confluenceTd"> sint </TD>
+<TD class="confluenceTd"> sortable integer fields </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> geo </TD>
+<TD class="confluenceTd"> no mapping </TD>
+<TD class="confluenceTd"> havent implemented geo in Solr </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> composit fields </TD>
+<TD class="confluenceTd"> not needed </TD>
+<TD class="confluenceTd"> uses dismaxHandler to mirror this functionality </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> composit fields </TD>
+<TD class="confluenceTd"> use multiValued fields </TD>
+<TD class="confluenceTd"> use a AttributeCopy pipeline step to fill a multiValue <BR clear="all">does not support ranking differently on the different matches inside the composit field </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> rank profile </TD>
+<TD class="confluenceTd"> not needed </TD>
+<TD class="confluenceTd"> uses dismaxHandler to mirror this functionality </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> return specification </TD>
+<TD class="confluenceTd"> not needed </TD>
+<TD class="confluenceTd"> uses dismaxHandler to mirror this functionality with the returnfield for a qt </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> tokenize </TD>
+<TD class="confluenceTd"> done in schema.xml </TD>
+<TD class="confluenceTd"> set the schema.xml field to a type that is tokenized the way you want </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> lemmatize </TD>
+<TD class="confluenceTd"> snowball for the field type </TD>
+<TD class="confluenceTd"> did not end up using this because the lemmatizer wasn't good enough for norwegian <BR clear="all">can be fixed with making a list lookup lemmatizer for the pipeline <BR clear="all">or configuring / coding in snowball </TD>
+</TR>
+</TBODY></TABLE>
+
+<H3><A name="MovingfromFASTtoSolrreview-4.Hiddenrecall"></A>4. Hidden recall</H3>
+
+<P>To copy the FAST search functionality the recall needs to be copied. In our FAST installation we had heavy use of composite field searches where a lot of the sub-fields in the composite fields where not referenced in the rank-profile. <BR>
+To solve this, you need control over all the normal fields in the composite fields that are used in a search. These needs to be added to the DismaxHandler as zero ranked (so not to give any rank) fields. For example for a field &quot;mysubfield&quot; add:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>mysubfield^0</PRE>
+</DIV></DIV>
+<P>to the qf field in the DismaxHandler. </P>
+
+
+<H3><A name="MovingfromFASTtoSolrreview-5.Phoneticmatching%28notsolved%29"></A>5. Phonetic matching (not solved)</H3>
+
+<P>The FAST FDS 4.1 installation used a soundex matcher, configured for norwegian phonetic matching. The functionality is not mirrored with Solr's phonetic matching. A satisfactory replacement was the RefinedSoundex with a special set of fields used just for the phonetic matching.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;filter class=&quot;solr.PhoneticFilterFactory&quot; encoder=&quot;RefinedSoundex&quot; inject=&quot;false&quot;/&gt;</PRE>
+</DIV></DIV>
+
+<P>The FAST phonetic matcher has a lot more configuration options. But I guess that this configuration can be mirrored by extending the Soundex Filter type. </P>
+
+<H3><A name="MovingfromFASTtoSolrreview-6.Geographicalfiltering"></A>6. Geographical filtering</H3>
+
+<P>Geographical filtering in Solr is pretty easy. In FAST one could use a composite field with all the geographical location information as an AND cause to the search. In Solr just add a Multivalued field and add the location information to it:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE># in the fields definition add: 
+&lt;field name=&quot;iypcfgeo&quot; type=&quot;text&quot; indexed=&quot;true&quot; stored=&quot;true&quot; multiValued=&quot;true&quot; /&gt;
+...
+&lt;copyField source=&quot;iypstedsnavn&quot; dest=&quot;iypcfgeo&quot; /&gt;
+&lt;copyField source=&quot;iyplandsdel&quot; dest=&quot;iypcfgeo&quot; /&gt;
+&lt;copyField source=&quot;iypby&quot; dest=&quot;iypcfgeo&quot; /&gt;
+&lt;copyField source=&quot;iypbydel&quot; dest=&quot;iypcfgeo&quot; /&gt;
+&lt;copyField source=&quot;iypkommune&quot; dest=&quot;iypcfgeo&quot; /&gt;
+
+</PRE>
+</DIV></DIV>
+<P>This makes it possible to use the filter in the query. &quot;fq=iypcfgeo:Oslo&quot; will return only hits in Oslo</P>
+
+<H3><A name="MovingfromFASTtoSolrreview-7.Directmatchlist"></A>7. Direct match list</H3>
+<P>In the FAST installation we had composite fields we search by issuing ^querystring$ searches. It was difficult to find any way to do multiple field search combined with the dismax. Dismax just lists fields to be searched, and the type of the field defines how that field is searched. <BR>
+By making the fields that need ^querystring$ type queries into String multiValued this functionality is matched. Since that field is not tokenized since strings does not have field transformations. </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;field name=&quot;iypbransje&quot; type=&quot;string&quot;  indexed=&quot;true&quot; store=&quot;true&quot; multiValued=&quot;true&quot;/&gt;        
+</PRE>
+</DIV></DIV>
+
+<P>Might be possible to solve this with <A href="http://www.lucidimagination.com/blog/2009/03/31/nested-queries-in-solr/" rel="nofollow">nested queries </A> that was added to Solr 1.4 that also works for the dismax.</P>
+
+<H3><A name="MovingfromFASTtoSolrreview-8.Addingnavigators"></A>8. Adding navigators</H3>
+
+<P>Navigators in Solr are called facets. They need be of type string in schema.xml and they're defined in dismax or the query. <BR>
+When I started out to move the FAST navigators to Solr I looked in our index-profile. For each navigator, add a field in schema.xml like this: </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;!-- navigator / facet fields --&gt;
+&lt;field name=&quot;ywpoststednavigator&quot; type=&quot;string&quot; index=&quot;true&quot; /&gt;
+&lt;field name=&quot;ywbydelnavigator&quot; type=&quot;string&quot; index=&quot;true&quot; /&gt;
+</PRE>
+</DIV></DIV>
+
+<P>Normally the facet field is a normal string and can be added in the copyField section of schema.xml like this:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;!-- navigator / facet copying --&gt;
+&lt;copyField source=&quot;ywpoststed&quot; dest=&quot;ywpoststednavigator&quot; /&gt;
+&lt;copyField source=&quot;ywbydel&quot; dest=&quot;ywbydelnavigator&quot; /&gt;
+</PRE>
+</DIV></DIV>
+<P>For a list field (separator field in FAST) add an AttributeCopy step in the pipeline to do the copy, because I manually split all multiValue fields in the pipeline other then those populated by the copyField in schema.xml. And fed them to a navigator field with type=&quot;string&quot; index=&quot;true&quot; multiValued=&quot;true&quot; </P>
+
+<P>In Solr it is possible to add facets to the dismax (since they are normally connected to the dismax anyway. Searching for whitepages should give a set of facets back). Some configuration can be added to the dismax to make that happen. On the bottom of the DismaxHandler add something like this:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>...
+&lt;int name=&quot;facet.mincount&quot;&gt;1&lt;/int&gt;
+&lt;/lst&gt;
+&lt;lst name=&quot;invariants&quot;&gt;
+   &lt;str name=&quot;facet.field&quot;&gt;ywpoststednavigator &lt;/str&gt;
+   &lt;str name=&quot;facet.field&quot;&gt;ywbydelnavigator&lt;/str&gt;
+&lt;/lst&gt;
+...
+</PRE>
+</DIV></DIV>
+
+<P>This approach makes it possible to ask Solr to return the default facets for the Dismax by adding &amp;facet=true too the query url. You can still define your own facets at querytime. </P>
+
+<H3><A name="MovingfromFASTtoSolrreview-9.Geographicalsearches"></A>9. Geographical searches </H3>
+
+<P>Searching for coordinates to map coordinates to hits in that area. </P>
+
+<P>This can be solved with mimicking the geographical coordinate search with boxing ANDs.</P>
+
+<H3><A name="MovingfromFASTtoSolrreview-10.Boundarymatching"></A>10. Boundary matching</H3>
+
+<P>In FAST we had searches for ^term$ syntax in the searches. This is not possible in the same way in Solr, but by making a copy of the field as a <DEL>list of string</DEL>??</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;field name=&quot;somefield&quot; type=&quot;string&quot; index=&quot;true&quot; store=&quot;true&quot; /&gt;
+</PRE>
+</DIV></DIV>
+<P>Strings in that array will only match if the whole string matches (no processing done on string fields).<BR>
+It's important to make all values in the list lower case and only send in lower case searches to make it hit right.</P>
+
+<H3><A name="MovingfromFASTtoSolrreview-11.Namesearching"></A>11. Name searching</H3>
+
+<P>Name searching is a bit hard, the solution made for our Solr index uses a dismax requestHandler that combines search across phonetic, string, and a customized text_name type, fields. And ranking these with string match first, text_name second, and phonetic a lot lower. The text_name uses that LetterTokenizer</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>        &lt;!-- test of name search fields to do real tokenization and work delimit --&gt;
+        &lt;fieldtype name=&quot;text_name&quot; class=&quot;solr.TextField&quot; positionIncrementGap=&quot;100&quot;&gt;
+            &lt;analyzer type=&quot;index&quot;&gt;
+                &lt;tokenizer class=&quot;solr.LetterTokenizerFactory&quot;/&gt;
+                &lt;filter class=&quot;solr.LowerCaseFilterFactory&quot;/&gt;
+                &lt;filter class=&quot;solr.WordDelimiterFilterFactory&quot; generateWordParts=&quot;1&quot; generateNumberParts=&quot;1&quot; catenateWords=&quot;0&quot; catenateNumbers=&quot;0&quot; caten
+ateAll=&quot;0&quot;/&gt;
+                &lt;filter class=&quot;solr.RemoveDuplicatesTokenFilterFactory&quot;/&gt;
+            &lt;/analyzer&gt;
+            &lt;analyzer type=&quot;query&quot;&gt;
+                &lt;tokenizer class=&quot;solr.LetterTokenizerFactory&quot;/&gt;
+                &lt;filter class=&quot;solr.WordDelimiterFilterFactory&quot; generateWordParts=&quot;1&quot; generateNumberParts=&quot;1&quot; catenateWords=&quot;0&quot; catenateNumbers=&quot;0&quot; caten
+ateAll=&quot;0&quot;/&gt;
+                &lt;filter class=&quot;solr.LowerCaseFilterFactory&quot;/&gt;
+                &lt;filter class=&quot;solr.RemoveDuplicatesTokenFilterFactory&quot;/&gt;
+            &lt;/analyzer&gt;
+        &lt;/fieldtype&gt;
+</PRE>
+</DIV></DIV>
+
+<H3><A name="MovingfromFASTtoSolrreview-12Phoneticnumbermatching"></A>12 Phonetic number matching</H3>
+
+<P>After, implementing the solrconfig.xml and dismaxes for all the types of searches we needed to do, a problem popped up. The dismax in question had a number of phonetic matching fields and every time a number was searched (with or without other alpha nummeric query content) a disproportionate number of results was returned. </P>
+
+<P>After debugging using the debugQuery=on option, I saw that the numbers was searches against the phonetic fields as an empty string. </P>
+
+<P>Anyway, doing LetterTokenization for the phonetic field removes all the numbers on the way in and solved the problem</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>	&lt;fieldtype name=&quot;text_phon&quot; class=&quot;solr.TextField&quot; positionIncrementGap=&quot;100&quot;&gt;
+		&lt;analyzer type=&quot;index&quot;&gt;
+			&lt;tokenizer class=&quot;solr.LetterTokenizerFactory&quot;/&gt;
+	        &lt;!-- tokenizer class=&quot;solr.WhitespaceTokenizerFactory&quot;/--&gt;
+			&lt;filter class=&quot;solr.WordDelimiterFilterFactory&quot; generateWordParts=&quot;1&quot; generateNumberParts=&quot;1&quot; catenateWords=&quot;1&quot; catenateNumbers=&quot;1&quot; catenateAll=&quot;0&quot;/&gt;
+			&lt;filter class=&quot;solr.LowerCaseFilterFactory&quot;/&gt;
+			&lt;filter class=&quot;solr.PhoneticFilterFactory&quot; inject=&quot;false&quot; encoder=&quot;RefinedSoundex&quot; /&gt;
+			&lt;filter class=&quot;solr.RemoveDuplicatesTokenFilterFactory&quot;/&gt;
+		&lt;/analyzer&gt;
+		&lt;analyzer type=&quot;query&quot;&gt;
+			&lt;tokenizer class=&quot;solr.LetterTokenizerFactory&quot;/&gt;
+	                &lt;!--tokenizer class=&quot;solr.WhitespaceTokenizerFactory&quot;/--&gt;
+			&lt;filter class=&quot;solr.WordDelimiterFilterFactory&quot; generateWordParts=&quot;1&quot; generateNumberParts=&quot;1&quot; catenateWords=&quot;1&quot; catenateNumbers=&quot;1&quot; catenateAll=&quot;0&quot;/&gt;
+                        &lt;filter class=&quot;solr.LowerCaseFilterFactory&quot;/&gt;
+			&lt;filter class=&quot;solr.PhoneticFilterFactory&quot; encoder=&quot;RefinedSoundex&quot; inject=&quot;false&quot;/&gt;
+                        &lt;filter class=&quot;solr.RemoveDuplicatesTokenFilterFactory&quot;/&gt;
+                &lt;/analyzer&gt;		
+
+	&lt;/fieldtype&gt;
+</PRE>
+</DIV></DIV> 
+
+<P>As commented out the whitespacetokenizer was used before and resulted in 30,000 results where there would otherwise be only 3.</P>
+
+<H3><A name="MovingfromFASTtoSolrreview-13.Replication"></A>13. Replication</H3>
+
+<P>Replication was needed to make the index fault tolerant over a number of servers in different locations. The replication scheme in Solr is very straight forward. The server has a master configuration part in solrconfig.xml that describes actions related to replication. The slaves then have their configuration parts in solrconfig.xml which describe how they should poll the master requesting replication.</P>
+
+<P>Replication is described in detail here: <A href="http://wiki.apache.org/solr/CollectionDistribution" rel="nofollow">http://wiki.apache.org/solr/CollectionDistribution</A><BR>
+A sample master configuration in solrconfig.xml </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;requestHandler name=&quot;/replication&quot; class=&quot;solr.ReplicationHandler&quot; &gt;
+    &lt;lst name=&quot;master&quot;&gt;
+	&lt;str name=&quot;replicateAfter&quot;&gt;optimize&lt;/str&gt;
+	&lt;str name=&quot;replicateAfter&quot;&gt;commit&lt;/str&gt;
+	&lt;str name=&quot;replicateAfter&quot;&gt;startup&lt;/str&gt; &lt;!-- for testing purposes only!! --&gt;
+        &lt;str name=&quot;snapshot&quot;&gt;optimize&lt;/str&gt;
+        &lt;str name=&quot;confFiles&quot;&gt;solrconfig_slave.xml:solrconfig.xml,schema.xml&lt;/str&gt;
+    &lt;/lst&gt;
+&lt;/requestHandler&gt;
+</PRE>
+</DIV></DIV>
+
+<P>Where the replication is set to notify the slave to copy the index at optimize command, commit commands, and startup: the schema and the slave configuration is deployed to the slaves from the master.</P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;requestHandler name=&quot;/replication&quot; class=&quot;solr.ReplicationHandler&quot; &gt;
+    &lt;lst name=&quot;slave&quot;&gt;
+        &lt;str name=&quot;masterUrl&quot;&gt;http://solr1.somemasterserver.no:8010/solr/replication&lt;/str&gt;  
+        &lt;str name=&quot;pollInterval&quot;&gt;00:02:00&lt;/str&gt;  
+        &lt;str name=&quot;compression&quot;&gt;internal&lt;/str&gt;
+        &lt;str name=&quot;httpConnTimeout&quot;&gt;5000&lt;/str&gt;
+        &lt;str name=&quot;httpReadTimeout&quot;&gt;10000&lt;/str&gt;
+     &lt;/lst&gt;
+&lt;/requestHandler&gt;
+</PRE>
+</DIV></DIV>
+<P>Here the slave is polling the master every 2 minutes.</P>
+
+<H3><A name="MovingfromFASTtoSolrreview-14.Deployreplicationconfiguration"></A>14. Deploy replication configuration</H3>
+
+<P>To deploy the replication configuration we decided to make two different solrconfig.xml files. &quot;solrconfig_master.xml&quot; and &quot;solrconfig_slave.xml&quot;. These are then soft-linked on the different servers like this: </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>master: 
+cd conf/
+ln -s solrconfig.xml solrconfig_master.xml
+
+slave: 
+cd conf/
+ln -s solrconfig.xml solrconfig_slave.xml
+</PRE>
+</DIV></DIV>
+<P>This has the problem of the soft-link being moved on the slaves after a replication, which really is not such a problem since it ends up with the right configuration. </P>
+
+<H3><A name="MovingfromFASTtoSolrreview-15.Directmatching."></A>15. Direct matching. </H3>
+
+<P>To allow direct matching against commercially sold search words the string multiValue fields was used. The multiValue (list) string fields has no index or querytime transformation and either matches or doesn't match. This allows for direct list matching on certain fields while giving broader hits in other more generic fields. </P>
+
+<P>We ended up with making all queries lowercase before they hit the Solr index, and all direct match fields are lower-cased in the pipeline before making it into Solr. </P>
+
+<H2><A name="MovingfromFASTtoSolrreview-Statistics"></A>Statistics</H2>
+
+<H3><A name="MovingfromFASTtoSolrreview-yellowfirstfeed"></A>yellow first feed</H3>
+<P>First full run of yellow feed to solr using django+mysql exporter, homegrown document processing pipeline: <BR>
+added batches of 10000 to Solr, only one commit at the end of the full feed. <BR>
+added 1138544 docs in 11324 seconds<BR>
+commit took 10 minutes<BR>
+no memory leaks, and no errors from the pipeline. </P>
+
+<H3><A name="MovingfromFASTtoSolrreview-whitefirstfeed"></A>white first feed</H3>
+<P>setting up the solution to use a django exporter, mysql dump of whole white index (added index to 3 columns) and configuring the pipeline took about 4 hours (forgot to index the pk field so trouble shooted that for 1-2 hours)</P>
+
+<P>while feeding : 188 documents pr second</P>
+
+<P>exporter_white.py first run end print:<BR>
+added bacthes of 10000 to Solr and ran a loop over 10000 lazy fetches from the db<BR>
+fluch to Solr returned : True <BR>
+commit to Solr returned : True<BR>
+added 4016499 docs in 21498 seconds</P>
+
+<P>so 6 hours for the first run, took Solr 2 minutes to commit the changes (seemed a bit low) </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>Jul 2, 2009 7:57:41 PM org.apache.solr.search.SolrIndexSearcher &lt;init&gt;
+INFO: Opening Searcher@11e96e0 main
+Jul 2, 2009 7:57:41 PM org.apache.solr.update.DirectUpdateHandler2 commit
+INFO: end_commit_flush
+...
+Jul 2, 2009 7:57:42 PM org.apache.solr.update.processor.LogUpdateProcessor finish
+INFO: {commit=} 0 3460
+
+</PRE>
+</DIV></DIV>
+
+<H2><A name="MovingfromFASTtoSolrreview-Testing"></A>Testing</H2>
+
+        </DIV>
+                  <DIV class="tabletitle">
+            Children
+            <SPAN class="smalltext" id="show" style="display: inline;">
+              <A href="javascript:showChildren()">Show Children</A></SPAN>
+            <SPAN class="smalltext" id="hide" style="display: none;">
+              <A href="javascript:hideChildren()">Hide Children</A></SPAN>
+          </DIV>
+          <DIV class="greybox" id="children" style="display: none;">
+                                      <A href="documentprocessor.html" title="documentprocessor">documentprocessor</A>
+              <SPAN class="smalltext">(Sesat)</SPAN>
+              <BR>
+                      </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

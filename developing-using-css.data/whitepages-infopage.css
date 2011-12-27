@@ -1,0 +1,84 @@
+#info_submenu {
+    padding: 5px 0;
+    font-size: 1.1em;
+}
+ 
+#info_submenu a{
+    text-decoration: none;
+    padding-right: 10px;
+}
+
+#info_submenu a:hover{
+    text-decoration: underline;
+}
+
+#tvaksjonenImg {
+    padding-top: 30px;
+}
+
+#roles {
+    display: none;
+    padding-top: 15px;
+    width: 758px;
+}
+
+.roletable {
+    background: #CCC;
+    width: 75%;
+    font-size: 1.2em;
+}
+
+#roles .bg1 {
+    background-color: #FFF;
+}
+
+#roles .bg2 {
+    background-color: #EBEBEB;
+}
+
+.roletable td {
+    padding: 3px 0px 3px 5px;
+}
+
+.roletable .col2 {
+    width: 62%;
+}
+
+.tip_role {
+    font-size: 1.1em;
+    padding-top: 10px;
+}
+
+#info_list {
+    background-color: #CCC;
+    width: 100%;
+    font-size: 1.2em;
+}
+
+#info_list td {
+    padding: 3px 0px 3px 5px; 
+    vertical-align: top;
+}
+
+#info_list .col1 {
+    width: 20%;    
+}
+
+#info_list .col2 {
+    width: 77%;
+}
+
+#tabs a {
+    outline:none;
+}
+
+.tabs_header {
+    font-size: 1.2em; 
+    font-weight: bold;
+    padding: 0 0 4px 5px;
+}
+
+#noAddress {
+    font-size: 1.1em;
+    padding-top: 10px;
+}

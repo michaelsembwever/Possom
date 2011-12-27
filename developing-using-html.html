@@ -1,0 +1,247 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+      .footer {
+        background-image:      url('http://sesat.no/confluence/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Developing using Html</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+    <TABLE border="0" cellpadding="2" cellspacing="0" width="100%" style="height: 104px; position: fixed; z-index: 1; height: 104px; width: 100%; background-image: url('sunrise3.JPG');  background-repeat: no-repeat; background-position: center center;">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A>&nbsp;&gt;&nbsp;<A href="" title="Developing using Html">Developing using Html</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.no/search/" method="get">
+            <INPUT type="hidden" name="c" value="g">
+            <INPUT type="text" name="q" maxlength="255" value="">        
+            <INPUT type="submit" name="btnG" value="Sesam Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+<BR>
+    <DIV id="PageContent" style="position: relative; top: 114px;">
+
+<DIV id="leftColumn" style="float: left; align: left; text-align: left; width: 13%; border-top: solid lightgrey; border-top-width: 1px; border-right: solid lightgrey; border-right-width:  1px;  border-bottom: solid lightgrey; border-bottom-width: 1px;">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-description-it-professionals.html">
+What is Sesat?
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+Free Software License
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/propriety-license.html">
+Proprietary License
+</A>
+</LI>
+</UL>
+
+<H5>
+Documentation
+</H5>
+<UL>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-using-the-sfc.html">
+Skin Development
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/architecture-overview.html">
+Architecture Overview
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+Product Whitepaper
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ
+</A>
+</LI>
+</UL>
+<H5>
+Development
+</H5>
+<UL>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/community.html">
+Community Overview
+</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/maven2/">
+Maven Repository
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/team-list.html">
+The Sesat Team
+</A>
+</LI>
+</UL>
+
+<H5>
+Projects
+</H5>
+<UL>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-commons/">Commons</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-ioc/">Commons IOC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-log4j/">Commons Log4j</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-reflect/">Commons Reflect</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-reference-map/">Commons Reference Map</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-validation/">Commons Validation</A><BR>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Kernel</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Kernel Mojo</A><BR>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-admin/">
+Admin Portlets
+</A>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H1><A name="DevelopingusingHtml-DevelopingusingHtml"></A>Developing using Html</H1>
+
+
+<H2><A name="DevelopingusingHtml-Generalinformation"></A>General information</H2>
+
+<P>We use XHTML 1.0 with the TRANSITIONAL doctype. Our goal should be to use the STRICT doctype, but with the extensivey use of javascript today it would be impossible to make it valid.</P>
+
+<P>&nbsp;The html code is generated mostly with velocitytemplates, but the structure of the page is done in a jsp file. In this file different structure element is defined. In views.xml each tab is declared with the spesific templates it's going to use. The templates are inherited from projects above, but can be overriden if necessary.
+<BR clear="all"></P>
+
+<H2><A name="DevelopingusingHtml-Guidelines"></A>Guidelines</H2>
+
+<P>Guidelines we should try to follow:</P>
+<UL>
+	<LI>All element&#45; and attribute names must be in lower case. All attribute values must be quoted.</LI>
+	<LI>Close all elements. Example: &lt;img src=&quot;image.jpg&quot;  alt=&quot;&quot; /&gt;, &lt;br /&gt;</LI>
+	<LI>Don't use deprecated elements and attributes&nbsp; <SPAN class="nobr"><A href="http://www.html-reference.com/depreciated.htm" rel="nofollow">http://www.html-reference.com/depreciated.htm<SUP><IMG class="rendericon" src="http://sesat.no/confluence/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"></SUP></A></SPAN></LI>
+	<LI>Avoid using tables for layout</LI>
+	<LI>Keep number of elements as low as possible (overuse of div's)</LI>
+	<LI>Allways add alt-attribute in &lt;img&gt; element</LI>
+	<LI>Allways set width and height attributes for images inline. Example: &lt;img src=&quot;image.jpg&quot;  width=&quot;100&quot; height=&quot;200&quot; alt=&quot;&quot; /&gt;</LI>
+	<LI>Encode ampersands in url's</LI>
+	<LI>Use relative path instead of absolute where this is possible</LI>
+	<LI>Make javascript unobtrusive where it's possible</LI>
+</UL>
+
+
+<P>www subdomain - we should use <SPAN class="nobr"><A href="http://sesam.no/" rel="nofollow">http://sesam.no<SUP><IMG class="rendericon" src="http://sesat.no/confluence/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"></SUP></A></SPAN> instead of <SPAN class="nobr"><A href="http://www.sesam.no/" rel="nofollow">http://www.sesam.no<SUP><IMG class="rendericon" src="http://sesat.no/confluence/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"></SUP></A></SPAN>.<BR>
+All internal, and external links, should use the same way to link to sesam, not mixing the two.</P>
+
+<P>The benefits by doing this is:</P>
+<UL>
+	<LI>Simpler development and maintenance</LI>
+	<LI>Compatibility with futures web browsers</LI>
+	<LI>Faster download and rendering of pages</LI>
+	<LI>Better accessibility (for screenreaders and alternative browsing)</LI>
+</UL>
+
+
+
+<P><BR clear="all">
+<BR clear="all"></P>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007 <A href="http://sesam.no/search/?q&page=1&catid=41">Schibsted S&oslash;k AS</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+
+</HTML>

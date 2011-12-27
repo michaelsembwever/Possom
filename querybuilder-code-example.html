@@ -1,0 +1,695 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>QueryBuilder code example</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="architecture-overview.html" title="Architecture Overview">Architecture Overview</A>&nbsp;&gt;&nbsp;<A href="design-proposals.html" title="Design Proposals">Design Proposals</A>&nbsp;&gt;&nbsp;<A href="new-design-proposal-for-searchcommand-and-abstractsearchcommand.html" title="New design proposal for SearchCommand and AbstractSearchCommand">New design proposal for SearchCommand and AbstractSearchCommand</A>&nbsp;&gt;&nbsp;<A href="" title="QueryBuilder code example">QueryBuilder code example</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <DIV>
+<UL>
+    <LI><A href="#QueryBuildercodeexample-QueryBuilderinterface">QueryBuilder interface</A></LI>
+    <LI><A href="#QueryBuildercodeexample-AbstractQueryBuilder">Abstract QueryBuilder</A></LI>
+    <LI><A href="#QueryBuildercodeexample-InfixQueryBuilderimplementation">Infix QueryBuilder implementation</A></LI>
+    <LI><A href="#QueryBuildercodeexample-PrefixQueryBuilderimplementation">Prefix QueryBuilder implementation</A></LI>
+    <LI><A href="#QueryBuildercodeexample-SesamSyntaxQueryBuilderimplementation">Sesam Syntax QueryBuilder implementation</A></LI>
+</UL></DIV>
+
+<H2><A name="QueryBuildercodeexample-QueryBuilderinterface"></A>QueryBuilder interface</H2>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** QueryBuilder provides a string representation of a Query Tree against of map of <SPAN class="code-quote">&quot;transformed terms&quot;</SPAN>.
+ *
+ * It is similar in functionality to the QueryTransformer <SPAN class="code-keyword">interface</SPAN>
+ *  except that it does not transform terms but uses them to build the <SPAN class="code-keyword">final</SPAN> string representation.
+ */
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> QueryBuilder <SPAN class="code-keyword">extends</SPAN> Visitor {
+
+    <SPAN class="code-keyword">interface</SPAN> Context <SPAN class="code-keyword">extends</SPAN> QueryContext, ResourceContext, SiteContext, DataModelContext{
+
+        /**
+         * Get the terms with their current transformed representations.
+         * @<SPAN class="code-keyword">return</SPAN>
+         */
+        Map&lt;Clause, <SPAN class="code-object">String</SPAN>&gt; getTransformedTerms();
+
+        /** Get the unescaped transformed term <SPAN class="code-keyword">for</SPAN> the clause.
+         *
+         * @param clause
+         * @<SPAN class="code-keyword">return</SPAN> unescaped transformed term
+         */
+        <SPAN class="code-object">String</SPAN> getTransformedTerm(Clause clause);
+
+        /**
+         * For evaluation acitions on individual (or the whole query) terms.
+         * @<SPAN class="code-keyword">return</SPAN>
+         */
+        TokenEvaluationEngine getTokenEvaluationEngine();
+
+        /**
+         * QueryTransformers must follow the same XorClause hints as the search command. *
+         * @param visitor
+         * @param clause
+         */
+        void visitXorClause(Visitor visitor, XorClause clause);
+
+        /**
+         * QueryTransformers needs information about supported field filters. *
+         * @param clause
+         * @<SPAN class="code-keyword">return</SPAN>
+         */
+        <SPAN class="code-object">String</SPAN> getFieldFilter(LeafClause clause);
+
+        /** The collection of words that have special meaning/function within the query string
+         *
+         * @<SPAN class="code-keyword">return</SPAN> collection of reserved words
+         */
+        Collection&lt;<SPAN class="code-object">String</SPAN>&gt; getReservedWords();
+
+        /** Escape the word.
+         * The word need not be reserved or require escaping but should be escaped anyway.
+         *
+         * @param word
+         * @<SPAN class="code-keyword">return</SPAN> escaped version of the word
+         */
+        <SPAN class="code-object">String</SPAN> escape(<SPAN class="code-object">String</SPAN> word);
+    }
+
+    /** The Query <SPAN class="code-object">String</SPAN> built from the Query's transformed clauses
+     * 
+     * @param query
+     * @<SPAN class="code-keyword">return</SPAN> string built from the Query's transformed clauses
+     */
+    <SPAN class="code-object">String</SPAN> getQueryString(Query query);
+}
+</PRE>
+</DIV></DIV>
+<H2><A name="QueryBuildercodeexample-AbstractQueryBuilder"></A>Abstract QueryBuilder </H2>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** Helper <SPAN class="code-keyword">abstract</SPAN> implementation handling stringBuilder functionality behind the visitor pattern. **/
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">abstract</SPAN> class AbstractQueryBuilder <SPAN class="code-keyword">extends</SPAN> AbstractReflectionVisitor <SPAN class="code-keyword">implements</SPAN> QueryBuilder {
+
+    <SPAN class="code-comment">// Attributes ----------------------------------------------------
+</SPAN>    
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> Context context;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> QueryBuilderConfig config;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> StringBuilder sb = <SPAN class="code-keyword">new</SPAN> StringBuilder(128);
+
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> AbstractQueryBuilder(<SPAN class="code-keyword">final</SPAN> Context cxt, QueryBuilderConfig config) {
+
+        context = cxt;
+        <SPAN class="code-keyword">this</SPAN>.config = config;
+    }
+
+    <SPAN class="code-comment">// Public --------------------------------------------------------
+</SPAN>    
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> getQueryString() {
+        
+        <SPAN class="code-keyword">final</SPAN> Clause root = context.getQuery().getRootClause();
+        sb.setLength(0);
+        visit(root);
+        <SPAN class="code-keyword">return</SPAN> sb.toString().trim();
+    }
+    
+    <SPAN class="code-comment">// Protected -----------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> Context getContext(){
+        <SPAN class="code-keyword">return</SPAN> context;
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> QueryBuilderConfig getConfig(){
+        <SPAN class="code-keyword">return</SPAN> config;
+    }
+
+    /** Gets the transformed term, escaping any reserved words. 
+     * 
+     * @param clause
+     * @<SPAN class="code-keyword">return</SPAN>
+     */
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-object">String</SPAN> getEscapedTransformedTerm(<SPAN class="code-keyword">final</SPAN> Clause clause){
+        
+        <SPAN class="code-keyword">return</SPAN> escape(context.getTransformedTerm(clause).toLowerCase());
+
+    }
+    
+    /** Escapes any reserved words (including those fielded).
+     * Case-insensitive.
+     *
+     * How to actually escape any matching words is left to the context to define via context.escape(word)
+     * 
+     * @param string
+     * @<SPAN class="code-keyword">return</SPAN> possibilly escaped string
+     */
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-object">String</SPAN> escape(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> string){
+        
+        <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">String</SPAN> word : getWordsToEscape()) {
+
+            <SPAN class="code-comment">// Case-insensitive check against word.
+</SPAN>            <SPAN class="code-comment">// Term might already be prefixed by the TermPrefixTransformer.
+</SPAN>            <SPAN class="code-keyword">if</SPAN> (string.toLowerCase().endsWith(':' + word.toLowerCase()) || string.equalsIgnoreCase(word)) {
+
+                <SPAN class="code-keyword">final</SPAN> Pattern p = Pattern.compile(
+                        Matcher.quoteReplacement(word),
+                        Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+                
+                <SPAN class="code-keyword">return</SPAN> p.matcher(word).replaceAll(context.escape(string));
+            }
+        }
+
+        <SPAN class="code-keyword">return</SPAN> string;
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> Collection&lt;<SPAN class="code-object">String</SPAN>&gt; getWordsToEscape(){
+        <SPAN class="code-keyword">return</SPAN> context.getReservedWords();
+    }
+    
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> void appendToQueryRepresentation(<SPAN class="code-keyword">final</SPAN> CharSequence addition) {
+        sb.append(addition);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> void appendToQueryRepresentation(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">char</SPAN> addition) {
+        sb.append(addition);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">int</SPAN> getQueryRepresentationLength() {
+        <SPAN class="code-keyword">return</SPAN> sb.length();
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> void insertToQueryRepresentation(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">int</SPAN> offset, <SPAN class="code-keyword">final</SPAN> CharSequence addition) {
+        sb.insert(offset, addition);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-object">boolean</SPAN> isEmptyLeaf(<SPAN class="code-keyword">final</SPAN> Clause clause) {
+        <SPAN class="code-keyword">return</SPAN> <SPAN class="code-keyword">false</SPAN>;
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-object">boolean</SPAN> isEmptyLeaf(<SPAN class="code-keyword">final</SPAN> LeafClause clause) {
+        
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> tt = 0 == context.getTransformedTerm(clause).length()
+                ? <SPAN class="code-keyword">null</SPAN>
+                : context.getTransformedTerm(clause);
+        
+        <SPAN class="code-keyword">return</SPAN>
+                <SPAN class="code-comment">// no field and a valid term
+</SPAN>                <SPAN class="code-keyword">null</SPAN> == clause.getField() &amp;&amp; <SPAN class="code-keyword">null</SPAN> == tt
+                <SPAN class="code-comment">// or, a field that is an accepted filter
+</SPAN>                || <SPAN class="code-keyword">null</SPAN> != clause.getField() &amp;&amp; <SPAN class="code-keyword">null</SPAN> != context.getFieldFilter(clause);
+
+    }
+    
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-object">boolean</SPAN> isEmptyLeaf(<SPAN class="code-keyword">final</SPAN> DoubleOperatorClause clause) {
+
+        <SPAN class="code-keyword">return</SPAN> isEmptyLeaf(clause.getFirstClause()) &amp;&amp; isEmptyLeaf(clause.getSecondClause());
+
+    }
+    
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> XorClause clause) {
+        getContext().visitXorClause(<SPAN class="code-keyword">this</SPAN>, clause);
+    }
+}
+</PRE>
+</DIV></DIV>
+<H2><A name="QueryBuildercodeexample-InfixQueryBuilderimplementation"></A>Infix QueryBuilder implementation</H2>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** 
+ * Largely mimics the Query tree layout replacing OperatorClauses with the RESERVED_WORDS.
+ */
+<SPAN class="code-keyword">public</SPAN> class InfixQueryBuilder <SPAN class="code-keyword">extends</SPAN> AbstractQueryBuilder{
+
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> InfixQueryBuilder(<SPAN class="code-keyword">final</SPAN> Context cxt, <SPAN class="code-keyword">final</SPAN> QueryBuilderConfig config) {
+        <SPAN class="code-keyword">super</SPAN>(cxt, config);
+    }
+
+    <SPAN class="code-comment">// <SPAN class="code-keyword">protected</SPAN> ----------------------------------------------
+</SPAN>    
+    
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> InfixQueryBuilderConfig getConfig() {
+        <SPAN class="code-keyword">return</SPAN> (InfixQueryBuilderConfig) <SPAN class="code-keyword">super</SPAN>.getConfig();
+    }
+
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> Collection&lt;<SPAN class="code-object">String</SPAN>&gt; getWordsToEscape() {
+
+        <SPAN class="code-keyword">final</SPAN> Collection&lt;<SPAN class="code-object">String</SPAN>&gt; words = <SPAN class="code-keyword">new</SPAN> HashSet&lt;<SPAN class="code-object">String</SPAN>&gt;(<SPAN class="code-keyword">super</SPAN>.getWordsToEscape());
+
+        words.add(getConfig().getAndInfix());
+        words.add(getConfig().getNotPrefix());
+        words.add(getConfig().getOrInfix());
+
+        <SPAN class="code-keyword">return</SPAN> words;
+    }
+
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> LeafClause clause) {
+
+        appendToQueryRepresentation(getEscapedTransformedTerm(clause));
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> OperationClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> AndClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ' + getConfig().getAndInfix() + ' ');
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> OrClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ' + getConfig().getOrInfix() + ' ');
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> DefaultOperatorClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ');
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> NotClause clause) {
+
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> childsTerm = getEscapedTransformedTerm(clause.getFirstClause());
+        <SPAN class="code-keyword">if</SPAN> (childsTerm != <SPAN class="code-keyword">null</SPAN> &amp;&amp; childsTerm.length() &gt; 0) {
+            appendToQueryRepresentation(getConfig().getNotPrefix());
+            clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        }
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> AndNotClause clause) {
+
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> childsTerm = getEscapedTransformedTerm(clause.getFirstClause());
+        <SPAN class="code-keyword">if</SPAN> (childsTerm != <SPAN class="code-keyword">null</SPAN> &amp;&amp; childsTerm.length() &gt; 0) {
+            appendToQueryRepresentation(getConfig().getNotPrefix());
+            clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        }
+    }
+}
+</PRE>
+</DIV></DIV>
+<H2><A name="QueryBuildercodeexample-PrefixQueryBuilderimplementation"></A>Prefix QueryBuilder implementation</H2>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** QueryBuilder prefixing terms depending on their inclusion/exclusion.
+ */
+<SPAN class="code-keyword">public</SPAN> class PrefixQueryBuilder <SPAN class="code-keyword">extends</SPAN> AbstractQueryBuilder{
+
+    <SPAN class="code-comment">// Attributes ----------------------------------------------------
+</SPAN>
+    <SPAN class="code-comment">// third state variable. TRUE --&gt; must have clause, FALSE --&gt; must not have clause, <SPAN class="code-keyword">null</SPAN> --&gt; optional clause.
+</SPAN>    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-object">Boolean</SPAN> clauseState = <SPAN class="code-object">Boolean</SPAN>.TRUE;
+    
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> PrefixQueryBuilder(<SPAN class="code-keyword">final</SPAN> Context cxt, <SPAN class="code-keyword">final</SPAN> QueryBuilderConfig config) {
+        <SPAN class="code-keyword">super</SPAN>(cxt, config);
+    }
+
+    <SPAN class="code-comment">// Protected -----------------------------------------------------
+</SPAN>
+
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> PrefixQueryBuilderConfig getConfig() {
+        <SPAN class="code-keyword">return</SPAN> (PrefixQueryBuilderConfig) <SPAN class="code-keyword">super</SPAN>.getConfig();
+    }
+
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> Collection&lt;<SPAN class="code-object">String</SPAN>&gt; getWordsToEscape() {
+
+        <SPAN class="code-keyword">final</SPAN> Collection&lt;<SPAN class="code-object">String</SPAN>&gt; words = <SPAN class="code-keyword">new</SPAN> HashSet&lt;<SPAN class="code-object">String</SPAN>&gt;(<SPAN class="code-keyword">super</SPAN>.getWordsToEscape());
+
+        words.add(getConfig().getAndPrefix());
+        words.add(getConfig().getNotPrefix());
+        words.add(getConfig().getOrPrefix());
+
+        <SPAN class="code-keyword">return</SPAN> words;
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> LeafClause clause) {
+
+        insertClauseStatePrefix(clause);
+        <SPAN class="code-keyword">super</SPAN>.visitImpl(clause);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> PhraseClause clause) {
+
+        <SPAN class="code-keyword">if</SPAN> (clause.getField() == <SPAN class="code-keyword">null</SPAN>) {
+            insertClauseStatePrefix(clause);
+            appendToQueryRepresentation(getEscapedTransformedTerm(clause));
+        }
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> AndClause clause) {
+
+        clauseState = <SPAN class="code-object">Boolean</SPAN>.TRUE;
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ');
+        clauseState = <SPAN class="code-object">Boolean</SPAN>.TRUE;
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> OrClause clause) {
+
+        clauseState = <SPAN class="code-keyword">null</SPAN>;
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ');
+        clauseState = <SPAN class="code-keyword">null</SPAN>;
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> DefaultOperatorClause clause) {
+
+        clauseState = <SPAN class="code-object">Boolean</SPAN>.TRUE;
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ');
+        clauseState = <SPAN class="code-object">Boolean</SPAN>.TRUE;
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> NotClause clause) {
+
+        <SPAN class="code-keyword">if</SPAN>(getConfig().getSupportsNot()){
+            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> childsTerm = getEscapedTransformedTerm(clause.getFirstClause());
+            <SPAN class="code-keyword">if</SPAN> (childsTerm != <SPAN class="code-keyword">null</SPAN> &amp;&amp; childsTerm.length() &gt; 0) {
+                clauseState = <SPAN class="code-object">Boolean</SPAN>.FALSE;
+                clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+            }
+        }
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> AndNotClause clause) {
+
+        <SPAN class="code-keyword">if</SPAN>(getConfig().getSupportsNot()){
+            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> childsTerm = getEscapedTransformedTerm(clause.getFirstClause());
+            <SPAN class="code-keyword">if</SPAN> (childsTerm != <SPAN class="code-keyword">null</SPAN> &amp;&amp; childsTerm.length() &gt; 0) {
+                clauseState = <SPAN class="code-object">Boolean</SPAN>.FALSE;
+                clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+            }
+        }
+    }
+
+    <SPAN class="code-keyword">private</SPAN> void insertClauseStatePrefix(<SPAN class="code-keyword">final</SPAN> Clause clause){
+
+        <SPAN class="code-keyword">if</SPAN>(!isEmptyLeaf(clause)){
+            <SPAN class="code-keyword">if</SPAN>(<SPAN class="code-object">Boolean</SPAN>.TRUE == clauseState){
+                appendToQueryRepresentation(getConfig().getAndPrefix());
+            }<SPAN class="code-keyword">else</SPAN> <SPAN class="code-keyword">if</SPAN>(<SPAN class="code-object">Boolean</SPAN>.FALSE == clauseState){
+                appendToQueryRepresentation(getConfig().getNotPrefix());
+            }<SPAN class="code-keyword">else</SPAN>{
+                appendToQueryRepresentation(getConfig().getOrPrefix());
+            }
+        }
+    }
+}
+</PRE>
+</DIV></DIV>
+<H2><A name="QueryBuildercodeexample-SesamSyntaxQueryBuilderimplementation"></A>Sesam Syntax QueryBuilder implementation</H2>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** Query builder <SPAN class="code-keyword">for</SPAN> creating a query syntax similar to sesam's own.
+ * Currently is basically a PrefixQueryBuilder with OrClauses wrapped in () parenthesis.
+ */
+<SPAN class="code-keyword">public</SPAN> class SesamSyntaxQueryBuilder <SPAN class="code-keyword">extends</SPAN> PrefixQueryBuilder{
+
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> SesamSyntaxQueryBuilder(<SPAN class="code-keyword">final</SPAN> Context cxt, <SPAN class="code-keyword">final</SPAN> QueryBuilderConfig config) {
+        <SPAN class="code-keyword">super</SPAN>(cxt, config);
+    }
+
+    <SPAN class="code-comment">// AbstractReflectionVisitor implementation ----------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-object">boolean</SPAN> insideOr = <SPAN class="code-keyword">false</SPAN>;
+
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> OrClause clause) {
+
+        <SPAN class="code-object">boolean</SPAN> wasInside = insideOr;
+        <SPAN class="code-keyword">if</SPAN> (!insideOr) {
+            appendToQueryRepresentation('(');
+        }
+        insideOr = <SPAN class="code-keyword">true</SPAN>;
+        <SPAN class="code-keyword">super</SPAN>.visitImpl(clause);
+        insideOr = wasInside;
+        <SPAN class="code-keyword">if</SPAN> (!insideOr) {
+            appendToQueryRepresentation(')');
+        }
+    }
+
+    /** Overridden so to avoid visiting any FULLNAME_ON_LEFT.
+     */
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> XorClause clause) {
+
+        <SPAN class="code-keyword">switch</SPAN> (clause.getHint()) {
+            <SPAN class="code-keyword">case</SPAN> FULLNAME_ON_LEFT:
+                clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+                <SPAN class="code-keyword">break</SPAN>;
+            <SPAN class="code-keyword">default</SPAN>:
+                <SPAN class="code-keyword">super</SPAN>.visitImpl( clause);
+        }
+    }
+    
+}
+</PRE>
+</DIV></DIV>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

@@ -1,0 +1,369 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Logging, Logfiles, and Statistics</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="debugging.html" title="Debugging">Debugging</A>&nbsp;&gt;&nbsp;<A href="" title="Logging, Logfiles, and Statistics">Logging, Logfiles, and Statistics</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <DIV>
+<UL>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-Logging">Logging</A></LI>
+<UL>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-Skinlogfile%252Ceggeneric.sesam.log">Skin logfile, eg generic.sesam.log</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-Sesatlogfiles">Sesat logfiles</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-Typesoflogfiles">Types of logfiles</A></LI>
+<UL>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-sesam.access">sesam.access</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-sesam.product">sesam.product</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-sesam.analysis">sesam.analysis</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-sesam.statistics">sesam.statistics</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-sesam.initialisations">sesam.initialisations</A></LI>
+    <LI><A href="#Logging%252CLogfiles%252CandStatistics-sesam.dump">sesam.dump</A></LI>
+</UL>
+</UL>
+</UL></DIV>
+
+<H1><A name="Logging%2CLogfiles%2CandStatistics-Logging"></A>Logging</H1>
+
+
+<H2><A name="Logging%2CLogfiles%2CandStatistics-Skinlogfile%2Ceggeneric.sesam.log"></A>Skin logfile, eg generic.sesam.log</H2>
+
+<P>There exists a logfile for each individual skin. The logging here is from the Skin's ResourceServlet.<BR>
+Upon initialisation of the ResourceServlet there's a series of useful WARN statements written listing exactly</P>
+<UL class="alternate" type="square">
+	<LI>modification timestamp,</LI>
+	<LI>allowed ipaddresses to restricted resources,</LI>
+	<LI>what is a restricted resource by extension type,</LI>
+	<LI>context path to resource type (by extension type), and</LI>
+	<LI>all WEB-INF/lib jar libraries.</LI>
+</UL>
+
+
+<P>Default daily rotation.</P>
+
+<H2><A name="Logging%2CLogfiles%2CandStatistics-Sesatlogfiles"></A>Sesat logfiles</H2>
+
+<BLOCKQUOTE><P>An important part of SESAT is the logging functionality. All SESAT Kernel actions, choices, search results etc. are extensively logged for later parsing. An important part of SESAT future development is integration of statistics into the administrative portal.</P></BLOCKQUOTE>
+<P>Sesat's logfiles are written by Log4j and defined by sesat-kernel/war/src/main/conf/log4j.xml</P>
+
+<P>The default configuration is daily rotation (sesam.access is the exception).</P>
+
+<P>Two logfiles, sesam.marketing and sesam.sales, are not listed here as they are not yet in use.</P>
+
+<P>SESAT produces several log files targeted to different users.</P>
+<UL>
+	<LI>sesam.access</LI>
+	<LI>sesam.product</LI>
+	<LI>sesam.analysis</LI>
+	<LI>sesam.statistics</LI>
+	<LI>sesam.initialisations</LI>
+	<LI>sesam.dump</LI>
+</UL>
+
+
+<P>Default location of these logfiles is in your container's log directory.</P>
+
+<H2><A name="Logging%2CLogfiles%2CandStatistics-Typesoflogfiles"></A>Types of logfiles</H2>
+
+
+<H3><A name="Logging%2CLogfiles%2CandStatistics-sesam.access"></A>sesam.access</H3>
+
+<P>This logfile contains the first log entry for all search requests, thus a good starting point for tracing a search request through the Search application. It partly mirrors the Apache access_log but splits the request up in two or three stages:<BR>
+1. Initial log entry. This entry contains the actual http request parameters, in the &lt;request&gt;-element. Such as &lt;url&gt;, &lt;http-referer&gt;, &lt;user&gt; and &lt;browser&gt;.<BR>
+2. Real-url. In case a pretty URL was submitted to the Search application, a second entry is logged. This time with a &lt;real-url&gt;-element.<BR>
+3. Final log entry. Is logged after the search request has been handled by the Search application, when a response has been returned to the caller, and basically just list the http &lt;response code=&quot;&quot;&gt;.</P>
+
+<P>Information to look for:</P>
+<UL class="alternate" type="square">
+	<LI>request_id: The unique request Id that is used in all the logfiles to identify the search request.</LI>
+	<LI>time: Timestamp for when the request was received and when it was done with.</LI>
+	<LI>skin: Which virtual host received this request.</LI>
+	<LI>IP address: Only used for geographical lookup, to tag searches with Geo location.</LI>
+	<LI>HTTP session Id: Only used for counting unique users, can be used for tracking user movements.</LI>
+	<LI>http referer: The HTTP-referer string.</LI>
+	<LI>user-agent: The user-agent string (identifying browser and platform).</LI>
+	<LI>response_code: The http response code.</LI>
+	<LI><B>query parameters</B>: q (phrase), c (index; news, catalog, person etc), offset (&gt;0 for browsing resultsets), output (rss, xml etc), newscase etc.</LI>
+	<LI><B>boomerang</B>: Boomerang-ed events are logged here (newspaper view, company view, Ajax messages).</LI>
+	<LI><B>site-search</B>: The site-search parameters (ss_ss, ss_lt etc) must be parsed from &lt;real-url&gt;.</LI>
+	<LI><B>mobile search</B>: The mobile searches (originator, ua) must be parsed from &lt;real-url&gt;.</LI>
+	<LI><B>retriever</B>: Ajax solution for logging paper archive clicks/reads (/search/writeLog.do?paper=...).</LI>
+</UL>
+
+
+<H3><A name="Logging%2CLogfiles%2CandStatistics-sesam.product"></A>sesam.product</H3>
+
+<P>This logfile type is logged to when the Search application is through with the query server communication and knows how many hits the search got and which enrichment types should be returned. The following information can be read out:</P>
+<UL class="alternate" type="square">
+	<LI>request_id</LI>
+	<LI>timestamp</LI>
+	<LI>mode: The tab (aka vertical aka service aka tjeneste) for which the search request was submitted, e.g. mode=&quot;p&quot; for picture search.</LI>
+	<LI>query: The search phrase.</LI>
+	<LI>enrichment size: The number of enrichments returned for this search request.</LI>
+	<LI>no-hits: If this appears in the log entry, it signals that no results were found for the given query and mode.</LI>
+	<LI><B>enrichment type</B>: The actual enrichment types can also be read out from the log entry, not just the number.</LI>
+</UL>
+
+
+<H3><A name="Logging%2CLogfiles%2CandStatistics-sesam.analysis"></A>sesam.analysis</H3>
+
+<P>Related to sesam.product but logs the underlying analysis scores for each query. Breaks the scores down to individual positive and negative hits for each predicate explicit in each analysis score.</P>
+
+<H3><A name="Logging%2CLogfiles%2CandStatistics-sesam.statistics"></A>sesam.statistics</H3>
+
+<P>This logfile type contains more technical information, such as a servlet's execution time and envoked search commands. The following data can be found:</P>
+<UL class="alternate" type="square">
+	<LI>request_id</LI>
+	<LI>timestamp</LI>
+	<LI>skin</LI>
+	<LI>query</LI>
+	<LI>servlet execution time: How long did the servlet take in processing the search request.</LI>
+	<LI>servlet output: If a special output was requested (e.g. output=rss).</LI>
+	<LI><B>search-command</B>: One or more fields, containing the type of search-command that got executed by the servlet, the number of hits it returned and the time spent in executing the command.</LI>
+</UL>
+
+
+<H3><A name="Logging%2CLogfiles%2CandStatistics-sesam.initialisations"></A>sesam.initialisations</H3>
+
+<P>Loggers involved in core initialisation of the engine, typically SiteKeyedFactories, also log to this file.<BR>
+Read this log file for startup and configuration deserialisation errors.<BR>
+This logfile has no supported format.</P>
+
+<H3><A name="Logging%2CLogfiles%2CandStatistics-sesam.dump"></A>sesam.dump</H3>
+
+<P>Logs a summary of every outbound http request made from sesat. This includes search commands, publishing fragments, and query evaluations.</P>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

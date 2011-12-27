@@ -1,0 +1,11 @@
+SRC=$HOME/Source/TRUNK/minimal-search-main
+
+# This defines the loadpath. Files residing in genericno.sesam.no will be loaded before the generic.sesam.no
+
+TEMPLATES="$SRC/genericno.sesam.no/war/src/main,$SRC/generic.sesam/war/src/main"
+export CATALINA_OPTS="-DVELOCITY_DEBUG=true \
+                      -DVELOCITY_DEBUG_ON=true \
+                      -DVELOCITY_DEBUG_STYLE=onmouseover \
+                      -DVELOCITY_DEVELOPERBAR_HIDDEN=true \
+                      -DVELOCITY_DEVELOP_BASEDIR=$TEMPLATES"
+

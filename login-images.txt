@@ -1,0 +1,14 @@
+mkdir confluence/download/attachments/1213701 2>/dev/null
+mkdir confluence/download/attachments/1213701 2>/dev/null
+mkdir confluence/download/attachments/1213701 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/1671340 2>/dev/null
+mkdir confluence/download/attachments/21846 2>/dev/null
+mkdir confluence/download/attachments/21846 2>/dev/null

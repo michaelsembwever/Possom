@@ -1,0 +1,748 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>documentprocessor</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="moving-from-fast-to-solr-review.html" title="Moving from FAST to Solr review">Moving from FAST to Solr review</A>&nbsp;&gt;&nbsp;<A href="" title="documentprocessor">documentprocessor</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H2><A name="documentprocessor-Abstract"></A>Abstract</H2>
+
+<P>The documentprocessor is a pipeline framework written by Morten Tvenning. The reason for doing this is that when moving from FAST to solr there was a lot of value in moving the existing FAST pipeline steps over to the new Solr platform. <BR>
+Most parts of the documentprocessor is the same as the FAST pipeline frameworks, but I needed to do a few workarounds and so there is a converter script. </P>
+
+<P>There is a lot less paths and configuration in this implementation of the pipeline so it should be easier to maintain overall under Solr than under FAST.</P>
+
+<P>Using multiple processors is not yet fully supported (where is no document processing distributor). But you can alternate in the code between two if you want to.</P>
+
+<P><B>Table of contents</B></P>
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1258126699420 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1258126699420 ul {margin-left: 0px;padding-left: 15px;}
+div.rbtoc1258126699420 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1258126699420">
+<UL>
+    <LI><A href="#documentprocessor-Abstract">Abstract</A></LI>
+<UL>
+<UL>
+    <LI><A href="#documentprocessor-Downloadcode">Download code</A></LI>
+</UL>
+</UL>
+    <LI><A href="#documentprocessor-Overview">Overview</A></LI>
+    <LI><A href="#documentprocessor-Whatyoucan%2527t%252Fshouldn%2527tusefromthepipelineconfig">What you can't/shouldn't use from the pipeline config</A></LI>
+    <LI><A href="#documentprocessor-Whatyouneedtorewriteinthepipelinesteps">What you need to rewrite in the pipeline steps</A></LI>
+    <LI><A href="#documentprocessor-Rewritingthepipelineconfig.xml">Rewriting the pipeline-config.xml</A></LI>
+    <LI><A href="#documentprocessor-Convertingoldpipelinesteps">Converting old pipeline steps</A></LI>
+    <LI><A href="#documentprocessor-Writingnewpipelinesteps">Writing new pipeline steps</A></LI>
+    <LI><A href="#documentprocessor-Settingupandtesting">Setting up and testing</A></LI>
+<UL>
+    <LI><A href="#documentprocessor-Setup">Setup</A></LI>
+    <LI><A href="#documentprocessor-Settingsfileconfiguration">Settings file configuration</A></LI>
+    <LI><A href="#documentprocessor-Shuttingdown">Shutting down</A></LI>
+</UL>
+    <LI><A href="#documentprocessor-XMLRPCinterface">XMLRPC interface</A></LI>
+<UL>
+    <LI><A href="#documentprocessor-MessagesreturnedbyaddDocumentfunctionsanddeleteDocument">Messages returned by addDocument functions and deleteDocument</A></LI>
+</UL>
+    <LI><A href="#documentprocessor-DocumentProcessors">Document Processors</A></LI>
+    <LI><A href="#documentprocessor-thepipelineconfig">the pipeline config</A></LI>
+    <LI><A href="#documentprocessor-Usingthexmlrpcinterface">Using the xmlrpc interface</A></LI>
+    <LI><A href="#documentprocessor-Testing">Testing</A></LI>
+<UL>
+    <LI><A href="#documentprocessor-Corefiles">Core files</A></LI>
+    <LI><A href="#documentprocessor-Processors">Processors</A></LI>
+</UL>
+</UL></DIV>
+
+<P><BR clear="all"> <BR clear="all"> <BR clear="all"></P>
+<H6><A name="documentprocessor-Downloadcode"></A>Download code</H6>
+<P>Checkout at the code from our Subversion repository located <A href="http://sesat.no/svn/sesat-documentprocessor/" rel="nofollow">here</A>.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">svn co http:<SPAN class="code-comment">//sesat.no/svn/sesat-documentprocessor/trunk/ documentprocessor</SPAN></PRE>
+</DIV></DIV>
+<P>This code is open sourced under the LGPv3 license.</P>
+
+
+<H2><A name="documentprocessor-Overview"></A>Overview</H2>
+
+<UL>
+	<LI>what you can't/shouldn't use from the FAST pipeline</LI>
+	<LI>rewriting the pipeline-config.xml</LI>
+	<LI>converting old pipeline steps</LI>
+	<LI>writing new pipeline steps</LI>
+	<LI>setting up and testing</LI>
+</UL>
+
+
+<H2><A name="documentprocessor-Whatyoucan%27t%2Fshouldn%27tusefromthepipelineconfig"></A>What you can't/shouldn't use from the pipeline config</H2>
+
+<UL>
+	<LI>tokenization: the tokenization in solr is done by the type definition in schema.xml</LI>
+	<LI>DocInit, RowSetXSLT, FASTXMLReader has no use since you define what you give in by the function you call in the xmlrpc interface</LI>
+	<LI>FixmlGenerator: no need, not making fixml anymore, feeding html straight into Solr</LI>
+	<LI>RTSOutput: no need, same as above</LI>
+	<LI>Vectorizer: need to write our own if you actually need the vectors (there are vectors in solr after you feed the documents based on TF/IDF)</LI>
+	<LI>DateTimeNormalizer: no need, all dates need to be added as the datetime.date format</LI>
+	<LI>DateTimeSelector: no need, &lt;insert reason here&gt;</LI>
+</UL>
+
+
+<H2><A name="documentprocessor-Whatyouneedtorewriteinthepipelinesteps"></A>What you need to rewrite in the pipeline steps</H2>
+
+<P>Keeping unicode throughout the pipeline is a priority and you will get errors if there is str() casts in the pipeline steps. String casts are ok as long as they are not written back to the document as str. Just use unicode for less headache. </P>
+
+
+<H2><A name="documentprocessor-Rewritingthepipelineconfig.xml"></A>Rewriting the pipeline-config.xml</H2>
+
+<P>It is just as easy to just rewrite the pipeline-config from scratch. But given that you dont want to do that: </P>
+<UL>
+	<LI>remove all the pipeline config for the steps above in the &quot;Can't use&quot; section</LI>
+	<LI>remove all proprietary pipeline config (pipeline steps owned by FAST)</LI>
+	<LI>remove all steps no needed any longer when moving to Solr
+	<UL>
+		<LI>field copying is easier done with the copyField option in schema.xml</LI>
+	</UL>
+	</LI>
+	<LI>remove the references to those not in use any more in the pipelines/pipeline section of pipeline-config.xml</LI>
+</UL>
+
+
+<H2><A name="documentprocessor-Convertingoldpipelinesteps"></A>Converting old pipeline steps</H2>
+
+<P>There is a utility to rewrite the logging and imports of FAST pipeline steps to work with documentprocessor</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>cd documentprocessor/processorcode
+python FASTtoSSP-utils/fastpipeline-code-fixer/pipelinecodefixer.py &lt;your-pipeline-step&gt;
+</PRE>
+</DIV></DIV>
+
+<P>This will output what is rewritten in the pipeline step, overwrite &lt;your-pipeline-step&gt; and add &lt;your-pipeline-step&gt;._FAST_BACKUP which was the original pipeline step. </P>
+
+<H2><A name="documentprocessor-Writingnewpipelinesteps"></A>Writing new pipeline steps</H2>
+
+<P>In documentprocessor/code/processors there is a ProcessorExample.py that should more or less show everything that is allowed to do. </P>
+
+<P>All interaction with the document is the same as in FAST pipeline<BR>
+Fetching configfiles is a bit different, but the cString option still works nicely (you get a normal unicode representation of the file back when asking for fileAsString)</P>
+
+<P>&lt;insert more info here&gt;</P>
+
+<H2><A name="documentprocessor-Settingupandtesting"></A>Setting up and testing</H2>
+
+<P>documentprocessor runs as a daemon and the executable is ProcessorDaemon.py</P>
+
+<H3><A name="documentprocessor-Setup"></A>Setup</H3>
+
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>python ProcessorDaemon.py 
+usage ProcessorDaemon: daemon process for a given set of pipelines
+needs a solrserver adress, solr schema.xml and pipelien configuration file
+processes documents with one or more pipelines and sets up a queue of documents to be added to solr
+
+options: (required)
+-S   : solr http address
+-C   : solr schema path
+-P   : pipeline configuration file
+-B   : the processors (pipeline step) directory path
+options: (optional)
+-s   : a python settings file that contains the configuration eg. django type settings.py, normal commandline args
+     : will overwrite the settings in the file if also set
+-c   : configfile paths files read by the pipelinesteps (default is config/), separated by ;
+-x   : add xmlrpc support, requires -H and -p
+-H   : hostname of documentprocessor (xmlrpc)
+-p   : port to the documentprocessor server (xmlrpc)
+-d   : turn off daemonize, will also ignore the logfile thas is given and log to std out
+-b   : batch size for commits to solr
+-o   : ontheflyadds, adding all documents to solr at once not waiting for the batchsize and flush documents
+
+-l   : loglevel 1-5 where 5 is debug and 1 is fatal only
+-L   : logfile to log to
+</PRE>
+</DIV></DIV>
+
+<P>For testing purposes -d is efficient, it forces the pipeline to run in commandline mode. Logging everything to stdout and not daemonizing.</P>
+
+<P>Example run as daemon:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>python ProcessorDaemon.py -S http://127.0.0.1:8080/solr -C ../../solr-testing/yellow-solr/conf/schema.xml -P yellow-pipelineconf/yellow-documentprocessor-config.xml -c yellow-pipelineconf/ConfigFiles/ -H 127.0.0.1 -p 8500 -l 5 -L test1.log -b 10000 -x
+</PRE>
+</DIV></DIV>
+
+<P>Example run with settings file: (also discussed below)</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>python ProcessorDaemon.py -s settingsfiles/yellowsettings.py
+</PRE>
+</DIV></DIV>
+
+<UL>
+	<LI>-s specifies a settings file to use (can define all the options below)</LI>
+	<LI>-S solr instance at localhost port 8080</LI>
+	<LI>-C referance to the schema.xml for the solr instance (needed to check values after document processing, so fields not defined can be logged and type errors cause errors)</LI>
+	<LI>-P the pipeline configuration for this document processor</LI>
+	<LI>-c the folder (or folders) containing configuration files the pipeline steps might request</LI>
+	<LI>-H hostname that the xmlrpc interface should answer to</LI>
+	<LI>-p port the xmlrpc interface should answer to</LI>
+	<LI>-l debug logging</LI>
+	<LI>-L logfile to use</LI>
+	<LI>-b the amount of documents to queue up before adding the documents to solr</LI>
+	<LI>-x add xmlrpc interface to the daemon</LI>
+</UL>
+
+
+<H3><A name="documentprocessor-Settingsfileconfiguration"></A>Settings file configuration</H3>
+
+<P>The settingsfile is optional but efficient and possible to store / move. </P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>$ cat settingsfiles/mysettings.py        
+
+xmlrpchost      = &quot;solr1.someserver.com&quot;
+xmlrpcport      = 40001
+usexmlrpc       = True
+pipelineconfig  = &quot;&lt;path&gt;/solr-documentprocessor/white-pipelineconf/white-documentprocessor-config.xml&quot;
+solrschema      = &quot;&lt;solrpath&gt;/solr-white/solr/conf/schema.xml&quot;
+configdirs      = [&quot;&lt;path&gt;/solr-documentprocessor/white-pipelineconf/ConfigFiles/&quot;]
+processorpath   = [&quot;&lt;path&gt;/solr-documentprocessor/documentprocessor/processors&quot;]
+solrhost        = &quot;http://solr1.someserver.com:8000/solr&quot;
+daemonize       = True
+batchsize       = 10000
+ontheflyadds    = False
+loglevel        = 4
+logfile         = &quot;&lt;path&gt;/solr-documentprocessor/logs/procserver_white.log&quot;
+</PRE>
+</DIV></DIV>
+
+<P>The settings file is read in first (before the other commandline parameters) which means that you can overwrite anything in the settings file one the commandline at startup.<BR>
+So running &quot;python ProcessorDaemon.py -s settingsfiles/mysettings.py -l 5 -d&quot; will log debug and not daemonize or use the logfile set in mysettings.py</P>
+
+
+<H3><A name="documentprocessor-Shuttingdown"></A>Shutting down</H3>
+
+<P>Since the pipeline keeps a queue of documents that it might not flush and commit to solr there is a command line script to take down the server cleanly. </P>
+
+<P>usage: </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>python shutdownpipeline.py 
+usage shutdownpipeline.py
+required options:
+-s : settings file for the pipeline
+</PRE>
+</DIV></DIV>
+
+<P>It takes the same settings file that was used to start the processor for taking it down. It only sends the shutdown signal over the xmlrpc interface and waits for the documentprocessor to shut itself down. </P>
+
+<H2><A name="documentprocessor-XMLRPCinterface"></A>XMLRPC interface </H2>
+
+<P>These are the fucntions registered to the xmlrpc interface: </P>
+
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TH class="confluenceTh"> function </TH>
+<TH class="confluenceTh"> what it does  </TH>
+<TH class="confluenceTh"> paramters </TH>
+<TH class="confluenceTh"> comments </TH>
+</TR>
+<TR>
+<TD class="confluenceTd"> hasPipeline </TD>
+<TD class="confluenceTd"> checks if the pipeline exists </TD>
+<TD class="confluenceTd"> str pipeline name </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> addDocumentByDict </TD>
+<TD class="confluenceTd"> dicts are easily serializable <BR clear="all"> default add function </TD>
+<TD class="confluenceTd"> dict documentasdict <BR clear="all"> str pipeline name</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> isAlive </TD>
+<TD class="confluenceTd"> answers true if the xmlrpc interface works </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> addDocument </TD>
+<TD class="confluenceTd"> if you import Document.Document from the documentprocssor code <BR clear="all"> a instance of it can be sent to the xmlrpc interface through this function </TD>
+<TD class="confluenceTd"> Document.Document document <BR clear="all"> str pipeline name optional </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> deleteDocumentById </TD>
+<TD class="confluenceTd"> delete a document from the solr index </TD>
+<TD class="confluenceTd"> str id </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> addDocumentByTupleList </TD>
+<TD class="confluenceTd"> add by tuple list, list of <DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>[(field, value)]</PRE>
+</DIV></DIV> </TD>
+<TD class="confluenceTd"> list list-of-tuples <BR clear="all">str pipeline name </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> flush </TD>
+<TD class="confluenceTd"> tells the pipeline to add all queued documents to solr (and commit them if manualcommit is not set) </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd">&nbsp;</TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> commit </TD>
+<TD class="confluenceTd"> tells the pipeline to tell solr to commit the changes (start indexing) </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd"> this needs to be done after all documents <BR clear="all">are fed if the manualcommit i sted (default for the xmlrpc interface) </TD>
+</TR>
+<TR>
+<TD class="confluenceTd"> shutdown </TD>
+<TD class="confluenceTd"> sends the flush and commit signs, waits for that to clean up, and stops itself. </TD>
+<TD class="confluenceTd">&nbsp;</TD>
+<TD class="confluenceTd"> used to keep everything intact when shutting down </TD>
+</TR>
+</TBODY></TABLE>
+
+
+
+<H3><A name="documentprocessor-MessagesreturnedbyaddDocumentfunctionsanddeleteDocument"></A>Messages returned by addDocument functions and deleteDocument</H3>
+
+<UL>
+	<LI>&quot;DELETE_OK&quot;</LI>
+	<LI>&quot;DELETE_FAILED &lt;some message here&gt;&quot;</LI>
+	<LI>&quot;ADDED_OK&quot;</LI>
+	<LI>&quot;ADDED_FAILED &lt;some message here&gt;&quot;</LI>
+</UL>
+
+
+
+<H2><A name="documentprocessor-DocumentProcessors"></A>Document Processors</H2>
+
+<P>The document processors are plug in scripts run on the document. </P>
+
+<P>The default document processor looks like this : </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&quot;&quot;&quot;
+logging statements should be written with the self.getName() as the first argument always!
+self._logger.error(&quot;%s: some message&quot; % self.getName())
+
+&quot;&quot;&quot;
+from DocumentProcessor import ProcessorStatus
+import Processor
+
+class AttributeAdd(Processor.Processor):
+    def __init__(self, name=&quot;&quot;):
+        Processor.Processor.__init__(self, name) 
+        self.name = name 
+    def ConfigurationChanged(self, arguments):
+        self._logger = self.getContainer().getLogger()
+	self._logger.info(&quot;%s: ConfigurationChanged OK&quot; % self.getName())
+        self._param1 = self.getParameter(&quot;some-value-in-processor-conf&quot;)
+    def Process(self, uri, document):
+        self._logger.info(&quot;%s: getting this doc id in: %s&quot; % uri)
+        if document.HasValue(self._param1):
+           document.Set(&quot;test1&quot;, &quot;has param :%s&quot; % self._param1)
+           return ProcessorStatus.OK
+        return ProcessorStatus.OK_NoChange
+</PRE>
+</DIV></DIV>
+
+<P>The document is of type Document.Document and supports a number of functions  (most of which existed in the FAST pipeline)<BR>
+The inferface for Document.Document is better documented by the pydoc following the code. <BR>
+Each Processor inherits from Processor which is &quot;inside&quot; a container, and the contanier has logger information and file information</P>
+
+<UL>
+	<LI>getFileAsString(filename) to get files that is inside the configDir (in settings.py file or given by commandline. Can be more than one configDir)</LI>
+	<LI>getLogger() returns the log4j logger for the documentprocessor</LI>
+	<LI>ProcessDocument(pipelinename, document, addtoSolr=True) used for running pipelines and gives the possibility to run subpipelines from the Processors</LI>
+	<LI>PushDocumentToSolr(document) adds a document to the queue (if more than one documents should be put into the index this can be used)</LI>
+</UL>
+
+
+<P>Normally only the getFileAsString and getLogger should be used. The others are only availiable and might contain bugs when called from the Processor. </P>
+
+
+<H2><A name="documentprocessor-thepipelineconfig"></A>the pipeline config</H2>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;processors&gt;
+&lt;processor name=&quot;WhitePhrasedNameMaker&quot; &gt;
+    &lt;load module=&quot;processors.PhrasedNameMaker&quot; class=&quot;PhrasedNameMaker&quot; /&gt;
+     &lt;description&gt;
+find the different permutations of phrased name searches
+      &lt;/description&gt;
+    &lt;config&gt;
+      &lt;param name=&quot;fornavnfield&quot; value= &quot;wpfornavn&quot; type=&quot;str&quot; /&gt;
+      &lt;param name=&quot;mellomnavnfield&quot; value = &quot;wpmellomnavn&quot; type=&quot;str&quot; /&gt;
+      &lt;param name=&quot;etternavnfield&quot; value=&quot;wpetternavn&quot; type=&quot;str&quot; /&gt;
+      &lt;param name=&quot;allnamesfields&quot; value=&quot;wpphrasednameslist&quot; type=&quot;str&quot; /&gt;
+      
+    &lt;/config&gt;
+  &lt;/processor&gt;
+&lt;processor name=&quot;StringSplitter&quot; type=&quot;general&quot; hidden=&quot;0&quot;&gt;
+      &lt;load module=&quot;processors.StringSplitter&quot; class=&quot;StringSplitter&quot;/&gt;
+      &lt;config&gt;
+        &lt;param name=&quot;fields&quot; value=&quot;mobiltelefon telefon&quot; type=&quot;str&quot;/&gt;
+        &lt;param name=&quot;separator&quot; value=&quot; &quot; type=&quot;str&quot;/&gt;
+      &lt;/config&gt;
+      &lt;description&gt;&lt;![CDATA[This processor takes in a list of fields, and splits the fields by the sep and sets the field to that list
+]]&gt;&lt;/description&gt;
+      &lt;inputs&gt;
+      &lt;/inputs&gt;
+    &lt;/processor&gt;
+
+&lt;/processors&gt;
+
+&lt;pipelines&gt;
+    &lt;pipeline name=&quot;white&quot; default=&quot;0&quot;&gt;
+     &lt;description&gt;&lt;![CDATA[white pipeline configuration ]]&gt;&lt;/description&gt;
+	&lt;priority&gt;0&lt;/priority&gt;
+	&lt;processor name=&quot;WhitePhrasedNameMaker&quot; /&gt;    
+	&lt;processor name=&quot;StringSplitter&quot; /&gt;    
+    &lt;/pipeline&gt;
+&lt;/pipelines&gt;
+&lt;/config&gt;
+</PRE>
+</DIV></DIV>
+
+<P>Super small pipeline configuration.<BR>
+The processors: </P>
+<UL>
+	<LI>you can add a multiple processor inside the &lt;processors&gt; tags. The sequence they are in makes no difference</LI>
+	<LI>processor name=&quot;WhitePhrasedNameMaker&quot; is the name of that instance that is used below in the pipeline config</LI>
+	<LI>load module=&quot;processors.PhrasedNameMaker&quot; class=&quot;PhrasedNameMaker&quot; means in folder processors file PhrasedNameMaker.py and Class PhrasedNameMaker</LI>
+	<LI>you can have multiple processor refering the same class</LI>
+	<LI>params has a name value and a type. this is rewritten to a hashmap where the value is casted to the python type (so need to specify python types, str,int,float etc..)</LI>
+</UL>
+
+
+<P>The pipeline:</P>
+<UL>
+	<LI>name=&quot;white&quot; is the name of the pipeline, when you process document with the documentprocessor, you need to specify which pipeline to use</LI>
+	<LI>the processor name= is the sequence of processors to use, so first run WhitePhrasedNameMaker and then StringSplitter</LI>
+</UL>
+
+
+<H2><A name="documentprocessor-Usingthexmlrpcinterface"></A>Using the xmlrpc interface</H2>
+
+<P>In the client, python example</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>import xmlrpclib
+
+server = &quot;http://somehost&quot;
+port = 8500
+xmlrpc = xmlrpclib.Server(&quot;%s:%s&quot; % (server, port))
+if xmlrpc.isAlive():
+   print &quot;isAlive() returned True for xmlprc connection, connection good&quot;
+
+docdict = {'id':1, 'testfield':4032, 'testfield2':&quot;mystring}
+
+message = xmlrpc.addDocumentByDict(docdict, &quot;some-pipeline&quot;)
+print &quot;%s returned this message: %s&quot; % (docdict['id'], message)
+
+
+</PRE>
+</DIV></DIV>
+
+
+<H2><A name="documentprocessor-Testing"></A>Testing</H2>
+
+<P>Given a svn checkout of the documentprocessor folder or a tar packout the paths are relative to that as base. </P>
+
+<H3><A name="documentprocessor-Corefiles"></A>Core files</H3>
+
+<P>The core files are located under documentprocessor/processorcode and their tests are located under tests/<BR>
+The test coverage there should be about 90% and a few of the Classes are hard to test since they need a working solr instance to talk to. That is documented in The test files</P>
+
+<H3><A name="documentprocessor-Processors"></A>Processors</H3>
+
+<P>The processors are located under documentprocessor/processors and documentprocessor/default_processors<BR>
+The tests for the processors are located under processor_tests</P>
+
+<P>When making a new processor testing it should be really simple. The processor tests follows a common template.<BR>
+So assume that a new processor AttributeUpperCaser.py with processor class AttributeUpperCaser has been made and placed in the documentprocesor/processors/ folder. To test that, add a new file in the processor_tests/ and copy the content of one of the other processors into that. </P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>cd processor-tests/
+touch testAttributeUpperCaser.py
+cat testAttributeCopy.py &gt;&gt; testAttributeUpperCase.py
+</PRE>
+</DIV></DIV>
+<P>Or make the file and copy the content in your IDE of choice</P>
+
+<P>Then open the testAttributeUpperCaser.py file and to a find replace for AttributeCopy --&gt; AttrbitueUpperCaser<BR>
+The test should then run an fail for all but two tests. </P>
+
+<P>Then configure the Parameters that the AttributeUpperCaser.py gets as input. this is done with the pdnormal class variable. So it the AttributeUpperCaser has two self.GetParameter() calls for &quot;input&quot; and &quot;output&quot;, put these two into the pdnormal dictionary and remove the others. Then almost all the tests should run, except for testProcessorProcessing and testProcessorProcessingValidateOutput.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>pdnormal = {
+            &quot;input&quot;: &quot;myinputfield&quot;,
+            &quot;output&quot;:&quot;myoutputfield&quot;,
+        }
+</PRE>
+</DIV></DIV>
+
+<P>__getTestDocument returns a document to be parsed that should be processed, and __getTestDocumentNoOutput is used by the last test to check that the processor returns the right OK_NoChange flag.<BR>
+Fill up the two documents with content. </P>
+
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>    def __getTestDocument(self):
+        return  Document(self.id, {
+            'id': 1,
+            'myinputfield':&quot;inputvalue&quot;,
+                })
+
+    def __getTestDocumentDoNothing(self):
+        return Document(self.id, {
+            'id': 1,
+                })
+</PRE>
+</DIV></DIV>
+
+<P>Then go into the testProcessorProcessingValidateOutput and add a self.failUnless for doc.HasValue(&quot;output&quot;)</P>
+
+<P>Go to the commandline and do python testAttributeUpperCaser.py</P>
+
+<P>This will test:</P>
+<UL>
+	<LI>the import works</LI>
+	<LI>setting up the processor and adding its container and parameters</LI>
+	<LI>that the processor actually processes something when asked to process the test document</LI>
+	<LI>that the processor processes the empty documents and returns the value for nothing processed</LI>
+	<LI>that the processor processes the documents and does the right thing</LI>
+</UL>
+
+
+<P>A few of the default_processor tests are bigger and a good starting point for implementing more complex tests. </P>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

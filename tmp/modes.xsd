@@ -1,0 +1,4326 @@
+<?xml version='1.0'?>
+<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema' id='genericno.sesam.no'>
+    <xsd:element name='modes' type='modes'/>
+    <xsd:complexType name='modes'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='mode' type='mode'/>
+        </xsd:choice>
+        <xsd:attribute name='template-prefix'/>
+    </xsd:complexType>
+    <xsd:complexType name='mode'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='navigatable-esp-fast-command' type='navigatable-esp-fast-command'/>
+            <xsd:element name='advanced-fast-command' type='advanced-fast-command'/>
+            <xsd:element name='yahoo-media-command' type='yahoo-media-command'/>
+            <xsd:element name='static-command' type='static-command'/>
+            <xsd:element name='mobile-command' type='mobile-command'/>
+            <xsd:element name='clustering-esp-fast-command' type='clustering-esp-fast-command'/>
+            <xsd:element name='command' type='command'/>
+            <xsd:element name='properties-command' type='properties-command'/>
+            <xsd:element name='math-command' type='math-command'/>
+            <xsd:element name='news-my-news-command' type='news-my-news-command'/>
+            <xsd:element name='platefood-ppc-command' type='platefood-ppc-command'/>
+            <xsd:element name='picture-command' type='picture-command'/>
+            <xsd:element name='news-esp-command' type='news-esp-command'/>
+            <xsd:element name='stock-command' type='stock-command'/>
+            <xsd:element name='sensis-command' type='sensis-command'/>
+            <xsd:element name='yahoo-idp-command' type='yahoo-idp-command'/>
+            <xsd:element name='news-aggregator-command' type='news-aggregator-command'/>
+            <xsd:element name='yahoo-web-command' type='yahoo-web-command'/>
+            <xsd:element name='fast-command' type='fast-command'/>
+            <xsd:element name='news-command' type='news-command'/>
+            <xsd:element name='overture-ppc-command' type='overture-ppc-command'/>
+            <xsd:element name='web-command' type='web-command'/>
+            <xsd:element name='blending-news-command' type='blending-news-command'/>
+            <xsd:element name='esp-fast-command' type='esp-fast-command'/>
+            <xsd:element name='daily-word-command' type='daily-word-command'/>
+            <xsd:element name='mindex5-command' type='mindex5-command'/>
+            <xsd:element name='tvenrich-command' type='tvenrich-command'/>
+            <xsd:element name='tvwaitsearch-command' type='tvwaitsearch-command'/>
+            <xsd:element name='tvsearch-command' type='tvsearch-command'/>
+            <xsd:element name='address-command' type='address-command'/>
+            <xsd:element name='catalogue-command' type='catalogue-command'/>
+            <xsd:element name='catalogue-ads-command' type='catalogue-ads-command'/>
+            <xsd:element name='catalogue-banners-command' type='catalogue-banners-command'/>
+            <xsd:element name='stormweather-command' type='stormweather-command'/>
+            <xsd:element name='whitepages-command' type='whitepages-command'/>
+            <xsd:element name='blog-command' type='blog-command'/>
+            <xsd:element name='mobile-news-esp-command' type='mobile-news-esp-command'/>
+        </xsd:choice>
+        <xsd:attribute name='id'/>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='analysis'/>
+        <xsd:attribute name='executor'/>
+    </xsd:complexType>
+    <xsd:complexType name='navigatable-esp-fast-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='result-handlers'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='number-operation' type='number-operation'/>
+            <xsd:element name='field-filter' type='field-filter'/>
+            <xsd:element name='age-calculator' type='age-calculator'/>
+            <xsd:element name='news-search-set-body' type='news-search-set-body'/>
+            <xsd:element name='add-category-navigation' type='add-category-navigation'/>
+            <xsd:element name='find-file-format' type='find-file-format'/>
+            <xsd:element name='add-geographic-navigation' type='add-geographic-navigation'/>
+            <xsd:element name='date-format' type='date-format'/>
+            <xsd:element name='phone-number-chooser' type='phone-number-chooser'/>
+            <xsd:element name='field-escape' type='field-escape'/>
+            <xsd:element name='regexp' type='regexp'/>
+            <xsd:element name='spelling-suggestion-chooser' type='spelling-suggestion-chooser'/>
+            <xsd:element name='cluster-offset-adapter' type='cluster-offset-adapter'/>
+            <xsd:element name='field-chooser' type='field-chooser'/>
+            <xsd:element name='weather-celcius' type='weather-celcius'/>
+            <xsd:element name='catalogue' type='catalogue'/>
+            <xsd:element name='tvsearch-sorting' type='tvsearch-sorting'/>
+            <xsd:element name='discard-duplicates' type='discard-duplicates'/>
+            <xsd:element name='forecast-wind' type='forecast-wind'/>
+            <xsd:element name='news-person-link-updator' type='news-person-link-updator'/>
+            <xsd:element name='add-last-week-modifier' type='add-last-week-modifier'/>
+            <xsd:element name='accounting' type='accounting'/>
+            <xsd:element name='forecast-date' type='forecast-date'/>
+            <xsd:element name='field-splitter' type='field-splitter'/>
+            <xsd:element name='map-coord' type='map-coord'/>
+            <xsd:element name='image-helper' type='image-helper'/>
+            <xsd:element name='discard-old-news' type='discard-old-news'/>
+            <xsd:element name='multivalued-field-collector' type='multivalued-field-collector'/>
+            <xsd:element name='weather-date' type='weather-date'/>
+            <xsd:element name='phone-number-formatter' type='phone-number-formatter'/>
+            <xsd:element name='category-splitter' type='category-splitter'/>
+            <xsd:element name='document-summary' type='document-summary'/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name='number-operation'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Perform a JEP operation.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='fields'/>
+        <xsd:attribute name='operation'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property operation.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='target'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property target.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='min-fraction-digits'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property minFractionDigits.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-fraction-digits'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property maxFractionDigitis.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='min-digits'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property minDigits.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-digits'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property maxDigits.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='field-filter'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='recursive-field'/>
+        <xsd:attribute name='filter-src'/>
+        <xsd:attribute name='match-list'/>
+        <xsd:attribute name='remove-fields'/>
+        <xsd:attribute name='src-prefixes'/>
+    </xsd:complexType>
+    <xsd:complexType name='age-calculator'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Calculate Age.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='recursive-field'/>
+        <xsd:attribute name='target'/>
+        <xsd:attribute name='source'/>
+        <xsd:attribute name='as-date'/>
+        <xsd:attribute name='age-format-key'/>
+    </xsd:complexType>
+    <xsd:complexType name='news-search-set-body'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for the NewsSearchSetBodyResultHandler ...
+ <p/>
+ Created: Jun 13, 2007 1:14:57 PM
+ Author: Ola MH Sagli <a href="ola@sesam.no">ola at sesam.no</a>]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='source'/>
+    </xsd:complexType>
+    <xsd:complexType name='add-category-navigation'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='categories-xml'/>
+        <xsd:attribute name='category-fields'/>
+    </xsd:complexType>
+    <xsd:complexType name='find-file-format'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='field'/>
+        <xsd:attribute name='url-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='add-geographic-navigation'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='geo-xml'/>
+    </xsd:complexType>
+    <xsd:complexType name='date-format'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[DateFormatHandler is part of no.sesat.search.result
+ Transform fast inputdate to how it will be displayed in tv enrichment . Tv Enrichment
+ will most likely only display Hour of day.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='prefix'/>
+        <xsd:attribute name='source'/>
+    </xsd:complexType>
+    <xsd:complexType name='phone-number-chooser'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='field-escape'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='source-field'/>
+        <xsd:attribute name='target-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='regexp'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Applies a regular expression to a specified field in every result item 
+  adding a target field matching the first capturing group in the regular expression.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='field'/>
+        <xsd:attribute name='target'/>
+        <xsd:attribute name='regexp'/>
+    </xsd:complexType>
+    <xsd:complexType name='spelling-suggestion-chooser'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Spelling suggestions are chosen in the following way:
+
+ <ul>
+ <li>Discard all suggestions with score less than minimumScore</li>
+ <li>For each term, remove suggestions with lowest score so that the number
+     of suggestions is less than maxSuggestions. If the query is long the limit is maxSuggestionsForLongQueries</li>
+ <li>Remove all suggestions whose score differs more than maxDistance from the suggestion with the highest score</li>
+ <li>If the query is long and if two terms have suggestions, remove all suggestions unless the best suggestion
+ is much better than the second best</li>
+ </ul>
+
+ A new query is then created using the chosen suggestions.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='min-score'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the minimum score a suggestions needs to have to be considered.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-suggestions'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the maximum number of suggestions to choose.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-distance'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the maximum difference in score a suggestion can have from the highest
+ the suggestion with the highest score without being discarded.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='much-better'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the score difference needed for a suggestion to be rated as much better.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='long-query'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the number of terms query needs to be considered as long.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='very-long-query'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the number of terms a query needs to be considered as long.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='long-query-max-suggestions'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the number of suggestions to choose for very long queries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='cluster-offset-adapter'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='field-chooser'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='field'/>
+        <xsd:attribute name='fields'/>
+        <xsd:attribute name='target'/>
+        <xsd:attribute name='default-value'/>
+        <xsd:attribute name='recursive-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='weather-celcius'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[WeatherCelciusHandler is part of no.sesat.search.result]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='target-field'/>
+        <xsd:attribute name='source-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Resulthandler to fetch sales from the catalogue sales system. This class is
+ called after a search command with <catalogue/> resulthandler tag is defined.
+ It calls a ejb3 stateless session bean in the sales system which load all
+ product information to be presented in the infopage for katalog.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='tvsearch-sorting'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[TvSearchSortingHandler sorts the result by channel, day or category]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='results-per-block'/>
+        <xsd:attribute name='blocks-per-page'/>
+    </xsd:complexType>
+    <xsd:complexType name='discard-duplicates'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='source-field'/>
+        <xsd:attribute name='discard-case'/>
+    </xsd:complexType>
+    <xsd:complexType name='forecast-wind'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[A Storm result handler that looks into nested searchresults for the field to
+ modify. Needed because we get raw data from Storm.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='news-person-link-updator'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for the NewsPersonLinkUpdatorResultHandler.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='sources'/>
+    </xsd:complexType>
+    <xsd:complexType name='add-last-week-modifier'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Adds a modifier to the searchResult with a count for the last week based on day modifiers.
+ <p/>
+ <b>Note:</b> The implementation of this depends on that the day modifiers are sorted descending (last date first)
+ <b>Note:</b> This will only work on searchResults that are actually FastSearchResult]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='day-format'/>
+        <xsd:attribute name='day-modifier-key'/>
+        <xsd:attribute name='target-navigator-field'/>
+        <xsd:attribute name='time-zone'/>
+    </xsd:complexType>
+    <xsd:complexType name='accounting'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='forecast-date'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[A Storm result handler that looks into nested searchresults for
+ the field to modify.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='target-field'/>
+        <xsd:attribute name='source-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='field-splitter'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Config for the result handler to split a string into an array.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='from-field'/>
+        <xsd:attribute name='to-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='map-coord'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Converts lat/long values into X/Y for map coordinate-system.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='image-helper'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='discard-old-news'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='multivalued-field-collector'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='fields'/>
+    </xsd:complexType>
+    <xsd:complexType name='weather-date'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[WeatherDateHandler is part of no.sesat.search.result]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='target-field'/>
+        <xsd:attribute name='source-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='phone-number-formatter'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='category-splitter'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='document-summary'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Used to create a document summary. Basically concatinates two fields if both are peresent and not empty(For all
+ results) If not bothe fields are there it will populate the target field with a fallback field.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='query-transformers'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='token-mask' type='token-mask'/>
+            <xsd:element name='news-cluster' type='news-cluster'/>
+            <xsd:element name='exact-field-filter' type='exact-field-filter'/>
+            <xsd:element name='exact-match' type='exact-match'/>
+            <xsd:element name='news-medium' type='news-medium'/>
+            <xsd:element name='term-prefix' type='term-prefix'/>
+            <xsd:element name='news' type='news'/>
+            <xsd:element name='regexp' type='regexp'/>
+            <xsd:element name='map-info-page' type='map-info-page'/>
+            <xsd:element name='news-my-news' type='news-my-news'/>
+            <xsd:element name='esp-age-filter' type='esp-age-filter'/>
+            <xsd:element name='synonym' type='synonym'/>
+            <xsd:element name='agefilter' type='agefilter'/>
+            <xsd:element name='news-case' type='news-case'/>
+            <xsd:element name='catalogue-exact-title-match' type='catalogue-exact-title-match'/>
+            <xsd:element name='catalogue-infopage' type='catalogue-infopage'/>
+            <xsd:element name='url-param' type='url-param'/>
+            <xsd:element name='infopage' type='infopage'/>
+            <xsd:element name='tvsearch' type='tvsearch'/>
+            <xsd:element name='simple-site-search' type='simple-site-search'/>
+            <xsd:element name='weather' type='weather'/>
+            <xsd:element name='weatherinfopage' type='weatherinfopage'/>
+            <xsd:element name='catalogue-empty-query' type='catalogue-empty-query'/>
+            <xsd:element name='mobile-tv' type='mobile-tv'/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name='token-mask'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Mask (inclusively or exclusively) terms in the query that
+ positionally (prefix or anywhere) contains TokenPredicates.
+
+ <b>Note</b> Using <code>position="prefix" predicates="*_MAGIC"</code> is kinda pointless but is often done anyway.
+ <b>Note</b> position="prefix" only currently works with single terms. XXX]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='predicates'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[TODO comment me.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='position'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property position.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='mask'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property mask.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='news-cluster'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Adds a filter to the query
+ <p/>
+ <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. It uses the raw querystring
+ to transform the query. All transforms to the resulting query should be done after this.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='param-fields'/>
+        <xsd:attribute name='timestamp-field'/>
+        <xsd:attribute name='cluster-field'/>
+        <xsd:attribute name='cluster-filter'/>
+    </xsd:complexType>
+    <xsd:complexType name='exact-field-filter'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='filter-field'/>
+        <xsd:attribute name='filter-parameter'/>
+        <xsd:attribute name='use-equals'/>
+    </xsd:complexType>
+    <xsd:complexType name='exact-match'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Transforms the query into <br/>
+ field:^"query"$
+ or
+ ^"query"$ if field is null
+ <br/>
+   Ensures that only an exact match is returned.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='field'/>
+    </xsd:complexType>
+    <xsd:complexType name='news-medium'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='term-prefix'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[A transformer to prefix the terms in a query.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='number-prefix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Set the prefix to used for numbers.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='prefix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Set the prefix to be used for words.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='news'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[NewsTransformer is part of no.sesat.search.query]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='map-info-page'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='parameter-name'/>
+        <xsd:attribute name='prefix'/>
+        <xsd:attribute name='filter-prefix'/>
+        <xsd:attribute name='filter-parameter-name'/>
+    </xsd:complexType>
+    <xsd:complexType name='news-my-news'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='filter-field'/>
+        <xsd:attribute name='type'/>
+        <xsd:attribute name='position'/>
+        <xsd:attribute name='query-parameter'/>
+    </xsd:complexType>
+    <xsd:complexType name='esp-age-filter'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Agefilter QueryTransformer for esp5.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='age-count'/>
+        <xsd:attribute name='age-symbol'/>
+        <xsd:attribute name='age-field'/>
+    </xsd:complexType>
+    <xsd:complexType name='synonym'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[XXX This will get largely rewritten when alternation rotation comes into play.
+ https://jira.sesam.no/jira/browse/SEARCH-863]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='agefilter'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='age-field'/>
+        <xsd:attribute name='age-symbol'/>
+    </xsd:complexType>
+    <xsd:complexType name='news-case'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Checks if the query should be transformed from a ejb lookup on the queryString. Transformation will replace
+ the whole query.
+ <p/>
+ <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. It uses the raw querystring
+ to transform the query. All transforms to the resulting query should be done after this.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='default-convert' type='default-convert'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-type'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='type-parameter'/>
+        <xsd:attribute name='default-type'/>
+        <xsd:attribute name='unclustered-delay'/>
+        <xsd:attribute name='unclustered-delay-in-minutes'/>
+        <xsd:attribute name='time-zone'/>
+    </xsd:complexType>
+    <xsd:complexType name='default-convert'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='prefix'/>
+        <xsd:attribute name='postfix'/>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue-exact-title-match'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Transforms the query into <br/> iypnavnvisningnorm:^"query"$ <br/> Ensures that only an
+ exact match within the titles field is returned.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue-infopage'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Add iypcompanyid to the front of the original query, which is a companyid.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='url-param'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='url-param'/>
+        <xsd:attribute name='prefix'/>
+        <xsd:attribute name='postfix'/>
+    </xsd:complexType>
+    <xsd:complexType name='infopage'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='tvsearch'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[TvSearcQueryTransformer is part of no.sesat.search.query]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='with-endtime'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[TODO comment me. *]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='simple-site-search'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[SimpleSiteSearchQueryTransformer.
+ TODO remove this class once all sitesearches are using the new model.
+
+ This transformer can be used in tabs.xml to create a simple site search.
+ It uses a map to find the actual string to use for the FAST site: filter
+
+ e.g. ds => dinside.no, it => itavisen.no
+
+ The key used when looking up is taken from request parameter
+ <code>parameterName</code>.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='parameter'/>
+    </xsd:complexType>
+    <xsd:complexType name='weather'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Defines a default weather search pattern.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='default-locations'/>
+    </xsd:complexType>
+    <xsd:complexType name='weatherinfopage'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue-empty-query'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='mobile-tv'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[MobileTvQueryTransformer is part of no.sesat.front.search.query.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+    </xsd:complexType>
+    <xsd:complexType name='navigators'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='navigator' type='navigator'/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name='navigator'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='navigator' type='navigator'/>
+        </xsd:choice>
+        <xsd:attribute name='id'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='field'/>
+        <xsd:attribute name='display-name'/>
+        <xsd:attribute name='sort'/>
+        <xsd:attribute name='boundary-match'/>
+    </xsd:complexType>
+    <xsd:complexType name='advanced-fast-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Search configuration for the advanced search command.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='yahoo-media-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Search configuration for the Yahoo! media search.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='site'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property 'site'.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='catalog'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property 'catalog'.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='ocr'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property 'ocr'.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='partner-id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property partnerId.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property host.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='encoding'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property encoding.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='port'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property port.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host-header'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property hostHeader.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='static-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for "static" search commands. That is, commands that do not
+ need to do a search but produces static HTML.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='mobile-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='source'/>
+        <xsd:attribute name='personalization-group'/>
+        <xsd:attribute name='telenor-personalization-group'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='filter'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='clustering-esp-fast-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for a NewsClusteringESPFastCommand.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='cluster-id-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the clusterIdParameter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='clustering-disabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the clusterDisabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='results-per-cluster'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the resultsPerCluster property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='cluster-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the clusterField proeprty.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='user-sort-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the userSortParameter property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='sort-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the sortField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='default-sort'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the defaultSort property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-max-fetch'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the collapsingMaxFetch property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='nested-results-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the nestedResultsField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='medium-prefix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the mediumPrefix property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='default-medium'/>
+        <xsd:attribute name='medium-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the mediumParameter property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevance-sort-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the relevanceSortField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-age'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the maxAge property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='age-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the ageField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='age-symbol'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the ageSymbol property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[A common base class for search configurations.
+ TODO rename to BaseSearchConfiguration since it is directly used by default commands in modes.xml]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='properties-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Given the resource name for a properties file, loads it into a Map<String,String>.
+ 
+ The following is a tutorial for a simple enrichment using this command
+ https://dev.schibstedsok.no/confluence/display/SESAT/Developing+a+quick+and+simple+Enrichment+tutorial]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='properties-filename'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='math-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='news-my-news-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='platefood-ppc-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='results-on-top'/>
+        <xsd:attribute name='url'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property url.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='top3-backfill-block'/>
+        <xsd:attribute name='partner-id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property partnerId.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property host.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='encoding'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property encoding.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='port'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property port.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host-header'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property hostHeader.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='picture-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-server-host'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property key for queryServerHost.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-server-port'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property key for queryServerPort.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='customer-id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets property customerId]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='site'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Set this to restrict the searches to <tt>site</tt>]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='domain-boost'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Sets the domain boost. Example of domain boost string: se=100,nu=100,dk=50.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='news-esp-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for a NewsEspSearchCommand]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='user-sort-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the userSortParameter property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='sort-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the sortField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='default-sort'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the defaultSort property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-max-fetch'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the collapsingMaxFetch property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='nested-results-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the nestedResultsField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='medium-prefix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the mediumPrefix property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='default-medium'/>
+        <xsd:attribute name='medium-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the mediumParameter property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevance-sort-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the relevanceSortField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-age'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the maxAge property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='age-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the ageField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='age-symbol'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the ageSymbol property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='stock-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='sensis-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='yahoo-idp-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='database'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property database.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='date-range'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property dateRange.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='spell-state'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property spellstate.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='region-mix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property regionMix.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='unique'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property unique.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='region'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property region.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='hide-domain'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property hideDomain.
+ Because Yahoo IDP does not supply domain exclusion without ruining the relevance.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='language'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property language.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='language-mix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property languageMix.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='partner-id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property partnerId.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property host.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='encoding'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property encoding.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='port'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property port.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host-header'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property hostHeader.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='news-aggregator-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='related-max-count'/>
+        <xsd:attribute name='xml-source'/>
+        <xsd:attribute name='xml-main-file'/>
+        <xsd:attribute name='geographic-fields'/>
+        <xsd:attribute name='category-fields'/>
+        <xsd:attribute name='cluster-id-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the clusterIdParameter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='clustering-disabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the clusterDisabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='results-per-cluster'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the resultsPerCluster property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='cluster-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the clusterField proeprty.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='user-sort-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the userSortParameter property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='sort-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the sortField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='default-sort'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the defaultSort property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-max-fetch'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the collapsingMaxFetch property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='nested-results-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the nestedResultsField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='medium-prefix'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the mediumPrefix property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='default-medium'/>
+        <xsd:attribute name='medium-parameter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the mediumParameter property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevance-sort-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the relevanceSortField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='max-age'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the maxAge property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='age-field'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the ageField property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='age-symbol'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the ageSymbol property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='yahoo-web-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for searches against Yahoo's Contextual Web Service.
+ see http://developer.yahoo.com/search/web/V1/contextSearch.html]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='similar'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property uniqusimilare.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='country'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property country.
+ Available values written in http://developer.yahoo.com/search/countries.html]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='appid'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property appid. Delegates to setPartnerId(..).
+ Apply for a application ID here http://developer.yahoo.com/faq/index.html#appid]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='language'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property language.
+ see supported languages http://developer.yahoo.com/search/languages.html]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='site'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property site.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='format'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property format.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='adult'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property adult.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='partner-id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property partnerId.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property host.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='encoding'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property encoding.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='port'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property port.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host-header'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property hostHeader.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='fast-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='news-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='overture-ppc-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='url'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property url.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='type'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property type.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='partner-id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property partnerId.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property host.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='encoding'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property encoding.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='port'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property port.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='host-header'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property hostHeader.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='web-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='blending-news-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='documents-per-filter'/>
+        <xsd:attribute name='filters-to-blend'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='esp-fast-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='daily-word-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='mindex5-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='profile-id'/>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='tvenrich-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration for TvEnrich search command.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='wait-on'/>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='tvwaitsearch-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='index'/>
+        <xsd:attribute name='wait-on-all-channels'/>
+        <xsd:attribute name='wait-on-my-channels'/>
+        <xsd:attribute name='use-my-channels'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='tvsearch-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Configuration class for the TvSearchCommand]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='default-channels'/>
+        <xsd:attribute name='default-channel'/>
+        <xsd:attribute name='results-to-fetch'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='address-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[An implementation of Search Configuration for yellow searches.
+
+ Values in configuration are injected by SearchModeFactory with value
+ from modes.xml, by the fillBeanProperty pattern.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-parameter-where'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[setter for queryParameterWhere]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='search-by'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[setter for searchBy]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='split'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[setter for split]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue-ads-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[An implementation of Search Configuration for catalogue sponsed links.
+
+ Values in configuration are injected by SearchModeFactory with value
+ from modes.xml, by the fillBeanProperty pattern.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-parameter-where'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[setter for queryParameterWhere property]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='catalogue-banners-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[An implementation of Search Configuration for catalogue banner search.
+
+ Injected by SearchModeFactory with value from modes.xml,
+ by the fillBeanProperty pattern.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='query-parameter-where'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Injected by SearchModeFactory with value from modes.xml,
+ by the fillBeanProperty pattern.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='stormweather-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='element-value'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='whitepages-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='blog-command'>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name='mobile-news-esp-command'>
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[Config for the mobile esp search command.]]>)
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:choice  minOccurs='0' maxOccurs='unbounded'>
+            <xsd:element name='result-handlers' type='result-handlers'/>
+            <xsd:element name='query-transformers' type='query-transformers'/>
+            <xsd:element name='navigators' type='navigators'/>
+        </xsd:choice>
+        <xsd:attribute name='inherit'/>
+        <xsd:attribute name='additional-filter'/>
+        <xsd:attribute name='collapsing-enabled'/>
+        <xsd:attribute name='expansion-enabled'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collapsing-removes'/>
+        <xsd:attribute name='view'/>
+        <xsd:attribute name='query-server'/>
+        <xsd:attribute name='sort-by'/>
+        <xsd:attribute name='alternative-sort-by'/>
+        <xsd:attribute name='qt-pipeline'/>
+        <xsd:attribute name='lemmatize'/>
+        <xsd:attribute name='collections'/>
+        <xsd:attribute name='search-parameters'/>
+        <xsd:attribute name='lemmatise'/>
+        <xsd:attribute name='spellcheck'/>
+        <xsd:attribute name='spellchecklanguage'/>
+        <xsd:attribute name='collapsing'/>
+        <xsd:attribute name='result-view'/>
+        <xsd:attribute name='query-server-url'/>
+        <xsd:attribute name='keyword-clustering-enabled'/>
+        <xsd:attribute name='ignore-navigation'/>
+        <xsd:attribute name='filtertype'/>
+        <xsd:attribute name='project'/>
+        <xsd:attribute name='spam-score-limit'/>
+        <xsd:attribute name='clustering'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property clustering.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='collection-filter-string'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property collectionFilterString.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='filter'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property filter.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='offensive-score-limit'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property offensiveScoreLimit.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='relevant-queries'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for property relevantQueries.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='expansion'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Setter for the expansionEnabled property.]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='query-transformer'/>
+        <xsd:attribute name='result-handler'/>
+        <xsd:attribute name='name'/>
+        <xsd:attribute name='id'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Same as setName]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name='result-field'/>
+        <xsd:attribute name='result-fields'/>
+        <xsd:attribute name='results-to-return'/>
+        <xsd:attribute name='always-run'/>
+        <xsd:attribute name='run-blank'/>
+        <xsd:attribute name='query-parameter'/>
+        <xsd:attribute name='statistical-name'/>
+        <xsd:attribute name='asynchronous'/>
+        <xsd:attribute name='field-filters'>
+            <xsd:annotation>
+                <xsd:documentation>
+                    <![CDATA[Syntax: field-filters="size, nyhetskilde AS newssource"
+ 
+ Just "size" will be the same as writing "size AS size"]]>)
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,378 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Development Guidelines</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="" title="Development Guidelines">Development Guidelines</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <P>This page goes through building the Sesat-Kernel. It by itself is not enough to have a functioning search application. A <A href="tutorial-building-sesamcom.html" title="Tutorial - Building Sesam.com">complimentary tutorial</A> exists on building the sesam.com skin.
+<BR clear="all"></P>
+<DIV>
+<UL>
+    <LI><A href="#DevelopmentGuidelines-GetSesatsource">Get Sesat source</A></LI>
+    <LI><A href="#DevelopmentGuidelines-BuildSesat">Build Sesat</A></LI>
+    <LI><A href="#DevelopmentGuidelines-DeploytoContainer">Deploy to Container</A></LI>
+    <LI><A href="#DevelopmentGuidelines-ConfigureContainer">Configure Container</A></LI>
+    <LI><A href="#DevelopmentGuidelines-Browse">Browse</A></LI>
+</UL></DIV>
+<P><BR clear="all"></P>
+
+<H2><A name="DevelopmentGuidelines-GetSesatsource"></A>Get Sesat source</H2>
+
+<P>Check out the latest version of Sesat from the Subversion repository:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>svn co http://sesat.no/svn/sesat-kernel/trunk sesat-kernel
+</PRE>
+</DIV></DIV>
+<P><BR clear="all">
+<BR clear="all"></P>
+
+<H2><A name="DevelopmentGuidelines-BuildSesat"></A>Build Sesat</H2>
+
+<P>From the working copy of sesat-kernel run the Maven as follows to build the artifacts. <BR clear="all">
+<B>Make sure you have installed all the <A href="requirements.html" title="Requirements">requirements</A>.</B> <BR clear="all">
+Read <A href="building-with-fast.html" title="Building with FAST">Building with FAST</A> to enable FAST APIs within Sesat
+<BR clear="all"> <BR clear="all"></P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>mvn install -DskipTests
+</PRE>
+</DIV></DIV>
+<P><BR clear="all"> <BR clear="all"></P>
+<DIV class="panelMacro"><TABLE class="warningMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>Building on Windows</B><BR>generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/SearchPortal.tld is a symlink to war/src/main/webapp/WEB-INF/SearchPortal.tld which will of course not work in Windows. To fix this run from the sesat-kernel directory:
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>cp war/src/main/webapp/WEB-INF/SearchPortal.tld generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/SearchPortal.tld</PRE>
+</DIV></DIV></TD></TR></TABLE></DIV><DIV class="panelMacro"><TABLE class="warningMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>java.lang.NullPointerException at com.sun.tools.javac.comp.Check.checkCompatibleConcretes(..)</B><BR>When maven is building data-model-javabean-impl it fails with the javac crash:
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>[INFO] Compilation failure
+Failure executing javac,  ...
+java.lang.NullPointerException at com.sun.tools.javac.comp.Check.checkCompatibleConcretes(..)
+</PRE>
+</DIV></DIV>
+<P>try checking out sesat-kernel again with a new name (eg sesat-kernel1) and building again. repeat until it works.<BR>
+Or use Java7. It's a known bug <A href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6218229" rel="nofollow">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6218229</A> related to inodes.</P></TD></TR></TABLE></DIV><DIV class="panelMacro"><TABLE class="warningMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>Generating schema files failed due to error: Java heap space</B><BR>When maven is building generic.sesam/war it fails with:<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>[INFO] [sesat-mojo:searchModesSchemaGenerator {execution: default}]
+[INFO] no.sesat.mojo.SearchModesSchemaGenerator
+[INFO] Using: classpath =[snip]
+Generating schema files failed due to error: Java heap space</PRE>
+</DIV></DIV>Increase the heap size by adding parameters to MAVEN_OPTS like (for example) <DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>export MAVEN_OPTS=&quot;-Xms512m -Xmx1024m -XX:MaxPermSize=256m&quot;</PRE>
+</DIV></DIV></TD></TR></TABLE></DIV>
+<DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>build time</B><BR>On a dual 2.2GHz machine w/ 4Gb ram &amp; T10 connection the initial build took 6 and a half minutes 27. Subsequent full rebuilds took 1 minute.</TD></TR></TABLE></DIV>
+<P><BR clear="all">
+<BR clear="all"></P>
+
+<H2><A name="DevelopmentGuidelines-DeploytoContainer"></A>Deploy to Container</H2>
+
+
+<H4><A name="DevelopmentGuidelines-Tomcat"></A>Tomcat</H4>
+
+<P>By defining CATALINA_BASE the maven builds automatically deploys all warfiles into CATALINA_BASE/webapps/</P>
+
+<H4><A name="DevelopmentGuidelines-JBoss"></A>JBoss</H4>
+
+<P>In your jboss service instance symlink:<BR>
+ln -s deploy webapps<BR>
+and define CATALINA_BASE to point to the service instance directory, eg CATALINA_BASE=$JBOSS_HOME/service/default<BR>
+(this will be simplified in the future).</P>
+
+<H4><A name="DevelopmentGuidelines-sesatuserapi"></A>sesat-user-api</H4>
+
+<P>This must be manually deployed. <BR>
+Since it is a jar file in JBoss it can be directly deployed as is.<BR>
+In Tomcat it must be copied into the tomcat's lib directory.</P>
+
+<P><BR clear="all">
+<BR clear="all"></P>
+
+<H2><A name="DevelopmentGuidelines-ConfigureContainer"></A>Configure Container</H2>
+
+<H4><A name="DevelopmentGuidelines-JBoss"></A>JBoss</H4>
+<BLOCKQUOTE>
+<H6><A name="DevelopmentGuidelines-Disablefilesystemcaching"></A>Disable filesystem caching</H6>
+<P> Caching of files within ROOT.war must be disabled (Sesat-Kernel needs to write files into it's own deployed directory and see these files immediately).<BR>
+ This caching can be turned off with tomcat's context.xml ( <A href="http://tomcat.apache.org/tomcat-6.0-doc/config/context.html" rel="nofollow">http://tomcat.apache.org/tomcat-6.0-doc/config/context.html</A> ) but jboss prevents any application's META-INF/context.xml from taking effect.<BR>
+  Fix this by editing jbossweb.sar/context.xml replacing the line<BR>
+      <TT>&lt;Context cookies=&quot;true&quot; crossContext=&quot;true&quot;&gt;</TT><BR>
+  with<BR>
+      <TT>&lt;Context cookies=&quot;true&quot; crossContext=&quot;true&quot;  cachingAllowed=&quot;false&quot; cacheMaxSize=&quot;0&quot; cacheTTL=&quot;0&quot;&gt;</TT></P></BLOCKQUOTE>
+
+<H4><A name="DevelopmentGuidelines-TomcatJBoss"></A>Tomcat + JBoss</H4>
+
+<BLOCKQUOTE>
+<H6><A name="DevelopmentGuidelines-UTF8Encoding"></A>UTF-8 Encoding</H6>
+
+<P>If your machine is not natively running unicode you should add the jvm option: <TT>-Dfile.encoding=UTF-8</TT></P>
+
+<P>You also have to make a change in the server.xml file as tomcat/jboss runs by default ISO-88591.<BR>
+From: <BR clear="all"> <TT>&lt;Connector port=&quot;8080&quot; maxHttpHeaderSize=&quot;8192&quot; maxThreads=&quot;150&quot; minSpareThreads=&quot;25&quot; maxSpareThreads=&quot;75&quot; enableLookups=&quot;false&quot; redirectPort=&quot;8443&quot; acceptCount=&quot;100&quot; connectionTimeout=&quot;20000&quot; disableUploadTimeout=&quot;true&quot;/&gt;</TT><BR>
+To: <BR clear="all"> <TT>&lt;Connector port=&quot;8080&quot; maxHttpHeaderSize=&quot;8192&quot; maxThreads=&quot;150&quot; minSpareThreads=&quot;25&quot; maxSpareThreads=&quot;75&quot; enableLookups=&quot;false&quot; redirectPort=&quot;8443&quot; acceptCount=&quot;100&quot; connectionTimeout=&quot;20000&quot; disableUploadTimeout=&quot;true&quot;</TT> <B><TT>URIEncoding=&quot;UTF-8&quot;/&gt;</TT></B></P>
+
+<H6><A name="DevelopmentGuidelines-unpackWARs%3D%22true%22"></A>unpackWARs=&quot;true&quot;</H6>
+
+<P>This <A href="http://tomcat.apache.org/tomcat-6.0-doc/config/host.html" rel="nofollow">setting</A>, found in server.xml-&gt;Server-&gt;Host, cannot be set to false as Sesat requires write access into the deployed application.</P>
+
+
+<H6><A name="DevelopmentGuidelines-port8080"></A>port 8080</H6>
+<P><B>Note:</B> You need to run your development tomcat on port 8080! (Or make your own maven development profile for your setup).</P></BLOCKQUOTE>
+
+<H2><A name="DevelopmentGuidelines-Browse"></A>Browse</H2>
+
+<P>Deploy your skins to your container, start your container, and browse <A href="http://localhost.com:8080/" rel="nofollow">http://localhost.com:8080</A></P>
+
+<P>&#42;&#42; !! Every skin deployed, in this case &quot;localhost.com&quot;, must have its name added into your hosts file pointing to 127.0.0.1</P>
+
+<P><BR clear="all">
+<BR clear="all"></P>
+        </DIV>
+                  <DIV class="tabletitle">
+            Children
+            <SPAN class="smalltext" id="show" style="display: inline;">
+              <A href="javascript:showChildren()">Show Children</A></SPAN>
+            <SPAN class="smalltext" id="hide" style="display: none;">
+              <A href="javascript:hideChildren()">Hide Children</A></SPAN>
+          </DIV>
+          <DIV class="greybox" id="children" style="display: none;">
+                                      <A href="requirements.html" title="Requirements">Requirements</A>
+              <SPAN class="smalltext">(Sesat)</SPAN>
+              <BR>
+                          <A href="kernel-operations.html" title="Kernel Operations">Kernel Operations</A>
+              <SPAN class="smalltext">(Sesat)</SPAN>
+              <BR>
+                          <A href="building-with-fast.html" title="Building with FAST">Building with FAST</A>
+              <SPAN class="smalltext">(Sesat)</SPAN>
+              <BR>
+                      </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

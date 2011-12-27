@@ -1,0 +1,475 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Navigation documentation</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A>&nbsp;&gt;&nbsp;<A href="" title="Navigation documentation">Navigation documentation</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H1><A name="Navigationdocumentation-Contents"></A>Contents</H1>
+
+<DIV>
+<UL>
+    <LI><A href="#Navigationdocumentation-Concepts">Concepts</A></LI>
+    <LI><A href="#Navigationdocumentation-Configuration">Configuration</A></LI>
+<UL>
+    <LI><A href="#Navigationdocumentation-Navpredefinedoptions">Nav predefined options</A></LI>
+    <LI><A href="#Navigationdocumentation-LinkingnavigationtoasearchCommand">Linking navigation to a searchCommand</A></LI>
+<UL>
+    <LI><A href="#Navigationdocumentation-Linkingnavigationwithpredefinedoptions">Linking navigation with predefined options</A></LI>
+</UL>
+    <LI><A href="#Navigationdocumentation-Combiningnavigationandthe%253Cresetnav%253Eelement">Combining navigation and the &lt;reset-nav&gt; element</A></LI>
+</UL>
+</UL></DIV>
+
+<H1><A name="Navigationdocumentation-Concepts"></A>Concepts</H1>
+
+<P>The navigation model is built around the object NavigationItem. A NavigationItem, extends a ResultList and, has basically four aspects viewed from the view generation side.</P>
+
+<P>The core aspects of a navigators:</P>
+<UL>
+	<LI><B>Selected</B>: Is this navigator selected? This is a indication if this navigator has been chosen by the user. In some cases a navigator can be chosen by default. This is controlled by configuration.</LI>
+	<LI><B>HitCount</B>: In many cases a navigator is a representation of a search. The hitcount indicates the expected number of hits you will get when you do this search. (At the time of writing this functionality only works for fast navigators). [inherited from ResultList]</LI>
+	<LI><B>Url</B>: The url to this navigation. To &quot;select&quot; this navigator, go to this url. [inherited from ResultItem]</LI>
+	<LI><B>Title</B>: The title of this navigator. This should be used in the display text of the navigator. [inherited from ResultItem]</LI>
+</UL>
+
+
+<P>Optimally all navigation on a page should be represented as NavigationItems. If you do, you will be able to write more generic velocity code, and you don't need to worry about url generation in the view layer.</P>
+
+<P>These NavigationItems are just plain old java objects intended only for data transfer. There are constructed by the configured NavigationController inside the NavigationRunHandler. This NavigationRunHandler is hardcoded into the RunningQuery and automatically detects the following navigation configuration.</P>
+
+<H1><A name="Navigationdocumentation-Configuration"></A>Configuration</H1>
+
+<P>Navigation is configured in xml. The configuration describes how searcResults are used to generate the hitCounters, and how the URL's should be built to navigate in and out of the page.</P>
+
+<P>The navigation configuration concept was written in answer to all the view code made to solve navigation in a page.</P>
+
+<P>If you want to add a navigation to a mode you need to add the navigation element to that mode. An navigation may contain one or more navigation elements. And that navigation in turn must contain a nav element, to define the navigator.</P>
+
+<P>A nav element can be linked to a searchResult (by commandName), contain predefined options or even a combination.</P>
+
+<H2><A name="Navigationdocumentation-Navpredefinedoptions"></A>Nav predefined options</H2>
+
+<P>If you want to add a pure predefined navigation, you just supply those option in the &lt;nav&gt; element. For a pure predefined navigator, hitCount is not set.</P>
+
+<P>Example under shows how you can add a sort navigation.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;navigation&gt;
+   &lt;navigation&gt;
+      &lt;nav id=&quot;sort&quot;&gt;
+         &lt;option value=&quot;descending&quot; display-name=&quot;nyest f&oslash;rst&quot;/&gt;
+         &lt;option value=&quot;ascending&quot; display-name=&quot;eldst f&oslash;rst&quot;/&gt;
+      &lt;/nav&gt;
+   &lt;/navigation&gt;
+&lt;/navigation&gt;
+</PRE>
+</DIV></DIV>
+<P>This configuration will present two navigators, on the key &quot;sort&quot;. In velocity to access the defined navigators:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>#set ($sort = $datamodel.navigation.getNavigation('sort'))
+#foreach($sortType in $sort)
+   &lt;a href=&quot;/search/?$sortType.url&quot; &gt;$sortType.title&lt;/a&gt;
+#end
+</PRE>
+</DIV></DIV>
+<P>Will result in the following html:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;a href=&quot;/search/?c=m&amp;sort=descending&quot;  &gt;nyest f&oslash;rst&lt;/a&gt;
+&lt;a href=&quot;/search/?c=m&amp;sort=ascending&quot;  &gt;eldst f&oslash;rst&lt;/a&gt;
+</PRE>
+</DIV></DIV>
+<P>The default behavior is that the &quot;c&quot; parameter will stick to the one active for the page you are using. You can override this by setting tab=&quot;something&quot; in the nav and/or option.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>...
+      &lt;nav id=&quot;sort&quot; tab=&quot;b&quot;&gt;
+         &lt;option value=&quot;descending&quot; display-name=&quot;nyest f&oslash;rst&quot; default-select=&quot;true&quot;/&gt;
+         &lt;!-- Tab on a option &quot;overrides&quot; the one in nav --&gt;
+         &lt;option value=&quot;ascending&quot; tab=&quot;a&quot; display-name=&quot;eldst f&oslash;rst&quot;/&gt;
+      &lt;/nav&gt;
+...
+</PRE>
+</DIV></DIV>
+<P>The above velocity code will then result in the following html:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;a href=&quot;/search/?c=b&amp;sort=descending&quot; &gt;nyest f&oslash;rst&lt;/a&gt;
+&lt;a href=&quot;/search/?c=a&amp;sort=ascending&quot; &gt;eldst f&oslash;rst&lt;/a&gt;
+</PRE>
+</DIV></DIV>
+<P>Now we want to show that the default sorting is descending. So we need to set a default-select. This requires that the searchCommand actually uses descending sort if none was supplied.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>...
+   &lt;navigation&gt;
+      &lt;nav id=&quot;sort&quot;&gt;
+         &lt;option value=&quot;descending&quot; display-name=&quot;nyest f&oslash;rst&quot; default-select=&quot;true&quot;/&gt;
+         &lt;option value=&quot;ascending&quot; display-name=&quot;eldst f&oslash;rst&quot;/&gt;
+      &lt;/nav&gt;
+   &lt;/navigation&gt;
+...
+</PRE>
+</DIV></DIV>
+<P>We change the velocity code to not make a link if a navigation is selected.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>#set ($sort = $datamodel.navigation.getNavigation('sort'))
+#foreach($sortType in $sort)
+   #if($sortType.selected)
+      &lt;!-- Displaying the selected sort --&gt;
+      $sortType.title
+   #else
+      &lt;a href=&quot;/search/?$sortType.url&quot; &gt;$sortType.title&lt;/a&gt;
+   #end
+#end
+</PRE>
+</DIV></DIV>
+<P>Results in the following html:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;!-- Displaying the selected sort --&gt;
+   nyest f&oslash;rst
+   &lt;a href=&quot;/search/?c=m&amp;sort=ascending&quot; &gt;eldst f&oslash;rst&lt;/a&gt;
+</PRE>
+</DIV></DIV>
+
+<H2><A name="Navigationdocumentation-LinkingnavigationtoasearchCommand"></A>Linking navigation to a searchCommand</H2>
+
+<P>In many cases you want navigation to be dynamic, depending on the search that was run. At the time of writing, only fast navigators are supported from the searchCommands.</P>
+
+<P>You need to define the navigators in the search command to make the navigators able to access them.</P>
+
+<P>For a typical news search you, may want to display navigators per year. A typical configuration for this could be:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;mode&gt;
+   &lt;navigation&gt;
+      &lt;navigation command-name=&quot;newsSearch&quot;&gt;
+         &lt;nav id=&quot;year&quot;/&gt;
+      &lt;/navigation&gt;
+   &lt;/navigation&gt;
+
+   &lt;clustering-esp-fast-command id=&quot;newsSearch&quot;&gt;
+      &lt;navigators&gt;
+         &lt;navigator id=&quot;year&quot; field=&quot;year&quot; name=&quot;yearnavigator&quot; display-name=&quot;&Aring;r&quot; sort=&quot;YEAR&quot;/&gt;
+      &lt;/navigators&gt;
+   &lt;/clustering-esp-fast-command&gt;
+&lt;/mode&gt;
+</PRE>
+</DIV></DIV>
+<P>You need to &quot;link&quot; the navigation element to a command by supplying the command-name in the navigation element. When generating navigators, the navigation system will use the results from this search. It will look for a navigator in the searchResult, with id equal to the id of the navigation element.</P>
+
+<P>Velocity code for displaying the navigator:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>#set ($years = $datamodel.navigation.getNavigation('year'))
+#foreach($year in $years)
+   #if($year.selected)
+      &lt;!-- Displaying the selected year --&gt;
+      &lt;p&gt;$year.title&lt;/p&gt;
+   #else
+      &lt;p&gt;&lt;a href=&quot;/search/?$year.url&quot; &gt;$year.title&lt;/a&gt; $year.hitCount&lt;/p&gt;
+   #end
+#end
+</PRE>
+</DIV></DIV>
+<P>Depends on the search, but an example result could be:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;p&gt;&lt;a href=&quot;/search/?c=m&amp;year=2007&amp;nav_year=yearnavigator&quot;  &gt;2007&lt;/a&gt; 583&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/search/?c=m&amp;year=2006&amp;nav_year=yearnavigator&quot;  &gt;2006&lt;/a&gt; 1786&lt;/p&gt;
+ &lt;!-- Displaying the selected year --&gt;
+&lt;p&gt;2005&lt;/p&gt;
+</PRE>
+</DIV></DIV>
+<P>As you see here, when you link navigation to a fast navigator you get two parameters. The year= and the nav_year=. If the navigators are for some reason available from the search command, and you want to suppress the nav_year=, you can set the parameter real-navigator=false on the nav element.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>...
+   &lt;navigation command-name=&quot;newsSearch&quot;&gt;
+      &lt;nav id=&quot;year&quot; real-navigator=&quot;false&quot;/&gt;
+   &lt;/navigation&gt;
+...
+</PRE>
+</DIV></DIV>
+
+<H3><A name="Navigationdocumentation-Linkingnavigationwithpredefinedoptions"></A>Linking navigation with predefined options</H3>
+
+<P>In some cases it will make sense to only display chosen navigator elements with counters. This can be done if you link navigation to a Search, but supply the options that you want to display.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>...
+&lt;navigation id=&quot;newscategory&quot;&gt;
+   &lt;nav tab=&quot;m&quot; id=&quot;medium&quot; command-name=&quot;newsSearchNavigator&quot; real-navigator=&quot;false&quot; out=&quot;true&quot;&gt;
+      &lt;option value=&quot;webnewsarticle&quot; display-name=&quot;Norske nyheter&quot;/&gt;
+      &lt;option value=&quot;printnewsarticle&quot; display-name=&quot;Norske papiraviser&quot;/&gt;
+   &lt;/nav&gt;
+&lt;/navigation&gt;
+...
+</PRE>
+</DIV></DIV>
+
+<H2><A name="Navigationdocumentation-Combiningnavigationandthe%3Cresetnav%3Eelement"></A>Combining navigation and the &lt;reset-nav&gt; element</H2>
+
+<P>So, if you want to combine both a navigation on year, and want the results be be sortable you just combine the configuration from the above examples:</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>&lt;mode&gt;
+   &lt;navigation&gt;
+      &lt;navigation&gt;
+         &lt;nav id=&quot;sort&quot;&gt;
+            &lt;option value=&quot;descending&quot; display-name=&quot;nyest f&oslash;rst&quot; default-select=&quot;true&quot;/&gt;
+            &lt;option value=&quot;ascending&quot; display-name=&quot;eldst f&oslash;rst&quot;/&gt;
+         &lt;/nav&gt;
+      &lt;/navigation&gt;
+      &lt;navigation command-name=&quot;newsSearch&quot;&gt;
+         &lt;nav id=&quot;year&quot;/&gt;
+      &lt;/navigation&gt;
+   &lt;/navigation&gt;
+
+   &lt;clustering-esp-fast-command id=&quot;newsSearch&quot;&gt;
+      &lt;navigators&gt;
+         &lt;navigator id=&quot;year&quot; field=&quot;year&quot; name=&quot;yearnavigator&quot; display-name=&quot;&Aring;r&quot; sort=&quot;YEAR&quot;/&gt;
+      &lt;/navigators&gt;
+   &lt;/clustering-esp-fast-command&gt;
+&lt;/mode&gt;
+</PRE>
+</DIV></DIV>
+<P>If you use this, navigation will &quot;stick&quot; on all urls. That mean that if you click on sort, that sort whill stick on all year urls generated for the page.</P>
+
+<P>In some cases you don't want all navigation to stick on certain clicks. To support this behavior you need to use the &lt;reset-nav&gt; element.</P>
+
+<P>In the example over we want the sort, to always be descending when you display a new result. So we want sort to reset when you click year. This can be done by adding a &lt;reset-nav&gt; to the year navigation.</P>
+<DIV class="preformatted panel" style="border-width: 1px;"><DIV class="preformattedContent panelContent">
+<PRE>...
+      &lt;navigation command-name=&quot;newsSearch&quot;&gt;
+         &lt;nav id=&quot;year&quot;/&gt;
+         &lt;reset-nav id=&quot;sort&quot;/&gt;
+      &lt;/navigation&gt;
+...
+</PRE>
+</DIV></DIV>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

@@ -1,0 +1,526 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Personalization architecture</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="architecture-overview.html" title="Architecture Overview">Architecture Overview</A>&nbsp;&gt;&nbsp;<A href="" title="Personalization architecture">Personalization architecture</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H1><A name="Personalizationarchitecture-SESATPersonalizationarchitecture"></A>SESAT Personalization architecture</H1>
+
+<P>This is a document describing the design of and how the personalization architecture works in Sesam.</P>
+
+<H2><A name="Personalizationarchitecture-Components%2FAPI"></A>Components / API</H2>
+
+<P>The architecture for personalization is build on three systems:</P>
+<UL>
+	<LI>the search front</LI>
+	<LI>the user admin application</LI>
+	<LI>the RMI backend, the service layer, for handling lookup and persistens of user data.</LI>
+</UL>
+
+
+<P>Both the RMI backend and the user admin application runs on our HA-JBoss environment using the HA-mysql database. The search front and the user admin application must share domain so they can share login cookies.</P>
+
+<H3><A name="Personalizationarchitecture-SearchFront"></A>Search Front</H3>
+
+<P>The search front should be as clean as possible. That's why we want to separate the user admin into it's own application. Then we don't have to handle validation and stuff like that in the search front.</P>
+
+<P>The search front will contain a user filter that is used to check if there exists a known user and populate the data model with the user object and the belonging properties. The search front can also set and remove single properties for a user, to make it possible handling i.e. news cases that is implemented as drag-n-drop. And a logout method. For more advanced editing of properties and creating user accounts etc, a link will bring the user over to the admin application.</P>
+
+<P>The user filter will work something like this.</P>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>UserFilter.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java"><SPAN class="code-keyword">public</SPAN> void doFilter(..) {
+
+    <SPAN class="code-keyword">if</SPAN> (<SPAN class="code-keyword">null</SPAN> == datamodel.getUser()) {
+
+        <SPAN class="code-comment">// Look <SPAN class="code-keyword">for</SPAN> login cookie
+</SPAN>
+        <SPAN class="code-keyword">if</SPAN> (<SPAN class="code-keyword">null</SPAN> != cookie) {
+
+            <SPAN class="code-comment">// Lookup user data by using cookie
+</SPAN>
+            <SPAN class="code-keyword">if</SPAN> (<SPAN class="code-keyword">null</SPAN> == user) {
+
+                <SPAN class="code-comment">// Do nothing, end filter
+</SPAN>
+            }
+
+            <SPAN class="code-keyword">if</SPAN> (legalToken) {
+
+                <SPAN class="code-comment">// Populate data model with user data and belonging properties
+</SPAN>                <SPAN class="code-comment">// Update login cookie
+</SPAN>
+            } <SPAN class="code-keyword">else</SPAN> {
+
+                <SPAN class="code-comment">// Invalidate all logins, warn user of theft
+</SPAN>
+            }
+        }
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H3><A name="Personalizationarchitecture-UserAdminApplication"></A>User Admin Application</H3>
+
+<P>The user admin application should have the following functionality:</P>
+<UL>
+	<LI><B>Create User</B>
+<BR clear="all">
+Form for creating a new user. Submit will create a non-confirmed user object and send confirm mail to the email address that is submitted.</LI>
+	<LI><B>Confirm User</B>
+<BR clear="all">
+Just a direct access page for confirming a new user. This page will confirm the user in the database and redirect the user to the login page.</LI>
+	<LI><B>Login User</B><BR>
+Page where the user can log in. After login, get links back to Sesam or update user data.</LI>
+	<LI><B>Edit Properties</B><BR>
+Pages where the user can edit all the properties for his user.</LI>
+	<LI><B>Edit User</B><BR>
+Page where the user can update the user info. If the user is based on an ldap user, the update will happen automatically, and give a message if an update was done.</LI>
+	<LI><B>Delete User</B><BR>
+Users should have the possiblility to delete their user object and all the belonging information.</LI>
+	<LI><B>Master Logout</B><BR>
+This action erases all remembered logins for the user in one action.</LI>
+</UL>
+
+
+<H3><A name="Personalizationarchitecture-RMIbackend"></A>RMI backend</H3>
+
+<P>The RMI backend should contain the implementation for the EJB3 entity beans, and a service layer that is used by the different applications. The service layer should contain all needed functionality, in an easy accessible way.</P>
+
+<P>The basic user service is a lightweight service class for authenticating users, and an easy way of getting/setting properties.</P>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>BasicUserService.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java"><SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> BacisUserService {
+
+    BasicUser authenticateByLoginKey(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> loginKey) <SPAN class="code-keyword">throws</SPAN> InvalidTokenException;
+
+    BasicUser authenticateByUsername(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> username, <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> password);
+
+    BasicUser findBasicUserByUsername(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> username);
+
+    BasicUser refreshUser(<SPAN class="code-keyword">final</SPAN> BasicUser user);
+
+    void invalidateLogin(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> loginKey);
+
+    void invalidateAllLogins(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> loginKey);
+
+    void invalidateAllLogins(<SPAN class="code-keyword">final</SPAN> BasicUser user);
+
+    BasicUser createUser(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> email, <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> firstName, <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> lastName,
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> password, <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> confirmUrl) <SPAN class="code-keyword">throws</SPAN> UserAlreadyExistsException,
+        MailException;
+
+    <SPAN class="code-object">boolean</SPAN> confirmUser(<SPAN class="code-keyword">final</SPAN> BasicUser user, <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> confirmKey);
+
+    void deleteUser(<SPAN class="code-keyword">final</SPAN> BasicUser user);
+
+    BasicUser setUserProperty(<SPAN class="code-keyword">final</SPAN> BasicUser user, <SPAN class="code-keyword">final</SPAN> PropertyKey propertyKey,
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> propertyValue);
+
+    BasicUser removeUserProperty(<SPAN class="code-keyword">final</SPAN> BasicUser user, <SPAN class="code-keyword">final</SPAN> PropertyKey propertyKey);
+
+    <SPAN class="code-object">boolean</SPAN> isLegalLoginKey(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> loginKey);
+
+}
+</PRE>
+</DIV></DIV>
+<P>The basic user class is a lightweight value class that just wraps in the needed information, totally stripped for entity magic. Remoting and serialization is also easy since it just contains simple Java attributes.</P>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>BasicUser.java</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java"><SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> BasicUser <SPAN class="code-keyword">extends</SPAN> Serializable {
+
+    <SPAN class="code-object">Long</SPAN> getUserId();
+
+    <SPAN class="code-object">String</SPAN> getUsername();
+
+    <SPAN class="code-object">String</SPAN> getFirstName();
+
+    <SPAN class="code-object">String</SPAN> getLastName();
+
+    Date getCreated();
+
+    Date getLastLogin();
+
+    <SPAN class="code-object">boolean</SPAN> isExternal();
+
+    Map&lt;PropertyKey, <SPAN class="code-object">String</SPAN>&gt; getUserPropertiesMap();
+
+    <SPAN class="code-object">String</SPAN> getNextLoginKey();
+
+    void setNextLoginKey(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> nextLoginKey);
+
+    Date getUpdateTimestamp();
+
+    void setUpdateTimestamp(<SPAN class="code-keyword">final</SPAN> Date updateTimestamp);
+
+    <SPAN class="code-object">boolean</SPAN> isDirty(<SPAN class="code-keyword">final</SPAN> Date timestamp);
+
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="Personalizationarchitecture-PersistentLoginCookie"></A>Persistent Login Cookie</H2>
+
+<P>Here is a summary of how we're handling the login cookies for Sesam.</P>
+
+<P><B>Our solution is based on:</B><BR>
+<A href="http://fishbowl.pastiche.org/2004/01/19/persistent_login_cookie_best_practice" rel="nofollow">Persistent Login Cookie Best Practice</A></P>
+
+<P><B>With a posted improvement:</B><BR>
+<A href="http://jaspan.com/improved_persistent_login_cookie_best_practice" rel="nofollow">Improved Persistent Login Cookie Best Practice</A></P>
+
+<P><B>The summary:</B></P>
+<OL>
+	<LI>When the user successfully logs in with Remember Me checked, a login cookie is issued in addition to the standard session management cookie.</LI>
+	<LI>The login cookie contains the user's username and a random number (the &quot;token&quot; from here on) from a suitably large space. The username and token are stored as a pair in a database table.</LI>
+	<LI>When a non-logged-in user visits the site and presents a login cookie, the username and token are looked up in the database.
+	<OL>
+		<LI>If the pair is present, the user is considered authenticated. The used token is removed from the database. A new token is generated, stored in database with the username, and issued to the user via a new login cookie.</LI>
+		<LI>If the pair is not present, the login cookie is ignored.</LI>
+	</OL>
+	</LI>
+	<LI>Users that are only authenticated via this mechanism are not permitted to access certain protected information or functions such as changing a password, viewing personally identifying information, or spending money. To perform those operations, the user must first successfully submit a normal username/password login form.</LI>
+	<LI>Since this approach allows the user to have multiple remembered logins from different browsers or computers, a mechanism is provided for the user to erase all remembered logins in a single operation.</LI>
+</OL>
+
+
+<P><B>The problem:</B></P>
+
+<P>One disadvantage, however, is that if an attacker successfully steals a victim's login cookie and uses it before the victim next accesses the site, the cookie will work and the site will issue a new valid login cookie to the attacker (this disadvantage is far from unique to Miller's design). The attacker will be able to continue accessing the site as the victim until the remembered login session expires. When the victim next accesses the site his remembered login will not work (because each token can only be used one time) but he's much more likely to think that &quot;something broke&quot; and just log in again than to realize that his credentials were stolen.</P>
+
+<P><B>The improvement:</B></P>
+<OL>
+	<LI>When the user successfully logs in with Remember Me checked, a login cookie is issued in addition to the standard session management cookie.</LI>
+	<LI>The login cookie contains the user's username, a series identifier, and a token. The series and token are unguessable random numbers from a suitably large space. All three are stored together in a database table.</LI>
+	<LI>When a non-logged-in user visits the site and presents a login cookie, the username, series, and token are looked up in the database.
+	<OL>
+		<LI>If the triplet is present, the user is considered authenticated. The used token is removed from the database. A new token is generated, stored in database with the username and the same series identifier, and a new login cookie containing all three is issued to the user.</LI>
+		<LI>If the username and series are present but the token does not match, a theft is assumed. The user receives a strongly worded warning and all of the user's remembered sessions are deleted.</LI>
+		<LI>If the username and series are not present, the login cookie is ignored.</LI>
+	</OL>
+	</LI>
+</OL>
+
+
+<P><B>Comments</B></P>
+<OL>
+	<LI>The cookie values would be on the form <B>userId###series###token</B> (specification below)
+<BR clear="all">
+Example: <B>1234###550E8400-E29B-11D4-A716-446655440000###3051a8d7-aea7-1801-e0bf-bc539dd60cf3</B></LI>
+	<LI>Users can have several user cookies, so they can be logged in on different machines at the same time.</LI>
+	<LI>There should be a service that will delete and clean up old data. Login cookies not used within 3 months, and users not accessed within 1 year should be deleted? Could be implemented by a scheduled service in the backend.</LI>
+</OL>
+
+
+<H2><A name="Personalizationarchitecture-Database"></A>Database</H2>
+
+<P>Below follow the SQL for the entities we use for personalization.</P>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>USER</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-sql">create table USER (
+  USER_ID bigint(20) primary key auto_increment,
+  USERNAME varchar(50) not null,
+  PASSWORD_HASH varchar(50) not null,
+  PASSWORD_SALT varchar(10) not null,
+  FIRST_NAME varchar(50) not null,
+  LAST_NAME varchar(50) not null,
+  CREATED timestamp not null,
+  CONFIRMED timestamp null,
+  LAST_UPDATED timestamp not null,
+  LAST_LOGIN timestamp null,
+  EXTERNAL char(1) not null  /* T or F */
+) engine=InnoDB charset=utf8;
+
+/* The username should be a mail address for internal users, and the ldap username or email for external users. */
+/* Passwords should not be saved in clear text, but as a hash. */
+/* For ldap users, the password could be just set to i.e. <SPAN class="code-quote">&quot;external&quot;</SPAN>, not hashed. */
+
+create index USER_ID on USER(USER_ID);
+
+create unique index USERNAME on USER(USERNAME);
+
+create index USERNAME_PASSWORD_HASH on USER(USERNAME, PASSWORD_HASH);
+
+create index FIRST_NAME on USER(FIRST_NAME);
+
+create index LAST_NAME on USER(LAST_NAME);
+</PRE>
+</DIV></DIV>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>USER_PROPERTY</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-sql">create table USER_PROPERTY (
+  USER_PROPERTY_ID bigint(20) primary key auto_increment,
+  USER_ID bigint(20) not null,
+  PROPERTY_KEY varchar(50) not null,
+  PROPERTY_VALUE varchar(2048)
+) engine=InnoDB charset=utf8;
+
+create index USER_ID on USER_PROPERTY(USER_ID);
+
+create index PROPERTY_KEY on USER_PROPERTY(PROPERTY_KEY);
+
+create index USER_ID_PROPERTY_KEY on USER_PROPERTY(USER_ID, PROPERTY_KEY);
+
+alter table USER_PROPERTY
+  add foreign key (USER_ID) references USER(USER_ID);
+</PRE>
+</DIV></DIV>
+<DIV class="code panel" style="border-style: solid;border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;border-bottom-style: solid;"><B>USER_COOKIE</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-sql">create table USER_COOKIE (
+  USER_COOKIE_ID bigint(20) primary key auto_increment,
+  USER_ID bigint(20) not null,
+  SERIES varchar(50) not null,
+  TOKEN varchar(50) not null,
+  CREATED timestamp not null
+) engine=InnoDB charset=utf8;
+
+create index USER_ID on USER_COOKIE(USER_ID);
+
+create unique index SERIES on USER_COOKIE(SERIES);
+
+create index USER_ID_SERIES on USER_COOKIE(USER_ID, SERIES);
+
+create index CREATED on USER_COOKIE(CREATED);
+
+alter table USER_COOKIE
+  add foreign key (USER_ID) references USER(USER_ID);
+</PRE>
+</DIV></DIV>
+<P><B>Comments</B></P>
+<OL>
+	<LI>Legal property keys is implemented by using a Java enum. Can also be implemented as a code value entity.</LI>
+	<LI>When creating cookie series, must check for duplicated series id's. Must be done synchronized?</LI>
+</OL>
+
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

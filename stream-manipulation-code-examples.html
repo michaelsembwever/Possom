@@ -1,0 +1,519 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Stream manipulation code examples</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="architecture-overview.html" title="Architecture Overview">Architecture Overview</A>&nbsp;&gt;&nbsp;<A href="design-proposals.html" title="Design Proposals">Design Proposals</A>&nbsp;&gt;&nbsp;<A href="new-design-proposal-for-searchcommand-and-abstractsearchcommand.html" title="New design proposal for SearchCommand and AbstractSearchCommand">New design proposal for SearchCommand and AbstractSearchCommand</A>&nbsp;&gt;&nbsp;<A href="" title="Stream manipulation code examples">Stream manipulation code examples</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <DIV>
+<UL>
+    <LI><A href="#Streammanipulationcodeexamples-Restful">Restful</A></LI>
+    <LI><A href="#Streammanipulationcodeexamples-XmlResultful">XmlResultful</A></LI>
+    <LI><A href="#Streammanipulationcodeexamples-ExampleabstractXmlRestfulimplementation">Example abstract XmlRestful implementation</A></LI>
+    <LI><A href="#Streammanipulationcodeexamples-ExampleUsecase">Example Usecase</A></LI>
+</UL></DIV>
+
+<H2><A name="Streammanipulationcodeexamples-Restful"></A>Restful</H2>
+<P>This example defines an interface outside of the SearchCommand class/interface hierarchy.<BR>
+This approach permits delegation to occur from SearchCommand class to a Restful instance.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** SearchCommands that are RESTful should implement <SPAN class="code-keyword">this</SPAN> behaviour.
+ * http:<SPAN class="code-comment">//en.wikipedia.org/wiki/Representational_State_Transfer
+</SPAN> */
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> Restful {
+
+    /** A RESTful service requires a URL.
+     * The resource part of the URL is usually constant to the particular command instance,
+     *  but each search creates a seperate URL.
+     *
+     * @<SPAN class="code-keyword">return</SPAN> the URL to use to the RESTful service.
+     */
+    <SPAN class="code-object">String</SPAN> createRequestURL();
+    
+    /** Obtain a BufferedReader, in the given encoding, of the RESTful result.
+     * Makes the presumption that the RESTful service returns an ascii and not binary response.
+     *
+     * @param encoding
+     * @<SPAN class="code-keyword">return</SPAN>
+     * @<SPAN class="code-keyword">throws</SPAN> java.io.IOException
+     */
+    BufferedReader getHttpReader(<SPAN class="code-object">String</SPAN> encoding) <SPAN class="code-keyword">throws</SPAN> IOException;
+    
+}
+</PRE>
+</DIV></DIV>
+<H2><A name="Streammanipulationcodeexamples-XmlResultful"></A>XmlResultful</H2>
+<P>An extension to the Restful interface when it is known the response will be in xml format.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** SearchCommands that are RESTful and <SPAN class="code-keyword">return</SPAN> XML response.
+ * http:<SPAN class="code-comment">//en.wikipedia.org/wiki/Representational_State_Transfer
+</SPAN> *
+ * It makes the presumption of working with JAXP's DOM.
+ */
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> XmlRestful <SPAN class="code-keyword">extends</SPAN> Restful{
+
+    Document getXmlResult() <SPAN class="code-keyword">throws</SPAN> IOException, SAXException;
+}
+</PRE>
+</DIV></DIV>
+<H2><A name="Streammanipulationcodeexamples-ExampleabstractXmlRestfulimplementation"></A>Example abstract XmlRestful implementation</H2>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/**
+ * Base implementation <SPAN class="code-keyword">for</SPAN> search commands that are RESTful and have XML responses.
+ * 
+ * The RESTful server is defined through:
+ * host: AbstractXmlSearchConfiguration.getHost()
+ * port: AbstractXmlSearchConfiguration.getPort()
+ *
+ * @version $Id: AbstractXmlSearchCommand.java 6596 2008-05-10 10:05:48Z ssmiweve $
+ */
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">abstract</SPAN> class AbstractXmlRestful <SPAN class="code-keyword">implements</SPAN> XmlRestful{
+
+    <SPAN class="code-comment">// Attributes ----------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">transient</SPAN> HTTPClient client;
+
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+
+    /**
+     * Create <SPAN class="code-keyword">new</SPAN> xml based command.
+     */
+    <SPAN class="code-keyword">public</SPAN> AbstractXmlRestful(<SPAN class="code-keyword">final</SPAN> Context cxt) {
+
+        <SPAN class="code-keyword">final</SPAN> AbstractXmlSearchConfiguration conf = (AbstractXmlSearchConfiguration)cxt.getSearchConfiguration();
+
+        <SPAN class="code-keyword">final</SPAN> SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> host = siteConf.getProperty(conf.getHost());
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">int</SPAN> port = <SPAN class="code-object">Integer</SPAN>.parseInt(siteConf.getProperty(conf.getPort()));
+
+        client = HTTPClient.instance(conf.getHostHeader().length() &gt; 0 ? conf.getHostHeader() : host, port, host);
+    }
+
+    <SPAN class="code-comment">// Public --------------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">final</SPAN> Document getXmlResult() <SPAN class="code-keyword">throws</SPAN> IOException, SAXException {
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> url = createRequestURL();
+        <SPAN class="code-keyword">return</SPAN> client.getXmlDocument(url);
+    }
+
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">final</SPAN> BufferedReader getHttpReader(<SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> encoding) <SPAN class="code-keyword">throws</SPAN> IOException {
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> url = createRequestURL();
+        <SPAN class="code-keyword">return</SPAN> client.getBufferedReader(url, encoding);
+    }
+}
+</PRE>
+</DIV></DIV>
+
+<H2><A name="Streammanipulationcodeexamples-ExampleUsecase"></A>Example Usecase</H2>
+<P>AbstractXmlSearchCommand here is largely refactored (simplified) and now holds an Restful instance and delegates to it as needed</P>
+
+<P>AbstractXmlSearchCommand also introduces the createItem behaviour requirement as it's the norm that each individual result is defined within a separate element within the xml response.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/**
+ * Helper base implementation <SPAN class="code-keyword">for</SPAN> search commands that are RESTful and have XML responses.
+ * 
+ * The RESTful server is defined through:
+ * host: AbstractXmlSearchConfiguration.getHost()
+ * port: AbstractXmlSearchConfiguration.getPort()
+ */
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">abstract</SPAN> class AbstractXmlSearchCommand <SPAN class="code-keyword">extends</SPAN> AbstractSearchCommand{
+
+    <SPAN class="code-comment">// Attributes ----------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">private</SPAN> XmlRestful restful;
+
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+
+    /**
+     * Create <SPAN class="code-keyword">new</SPAN> xml based command.
+     *
+     * @param cxt The context to execute in.
+     */
+    <SPAN class="code-keyword">protected</SPAN> AbstractXmlSearchCommand(<SPAN class="code-keyword">final</SPAN> Context cxt) {
+        <SPAN class="code-keyword">super</SPAN>(cxt);
+    }
+
+    <SPAN class="code-comment">// Public --------------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> createRequestURL() {
+        
+        <SPAN class="code-keyword">return</SPAN> restful.createRequestURL();
+    }
+    
+    <SPAN class="code-comment">// Protected -----------------------------------------------------
+</SPAN>
+
+    /** Each individual result is usually defined within one given Element.
+     *
+     * @param result the w3c element
+     * @<SPAN class="code-keyword">return</SPAN> the ResultItem
+     */
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">abstract</SPAN> ResultItem createItem(<SPAN class="code-keyword">final</SPAN> Element result);
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> XmlRestful getXmlRestful(){
+        <SPAN class="code-keyword">return</SPAN> restful;
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> void setXmlRestful(<SPAN class="code-keyword">final</SPAN> XmlRestful restful){
+        <SPAN class="code-keyword">this</SPAN>.restful = restful;
+    }
+}
+</PRE>
+</DIV></DIV>
+<P>PicSearchCommand extends a final implementation on AbstractXmlSearchCommand displaying the delegation pattern at whole.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/**
+ * A search command that uses the picsearch API.
+ */
+<SPAN class="code-keyword">public</SPAN> class PicSearchCommand <SPAN class="code-keyword">extends</SPAN> AbstractXmlSearchCommand {
+
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> Logger LOG = Logger.getLogger(PicSearchCommand.class);
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-keyword">transient</SPAN> HTTPClient client;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">int</SPAN> port;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> REQ_URL_FMT = <SPAN class="code-quote">&quot;/query?ie=UTF-8&amp;tldb={0}&amp;filter={1}&amp;custid={2}&amp;version=2.6&quot;</SPAN>
+            + <SPAN class="code-quote">&quot;&amp;thumbs={3}&amp;q={4}&amp;start={5}&amp;site={6}&amp;color={7}&amp;size={8}&quot;</SPAN>;
+
+    /**
+     * Creates a <SPAN class="code-keyword">new</SPAN> command in given context.
+     *
+     * @param cxt Context to run in.
+     */
+    <SPAN class="code-keyword">public</SPAN> PicSearchCommand(<SPAN class="code-keyword">final</SPAN> Context cxt) {
+
+        <SPAN class="code-keyword">super</SPAN>(cxt);
+        
+        setXmlRestful(
+                <SPAN class="code-keyword">new</SPAN> AbstractXmlRestful(cxt) {
+                    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-object">String</SPAN> createRequestURL() {
+
+
+                        <SPAN class="code-keyword">final</SPAN> PictureCommandConfig cfg = (PictureCommandConfig) cxt.getSearchConfiguration();
+
+                        <SPAN class="code-keyword">try</SPAN> {
+
+                            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> query = URLEncoder.encode(PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getTransformedQuery(), <SPAN class="code-quote">&quot;utf-8&quot;</SPAN>);
+                            
+                            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> color = <SPAN class="code-keyword">null</SPAN> != PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getParameter(<SPAN class="code-quote">&quot;color&quot;</SPAN>) 
+                                    ? PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getParameter(<SPAN class="code-quote">&quot;color&quot;</SPAN>) 
+                                    : &quot;&quot;;
+                            
+                            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> size = <SPAN class="code-keyword">null</SPAN> != PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getParameter(<SPAN class="code-quote">&quot;size&quot;</SPAN>) 
+                                    ? PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getParameter(<SPAN class="code-quote">&quot;size&quot;</SPAN>) 
+                                    : &quot;&quot;;
+                            
+                            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> urlBoost = PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getFilterBuilder().getFilter(<SPAN class="code-quote">&quot;tldb&quot;</SPAN>)
+                                    .replace('=', ':')
+                                    .replace(' ', ',');
+
+                            <SPAN class="code-keyword">if</SPAN>(<SPAN class="code-keyword">null</SPAN> != cfg.getSite() &amp;&amp; cfg.getSite().length() &gt; 0){
+                                PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getFilterBuilder().addFilter(<SPAN class="code-quote">&quot;site&quot;</SPAN>, cfg.getSite());
+                            }
+
+                            <SPAN class="code-comment">// The boost can eiter be from the URL or from the configuration.
+</SPAN>                            <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> boost = URLEncoder.encode(urlBoost.length() &gt; 0 ? urlBoost : cfg.getDomainBoost(), <SPAN class="code-quote">&quot;utf-8&quot;</SPAN>);
+
+                            <SPAN class="code-keyword">return</SPAN> MessageFormat.format(REQ_URL_FMT,
+                                    boost,
+                                    cfg.getFilter(),
+                                    cfg.getCustomerId(),
+                                    cfg.getResultsToReturn(),
+                                    query,
+                                    PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getOffset()+1,
+                                    PicSearchCommand.<SPAN class="code-keyword">this</SPAN>.getFilterBuilder().getFilter(<SPAN class="code-quote">&quot;site&quot;</SPAN>).replace(' ', ','),
+                                    color,
+                                    size);
+
+                        } <SPAN class="code-keyword">catch</SPAN> (UnsupportedEncodingException e) {
+                           <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> SearchCommandException(e);
+                        }
+                            
+                    }
+        });
+
+        <SPAN class="code-keyword">final</SPAN> SiteConfiguration siteConfig = datamodel.getSite().getSiteConfiguration();
+        <SPAN class="code-keyword">final</SPAN> PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
+
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> host = siteConfig.getProperty(psConfig.getQueryServerHost());
+        port = <SPAN class="code-object">Integer</SPAN>.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
+        client = HTTPClient.instance(host, port);
+
+    }
+
+    <SPAN class="code-keyword">public</SPAN> ResultList&lt;ResultItem&gt; execute() {
+
+            <SPAN class="code-keyword">final</SPAN> BasicResultList&lt;ResultItem&gt; searchResult = <SPAN class="code-keyword">new</SPAN> BasicResultList&lt;ResultItem&gt;();
+
+            <SPAN class="code-keyword">if</SPAN> (port &gt; 0){
+                <SPAN class="code-keyword">try</SPAN> {
+
+                    <SPAN class="code-keyword">final</SPAN> Document doc = getXmlRestful().getXmlResult();
+                    <SPAN class="code-keyword">if</SPAN> (doc != <SPAN class="code-keyword">null</SPAN>) {
+                        <SPAN class="code-keyword">final</SPAN> Element resultElement = doc.getDocumentElement();
+                        searchResult.setHitCount(<SPAN class="code-object">Integer</SPAN>.parseInt(resultElement.getAttribute(<SPAN class="code-quote">&quot;hits&quot;</SPAN>)));
+                        <SPAN class="code-keyword">final</SPAN> NodeList list = resultElement.getElementsByTagName(<SPAN class="code-quote">&quot;image&quot;</SPAN>);
+                        <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-object">int</SPAN> i = 0; i &lt; list.getLength(); i++) {
+                            searchResult.addResult(createItem((Element) list.item(i)));
+                        }
+                    }
+
+                } <SPAN class="code-keyword">catch</SPAN> (IOException ex) {
+                    <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> SearchCommandException(ex);
+                } <SPAN class="code-keyword">catch</SPAN> (SAXException ex) {
+                    <SPAN class="code-keyword">throw</SPAN> <SPAN class="code-keyword">new</SPAN> SearchCommandException(ex);
+                }
+            }
+
+            <SPAN class="code-keyword">return</SPAN> searchResult;
+
+    }
+
+    @Override
+    <SPAN class="code-keyword">protected</SPAN> ResultItem createItem(<SPAN class="code-keyword">final</SPAN> Element picture) {
+
+        <SPAN class="code-keyword">final</SPAN> BasicResultItem item = <SPAN class="code-keyword">new</SPAN> BasicResultItem();
+        <SPAN class="code-keyword">for</SPAN> (<SPAN class="code-keyword">final</SPAN> Map.Entry&lt;<SPAN class="code-object">String</SPAN>, <SPAN class="code-object">String</SPAN>&gt; entry : getSearchConfiguration().getResultFieldMap().entrySet()) {
+            item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
+        }
+        <SPAN class="code-keyword">return</SPAN> item;
+        
+    }
+}
+</PRE>
+</DIV></DIV>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

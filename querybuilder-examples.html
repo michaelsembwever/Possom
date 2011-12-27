@@ -1,0 +1,407 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('http://sesat.no/confluence/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>QueryBuilder examples</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="architecture-overview.html" title="Architecture Overview">Architecture Overview</A>&nbsp;&gt;&nbsp;<A href="design-proposals.html" title="Design Proposals">Design Proposals</A>&nbsp;&gt;&nbsp;<A href="new-design-proposal-for-searchcommand-and-abstractsearchcommand.html" title="New design proposal for SearchCommand and AbstractSearchCommand">New design proposal for SearchCommand and AbstractSearchCommand</A>&nbsp;&gt;&nbsp;<A href="" title="QueryBuilder examples">QueryBuilder examples</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.no/search/" method="get">
+            <INPUT type="hidden" name="c" value="d">
+            <INPUT type="hidden" name="domain" value="sesat.no">
+            <INPUT type="text" name="q" maxlength="255" value="">        
+            <INPUT type="submit" name="btnG" value="Sesam Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn" style="float: left; align: left; text-align: left; width: 13%; border-top: solid lightgrey; border-top-width: 1px; border-right: solid lightgrey; border-right-width:  1px;  border-bottom: solid lightgrey; border-bottom-width: 1px;">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License
+</A>
+</LI>
+</UL>
+
+<H5>
+Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial
+</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>
+Development
+</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/community.html">
+Community Overview
+</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/maven2/">
+Maven Repository
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues
+</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/team-list.html">
+The Sesat Team
+</A>
+</LI>
+</UL>
+
+<H5>
+Projects - Commons
+</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-commons/">Commons</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-ioc/">IOC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-log4j/">Log4j</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-reflect/">Reflect</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-reference-map/">Reference Map</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-validation/">Validation</A><BR>
+</LI>
+</UL>
+<H5>
+Projects - Kernel
+</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Kernel</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Kernel Mojo</A><BR>
+</LI>
+</UL>
+<H5>
+Projects - Admin
+</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-admin/">
+Admin Portlets
+</A>
+</LI>
+</UL>
+
+<H5>
+Sitemap
+</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">/** QueryBuilder provides a string representation of a Query Tree against of map of <SPAN class="code-quote">&quot;transformed terms&quot;</SPAN>.
+ *
+ * It is similar in functionality to the QueryTransformer <SPAN class="code-keyword">interface</SPAN>
+ *  except that it does not transform terms but uses them to build the <SPAN class="code-keyword">final</SPAN> string representation.
+ */
+<SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">interface</SPAN> QueryBuilder <SPAN class="code-keyword">extends</SPAN> Visitor {
+
+    <SPAN class="code-keyword">interface</SPAN> Context <SPAN class="code-keyword">extends</SPAN> QueryContext, ResourceContext, SiteContext, DataModelContext{
+
+        /**
+         * Get the terms with their current transformed representations.
+         * @<SPAN class="code-keyword">return</SPAN>
+         */
+        Map&lt;Clause, <SPAN class="code-object">String</SPAN>&gt; getTransformedTerms();
+
+        /** Get the unescaped transformed term <SPAN class="code-keyword">for</SPAN> the clause.
+         *
+         * @param clause
+         * @<SPAN class="code-keyword">return</SPAN> unescaped transformed term
+         */
+        <SPAN class="code-object">String</SPAN> getTransformedTerm(Clause clause);
+
+        /**
+         * For evaluation acitions on individual (or the whole query) terms.
+         * @<SPAN class="code-keyword">return</SPAN>
+         */
+        TokenEvaluationEngine getTokenEvaluationEngine();
+
+        /**
+         * QueryTransformers must follow the same XorClause hints as the search command. *
+         * @param visitor
+         * @param clause
+         */
+        void visitXorClause(Visitor visitor, XorClause clause);
+
+        /**
+         * QueryTransformers needs information about supported field filters. *
+         * @param clause
+         * @<SPAN class="code-keyword">return</SPAN>
+         */
+        <SPAN class="code-object">String</SPAN> getFieldFilter(LeafClause clause);
+
+        /** The collection of words that have special meaning/function within the query string
+         *
+         * @<SPAN class="code-keyword">return</SPAN> collection of reserved words
+         */
+        Collection&lt;<SPAN class="code-object">String</SPAN>&gt; getReservedWords();
+
+        /** Escape the word.
+         * The word need not be reserved or require escaping but should be escaped anyway.
+         *
+         * @param word
+         * @<SPAN class="code-keyword">return</SPAN> escaped version of the word
+         */
+        <SPAN class="code-object">String</SPAN> escape(<SPAN class="code-object">String</SPAN> word);
+    }
+
+    /** The Query <SPAN class="code-object">String</SPAN> built from the Query's transformed clauses
+     * 
+     * @param query
+     * @<SPAN class="code-keyword">return</SPAN> string built from the Query's transformed clauses
+     */
+    <SPAN class="code-object">String</SPAN> getQueryString(Query query);
+}
+
+/** The <SPAN class="code-keyword">default</SPAN> QueryBuilder.
+ * Is not thread safe.
+ */
+<SPAN class="code-keyword">public</SPAN> class BaseQueryBuilder <SPAN class="code-keyword">extends</SPAN> AbstractQueryBuilder{
+
+    <SPAN class="code-comment">// Constants -----------------------------------------------------
+</SPAN>
+    <SPAN class="code-comment">//<SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> Logger LOG = Logger.getLogger(BaseQueryBuilder.class);
+</SPAN>
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> AND = <SPAN class="code-quote">&quot;AND&quot;</SPAN>;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> OR = <SPAN class="code-quote">&quot;OR&quot;</SPAN>;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> NOT = <SPAN class="code-quote">&quot;NOT&quot;</SPAN>;
+    <SPAN class="code-keyword">private</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> ANDNOT = <SPAN class="code-quote">&quot;ANDNOT&quot;</SPAN>;
+
+
+    <SPAN class="code-keyword">public</SPAN> <SPAN class="code-keyword">static</SPAN> <SPAN class="code-keyword">final</SPAN> Collection&lt;<SPAN class="code-object">String</SPAN>&gt; RESERVED_WORDS 
+            = Collections.unmodifiableCollection(Arrays.asList(<SPAN class="code-keyword">new</SPAN> <SPAN class="code-object">String</SPAN>[]{
+                AND,
+                OR,
+                NOT,
+                ANDNOT
+            }));
+
+
+    <SPAN class="code-comment">// Attributes ----------------------------------------------------
+</SPAN>    
+
+    <SPAN class="code-comment">// Static --------------------------------------------------------
+</SPAN>
+    <SPAN class="code-comment">// Constructors --------------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">public</SPAN> BaseQueryBuilder(<SPAN class="code-keyword">final</SPAN> Context cxt) {
+        <SPAN class="code-keyword">super</SPAN>(cxt);
+    }
+
+    <SPAN class="code-comment">// AbstractReflectionVisitor implementation ----------------------------------------------
+</SPAN>
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> LeafClause clause) {
+
+        appendToQueryRepresentation(getContext().getTransformedTerm(clause));
+
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> OperationClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> AndClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ' + AND + ' ');
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> OrClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ' + OR + ' ');
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> DefaultOperatorClause clause) {
+
+        clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        appendToQueryRepresentation(' ');
+        clause.getSecondClause().accept(<SPAN class="code-keyword">this</SPAN>);
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> NotClause clause) {
+
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> childsTerm = getContext().getTransformedTerm(clause.getFirstClause());
+        <SPAN class="code-keyword">if</SPAN> (childsTerm != <SPAN class="code-keyword">null</SPAN> &amp;&amp; childsTerm.length() &gt; 0) {
+            appendToQueryRepresentation(NOT + ' ');
+            clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        }
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> AndNotClause clause) {
+
+        <SPAN class="code-keyword">final</SPAN> <SPAN class="code-object">String</SPAN> childsTerm = getContext().getTransformedTerm(clause.getFirstClause());
+        <SPAN class="code-keyword">if</SPAN> (childsTerm != <SPAN class="code-keyword">null</SPAN> &amp;&amp; childsTerm.length() &gt; 0) {
+            appendToQueryRepresentation(ANDNOT + ' ');
+            clause.getFirstClause().accept(<SPAN class="code-keyword">this</SPAN>);
+        }
+    }
+
+    <SPAN class="code-keyword">protected</SPAN> <SPAN class="code-keyword">final</SPAN> void visitImpl(<SPAN class="code-keyword">final</SPAN> XorClause clause) {
+
+        getContext().visitXorClause(<SPAN class="code-keyword">this</SPAN>, clause);
+    }
+    
+    <SPAN class="code-comment">// Private -------------------------------------------------------
+</SPAN>    
+    <SPAN class="code-comment">// Inner classes -------------------------------------------------
+</SPAN>}</PRE>
+</DIV></DIV>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007 <A href="http://sesam.no/search/?q&page=1&catid=41">Schibsted S&oslash;k AS</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

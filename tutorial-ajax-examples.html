@@ -1,0 +1,332 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Tutorial - Ajax examples</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A>&nbsp;&gt;&nbsp;<A href="" title="Tutorial - Ajax examples">Tutorial - Ajax examples</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H1><A name="Tutorial-Ajaxexamples-Tutorial%2Candbestpractices%2ConusingAjaxintemplates"></A>Tutorial, and best practices, on using Ajax in templates</H1>
+
+<H2><A name="Tutorial-Ajaxexamples-Thesimpleway"></A>The simple way</H2>
+
+<P>The RunningQueryImpl has a number of supported parameters that, in combination with using various layouts per tab (which can also be called a &quot;vertical&quot;), can be used to build a rich ajax client.</P>
+
+<P>Each tab/vertical has a connection to one mode. In this mode there is a list of commands to run. By default all commands are run unless they are associated to enrichments from the tab, and the enrichment's rule achieved a score meeting the enrichment's threshold. Enough about enrichments, that's a <A href="developing-a-quick-and-simple-enrichment-tutorial.html" title="Developing a quick and simple Enrichment tutorial">story</A> for another day.</P>
+
+<H6><A name="Tutorial-Ajaxexamples-Thecommandsparameter"></A>The <EM>commands</EM> parameter</H6>
+
+<P>This default behavior of which commands to run within the RunningQueryImpl can be explicitly, and per request, defined via the &quot;commands&quot; parameter.<BR>
+For example, this <A href="http://sesam.no/search/?q=sesat&commands=defaultSearch" rel="nofollow">search</A> asks for <EM>only</EM> the defaultSearch command to run on sesam.no which is why you see &quot;?&quot; for the hit count on all the other services. The commands parameter takes a comma separate list when you want to request multiple commands within the mode to be run.</P>
+
+<H6><A name="Tutorial-Ajaxexamples-ThewaitForparameter"></A>The <EM>waitFor</EM> parameter</H6>
+
+<P>By default the RunningQueryImpl waits until all commands have been executed. This need not be the case though if you give, in modes.xml, the command the attribute <EM>asynchronous=&quot;true&quot;</EM>. If a command is attributed such and you want to be guaranteed to see the results you must explicitly state that you are willing to wait for the command to finished by adding the parameter for example <EM>waitFor=defaultSearch</EM>.</P>
+
+<P>The waitFor parameter can be used in a number of ways:</P>
+<UL>
+	<LI><EM>commands=defaultSearch&amp;waitFor=defaultSearch</EM> explicitly asks the command to be run, and presuming that it is attributed as an asynchronous command, and to wait until it is finished.</LI>
+	<LI><EM>waitFor=defaultSearch</EM> asks to wait for the command to finish. This presumes that the command is included in the default list of commands to run but is attributed as asynchronous.</LI>
+	<LI><EM>commands=&amp;waitFor=defaultSearch</EM> disables all commands from running but asks to wait for the command to finish. This presumes that a previous request started the command. This demonstrates how commands are stored in the datamodel between requests and how asynchronous commands can be initiated by the original request, but not used in that request's output, and their results used via a second request, eg an ajax call, later on.</LI>
+</UL>
+
+
+<H6><A name="Tutorial-Ajaxexamples-Thelayoutparameter"></A>The <EM>layout</EM> parameter</H6>
+
+<P>Finally all this can be used with alternative layouts by suppling the <EM>layout</EM> parameter.<BR>
+Each tab contains a default layout that is in views.xml the tab without an id attribute. With the layout parameter defined a layout with a matching id is looked for and used instead. If it can't be found the default is still used. <BR>
+This allows a pseudo &quot;portals&quot; approach to the templating system. For example the request <A href="http://sesam.no/search/?q=sesat&commands=defaultSearch&layout=defaultSearchlayout" rel="nofollow">http://sesam.no/search/?q=sesat&amp;commands=defaultSearch&amp;layout=defaultSearchlayout</A><BR>
+with the additional layout</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">&lt;layout id=<SPAN class="code-quote">&quot;defaultSearchLayout&quot;</SPAN> main=<SPAN class="code-quote">&quot;/fragments/layout/results/defaultSearch&quot;</SPAN>/&gt;</PRE>
+</DIV></DIV>
+<P>would render only the main results list on the page.</P>
+
+<P>This above given layout doesn't have any embedded include templates. Since the result list is all rendered with just defaultSearch.vm template it can be supplied directly, in an absolute manner (see the initial / in the path), as the <EM>main</EM> template.</P>
+
+<H6><A name="Tutorial-Ajaxexamples-Examplesandusages"></A>Examples and usages</H6>
+
+<P>This section won't include much code, but will explain in more detail how AJAX can be used. For these examples we'll use the following configuration:</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>views.xml</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java">&lt;view id=<SPAN class="code-quote">&quot;ajax-test&quot;</SPAN> key=<SPAN class="code-quote">&quot;at&quot;</SPAN> mode=<SPAN class="code-quote">&quot;ajax-test&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-mode&quot;</SPAN>&gt;
+  &lt;!-- <SPAN class="code-keyword">default</SPAN> layout <SPAN class="code-keyword">for</SPAN> normal requests --&gt;
+  &lt;layout main=<SPAN class="code-quote">&quot;main&quot;</SPAN>&gt;
+    &lt;include ...&gt;
+    [...]
+  &lt;/layout&gt;
+
+  &lt;!-- layout <SPAN class="code-keyword">for</SPAN> the ajax request using the ajaxtest template--&gt;
+  &lt;layout id=<SPAN class="code-quote">&quot;ajax&quot;</SPAN> main=<SPAN class="code-quote">&quot;ajaxtest&quot;</SPAN>/&gt; 
+&lt;/view&gt;
+</PRE>
+</DIV></DIV>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeHeader panelHeader" style="border-bottom-width: 1px;"><B>modes.xml</B></DIV><DIV class="codeContent panelContent">
+<PRE class="code-java">&lt;mode id=<SPAN class="code-quote">&quot;ajax-test&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-mode&quot;</SPAN>&gt;
+  &lt;yahoo-web-command id=<SPAN class="code-quote">&quot;defaultSearch&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-yahoo-web-command&quot;</SPAN> asynchronous=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">true</SPAN>&quot;</SPAN>/&gt;
+  &lt;yet-another-search-command id=<SPAN class="code-quote">&quot;yasc&quot;</SPAN> inherhit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-yasc&quot;</SPAN>/&gt;
+&lt;/mode&gt;
+</PRE>
+</DIV></DIV>
+
+<P>There's a few different ways AJAX/SESAT can be used to enhance a web page. What's probably most useful is the ability to fetch slow results using a second request.</P>
+
+<P><B>Note: This is currently broken and probably won't work as expected until SESAT 2.18.</B> See <A href="http://sesat.no/scarab/issues/id/SKER4737" rel="nofollow">http://sesat.no/scarab/issues/id/SKER4737</A></P>
+
+<P>The following steps will show a typical use of this:</P>
+<OL>
+	<LI>The users browser makes a request to /search/?c=at&amp;q=sesat</LI>
+	<LI>SESAT executes all search commands. Since defaultSearch is marked as asynchronous it's not waited for by SESAT, so if it' not finished by the time the other search commands are it's not included in the results returned to the browser.</LI>
+	<LI>The users browser executes javascript code that was returned in the first response and does an AJAX request to /search/?c=at&amp;q=sesat&amp;commands=&amp;waitFor=defaultSearch&amp;layout=ajax</LI>
+	<LI>SESAT fetches the search result for defaultSearch that was executed by the previous request and returns it to the browser using the templates associated with the layout with id ajax.</LI>
+	<LI>The users browser dynamically adds the defaultSearch result to the web page.</LI>
+</OL>
+
+
+
+<P>Another use would be to only fetch the results of specific search commands:</P>
+<OL>
+	<LI>The users browser makes a request to a given web page</LI>
+	<LI>The users browser executes javascript code that was returned in the first response and does an AJAX request to to /search/?c=at&amp;q=sesat&amp;commands=yasc&amp;layout=ajax</LI>
+	<LI>SESAT executes only the yasc command and wait for it to finish before returning the result to the browser.</LI>
+	<LI>The users browser dynamically adds the yasc result to the web page</LI>
+</OL>
+
+
+<H2><A name="Tutorial-Ajaxexamples-Thehardway"></A>The hard way</H2>
+<P>Enable DWR (the dependency and the servlet). This serialises the whole datamodel through the request so it is available in the client's javascript. This is a far more advanced approach when much more logic is required on the client side. DWR is disabled by default in Sesat as we suspect the simpler approach is well, simpler.</P>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

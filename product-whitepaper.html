@@ -1,0 +1,489 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Product Whitepaper</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="features.html" title="Features">Features</A>&nbsp;&gt;&nbsp;<A href="" title="Product Whitepaper">Product Whitepaper</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <H1><A name="ProductWhitepaper-SesatWhitepaper"></A>Sesat Whitepaper</H1>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do you need help to <A href="product-description-business-managers-business-developers.html" title="Product Description - Business Managers & Business Developers">convince your boss</A> <IMG class="emoticon" src="http://confluence.finn.no/images/icons/emoticons/smile.gif" height="20" width="20" align="absmiddle" alt="" border="0"></P>
+<HR>
+
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1258058116934 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1258058116934 ul {margin-left: 0px;padding-left: 19;}
+div.rbtoc1258058116934 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1258058116934">
+<UL>
+    <LI><A href="#ProductWhitepaper-SesatWhitepaper">Sesat Whitepaper</A></LI>
+<UL>
+    <LI><A href="#ProductWhitepaper-Preface">Preface</A></LI>
+    <LI><A href="#ProductWhitepaper-Introduction">Introduction</A></LI>
+<UL>
+    <LI><A href="#ProductWhitepaper-ExecutiveSummary">Executive Summary</A></LI>
+</UL>
+</UL>
+    <LI><A href="#ProductWhitepaper-Architecture">Architecture</A></LI>
+<UL>
+    <LI><A href="#ProductWhitepaper-Overview">Overview</A></LI>
+    <LI><A href="#ProductWhitepaper-Architectureofanexampleapplication">Architecture of an example application</A></LI>
+</UL>
+    <LI><A href="#ProductWhitepaper-Corecomponents">Core components</A></LI>
+<UL>
+    <LI><A href="#ProductWhitepaper-SesatKernel">Sesat Kernel</A></LI>
+<UL>
+    <LI><A href="#ProductWhitepaper-SearchLifecycle">Search Lifecycle</A></LI>
+</UL>
+    <LI><A href="#ProductWhitepaper-SesatSFCSesatSearchFrontendContainer">Sesat SFC - Sesat Search Front-end Container</A></LI>
+    <LI><A href="#ProductWhitepaper-SesatAPI">Sesat API</A></LI>
+    <LI><A href="#ProductWhitepaper-SesatADM">Sesat ADM</A></LI>
+</UL>
+    <LI><A href="#ProductWhitepaper-SesatLicense">Sesat License</A></LI>
+</UL></DIV>
+
+
+
+<H2><A name="ProductWhitepaper-Preface"></A>Preface</H2>
+
+<P><B>Sesat</B> &#45; SEsam Search Application Toolkit - is a stack of software applications aiming to help efficient creation of feature-rich, stable and multi-source based search portals and search applications. Based on experience and learnings from the first installations of Sesam.no and Sesam.se, <B>Sesat</B> is now an extensive toolkit with one primary focus: reduce development complexity and dramatically improve quality and delivery time. In fact, <B>Sesat</B> lets customers create fully-functional portals in a few days rather than many months, as proved by the teams behind Sesam.no and Sesam.se, all using <B>Sesat</B> to speed up site and site search development.</P>
+
+<P>In general, writing a search application from scratch given only one or more indexes providing search results as data objects or XML, the following steps are usual:</P>
+<UL>
+	<LI>Create an application where the user types a search query</LI>
+	<LI>Create a search function for each of the data sources to be searched in, tailored to the index profile / index data model</LI>
+	<LI>The application queries each of the data sources in turn</LI>
+	<LI>Display the results to the user</LI>
+</UL>
+
+
+<P>But, this is <B>not at all flexible or scalable</B>, with code that needs to be rewritten and tailored to any change in the underlying data source models. <B>A much better approach would be to:</B></P>
+<UL>
+	<LI>Define a dynamic data model for each of the indexes to be searched in</LI>
+	<LI>Implement either a parallel or a sequential search function that takes the search string and queries the different data sources, collects the data and delivers it to a templating engine. For such a function to be stable, it should
+	<UL>
+		<LI>Be able to analyse the search query to predict which indexes are worth searching in</LI>
+		<LI>Handle faulty indexes</LI>
+		<LI>Handle slow response time together with increased traffic, preventing resource starvation</LI>
+		<LI>Handle the different APIs for the different indexes</LI>
+		<LI>Have a model for unifying/normalising the search result</LI>
+		<LI>Be robust when the index model / index profile changes (there should be no need to alter the search function)</LI>
+	</UL>
+	</LI>
+	<LI>Implement a template engine that gets data from the search function and display it to the user</LI>
+	<LI>Implement a logger that can register all searches with details about the user client, search context, zero-hits, index response time etc.</LI>
+	<LI>Implement some sort of rules engine that triggers on particular terms in the search query, to intelligently boost which data source should be displayed first</LI>
+	<LI>Allow for the application to present search results differently depending on IP-range, user session id, personalisation settings.</LI>
+	<LI>Design templates to display the result</LI>
+</UL>
+
+
+<P>With <B>Sesat</B>, you get all of the above by</P>
+<UL>
+	<LI>Set up your development environment,</LI>
+	<LI>Define your data sources in a configuration file, and</LI>
+	<LI>Hack the example templates that is included.</LI>
+</UL>
+
+
+
+
+<H2><A name="ProductWhitepaper-Introduction"></A>Introduction</H2>
+
+<P>The Sesam Search Application Toolkit, Sesat, is the heart of the <A href="http://sesam.no/" rel="nofollow">http://sesam.no</A> and <A href="http://sesam.se/" rel="nofollow">http://sesam.se</A> search portals. These portals show the power and flexibility of a platform enabling businesses to present both structured and un-structured information from many sources simultaneously, while honoring the user's search context and choices.</P>
+
+<P>Sesat is built on experience and learnings from the first version of the sesam.no portal, and has grown both in maturity and functionality with the tasks given. It has all the time been an important goal to deliver as much flexibility and functionality to the user as possible, while keeping the &quot;core&quot; application stable. Sesam is today successfully leveraging the flexibility of this architecture, focusing on developing their portal rather than the underlying search technology. </P>
+
+<H3><A name="ProductWhitepaper-ExecutiveSummary"></A>Executive Summary</H3>
+
+<P>Sesat includes a set of applications working together to provide a feature-rich search middleware. Sesat glues together information from underlying indexes and data sources and passes it on to the presentation layer. The toolkit has excellent support for all recent versions of the FAST search engine, as well as many other data sources. It is easy to create own connectors to underlying data layers and sources. </P>
+
+<P>The <B>traditional</B> way of creating a search portal or a search application, is to develop a full stack of components from the lowest layer comminicating directly with search apis, to the templating layer on top. </P>
+
+<P>In effect, Sesat gives you most of these components, so the developer can focus on being productive with front-end coding. </P>
+
+
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"><A class="confluence-thumbnail-link 383x266" href="product-whitepaper.data/sesatmodell.png"><IMG src="product-whitepaper.data/sesatmodell.png.jpeg" align="absmiddle" border="0"></A></TD>
+<TD class="confluenceTd">Overview of the Sesat Model: The developer focus on functionality rather than middleware and interface coding.</TD>
+</TR>
+</TBODY></TABLE>
+
+<P>The main parts of Sesat, organising all libaries, applications and tools, are: </P>
+
+<UL>
+	<LI>Sesat Kernel - the main application, handling the actual search analysis, content search and result presentation.</LI>
+	<LI>Sesat API - Application Programmers Interface.  Sesat exposes many of its functions as WebServices and XML interfaces.  This is key to Ajax functionality and for client applications where the Sesat SFC is not an option.</LI>
+	<LI>Sesat SFC - Search Front-end Container. This is where client applications reside, and were they utilise the functionality present in the Sesat Kernel.</LI>
+	<LI>Sesat Adm - administrative plugins and applications. Sesat comes with a portal setup based on JBoss Portals.</LI>
+</UL>
+
+
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"><A class="confluence-thumbnail-link 523x360" href="product-whitepaper.data/sfcmodel.png"><IMG src="product-whitepaper.data/sfcmodel.png.jpeg" align="absmiddle" border="0"></A></TD>
+<TD class="confluenceTd">Client applications reside within the Search Front-end Container, SFC. One Sesat-installation can handle multiple client applicatins, or &quot;vhosts&quot;, virtual hosts. For example, one single kernel can control and support sesam.no, sesam.se, vg.sesam.no, svd.sesam.se, sports.svd.sesam.se...</TD>
+</TR>
+</TBODY></TABLE>
+
+
+<P><B>Key points:</B></P>
+
+<UL>
+	<LI>Sesat is not tied to any particular search engine or data storage. The customer may easily provide his own search interfaces and make them available to the Sesat Kernel.</LI>
+	<LI>Sesat uses unicode (UTF-8) throughout, and is as such compatible with most languages and character sets.</LI>
+	<LI>Sesat makes it possible to create search portals and search applications <B>fast</B> without worrying about internals of search engine APIs or writing display code, business logic etc. The developer's focus is entirely on the portal's functionality.</LI>
+	<LI>Sesat is a mature search application framework that has been under heavy develpment since authumn 2005. It has an exiting roadmap which includes personalisation, session-handling, Ajax-capabilities, rules engines, statistics tools and administrative tools.</LI>
+	<LI>Sesat is an open architecture. The customer have <B>access to all source code</B>, and can submit code to the project.</LI>
+	<LI>Sesat uses Open Source applications and libraries. No commercial software needs to be installed to run Sesat.</LI>
+	<LI>Extensibility. Extremely modular and pluggable architecture.</LI>
+</UL>
+
+
+<H1><A name="ProductWhitepaper-Architecture"></A>Architecture</H1>
+
+<H2><A name="ProductWhitepaper-Overview"></A>Overview</H2>
+
+<P>Sesat implements a search portal middeware. It lives in the layer between the application's presentation templates and one or more data sources. It is flexible enough to handle many different types of sources:</P>
+<UL>
+	<LI>FAST-indexes</LI>
+	<LI>Lucene-indexes</LI>
+	<LI>WebServices</LI>
+	<LI>XML-RPC<BR>
+and many more. It is very easy to extend the engine to handle other search interfaces. </LI>
+</UL>
+
+
+<P>The power of Sesat is its ability to search in multiple indexes at the same time, and then create a java object containing all results. This object can then be accessed either via templates (eg Velocity or JSP), or by  Ajax-calls. Sesat understands user sessions, and therefore the object can be kept ready for subsequent calls and transactions. </P>
+
+<P>Sesat is controlled by configuration. Some of this configuration is done by means of administrative tools - Sesat ADM. The administrative tools are implemented to run on JBoss Portals, a portal framework compliant to JSR-168, running on JBoss application servers. This framework is also home of several administrative plugins, like personalisation and statistics. </P>
+
+<TABLE class="confluenceTable"><TBODY>
+<TR>
+<TD class="confluenceTd"><A class="confluence-thumbnail-link 772x568" href="product-whitepaper.data/architecture1.png"><IMG src="product-whitepaper.data/architecture1.png.jpeg" align="absmiddle" border="0"></A></TD>
+<TD class="confluenceTd">On the left-hand side, in the Search Front-end Container, the client defines his templates. These are being run by the Sesat Kernel upon user requests. Also, the client provides information about which indexes is to be used, which analysis rules apply etc. In addition, most of the layers in the Kernel define a Service Provider Interface, SPI. The user can implement extensions to functions within the Kernel, ensuring flexibility.</TD>
+</TR>
+</TBODY></TABLE>
+
+
+<H2><A name="ProductWhitepaper-Architectureofanexampleapplication"></A>Architecture of an example application</H2>
+
+
+<H1><A name="ProductWhitepaper-Corecomponents"></A>Core components</H1>
+
+<P>A full <A href="product-description.html" title="Product Description">Product Description</A> also exists.</P>
+
+<H2><A name="ProductWhitepaper-SesatKernel"></A>Sesat Kernel</H2>
+
+<BLOCKQUOTE><P>Sesat Kernel runs as a web application within a web-server. The Sesat Kernel, the core to the search front, and the generic.sesam skin (SFC) serves as a search engine's controlling and presentation framework.</P></BLOCKQUOTE>
+
+
+<P>Currently, Tomcat and JBoss is supported. All access to a search application or portal, is managed by this part of Sesat. The Kernel is configured to work with a number of Virtual Hosts, vhosts. When starting the service, the Kernel loads information about all active vhosts. Each of these may have their own templates, indexes and configuration. Client code for any given vhost is initialised and loaded at this stage. </P>
+
+<P>A full <A href="kernel-feature-list.html" title="Kernel Feature list">Kernel Feature list</A> can be found <A href="kernel-feature-list.html" title="Kernel Feature list">here</A>.</P>
+
+<H3><A name="ProductWhitepaper-SearchLifecycle"></A>Search Lifecycle</H3>
+
+<H2><A name="ProductWhitepaper-SesatSFCSesatSearchFrontendContainer"></A>Sesat SFC - Sesat Search Front-end Container</H2>
+<BLOCKQUOTE><P>The SFC is where client applications run. They are deployed and directed by the Sesat Kernel.</P></BLOCKQUOTE>
+
+<P>Applications run within the same JVM as the Kernel. They are all deployed as .war-files to the same directory, by default. <BR>
+The appplication names are the same as the vhost they implement. </P>
+
+<P>Features:</P>
+
+<UL>
+	<LI>Very quick development and deployment of search application based on the kernel</LI>
+	<LI>Flexible and configurable:
+	<UL>
+		<LI>skins, vhosts, ranking, indexes, analysis rules, navigators and enrichments</LI>
+	</UL>
+	</LI>
+	<LI>Runs in the same JVM as the kernel for speed, but <B>can</B> run on a separate JVM for security.</LI>
+	<LI>Defined logfiles for developer <A href="logging-logfiles-and-statistics.html" title="Logging, Logfiles, and Statistics">debugging and statistics</A>.</LI>
+</UL>
+
+
+
+<H2><A name="ProductWhitepaper-SesatAPI"></A>Sesat API</H2>
+<BLOCKQUOTE><P>Most Kernel functionality is accessible from WebServices and the XML-interface. This is important functionality external applications that needs to communicate with Sesat. For example, mobile applications have been developed to perform searches using the XML API. </P></BLOCKQUOTE>
+
+<P>Features: </P>
+<UL>
+	<LI>XML RESTful API.
+	<UL>
+		<LI>RSS / Atom feeds automatically generated from any already configured query.</LI>
+	</UL>
+	</LI>
+	<LI>XML-RPC:
+	<UL>
+		<LI>XML-based API with full support for all services in the kernel. Provided to tightly integrated partners.</LI>
+		<LI>Output configurable on a per-partner basis</LI>
+		<LI>Security services</LI>
+	</UL>
+	</LI>
+	<LI>Web Services (WS)
+	<UL>
+		<LI>WS for loosely coupled client application</LI>
+	</UL>
+	</LI>
+</UL>
+
+
+<P>Please note that XML-RPC and Web Services to Sesat are not yet implemented - We had great plans for XML-RPC and/or a Web Service API but us, and all our partners, always come back to using RSS (or custom XML) feeds. That's because at the moment the API, like most search APIs, is all RESTful so URL requests and XML (or serialised datamodel) responses gives you the full API.</P>
+
+<H2><A name="ProductWhitepaper-SesatADM"></A>Sesat ADM</H2>
+<P>(source code to ADM not yet released)</P>
+<BLOCKQUOTE><P>The Sesat admin is a collection of applications and tools that run in a JBoss Portals server. The applications interact with various parts of Sesat, for example the Statistics engine. </P></BLOCKQUOTE>
+
+<P>Sesat Admin consists of portlets and applications running on JBoss Portals (server), which is a standards-compliant (JSR-168) portal. As of version 1.0 of Sesat, the following appliacions are available:</P>
+
+<UL>
+	<LI>User Administration Portlet (require usage of OpenLDAP). The administrator can define users, groups and roles, and ensure that access to other administrative systems or the search portal are prohibited and controlled.</LI>
+	<LI>Statistics Portlet, providing simple statistics of queries and traffic through parsing of the <A href="logging-logfiles-and-statistics.html" title="Logging, Logfiles, and Statistics">logfiles</A>.</LI>
+	<LI>FAST Lists Editor (version 1.0 of Sesat). FAST Lists are lookup-tables within the FAST engine that are used when analysing search queries.</LI>
+	<LI>Rules Engine Portlet (version 1.2 of Sesat)</LI>
+	<LI>Personalisation Manager (version 1.2 of Sesat)</LI>
+</UL>
+
+
+<H1><A name="ProductWhitepaper-SesatLicense"></A>Sesat License</H1>
+
+<P>You may use Sesat under the <A href="free-software-license.html" title="Free Software License">Affero GPLv3 license</A>. This is a Free Software and Open Source license. All your source code including that belonging to derivative works must be made freely available to any user that interacts with the software locally or via any network (eg the internet) unless you choose to bundle it as &quot;aggregated work&quot;.</P>
+
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

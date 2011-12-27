@@ -1,0 +1,300 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Developing a quick and simple Enrichment tutorial</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A>&nbsp;&gt;&nbsp;<A href="" title="Developing a quick and simple Enrichment tutorial">Developing a quick and simple Enrichment tutorial</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <P>This tutorial will give an overview on the most basic implementation of an enrichment.<BR>
+It will refer to the Idol enrichment implemented for sesam.no in 2007.</P>
+
+<H4><A name="DevelopingaquickandsimpleEnrichmenttutorial-TheSearchCommand"></A>The Search Command</H4>
+
+<P>Each enrichment is just a result list in a condensed format presented like a single result hit within the pages main result list. <BR>
+Therefore the enrichment requires a result list and this must come from a search command. We could use the StaticCommand which always returns a single dummy result item in the result list, but this example will use the PropertiesCommand that performs a simple search within a specified .properties file.</P>
+
+<H4><A name="DevelopingaquickandsimpleEnrichmenttutorial-PropertiesCommandandthepropertiesfile"></A>PropertiesCommand and the properties file</H4>
+
+<P>Configure modes.xml for the PropertiesCommand in your vertical's mode like:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">&lt;properties-command id=<SPAN class="code-quote">&quot;idol&quot;</SPAN> properties-filename=<SPAN class="code-quote">&quot;idol&quot;</SPAN>/&gt;</PRE>
+</DIV></DIV>
+<P>Create a new file idol.properties, for example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">Idol=
+Jan\ Fredrik\ Karlsen=
+Benedicte\ Adrian=
+Asbj&oslash;rn\ Slettemark=
+Mariann\ Thomassen=
+</PRE>
+</DIV></DIV>
+<P>The PropertiesCommand will return hits if any of the keys are found within the user's query.</P>
+
+<H4><A name="DevelopingaquickandsimpleEnrichmenttutorial-Triggeringtheexecutionofthesearchcommand"></A>Triggering the execution of the search command</H4>
+
+<P>For the vertical/mode to include the enrichment's search command to be run it must be specified in views.xml within the corresponding vertical/tab like:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">&lt;enrichment base-score=<SPAN class="code-quote">&quot;1000&quot;</SPAN> threshold=<SPAN class="code-quote">&quot;0&quot;</SPAN> weight=<SPAN class="code-quote">&quot;6&quot;</SPAN> command=<SPAN class="code-quote">&quot;idol&quot;</SPAN>/&gt;</PRE>
+</DIV></DIV>
+<P>This enrichment does </P>
+<UL class="alternate" type="square">
+	<LI>not refer to a rule since there is no analysis rules-based engine to determine the display, that is a result from the search command is the only determining factor,</LI>
+	<LI>specify a base score and a threshold with the base score above the threshold to ensure its inclusion,</LI>
+	<LI>specify a weight to ensure top placement of the enrichment over other enrichments, and</LI>
+	<LI>specify the associated command to run.
+<DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD>The term <B>mode</B> is used for the business definition of a vertical, and the term <B>tab</B> used for the view definition of a vertical</TD></TR></TABLE></DIV></LI>
+</UL>
+
+
+<H4><A name="DevelopingaquickandsimpleEnrichmenttutorial-VisualDesignoftheenrichment"></A>Visual Design of the enrichment</H4>
+
+<P>Create a velocity template in the skin's template/enrichments folder giving it a name equal to the command name.<BR>
+For example:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">&lt;div class=<SPAN class="code-quote">&quot;enrichment&quot;</SPAN>&gt;
+    &lt;div class=<SPAN class="code-quote">&quot;enrich_img&quot;</SPAN>&gt;&lt;img src=<SPAN class="code-quote">&quot;/images/star.png&quot;</SPAN> alt=<SPAN class="code-quote">&quot;stjerne&quot;</SPAN> /&gt;&lt;/div&gt;
+    &lt;div class=<SPAN class="code-quote">&quot;enrich_text&quot;</SPAN>&gt;
+        &lt;b&gt;Idol 2007&lt;/b&gt;&lt;br/&gt;
+        #foreach ( $item in $datamodel.getSearch($commandName).results.results )
+            So you think &lt;strong&gt;$item.getField('key')&lt;/strong&gt; is going to win?
+        #end
+    &lt;/div&gt;
+    &lt;div class=<SPAN class="code-quote">&quot;clearFloat&quot;</SPAN>&gt;&amp;nbsp;&lt;/div&gt;
+&lt;/div&gt;
+</PRE>
+</DIV></DIV>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>

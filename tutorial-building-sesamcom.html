@@ -1,0 +1,433 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+  <HEAD>
+    <LINK type="text/css" rel="stylesheet" href="resources/space.css">
+    <STYLE type="text/css">
+
+#PageContent {
+	text-align: left;
+	background-color: #fff;
+	padding: 0px;
+	margin: 0px;
+    padding-bottom:20px; 
+}
+
+#TopTable {
+    height: 104px; width: 100%; 
+    background-image: url(/sunrise3.JPG); 
+    background-repeat: no-repeat; 
+    background-position: center;
+}
+
+div > #TopTable {
+    position: fixed; z-index: 1; 
+}
+
+div > #PageContent {
+    position: relative; 
+    top: 114px;
+}
+
+      .footer {
+        background-image:      url('/images/border/border_bottom.gif');
+        background-repeat:     repeat-x;
+        background-position:   left top;
+        padding-top:           4px;
+        color:                 #666;
+      }
+body, p, td, table, tr, .bodytext, .stepfield {
+  font-family:          Trebuchet MS, Tahoma, sans-serif;
+  font-size:            14px;
+  margin:               0px;
+  padding:              0px;
+  padding-right:30px;
+}
+#leftColumn{
+  float: left; 
+  align: left; 
+  text-align: left; 
+  width: 13%; 
+  border-right: solid lightgrey; 
+  border-right-width:1px;
+}
+#leftColumn h5{
+  text-decoration: none;
+  color: #6B6965;
+  font-size:            18px;
+  font-weight: bold;
+}
+#leftColumn li a{
+  text-decoration: none;
+  color: #6B6965;
+  font-weight: bold;
+}
+#leftColumn a:hover, #leftColumn a.active  {
+  color: #1678C4;
+  background-color: #F7EEDB;
+}
+#TopTable a{
+  text-decoration: none;
+  font-weight: bold;
+}
+    </STYLE>
+    <SCRIPT type="text/javascript" language="javascript">
+      var hide = null;
+      var show = null;
+      var children = null;
+
+      function init() {
+
+        /* Children initialization */
+        hide = document.getElementById('hide');
+        show = document.getElementById('show');
+        children = document.all != null ?
+                   document.all['children'] :
+                   document.getElementById('children');
+        if (children != null) {
+          children.style.display = 'none';
+          show.style.display = 'inline';
+          hide.style.display = 'none';
+        }
+      }
+
+      function showChildren() {
+        children.style.display = 'block';
+        show.style.display = 'none';
+        hide.style.display = 'inline';
+      }
+
+      function hideChildren() {
+        children.style.display = 'none';
+        show.style.display = 'inline';
+        hide.style.display = 'none';
+      }
+    </SCRIPT>
+    <TITLE>Tutorial - Building Sesam.com</TITLE>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"></HEAD>
+  <BODY onload="init()" style="background-color: #fff;">
+<DIV>
+    <TABLE id="TopTable" border="0" cellpadding="2" cellspacing="0" width="100%">
+      <TR valign="bottom">
+        <TD align="left" valign="bottom" class="topBarDiv" align="left" nowrap="">
+          <!--img src="http://sesat.no/sesat- black- logo.png" border="0"-->&nbsp;<A href="home.html" title="Sesat">Sesat</A>&nbsp;&gt;&nbsp;<A href="docs-support.html" title="Docs + Support">Docs + Support</A>&nbsp;&gt;&nbsp;<A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A>&nbsp;&gt;&nbsp;<A href="" title="Tutorial - Building Sesam.com">Tutorial - Building Sesam.com</A>
+        </TD>
+        <TD align="right" valign="bottom" nowrap="">
+          <FORM name="search" action="http://sesam.com/search/" method="get" onsubmit="getElementById('searchformq').value = getElementById('searchformq').value + ' site:sesat.no'; return true">
+            <INPUT type="text" name="q" maxlength="255" value="" id="searchformq">        
+            <INPUT type="submit" name="btnG" value="Search">
+          </FORM>
+        </TD>
+      </TR> 
+    </TABLE>
+    <DIV id="PageContent">
+
+<DIV id="leftColumn">
+<H5 style="margin-top: -2px;">Get Sesat</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/product-whitepaper.html">
+What is Sesat?</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/download.html" style="decorator-style: none;">
+Download</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-feature-list.html">
+Features</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/showcases-sesamno.html">
+Screenshots</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/free-software-license.html">
+License</A>
+</LI>
+</UL>
+
+<H5>Documentation</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/development-guidelines.html">
+Getting Started</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/tutorial-building-sesamcom.html">
+Sesam.com tutorial</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/faq.html">
+FAQ</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+&nbsp;...<A href="http://sesat.no/docs-support.html">more</A>
+</LI>
+</UL>
+<H5>Development</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/kernel-roadmap.html">
+Roadmap</A>
+</LI>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/svn/">
+Subversion Repository</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/getting-help.html">
+Mailing lists</A>
+</LI>
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/scarab/issues">
+Issues</A>
+</LI>
+<!--LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/hudson/">
+Hudson
+</A>
+</LI>
+<LI class="none" style="list- style: none; margin- left: - 30px;">
+<A href="http://sesat.no/source/">
+OpenGrok
+</A>
+</LI-->
+</UL>
+
+<H5>Projects</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/projects/sesat-kernel/">Search Framework</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-core-api">Search Library</A><BR>
+<A href="http://sesat.no/projects/sesat-kernel/sesat-mojo/">Mojo</A><BR>
+<A href="http://sesat.no/projects/sesat-admin/sesat-user">User Service</A>
+</LI>
+</UL>
+
+<H5>Commons</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://commons-ioc.sourceforge.net/">Contextual IoC</A><BR>
+<A href="http://sesat.no/projects/sesat-commons/commons-interpreter/">Interpreter</A><BR>
+<A href="http://commons-reflect.sourceforge.net/">Reflection</A><BR>
+<A href="http://commons-ref-map.sourceforge.net/">Reference Map</A><BR>
+<A href="http://commons-visitor.sourceforge.net/">Visitor</A><BR>
+</LI>
+</UL>
+
+
+<H5>Sitemap</H5>
+<UL style="margin-top: -4px;">
+<LI class="none" style="list-style: none; margin-left: -30px;">
+<A href="http://sesat.no/sitemap.html">Sitemap</A><BR>
+</LI>
+</UL>
+</DIV>
+
+      <DIV class="pagecontent" style="width: 83%; float: right;">
+        <DIV class="wiki-content">
+          <P>This tutorial will go through building a Sesat Skin from scratch to completion.<BR>
+It repeats the basic building of the &quot;<A href="http://sesam.com/" rel="nofollow">sesam.com</A>&quot; skin found at sesat-kernel/generic.sesam/sesam.com</P>
+
+<P><B>6 easy steps to build your own search engine website.</B></P>
+<STYLE type="text/css">/*<![CDATA[*/
+div.rbtoc1236841878523 {margin-left: 1.5em;padding: 0px;}
+div.rbtoc1236841878523 ul {margin-left: 0px;padding-left: 5;}
+div.rbtoc1236841878523 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</STYLE><DIV class="rbtoc1236841878523">
+<UL>
+    <LI><A href="#Tutorial-BuildingSesam.com-Createtheproject%252Calathe%2522Skin%2522">Create the project, a la the &quot;Skin&quot;</A></LI>
+    <LI><A href="#Tutorial-BuildingSesam.com-CreateBusinessdefinition%253Amodes.xml">Create Business definition: modes.xml</A></LI>
+    <LI><A href="#Tutorial-BuildingSesam.com-CreatePresentationdefinition%253Aviews.xml">Create Presentation definition: views.xml</A></LI>
+    <LI><A href="#Tutorial-BuildingSesam.com-Skinproperties">Skin properties</A></LI>
+    <LI><A href="#Tutorial-BuildingSesam.com-Designtemplates">Design templates</A></LI>
+    <LI><A href="#Tutorial-BuildingSesam.com-Designcss">Design css</A></LI>
+    <LI><A href="#Tutorial-BuildingSesam.com-Finished%2521">Finished!</A></LI>
+</UL></DIV>
+
+<H5><A name="Tutorial-BuildingSesam.com-Createtheproject%2Calathe%22Skin%22"></A>Create the project, a la the &quot;Skin&quot;</H5>
+<P> We will create the new skin from an existing archetype found within sesat-kernel. So we must checkout and build sesat-kernel &amp; its skin-archetype first.</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">svn co http:<SPAN class="code-comment">//sesat.no/svn/sesat-kernel/trunk sesat-kernel
+</SPAN>cd sesat-kernel
+mvn install -DskipTests=<SPAN class="code-keyword">true</SPAN>
+cd skin-archetype
+mvn install -DskipTests=<SPAN class="code-keyword">true</SPAN></PRE>
+</DIV></DIV>
+<P>Now we can create our new skin:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">cd ../..
+mkdir test-skin
+</PRE>
+</DIV></DIV>
+<P>You should now have:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">\-|
+  |-sesat-kernel
+   \-skin-archetype
+  |-test-skin
+</PRE>
+</DIV></DIV>
+<P>Then do (you should replace <EM>-Dversion=2.18-SNAPSHOT</EM> with the version you see in sesat-kernel/pom.xml):</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">cd test-skin
+mvn archetype:generate -DarchetypeGroupId=sesat -DarchetypeArtifactId=sesat-skin-archetype \\
+-DarchetypeCatalog=local -DgroupId=sesat -DartifactId=pom.sesam.com \\
+-Dversion=&lt;current sesat-kernel version&gt;-SNAPSHOT -Dpackage=no.search.sesat</PRE>
+</DIV></DIV>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;<EM>From Author: make sure you are using maven-archetype-plugin:2.0-alpha-3 or greater. Versions before that have some confusion between archetype:generate and archetype:create goals. Take a peek in ~/.m2/repository/org/apache/maven/plugins/maven-archetype-plugin/ if unsure. Add &quot;-up -U&quot; to the mvn archetype:generate command above to update to a later version.</EM> <BR clear="all"> <BR clear="all"></P>
+
+<P>You should now have under test-skin a directory &quot;pom.sesam.com&quot; and under that the files: </P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">LICENSE.txt  pom.xml  query-transform-config  query-transform-control  result  result-handler-config  result-handler-control  search-command-config  search-command-control  velocity-directives  view-config  view-control  war</PRE>
+</DIV></DIV>
+
+<DIV class="panelMacro"><TABLE class="infoMacro"><COLGROUP><COL width="24"><COL></COLGROUP><TR><TD valign="top"><IMG src="http://confluence.finn.no/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></TD><TD><B>Troubleshooting</B><BR>If these directories do not exist then &quot;mvn archetype:generate ...&quot; didn't work properly. You can workaround this by extracting <A href="http://sesat.no/tutorial-building-sesamcom.data/" rel="nofollow">the appropriate pom.sesam.com-X.Y.tar</A> into the test-skin directory.</TD></TR></TABLE></DIV>
+
+<P>You can now cd into this new maven project that has all the possible skin components set up ready to go.<BR>
+This tutorial will really only deal with the &quot;war&quot; submodule.<BR>
+Try building the new maven project:
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">cd pom.sesam.com; mvn install -DskipTests=<SPAN class="code-keyword">true</SPAN></PRE>
+</DIV></DIV> Some users report that <EM>-DskipTests=true</EM> doesn't work, if so revert to the older and <A href="http://maven.apache.org/plugins/maven-surefire-plugin/test-mojo.html#skipExec" rel="nofollow">deprecated</A> <EM>-Dmaven.test.skip=true</EM>.</P>
+
+
+<H5><A name="Tutorial-BuildingSesam.com-CreateBusinessdefinition%3Amodes.xml"></A>Create Business definition: modes.xml</H5>
+
+<P>We are going to use yahoo's search for our main result list. This is purely business logic so it all goes into modes.xml<BR>
+Add to test-skin/pom.sesam.com/war/src/main/conf/modes.xml (inside the &lt;modes&gt;&lt;/mode&gt;):</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">    &lt;mode id=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-mode&quot;</SPAN> analysis=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">false</SPAN>&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-magic&quot;</SPAN>&gt;
+        &lt;yahoo-web-command id=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-yahoo-web-command&quot;</SPAN>
+                           appid=<SPAN class="code-quote">&quot;YahooDemo&quot;</SPAN>
+                           field-filters=<SPAN class="code-quote">&quot;site&quot;</SPAN>
+                           host=<SPAN class="code-quote">&quot;yahooWebHost&quot;</SPAN>
+                           language=<SPAN class="code-quote">&quot;en&quot;</SPAN>
+                           port=<SPAN class="code-quote">&quot;yahooWebPort&quot;</SPAN>
+                           result-fields=<SPAN class="code-quote">&quot;Title AS title,Summary AS body,Url AS url,ClickUrl AS clickurl&quot;</SPAN>
+                           results-to-<SPAN class="code-keyword">return</SPAN>=<SPAN class="code-quote">&quot;10&quot;</SPAN>&gt;                                            
+            &lt;result-handlers&gt;
+                &lt;field-chooser target=<SPAN class="code-quote">&quot;title&quot;</SPAN> fields=<SPAN class="code-quote">&quot;title,url&quot;</SPAN>/&gt;
+                &lt;regexp field=<SPAN class="code-quote">&quot;url&quot;</SPAN> target=<SPAN class="code-quote">&quot;site&quot;</SPAN> regexp=<SPAN class="code-quote">&quot;http:<SPAN class="code-comment">//([^/]*)/?&quot;</SPAN>/&gt;
+</SPAN>            &lt;/result-handlers&gt;
+        &lt;/yahoo-web-command&gt;   
+    &lt;/mode&gt;
+    &lt;mode id=<SPAN class="code-quote">&quot;international&quot;</SPAN> evaluation=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">false</SPAN>&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-mode&quot;</SPAN>&gt;
+        &lt;yahoo-web-command id=<SPAN class="code-quote">&quot;globalSearch&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-yahoo-web-command&quot;</SPAN>/&gt;
+    &lt;/mode&gt;
+</PRE>
+</DIV></DIV>
+
+<P>This defines two &quot;modes&quot;. The first &quot;default-mode&quot; is both the template to build off and the guts of the configuration to the yahoo search command.<BR>
+The second, &quot;international&quot;, is the mode we'll actually be working with but it just inherits everything from &quot;default-mode&quot; for now. This layering approach is often a good idea for good house-keeping.</P>
+
+<P>There are three result-handlers configured in this example. Result-handlers are used to manipulate (post-process) results once they have been fetched.<BR>
+<EM>find-file-format</EM> adds a field to each result whose value is the mimetype guessed from the result's URL (which comes from the <EM>clickurl</EM> field).<BR>
+<EM>field-chooser</EM> will assign the <EM>title</EM> field if it is null the value of the <EM>url</EM> field. A useful fallback mechanism.<BR>
+<EM>regexp</EM> will assign the <EM>site</EM> field the regular expression capturing match against the <EM>clickurl</EM> field.</P>
+
+<P><B>Note:</B> in our repository version of generic.sesam/sesam.com/war/src/main/conf/modes.xml you'll see the yahoo-web-search elements commented out and replaced with similar yahoo-idp-search elements. The YahooIdpSearchCommand is a more powerful search interface to yahoo's indexes than their &quot;Contextual Web Service&quot;, but you need to enter a contract with Yahoo to use it.</P>
+
+<H5><A name="Tutorial-BuildingSesam.com-CreatePresentationdefinition%3Aviews.xml"></A>Create Presentation definition: views.xml</H5>
+
+<P>The configuration for how these results from yahoo will appear on the page comes from views.xml.<BR>
+A &quot;tab&quot; does not have to be a tab in UI terms, here it simply refers to a page, tab, or vertical that layers on top of one of our modes.<BR>
+Add to war/src/main/conf/views.xml (inside the &lt;views&gt;&lt;/views&gt;):</P>
+
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java">      &lt;tab id=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-sesam-com&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>&quot;</SPAN>/&gt; &lt;!-- placement <SPAN class="code-keyword">for</SPAN> a global skin css --&gt;
+    &lt;tab id=<SPAN class="code-quote">&quot;international&quot;</SPAN> inherit=<SPAN class="code-quote">&quot;<SPAN class="code-keyword">default</SPAN>-sesam-com&quot;</SPAN>
+            key=<SPAN class="code-quote">&quot;g&quot;</SPAN> 
+            mode=<SPAN class="code-quote">&quot;international&quot;</SPAN> 
+            page-size=<SPAN class="code-quote">&quot;10&quot;</SPAN>
+            rss-result-name=<SPAN class="code-quote">&quot;globalSearch&quot;</SPAN>&gt;
+        &lt;navigation&gt;
+            &lt;navigation id=<SPAN class="code-quote">&quot;offset&quot;</SPAN>&gt;
+              &lt;result-paging id=<SPAN class="code-quote">&quot;offset&quot;</SPAN> command-name=<SPAN class="code-quote">&quot;globalSearch&quot;</SPAN> page-size=<SPAN class="code-quote">&quot;10&quot;</SPAN> number-of-pages=<SPAN class="code-quote">&quot;10&quot;</SPAN> hitcount-source=<SPAN class="code-quote">&quot;totalhits&quot;</SPAN>/&gt;
+            &lt;/navigation&gt;
+        &lt;/navigation&gt;
+        &lt;layout main=<SPAN class="code-quote">&quot;sesam.com/main.jsp&quot;</SPAN> front=<SPAN class="code-quote">&quot;sesam.com/index.jsp&quot;</SPAN>&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;header-element&quot;</SPAN> template=<SPAN class="code-quote">&quot;sesam.com/head.jsp&quot;</SPAN>/&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;header-element-extra&quot;</SPAN> template=&quot;&quot;/&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;top-col-one&quot;</SPAN> template=<SPAN class="code-quote">&quot;sesam.com/searchbar-top.jsp&quot;</SPAN>/&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;main-col-three&quot;</SPAN> template=<SPAN class="code-quote">&quot;sesam.com/globalSearch.jsp&quot;</SPAN>/&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;bottom-col-one&quot;</SPAN> template=<SPAN class="code-quote">&quot;sesam.com/offsetPager.jsp&quot;</SPAN>/&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;bottom-col-three&quot;</SPAN> template=<SPAN class="code-quote">&quot;sesam.com/footer.jsp&quot;</SPAN>/&gt;
+            &lt;include key=<SPAN class="code-quote">&quot;bottom-col-two&quot;</SPAN> template=<SPAN class="code-quote">&quot;sesam.com/searchbar-bottom.jsp&quot;</SPAN>/&gt;
+        &lt;/layout&gt;
+    &lt;/tab&gt;
+</PRE>
+</DIV></DIV>
+
+<H5><A name="Tutorial-BuildingSesam.com-Skinproperties"></A>Skin properties</H5>
+<P>war/src/main/conf/configuration.properties contains skin defining properties:</P>
+<DIV class="code panel" style="border-width: 1px;"><DIV class="codeContent panelContent">
+<PRE class="code-java"># Site attributes
+site.parent=@sesam.site.parent@
+site.locale.<SPAN class="code-keyword">default</SPAN>=en
+site.issitesearch=<SPAN class="code-keyword">false</SPAN>
+site.defaultTab=g
+yahooWebHost=search.yahooapis.com
+yahooWebPort=80
+# disable fast token evaluation. HACK <SPAN class="code-keyword">while</SPAN> we wait <SPAN class="code-keyword">for</SPAN> SEARCH-3540 Anonymous TokenPredicates &amp; Token Evaluator SPI.
+tokenevaluator.port=0
+</PRE>
+</DIV></DIV>
+<P>The filtered properties come from the pom.xml<BR>
+There six different profiles (in addition to the default &quot;development&quot; profile) that can be used for server testing and production environments as you wish.<BR>
+The property here <EM>sesam.site.parent</EM> is crucial and must match the name of the web application, as deployed, that is the parent skin.<BR>
+The yahoo properties relate to the host and port attributes previously mentioned in the yahoo-web-search element in the modes.xml.<BR>
+The tokenevaluator.port property is set so to disable the FAST token evaluation while SEARCH.3540 is still in progress.</P>
+
+<P>These default values the archetype created can be used in this tutorial.</P>
+
+<H5><A name="Tutorial-BuildingSesam.com-Designtemplates"></A>Design templates</H5>
+
+<P>Each of the templates specified in views.xml must be created, along with the main.jsp and index.jsp. The main template's path is relevant war/src/main/webapp/pages/. The templates are all relative to war/src/main/webapp/fragments/layout.</P>
+
+<P>These templates are rather self explanatory so links are given to each:
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/pages/sesam.com/index.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/pages/sesam.com/index.jsp</A>
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/pages/sesam.com/main.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/pages/sesam.com/main.jsp</A>
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/searchbar-top.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/searchbar-top.jsp</A>
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/globalSearch.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/globalSearch.jsp</A>
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/offsetPager.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/offsetPager.jsp</A>
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/footer.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/footer.jsp</A>
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/searchbar-bottom.jsp" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/webapp/WEB-INF/classes/fragments/layout/sesam.com/searchbar-bottom.jsp</A></P>
+
+<P>These templates are internationalised, the message values (from &lt;search:text.. tags) can be found in war/src/main/conf/messages_en.properties:
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/conf/messages_en.properties" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/conf/messages_en.properties</A></P>
+
+<H5><A name="Tutorial-BuildingSesam.com-Designcss"></A>Design css</H5>
+
+<P>Some of the css definitions come from the existing css in generic.sesam:
+<A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/war/src/main/css/tab/default.css" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/war/src/main/css/tab/default.css</A></P>
+
+<P>Everything specific to the sesam.com skin is found in the default-sesam-com.css, which is the reason there exists the &quot;default-sesam-com&quot; tab in views.xml as each ancestor in the tab's ancestry imports a matching css:</P>
+
+<P><A href="http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/css/tab/default-sesam-com.css" rel="nofollow">http://sesat.no/source/xref/Sesat.Kernel..trunk/generic.sesam/sesam.com/war/src/main/css/tab/default-sesam-com.css</A></P>
+
+<H5><A name="Tutorial-BuildingSesam.com-Finished%21"></A>Finished!</H5>
+
+<P>Yes it's all that easy.<BR>
+If you define the system environment variable CATALINA_BASE when you build (&quot;mvn install&quot;) the warfiles should have automatically been copied into $CATALINA_BASE/webapps/<BR>
+So, after building, inside the webapps directory there should exist: ROOT.war, generic.sesam.war, localhost.com.war<BR>
+Given that you have something like &quot;127.0.0.1 localhost.com&quot; in your /etc/hosts file you should now be able to fire up your container (eg tomcat) and browse <A href="http://localhost.com:8080/" rel="nofollow">http://localhost.com:8080/</A></P>
+
+
+<P><BR clear="all"> <BR clear="all"> <BR clear="all"> <BR clear="all">
+For more documentation on skin development see <A href="development-using-the-sfc.html" title="Development using the SFC">Development using the SFC</A>.</P>
+        </DIV>
+              </DIV>
+
+    <DIV style="clear: both;">
+      <DIV style="float: left;">&nbsp;&copy; 2007-2009 <A href="http://schibsted.com/">Schibsted ASA</A></DIV>
+      <DIV style="float: right;"><A href="mailto:mick@semb.wever.org">Contact</A>&nbsp;us</DIV>
+    </DIV>
+
+   </DIV>
+</DIV>
+</HTML>
