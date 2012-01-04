@@ -1,18 +1,18 @@
-/* Copyright (2007-2009) Schibsted ASA
- * This file is part of SESAT.
+/* Copyright (2007-2012) Schibsted ASA
+ * This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be usefu,
+ *   Possom is distributed in the hope that it will be usefu,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses/>.
  *
  * UserFilter.java
  *
@@ -309,7 +309,7 @@ public final class UserFilter implements Filter {
                     return (BasicUserService) new InitialContext(properties).lookup(jndi);
 
                 } catch (final NamingException ne) {
-                    // acceptable for sesat not to have to have a user service backend
+                    // acceptable for possom not to have to have a user service backend
                     LOG.debug(ne.getMessage(), ne);
                 }
             }

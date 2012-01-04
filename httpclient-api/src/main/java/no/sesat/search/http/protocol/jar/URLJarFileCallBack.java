@@ -1,6 +1,6 @@
 /*
- * Not Copyright (2008) Schibsted ASA
- * Not under the terms of the GNU Affero General Public License
+ * Not Copyright (2012) Schibsted ASA
+ * Not under the terms of the GNU Lesser General Public License
  *
  * Copyright 2001 Sun Microsystems, Inc.  All Rights Reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

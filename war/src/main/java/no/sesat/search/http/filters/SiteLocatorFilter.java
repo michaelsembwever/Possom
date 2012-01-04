@@ -1,18 +1,18 @@
-/* Copyright (2006-2009) Schibsted ASA
- * This file is part of SESAT.
+/* Copyright (2006-2012) Schibsted ASA
+ * This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   Possom is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses/>.
  *
  * SiteLocatorFilter.java
  *
@@ -90,7 +90,7 @@ public final class SiteLocatorFilter implements Filter {
     private static final int REQUEST_QUEUE_SIZE = 5;
 
 
-    // Any request coming into Sesat with /conf/ is immediately returned as a 404.
+    // Any request coming into Possom with /conf/ is immediately returned as a 404.
     // It should have been directed to a skin.
     private static final String CONFIGURATION_RESOURCE= "/conf/";
 

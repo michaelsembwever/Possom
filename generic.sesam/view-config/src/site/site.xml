@@ -2,7 +2,7 @@
   <version position="left"/>
   <body>
     <breadcrumbs>
-      <item name="Sesat" href="http://sesat.no"/>
+      <item name="Possom" href="http://sesat.no"/>
     </breadcrumbs>
     <menu ref="parent" />
     <menu ref="modules" />

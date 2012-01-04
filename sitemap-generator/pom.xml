@@ -6,9 +6,9 @@
         <version>2.19-SNAPSHOT</version>
     </parent>
 
-    <name>Sesat Sitemap Generator</name>
+    <name>Possom Sitemap Generator</name>
     <description>
-        This is the project for the SESAT Sitemap generator.
+        This is the project for the Possom Sitemap generator.
     </description>
 
     <artifactId>sesat-sitemap-generator</artifactId>

@@ -1,18 +1,18 @@
-/* Copyright (2005-2008) Schibsted ASA
- * This file is part of SESAT.
+/* Copyright (2005-2012) Schibsted ASA
+ * This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   Possom is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses/>.
  *
  * VelocityEngineFactory.java
  *
@@ -314,7 +314,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty("userdirective", directives.toString());
                 engine.setProperty(
                         "velocimacro.library",
-                        // sesat provides VM_sesat_library.vm -- should not be overridden
+                        // possom provides VM_sesat_library.vm -- should not be overridden
                         site.getTemplateDir() + "/VM_sesat_library.vm,"
                         // VM_global_library is optional library a skin can provide (and/or override)
                         + (isResourceAvailable(site, site.getTemplateDir() + "/VM_global_library.vm")

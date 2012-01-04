@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (2007) Schibsted ASA
- *   This file is part of SESAT.
+<!-- Copyright (2012) Schibsted ASA
+ *   This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   Possom is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     
@@ -24,13 +24,13 @@
       -->
     
     <modelVersion>4.0.0</modelVersion>
-    <name>Sesat Mojo</name>
+    <name>Possom Mojo</name>
     <groupId>sesat</groupId>
     <artifactId>sesat-mojo</artifactId>
     <version>2.19-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
-    <description>SESAT's Mojos.</description>
+    <description>Possom's Mojos.</description>
 
     <dependencies>    
         <dependency>
@@ -129,17 +129,17 @@
   </profiles>
     <distributionManagement>
         <site>
-          <id>Sesat</id>
+          <id>Possom</id>
           <url>scp://sesat.no:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
         </site>
         <repository>
-          <id>Sesat</id>
-          <name>Sesat Repository</name>
+          <id>Possom</id>
+          <name>Possom Repository</name>
           <url>scp://sesat.no:/var/www/sesat.no/htdocs/maven2</url>
         </repository>
         <snapshotRepository>
-          <id>Sesat</id>
-          <name>Sesat Snapshot</name>
+          <id>Possom</id>
+          <name>Possom Snapshot</name>
           <url>scp://sesat.no:/var/www/sesat.no/htdocs/maven2</url>
           <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>

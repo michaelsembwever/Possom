@@ -1,5 +1,5 @@
 
-SESAT Kernel
+Possom Kernel
 
     The sesam kernel consists of a number of modular 
 [../../../core-api/apidocs/no/sesat/search/doc-files/SearchPortalComponents2] components
@@ -17,7 +17,7 @@ the request onto one of the kernel's
 {{{apidocs/no/sesat/search/package-summary.html}no.sesat.search}}
 
     For information on checking out the code and building read
-{{{http://sesat.no/development-guidelines.html}Sesat's Development Guidelines}}
+{{{http://sesat.no/development-guidelines.html}Possom's Development Guidelines}}
 
     For information of typical project 
 {{{http://sesat.no/kernel-operations.html}operations}}

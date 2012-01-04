@@ -7,6 +7,6 @@
    <version>2.19-SNAPSHOT</version>
   </parent>
   <artifactId>sesat-kernel-maven-site-skin</artifactId>
-  <name>Sesat maven-site skin</name>
+  <name>Possom maven-site skin</name>
   <packaging>jar</packaging>
 </project>

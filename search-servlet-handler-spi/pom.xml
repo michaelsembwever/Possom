@@ -7,9 +7,9 @@
     </parent>
     <artifactId>sesat-search-servlet-transform-spi</artifactId>
     <packaging>jar</packaging>
-    <name>Sesat Search Servlet Transform SPI</name>
+    <name>Possom Search Servlet Transform SPI</name>
     <description>
-        This is the Sesam Search Application Toolkit. Aka Sesat.
+        This is the Sesam Search Application Toolkit. Aka Possom.
         Read http://sesat.no/development-guidelines.html for developing help.
     </description>
 

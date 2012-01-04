@@ -1,12 +1,12 @@
 =======================================
-About SESAT
+About Possom
 =======================================
 
-More information about SESAT can be found at
+More information about Possom can be found at
 http://sesat.no
 http://sesam.no/omoss
 
-SESAT is licensed under GNU's Affero General Public License version 3 (or later).
+Possom is licensed under GNU's Lesser General Public License version 3 (or later).
 See LICENSE.txt for full license.
 
 =======================================

@@ -330,8 +330,8 @@ function os_trimResultText(r){
 		fix = 20; // give 20px for scrollbar		
 	} else
 		fix = os_operaWidthFix(w);
-	if(fix < os_suggest_result_padding) // sesat change
-		fix = os_suggest_result_padding; // should be td.os-suggest-result padding *2 // sesat change
+	if(fix < os_suggest_result_padding) // possom change
+		fix = os_suggest_result_padding; // should be td.os-suggest-result padding *2 // possom change
 	maxW += fix;
 	
 	// resize container to fit more data if permitted	
@@ -436,7 +436,7 @@ function os_createResultTable(r, results){
 	var c = document.getElementById(r.container);
 	var width = c.offsetWidth - os_operaWidthFix(c.offsetWidth);	
 	var html = "<table class=\"os-suggest-results\" id=\""+r.resultTable+"\" style=\"width: "+width+"px;\">";
-    if(null != resultTableHtmlPrefix){ html = resultTableHtmlPrefix + html; }  // sesat change
+    if(null != resultTableHtmlPrefix){ html = resultTableHtmlPrefix + html; }  // possom change
 	r.results = new Array();
 	r.resultCount = results.length;
 	for(i=0;i<results.length;i++){
@@ -445,7 +445,7 @@ function os_createResultTable(r, results){
 		html += "<tr><td class=\"os-suggest-result\" id=\""+r.resultTable+i+"\"><span id=\""+r.resultText+i+"\">"+title+"</span></td></tr>";
 	}
 	html+="</table>"
-    if(null != resultTableHtmlSuffix){ html += resultTableHtmlSuffix; }   // sesat change
+    if(null != resultTableHtmlSuffix){ html += resultTableHtmlSuffix; }   // possom change
 	return html;
 }
 
@@ -665,10 +665,10 @@ function os_eventKeydown(e){
 	os_mouse_moved = false;
 
 	//os_cur_keypressed = (window.Event) ? e.which : e.keyCode;
-        if (undefined != e.keyCode)       // sesat change
-            os_cur_keypressed = e.keyCode;// sesat change
-        else                              // sesat change
-            os_cur_keypressed = e.which;  // sesat change
+        if (undefined != e.keyCode)       // possom change
+            os_cur_keypressed = e.keyCode;// possom change
+        else                              // possom change
+            os_cur_keypressed = e.which;  // possom change
 	os_last_keypress = 0;
 	os_keypressed_count = 0;
 }

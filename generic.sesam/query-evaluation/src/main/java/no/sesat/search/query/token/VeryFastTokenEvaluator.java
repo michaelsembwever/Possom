@@ -1,18 +1,18 @@
-/* Copyright (2005-2009) Schibsted ASA
- * This file is part of SESAT.
+/* Copyright (2005-2012) Schibsted ASA
+ * This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   Possom is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses/>.
  */
 package no.sesat.search.query.token;
 
@@ -86,7 +86,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     /** General properties to regular expressions configured. **/
     private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 
-    // @todo this will leak when sites are redeploy without Sesat being restarted.
+    // @todo this will leak when sites are redeploy without Possom being restarted.
     // @todo move deserialisation & this map to FastQueryMatchingEvaluatorFactory
     private static final Map<Site,Map<TokenPredicate,String[]>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String[]>>();

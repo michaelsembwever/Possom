@@ -1,8 +1,8 @@
-/* Copyright (2006-2007) Schibsted ASA
- * This file is part of SESAT.
- * You can use, redistribute, and/or modify it, under the terms of the SESAT License.
- * You should have received a copy of the SESAT License along with this program.
- * If not, see https://dev.sesat.no/confluence/display/SESAT/SESAT+License
+/* Copyright (2006-2012) Schibsted ASA
+ * This file is part of Possom.
+ * You can use, redistribute, and/or modify it, under the terms of the Possom License.
+ * You should have received a copy of the Possom License along with this program.
+ * If not, see https://dev.sesat.no/confluence/display/Possom/Possom+License
  */
 package no.sesat.search.result.handler;
 

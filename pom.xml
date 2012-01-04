@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (2007-2008) Schibsted ASA
- *   This file is part of SESAT.
+<!-- Copyright (2007-2012) Schibsted ASA
+ *   This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   Possom is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses />.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses />.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -25,10 +25,10 @@
     <groupId>sesat</groupId>
     <artifactId>sesat-kernel</artifactId>
     <packaging>pom</packaging>
-    <name>Sesat Kernel</name>
+    <name>Possom Kernel</name>
     <version>2.19-SNAPSHOT</version>
     <description>
-        This is the project for Sesat Kernel.
+        This is the project for Possom Kernel.
         Read http://sesat.no/development-guidelines.html for developing help.
     </description>
     <url>http://sesat.no/projects/sesat-kernel/</url>
@@ -80,7 +80,7 @@
     </developers>
     <licenses>
         <license>
-            <name>Affero GPLv3</name>
+            <name>Lesser GPLv3</name>
             <url>LICENSE.txt</url>
             <distribution>manual</distribution>
         </license>
@@ -616,7 +616,7 @@
         <log.level>INFO</log.level>
         <tag.on.deploy>true</tag.on.deploy>
         <version.quote>The acquisition of wealth is no longer the driving force in our lives. </version.quote>
-        <!-- We must hardcode the version to sesat artifacts so child skins can themselves be a different version. -->
+        <!-- We must hardcode the version to possom artifacts so child skins can themselves be a different version. -->
         <!-- We cannot use ${pom.version} as it is interpretted as the current's pom's version not this pom's version.-->
         <!-- maven-release-plugin will not update this version: it must be manually updated after any version bump. -->
         <sesat.version>2.19-SNAPSHOT</sesat.version>
@@ -960,7 +960,7 @@
                 <type>ejb-client</type>
                 <!-- news commands are meant more as an example within sesat-kernel. don't go importing transitive dependencies. especially these outdated artifacts.
                   - If you want to use news-admin-services you need to provide the ejb3 remoting libraries yourself (eg from http://repository.jboss.org/maven2 )
-                  - or run Sesat-Kernel in a EJB3 container like JBoss-5 -->
+                  - or run Possom-Kernel in a EJB3 container like JBoss-5 -->
                 <exclusions>
                     <exclusion>
                         <artifactId>jbossall-client</artifactId>
@@ -1032,7 +1032,7 @@
    </dependencies>
     <distributionManagement>
         <site>
-          <id>Sesat</id>
+          <id>Possom</id>
           <url>scp://sesat.no:/var/www/sesat.no/htdocs/projects/sesat-kernel</url>
         </site>
     </distributionManagement>
@@ -1040,8 +1040,8 @@
     <repositories>
         <repository>
             <!-- Need to duplicate this to make it initially possible to get commons-main's pom.xml -->
-            <id>Sesat</id>
-            <name>Sesat Repository</name>
+            <id>Possom</id>
+            <name>Possom Repository</name>
             <url>http://sesat.no/maven2</url>
             <snapshots>
                 <enabled>true</enabled>

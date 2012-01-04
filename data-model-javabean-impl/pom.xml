@@ -7,9 +7,9 @@
       </parent>
     <artifactId>sesat-data-model-javabean-impl</artifactId>
     <packaging>jar</packaging>
-    <name>Sesat DataModel JavaBean Implementation</name>
+    <name>Possom DataModel JavaBean Implementation</name>
     <description>
-        This is the Sesam Search Application Toolkit. Aka Sesat.
+        This is the Sesam Search Application Toolkit. Aka Possom.
         Read http://sesat.no/development-guidelines.html for developing help.
     </description>
 

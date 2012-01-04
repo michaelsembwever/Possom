@@ -7,9 +7,9 @@
     </parent>
     <artifactId>sesat-result-handler-config-spi</artifactId>
     <packaging>jar</packaging>
-    <name>Sesat Result Handler Config SPI</name>
+    <name>Possom Result Handler Config SPI</name>
     <description>
-        This is the Sesam Search Application Toolkit. Aka Sesat.
+        This is the Sesam Search Application Toolkit. Aka Possom.
         Read http://sesat.no/development-guidelines.html for developing help.
     </description>
 

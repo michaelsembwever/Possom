@@ -8,9 +8,9 @@
     </parent>
     <artifactId>sesat-sitemap-spi</artifactId>
     <packaging>jar</packaging>
-    <name>Sesat Sitemap SPI</name>
+    <name>Possom Sitemap SPI</name>
     <description>
-        This is the project for the SESAT Sitemap (http://www.sitemaps.org/) SPI. This allows skins to provide URLs that should go into the installation-wide sitemap.
+        This is the project for the Possom Sitemap (http://www.sitemaps.org/) SPI. This allows skins to provide URLs that should go into the installation-wide sitemap.
     </description>
 
     <dependencies>

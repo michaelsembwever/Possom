@@ -1,18 +1,18 @@
-/* Copyright (2007) Schibsted ASA
- * This file is part of SESAT.
+/* Copyright (2012) Schibsted ASA
+ * This file is part of Possom.
  *
- *   SESAT is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Affero General Public License as published by
+ *   Possom is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   SESAT is distributed in the hope that it will be useful,
+ *   Possom is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU Affero General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Affero General Public License
- *   along with SESAT.  If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Possom.  If not, see <http://www.gnu.org/licenses/>.
  */
 package no.sesat.search.result;
 
@@ -21,17 +21,9 @@ import java.util.Date;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
- * User: SSTHKJER
- * Date: 13.jan.2006
- * Time: 11:32:54
- * To change this template use File | Settings | File Templates.
- *
  * @todo make this a generic helper class for functions needed in templates
  *
  */
-
-
 public class Decoder {
 
     public Decoder() {}
@@ -58,7 +50,7 @@ public class Decoder {
                     length = s.indexOf(">", length) + 1;
                     s = s.substring(0, length);
                 } else {
-	                s = s.substring(0, length) + "..";
+                    s = s.substring(0, length) + "..";
                 }
             }
         } catch (UnsupportedEncodingException e) {
@@ -80,7 +72,7 @@ public class Decoder {
         if (s1.equalsIgnoreCase(s2)) {
             return true;
         } else
-	    return false;
+        return false;
     }
 
     public boolean checkInfoTextLength(String s, int i) {
