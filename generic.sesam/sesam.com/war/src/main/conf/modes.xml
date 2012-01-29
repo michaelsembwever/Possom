@@ -28,7 +28,7 @@
 
     <mode id="default-mode" analysis="false" inherit="default-magic">
             <!-- mode inheritence is a restricted one child to one parent relationship
-                    so we inherit default-magic -->  
+                    so we inherit default-magic -->
 
         <yahoo-idp-command id="default-yahoo-idp-command" inherit="default-yahoo-i18n-command"
                            database="www-en-us"
@@ -37,23 +37,23 @@
                            partner-id="yahooIdpPartnerId"
                            region=""
                            region-mix=""
-                           results-to-return="10">                                            
+                           results-to-return="10">
             <result-handlers>
                 <find-file-format url-field="clickurl"/>
                 <field-chooser target="title" fields="title,url"/>
                 <regexp field="clickurl" target="site" regexp="http://([^/]*)/?"/>
             </result-handlers>
         </yahoo-idp-command>
-        
+
     </mode>
-    
+
     <mode id="international" inherit="default-mode" evaluation="false">
 
         <!--yahoo-idp-command id="globalSearch" inherit="default-yahoo-idp-command"/-->
         <!--yahoo-web-command id="globalSearch" inherit="default-yahoo-web-command"/-->
-        <yahoo-boss-command id="globalSearch" inherit="default-yahoo-boss-command"/>
+        <!--yahoo-boss-command id="globalSearch" inherit="default-yahoo-boss-command"/-->
 
-        <!--google-command id="globalSearch" inherit="default-google-web-command"/-->
+        <google-command id="globalSearch" inherit="default-google-web-command"/>
 
         <!--solr-command id="globalSearch" inherit="default-command"
                            result-fields="list_name AS title,list_entry AS body"
