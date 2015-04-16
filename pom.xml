@@ -89,25 +89,6 @@
         <name>Schibsted ASA</name>
         <url>http://sesat.no/</url>
     </organization>
-     <mailingLists>
-        <mailingList>
-            <name>User &amp; Development List</name>
-            <post>kernel-development@sesat.no</post>
-            <archive>http://sesat.no/pipermail/kernel-development/</archive>
-        </mailingList>
-        <mailingList>
-            <name>Commits List</name>
-            <archive>http://sesat.no/pipermail/kernel-commits/</archive>
-        </mailingList>
-        <mailingList>
-            <name>Builds List</name>
-            <archive>http://sesat.no/pipermail/kernel-builds/</archive>
-        </mailingList>
-     </mailingLists>
-     <ciManagement>
-       <system>hudson</system>
-       <url>http://sesat.no/hudson/</url>
-     </ciManagement>
     <scm>
         <connection>scm:svn:http://sesat.no/svn/sesat-kernel/trunk</connection>
         <url>http://sesat.no/source/xref/sesat-kernel/trunk</url>
@@ -150,8 +131,8 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>

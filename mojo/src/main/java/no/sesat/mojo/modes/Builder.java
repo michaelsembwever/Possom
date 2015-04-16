@@ -17,8 +17,6 @@
  */
 package no.sesat.mojo.modes;
 
-import static com.sun.tools.javac.code.Flags.PROTECTED;
-import static com.sun.tools.javac.code.Flags.PUBLIC;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,6 +25,7 @@ import java.io.PrintStream;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
+import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Options;
@@ -85,7 +84,7 @@ public final class Builder {
             compOpts.put("-classpath", classpath);
 
             try {
-                root = comp.getRootDocImpl("", "", new ModifierFilter(PUBLIC | PROTECTED), javaNames.toList(), options
+                root = comp.getRootDocImpl("", "", new ModifierFilter(Flags.PUBLIC | Flags.PROTECTED), javaNames.toList(), options
                         .toList(), false, subPackages.toList(), xcludePackages.toList(), false, false, false);
             } catch (IOException e) {
                 e.printStackTrace(err);
