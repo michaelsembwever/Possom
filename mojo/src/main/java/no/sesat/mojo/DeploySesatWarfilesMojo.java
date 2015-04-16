@@ -78,7 +78,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
  *
  * @version $Id$
  */
-public final class DeployPossomWarfilesMojo extends CopyMojo implements Contextualizable{
+public final class DeploySesatWarfilesMojo extends CopyMojo implements Contextualizable{
 
     // Constants -----------------------------------------------------
 
@@ -263,7 +263,7 @@ public final class DeployPossomWarfilesMojo extends CopyMojo implements Contextu
     /**
      *
      */
-    public DeployPossomWarfilesMojo() {
+    public DeploySesatWarfilesMojo() {
     }
 
     // Public --------------------------------------------------------
